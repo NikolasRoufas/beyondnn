@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "beyondnn"
+dynamic = ["version"]
+description = "An interpretability evidence framework for PyTorch: structured traces, provenance, interventions, and testable claims."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "BeyondNN contributors" }]
+keywords = ["interpretability", "pytorch", "causal", "mechanistic-interpretability", "provenance"]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
+]
+# torch>=2.3: forward hooks with `with_kwargs` / `always_call` and `torch.load(weights_only=True)`
+# are required by the Phase 1 design; 2.3 also matches Captum 0.9's floor.
+dependencies = ["torch>=2.3"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.16",
+    "mypy>=1.11",
+    "pre-commit>=3.7",
+]
+# Adapter extras (captum, nnsight, sae, transformer-lens) are added only when an adapter exists.
+
+[tool.hatch.version]
+path = "beyondnn/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["beyondnn"]
+
+[tool.hatch.build.targets.sdist]
+include = ["beyondnn", "tests", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib", "-ra", "--strict-markers"]
+filterwarnings = ["error::pytest.PytestCollectionWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.format]
+# Code blocks in docs are illustrative API proposals (often pseudo-code); don't auto-format Markdown.
+exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PT"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+packages = ["beyondnn"]
