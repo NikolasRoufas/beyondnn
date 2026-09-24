@@ -89,7 +89,8 @@ class _Float(_Type):
     def check(self, value: Any, path: str) -> Any:
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise self._fail(value, path)
-        return float(value)
+        value = float(value)
+        return 0.0 if value == 0.0 else value  # -0.0 == 0.0: one encoding, one id
 
     def encode(self, value: Any) -> Any:
         return value if math.isfinite(value) else _NONFINITE_ENCODE[repr(value)]
@@ -220,7 +221,6 @@ def _compile(tp: Any, where: str) -> _Type:
 class FieldSpec:
     name: str
     type: _Type
-    has_default: bool
 
 
 _SPECS: dict[type, tuple[FieldSpec, ...]] = {}
@@ -232,12 +232,7 @@ def field_specs(cls: type) -> tuple[FieldSpec, ...]:
     if specs is None:
         hints = typing.get_type_hints(cls)
         specs = tuple(
-            FieldSpec(
-                f.name,
-                _compile(hints[f.name], f"{cls.__name__}.{f.name}"),
-                f.default is not dataclasses.MISSING
-                or f.default_factory is not dataclasses.MISSING,
-            )
+            FieldSpec(f.name, _compile(hints[f.name], f"{cls.__name__}.{f.name}"))
             for f in dataclasses.fields(cls)
             if f.init
         )

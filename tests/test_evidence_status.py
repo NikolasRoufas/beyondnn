@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import itertools
 from types import SimpleNamespace
-from typing import cast
+from typing import Any, cast
 
 import pytest
 
@@ -180,3 +180,59 @@ def test_record_refs_carry_the_parent_status(mk: SimpleNamespace) -> None:
     ref = RecordRef.to(mk.input())
     assert ref.status is S.OBSERVED
     assert ref.kind == "input"
+
+
+# ----------------------------------------------------------------- ADR-017 (corrected)
+
+
+def test_state_measured_under_intervention_is_still_measured(mk: SimpleNamespace) -> None:
+    # Execution context (an active intervention) belongs in provenance, not status.
+    clean = mk.activation(prov="prov:clean-run")
+    intervened = mk.activation(prov="prov:run-with-ablation-of-layers.1")
+    assert clean.status is intervened.status is S.MEASURED
+    assert clean.id != intervened.id  # different provenance, different evidence artifact
+
+
+def test_measured_state_alone_cannot_decide_a_causal_claim(mk: SimpleNamespace) -> None:
+    # Only an intervention *effect* (INTERVENTIONAL) can; raw state read during an
+    # intervened pass is MEASURED and does not qualify.
+    from beyondnn.schema import ClaimTestResult, Outcome
+
+    intervened_state = mk.activation(prov="prov:run-with-ablation-of-layers.1")
+    with pytest.raises(EvidenceRuleError, match="requires INTERVENTIONAL or ESTIMATED_CAUSAL"):
+        ClaimTestResult.for_claim(
+            mk.claim(),
+            mk.spec(),
+            outcome=Outcome.SUPPORTS,
+            evidence=(intervened_state,),
+            provenance_id=mk.PROV,
+        )
+
+
+def test_status_is_not_universally_fixed_per_kind(
+    mk: SimpleNamespace, fake_effect_kind: Any
+) -> None:
+    # Some kinds derive status from content (here: from the estimand, ADR-013).
+    statuses = {
+        fake_effect_kind(estimand=e, effect=-0.2, provenance_id=mk.PROV).status
+        for e in (
+            Estimand.instance("x0"),
+            Estimand.population_of("test_distribution", "mean"),
+        )
+    }
+    assert statuses == {S.INTERVENTIONAL, S.ESTIMATED_CAUSAL}
+
+
+def test_forbidden_lineage_is_rejected_when_decoding(mk: SimpleNamespace) -> None:
+    from beyondnn.schema import DecodeError, from_dict, to_dict
+
+    env = to_dict(mk.activation(parents=(RecordRef.to(mk.input()),)))
+    env["data"]["derived_from"][0]["status"] = "generated"
+    with pytest.raises(DecodeError) as info:
+        from_dict(env)
+    assert isinstance(info.value.__cause__, EvidenceRuleError)
+
+
+def test_lineage_order_does_not_change_identity(mk: SimpleNamespace) -> None:
+    a, b = RecordRef.to(mk.input(prov="prov:a")), RecordRef.to(mk.input(prov="prov:b"))
+    assert mk.activation(parents=(a, b)).id == mk.activation(parents=(b, a)).id

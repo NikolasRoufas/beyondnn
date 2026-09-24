@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import hashlib
 import json
 import os
@@ -166,3 +167,25 @@ def test_canonical_json_is_compact_sorted_and_utf8() -> None:
     with pytest.raises(ValueError, match="Out of range float"):
         canonical_json({"x": float("nan")})
     assert json.loads(canonical_json({"f": 0.1})) == {"f": 0.1}
+
+
+def test_negative_zero_does_not_change_identity(mk: SimpleNamespace) -> None:
+    # -0.0 == 0.0, so equal records must also have equal ids.
+    def with_mean(mean: float) -> str:
+        rec = mk.activation()
+        stats = TensorStats(numel=6, mean=mean, std=0.25, min=-1.0, max=2.0, l2_norm=3.5)
+        value = dataclasses.replace(rec.value, stats=stats)
+        return str(dataclasses.replace(rec, value=value).id)
+
+    assert with_mean(-0.0) == with_mean(0.0)
+    assert mk.spec(criteria={"k": -0.0}).id == mk.spec(criteria={"k": 0.0}).id
+
+
+def test_formally_equivalent_claims_can_have_different_ids(mk: SimpleNamespace) -> None:
+    # Record identity is not semantic equivalence (ADR-016): later phases must
+    # compare the formal structure, never ids, to decide equivalence.
+    a = mk.claim(statement="unit 4 is necessary for class 2")
+    b = mk.claim(statement="class 2 needs unit 4")
+    assert a.id != b.id
+    formal = ("subject", "relation", "target", "estimand")
+    assert all(getattr(a, f) == getattr(b, f) for f in formal)

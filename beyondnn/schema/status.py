@@ -34,12 +34,16 @@ class EvidenceStatus(Enum):
     OBSERVED:
         A value that crossed the model boundary unchanged (inputs, outputs).
     MEASURED:
-        A value read inside the model during an unmodified forward pass.
+        Directly observed internal model state (e.g. a module output read by a
+        hook). Stays MEASURED when read during an intervened execution: the
+        intervention is execution context and belongs in provenance (ADR-017).
     ATTRIBUTED:
         A method-relative score (gradient, integrated gradients, ...).
     INTERVENTIONAL:
-        A directly measured effect of a specified intervention on specified
-        inputs: one instance or an exact summary of a finite sample (ADR-013).
+        A directly measured *effect* of a specified intervention on specified
+        inputs, i.e. a comparison of intervened against baseline behaviour: one
+        instance or an exact summary of a finite sample (ADR-013). Raw state read
+        while an intervention is active is MEASURED, not INTERVENTIONAL.
     ESTIMATED_CAUSAL:
         An approximation of an interventional quantity, or any causal quantity
         about a population beyond the measured inputs (ADR-013).

@@ -46,7 +46,7 @@ def _freeze(value: Any, path: str) -> JsonValue:
     if isinstance(value, float):
         if not math.isfinite(value):
             raise SchemaTypeError(f"{path}: non-finite float {value!r} is not valid JSON data")
-        return value
+        return 0.0 if value == 0.0 else value  # -0.0 == 0.0: one encoding, one id
     if isinstance(value, JsonMap):
         return value
     if isinstance(value, Mapping):
@@ -74,6 +74,8 @@ class JsonMap(Mapping[str, JsonValue]):
     __slots__ = ("_data", "_hash")
 
     def __init__(self, data: Mapping[str, Any] | None = None, *, _path: str = "$") -> None:
+        if hasattr(self, "_data"):  # re-calling __init__ would mutate a frozen record's data
+            raise TypeError("JsonMap is immutable")
         items: dict[str, JsonValue] = {}
         for key, value in (data or {}).items():
             if not isinstance(key, str):

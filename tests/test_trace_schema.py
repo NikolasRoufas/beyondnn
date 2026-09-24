@@ -67,6 +67,14 @@ def test_json_maps_are_deeply_immutable() -> None:
     assert m["a"] == (1, JsonMap({"b": 2}))
 
 
+def test_json_maps_cannot_be_reinitialised(mk: SimpleNamespace) -> None:
+    claim = mk.claim()
+    params = claim.target.params
+    with pytest.raises(TypeError, match="immutable"):
+        params.__init__({"class": 99})
+    assert params == {"class": 2}
+
+
 def test_records_are_keyword_only(mk: SimpleNamespace) -> None:
     with pytest.raises(TypeError):
         cast(Any, ActivationRecord)(Site(module="a"), mk.tref())

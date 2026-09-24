@@ -64,7 +64,12 @@ class Claim(BaseRecord):
 
     ``statement`` is descriptive text for humans and is never evidence. The claim's
     standing is not stored here: it is an :class:`Assessment` derived from results.
-    Identity covers every field, so rewording the statement yields a new claim.
+
+    Record identity is not semantic equivalence (ADR-016): the id covers every
+    field, including the wording of ``statement`` and ``provenance_id``, so two
+    formally equivalent claims can have different ids. Never use ``id`` to decide
+    whether two claims mean the same thing; that must be based on the formal
+    structure (subject, relation, target, estimand).
     """
 
     statement: str
@@ -191,6 +196,9 @@ class ClaimTestResult(BaseRecord):
     def _validate(self) -> None:
         ids = [e.record_id for e in self.evidence]
         require(len(set(ids)) == len(ids), "ClaimTestResult.evidence has duplicate ids")
+        object.__setattr__(
+            self, "evidence", tuple(sorted(self.evidence, key=lambda e: e.record_id))
+        )
         if self.outcome is Outcome.ERRORED:
             require(bool(self.error), "an ERRORED result must describe the error")
         else:

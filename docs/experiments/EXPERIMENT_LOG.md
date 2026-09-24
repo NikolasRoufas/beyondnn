@@ -33,3 +33,25 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
   - Separately, running the suite on Python 3.10 found a real bug: there, `list[int]` passes `isinstance(tp, type)`. It was fixed before commit.
 - **Next action:** review M1.1. Consider adding mutation testing (e.g. mutmut) to CI once the codebase grows.
 
+---
+
+## 2026-09-25: M1.1 review — mutation re-check after added guard tests (verification)
+- **Commit:** the M1.1 review-fix commit (parent `3349dec`)
+- **Experiment:** re-ran the invariant mutation check after adding independent guard tests. Added three mutations for the new id-stability fixes: unsorted lineage, unsorted evidence, and un-normalised `-0.0`.
+- **Model / dataset / seed:** none. **Hardware:** macOS (Darwin 24.5), CPU, Python 3.14.3.
+- **Result:** failing tests per mutation:
+  - causal-evidence check: 16;
+  - GENERATED rejection: 2;
+  - assessment recomputation: 2;
+  - derivation rules: 2;
+  - population matching: 2;
+  - policy protocol requirement: 2;
+  - id integrity: 3;
+  - lineage sorting: 1;
+  - evidence sorting: 1;
+  - `-0.0` normalisation: 1.
+
+  The first `-0.0` guard test **failed to catch its mutation**: it compared values with `==`, which `-0.0` passes. It was rewritten to compare record ids.
+- **Conclusion:** every scientific invariant now has at least two independent catching tests. The three id-stability normalisations have one each, which is acceptable for mechanical canonicalisation.
+- **Next action:** final M1.1 checkpoint, then M1.2.
+

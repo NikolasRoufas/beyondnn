@@ -369,7 +369,7 @@ Later-phase, algorithm-specific records (intervention, causal effect, attributio
 ## ADR-016: Content-derived record identity
 
 - **Date:** 2026-09-25
-- **Status:** Proposed. Made during M1.1 implementation; awaiting review.
+- **Status:** Accepted (review of 2026-09-25). Proposed during M1.1; the review added the identity/equivalence note below.
 
 **Decision:** `record.id = f"{kind}:{sha256(canonical_json({kind, record_version, data}))[:32]}"`.
 - `data` is every init field, encoded.
@@ -395,16 +395,31 @@ Later-phase, algorithm-specific records (intervention, causal effect, attributio
 - `record_version` is part of identity, so migrations change ids, and containers must remap references when migrating (M1.7).
 - Tensor bytes do not contribute unless `TensorRef.content_digest` is set.
 
+**Record identity is NOT semantic equivalence** (added at acceptance).
+- `record.id` identifies a specific artifact: exactly this content, under this provenance, with this wording.
+- Two formally equivalent claims can have different ids, because their statements, provenance, or other non-semantic metadata differ.
+- Later phases must **never** use `record.id` to decide whether two claims mean the same thing. Semantic equivalence must be defined over the formal claim structure: subject, relation, target, estimand/scope, and expectation.
+- No semantic-equivalence mechanism is built now.
+
+Revision note (2026-09-25, during review, before acceptance):
+- `derived_from` and `ClaimTestResult.evidence` are also sorted at construction, so parent and evidence order cannot change ids.
+- `-0.0` is normalised to `0.0` in float fields and JSON data, so records that compare equal have equal ids.
+
 ---
 
-## ADR-017: Status bound to record kind; explicit derivation rules
+## ADR-017: Status not caller-supplied; intrinsic to kind where semantics guarantee it; explicit derivation rules
 
 - **Date:** 2026-09-25
-- **Status:** Proposed. Made during M1.1 implementation; awaiting review.
+- **Status:** Accepted with corrected measurement/intervention semantics (review of 2026-09-25). See the revision note.
 
 **Decision:**
 - `EvidenceStatus` is a plain, unordered `Enum`.
-- A record's status is a property of its kind (`STATUS`), or a pure function of its content for kinds that override `status`. It is never a constructor argument, and it cannot be reassigned.
+- Evidence status is never supplied by callers: it is never a constructor argument, and it cannot be reassigned.
+- **Status may be intrinsic to a record kind when the semantics guarantee it**: `InputRecord` and `OutputRecord` are OBSERVED, and `ActivationRecord` is MEASURED.
+- **Status is not universally determined by kind.** Future kinds, such as causal effects, may derive status from their content (estimand, estimation method) through a pure `status` property. There is no rule of the form "one record kind = exactly one status forever".
+- **Measured state under an intervention is not an intervention effect:**
+  - Model state directly observed during an intervened execution is **MEASURED**. The intervention (execution mode, intervention id, …) is recorded in provenance / execution context.
+  - **INTERVENTIONAL** is reserved for evidence that represents an intervention-derived **effect**: a comparison of intervened against baseline behaviour (e.g. baseline metric 0.91, intervened 0.34, effect −0.57).
 - `ALLOWED_PARENT_STATUSES` states which parent statuses each evidence status may be derived from. Status-less records (claims, specs, results, assessments, limitations) may derive from anything, and evidence records may not derive from status-less records.
 
 **Reason:**
@@ -416,16 +431,20 @@ Later-phase, algorithm-specific records (intervention, causal effect, attributio
 - An `IntEnum` hierarchy: rejected as scientifically wrong.
 
 **Consequences:**
-- `derived_from` means "values computed from". Selection context goes in provenance parameters.
-- A measurement taken during an intervened pass is not MEASURED. Its status (likely INTERVENTIONAL) will be defined with the Phase 2 records.
+- `derived_from` means "values computed from". Selection context goes in provenance / experimental design. For example, an attribution used to choose which site to ablate does not make the resulting activation derived from the attribution. A later claim test result may still reference that attribution when it is scientifically relevant; that machinery is not built yet.
 - `EvidenceRef` refuses GENERATED and status-less records, so generated text cannot be cited as evidence anywhere.
+- M1.2 provenance must be able to express execution context (e.g. `execution_mode`, `intervention_id`), because activations measured under intervention are distinguished only there.
+
+Revision note (2026-09-25, review, before acceptance):
+- Removed the proposed rule *"A measurement taken during an intervened pass is not MEASURED. Its status (likely INTERVENTIONAL) will be defined with the Phase 2 records."*
+- Replaced "status is a property of its kind" with the intrinsic-where-guaranteed wording above.
 
 ---
 
 ## ADR-018: Explicit assessment policies; causal relations need named protocols
 
 - **Date:** 2026-09-25
-- **Status:** Proposed. Made during M1.1 implementation; awaiting review.
+- **Status:** Accepted (review of 2026-09-25).
 
 **Decision:**
 - An `Assessment` is always computed under an explicit, versioned `AssessmentPolicy`, which is embedded in the assessment and so part of its identity.
@@ -445,3 +464,5 @@ Later-phase, algorithm-specific records (intervention, causal effect, attributio
 **Consequences:**
 - Until Phase 2 adds a protocol registry that declares which relations each protocol justifies, policies are trusted as written. This is a documented gap.
 - Non-causal relations can be assessed under a policy with no requirements.
+- **No universal numeric thresholds.** Policies and specs may declare thresholds as their own criteria, but BeyondNN does not present hand-picked defaults as scientifically validated. Any future default policy must be versioned, documented, and tested on controlled ground-truth models before researchers are encouraged to rely on it (added at acceptance).
+- The v0 verdict rules are kept: support plus contradiction gives MIXED, and a missing required protocol gives INCONCLUSIVE.

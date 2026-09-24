@@ -52,11 +52,14 @@ class OutputRecord(BaseRecord):
 @record_kind("activation")
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ActivationRecord(BaseRecord):
-    """A value read at a site during an unmodified forward pass. Status: MEASURED.
+    """Model state directly observed at a site. Status: MEASURED.
 
-    ``call_index`` is the n-th call of the module within one pass (shared modules);
-    ``pass_index`` is the n-th top-level forward pass within one recording.
-    A measurement establishes the value only, not its meaning or importance.
+    The status is MEASURED whether the execution was unmodified or intervened;
+    the execution context (e.g. which intervention was active) is recorded in
+    provenance, not in the status (ADR-017). ``call_index`` is the n-th call of the
+    module within one pass (shared modules); ``pass_index`` is the n-th top-level
+    forward pass within one recording. A measurement establishes the value only,
+    not its meaning, importance, or causal role.
     """
 
     STATUS: ClassVar[EvidenceStatus | None] = EvidenceStatus.MEASURED

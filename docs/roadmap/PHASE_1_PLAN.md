@@ -38,7 +38,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Torch CPU wheels for 3.14 must be available on the pinned index.
 - **Scope:** about 150 lines of config. Done except for the first CI run.
 
-## M1.1: Schema types and invariants: **implemented, awaiting review**
+## M1.1: Schema types and invariants: **implemented and reviewed (2026-09-25); final checkpoint pending**
 
 - **Goal (revised per ADR-014):** the smallest rigorous schema foundation:
   - the record mechanism (identity, status rules, provenance reference, lineage, registry);
@@ -93,6 +93,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - versions are populated;
   - timestamps are UTC ISO-8601.
 - **Exit criteria:** all of the above pass, and fingerprinting a 1M-parameter model takes under about 1 s on CPU. That number is recorded, not gated.
+- **Constraint from M1.1 (ADR-017):** provenance must be able to express execution context, e.g. `execution_mode` (clean / intervention) and `intervention_id`. An activation measured under intervention is still MEASURED; only its provenance says an intervention was active.
 - **Constraint from M1.1:** record ids are content-derived and include `provenance_id`. Provenance ids must therefore also be deterministic: derived from content, excluding the timestamp. Otherwise record ids change on every run.
 - **Known risk:** full-byte hashing does not scale to billions of parameters. Mitigation (not built now): a `fingerprint="full" | "shapes" | "sampled"` option, with the choice recorded in ModelIdentity.
 - **Scope:** about 200 LOC, about 150 LOC tests.
@@ -187,6 +188,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - batchnorm in train mode yields the limitation;
   - in-place mutation is flagged;
   - cross-record invariants enforced by `TraceResult.add`.
+- **Review item from M1.1:** re-evaluate the five typed reference types (`RecordRef`, `EvidenceRef`, `ClaimRef`, `SpecRef`, `ResultRef`) once real traces exercise them. Keep them unless there are substantial API or maintenance problems.
 - **Exit criteria:** all pass. `recording()` over two forward passes yields distinct `pass_index` values. No tensor is retained under `summary` (weakref).
 - **Known risk:**
   - Defining "top-level forward pass" inside `recording()`: counting root-module calls fails if the user calls a submodule directly. The rule is documented as "a pass = one call of the root module's forward"; submodule-only calls get `pass_index=-1` plus a limitation.
@@ -208,6 +210,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - `schema_version` major mismatch raises;
   - JSON output is deterministic (sorted keys) for identical traces, apart from `trace_id` and timestamps.
 - **Exit criteria:** every kind in the registry has a round-trip test, enforced by a test that iterates the registry.
+- **Required by M1.1 (ADR-014/016):** schema migration may change record ids, so migration must remap every reference (`derived_from`, evidence, claim/spec/result refs, limitation `applies_to`) explicitly. Required test: migrate a record that other records reference, and verify that all references point at the new id and that `verify_ref` passes.
 - **Known risk:** determinism vs timestamps and uuids. A `normalize_for_diff()` helper that masks volatile fields is used in tests and documented for users.
 - **Scope:** about 350 LOC, about 350 LOC tests.
 

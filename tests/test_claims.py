@@ -403,3 +403,32 @@ def test_verify_ref_detects_mismatched_references(mk: SimpleNamespace) -> None:
     verify_ref(EvidenceRef.to(rec), rec)
     with pytest.raises(TypeError):
         verify_ref(rec.site, rec)
+
+
+def test_policy_must_cover_the_specific_causal_relation(mk: SimpleNamespace) -> None:
+    # A policy covering NECESSARY_FOR says nothing about SUFFICIENT_FOR.
+    nec_only = AssessmentPolicy(
+        name="nec_only",
+        version=1,
+        requirements=(PolicyRequirement(relation=NEC, protocols=("ablation_necessity",)),),
+    )
+    Assessment.derive(mk.claim(), [], nec_only)
+    with pytest.raises(EvidenceRuleError, match="names no protocol"):
+        Assessment.derive(mk.claim(relation=Relation.SUFFICIENT_FOR), [], nec_only)
+
+
+def test_assessment_payload_without_policy_requirements_is_rejected(mk: SimpleNamespace) -> None:
+    from beyondnn.schema import DecodeError, from_dict, to_dict
+
+    env = to_dict(Assessment.derive(mk.claim(), [], POLICY))
+    env["data"]["policy"]["requirements"] = []
+    with pytest.raises(DecodeError) as info:
+        from_dict(env)
+    assert isinstance(info.value.__cause__, EvidenceRuleError)
+
+
+def test_evidence_order_does_not_change_result_identity(mk: SimpleNamespace) -> None:
+    measured = EvidenceRef.to(mk.activation())
+    a = _result(mk, Outcome.SUPPORTS, evidence=(measured, mk.causal_ref()))
+    b = _result(mk, Outcome.SUPPORTS, evidence=(mk.causal_ref(), measured))
+    assert a.id == b.id

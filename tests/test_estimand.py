@@ -177,3 +177,21 @@ def test_non_causal_claims_do_not_check_estimands(mk: SimpleNamespace) -> None:
         provenance_id=mk.PROV,
     )
     assert result.outcome is Outcome.SUPPORTS
+
+
+def test_population_mismatch_is_rejected_when_decoding(mk: SimpleNamespace) -> None:
+    from beyondnn.schema import DecodeError, from_dict, to_dict
+
+    pop_ref = mk.causal_ref(estimand=POP, status=EvidenceStatus.ESTIMATED_CAUSAL)
+    env = to_dict(_decide(mk, POP, pop_ref))
+    env["data"]["evidence"][0]["estimand"]["population"] = "some_other_distribution"
+    with pytest.raises(DecodeError) as info:
+        from_dict(env)
+    assert isinstance(info.value.__cause__, EvidenceRuleError)
+
+
+def test_population_claim_ignores_estimate_sample_size(mk: SimpleNamespace) -> None:
+    # Boundary: n on a population estimate describes the estimate, not the estimand.
+    estimate = Estimand.population_of("mnist_test_distribution", "mean", n=512, sample_id="s")
+    ref = mk.causal_ref(estimand=estimate, status=EvidenceStatus.ESTIMATED_CAUSAL)
+    assert _decide(mk, POP, ref).outcome is Outcome.SUPPORTS

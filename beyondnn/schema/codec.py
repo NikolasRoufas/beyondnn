@@ -24,10 +24,9 @@ import json
 import re
 from typing import Any
 
-from . import base
 from ._canonical import canonical_json
 from ._types import decode_fields, encode_fields
-from .base import BaseRecord
+from .base import BaseRecord, migration_for, registered_kinds
 from .errors import (
     DecodeError,
     IntegrityError,
@@ -92,7 +91,7 @@ def from_dict(payload: Any) -> BaseRecord:
     _check_schema_version(payload["schema_version"])
 
     kind = payload["kind"]
-    cls = base.registered_kinds().get(kind) if isinstance(kind, str) else None
+    cls = registered_kinds().get(kind) if isinstance(kind, str) else None
     if cls is None:
         raise UnknownRecordKindError(
             f"unknown record kind {kind!r}; it may come from a newer BeyondNN version"
@@ -107,7 +106,7 @@ def from_dict(payload: Any) -> BaseRecord:
         )
     data = payload["data"]
     while version < cls.RECORD_VERSION:
-        migrate = base._MIGRATIONS.get((kind, version))
+        migrate = migration_for(kind, version)
         if migrate is None:
             raise UnsupportedVersionError(
                 f"no migration registered for {kind} record_version {version}"

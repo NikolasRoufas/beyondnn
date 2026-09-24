@@ -2,7 +2,7 @@
 
 This document has two parts:
 
-- **Part A: Schema 0.1 as implemented.** Status: **Accepted** (the schema mechanism and the claim types, ADR-012 to ADR-015), plus **implementation choices from M1.1 that still await review** (ADR-016 to ADR-018). Code: `beyondnn/schema/`.
+- **Part A: Schema 0.1 as implemented.** Status: **Accepted** (ADR-012 to ADR-018; M1.1 reviewed 2026-09-25). Code: `beyondnn/schema/`.
 - **Part B: Proposals for later schema versions.** The original design sketches, kept verbatim for history. Where Part B differs from Part A, **Part A wins**. Part B record types enter the schema only in later versions, once their semantics are validated (ADR-014).
 
 Relevant decisions: ADR-001 (frozen dataclasses), ADR-006/013 (interventional vs estimated causal; estimand scope), ADR-007 (no global confidence), ADR-009 (semantic states), ADR-012 (claims), ADR-014 (incremental versioning), ADR-015 (a trace is one execution), ADR-016 (identity), ADR-017 (status mechanism), ADR-018 (assessment policies).
@@ -40,6 +40,7 @@ Relevant decisions: ADR-001 (frozen dataclasses), ADR-006/013 (interventional vs
   - An `int` passed for a `float` field is normalised to `float`.
   - Mappings passed for `JsonMap` fields are deep-frozen.
 - **Unsupported annotations** fail when the kind is registered (at import).
+- **The runtime checker is internal** (`_types.py`) and is not public API. It complements mypy rather than duplicating it: mypy protects typed development, and the runtime checker protects decoded files, untyped callers, and corrupted or malicious payloads.
 
 | Kind | Class | Status | Provenance | Fields (besides common) |
 |---|---|---|---|---|
@@ -83,14 +84,19 @@ id = f"{kind}:{sha256(canonical_json({'kind': kind, 'record_version': v, 'data':
   - floats in shortest round-trip form;
   - `1`, `1.0`, `true`, and `"1"` are distinct;
   - non-finite floats are allowed only in typed float fields (as strings), and rejected in free-form JSON.
-- **Order normalisation:** order-insensitive collections (`Subject.units`, `applicable_relations`, `PolicyRequirement.protocols`, `AssessmentPolicy.requirements`, `Assessment.results`, `TraceLimitation.applies_to`) are sorted at construction, so equal content yields equal ids.
+- **Order normalisation:** order-insensitive collections (`derived_from`, `ClaimTestResult.evidence`, `Subject.units`, `applicable_relations`, `PolicyRequirement.protocols`, `AssessmentPolicy.requirements`, `Assessment.results`, `TraceLimitation.applies_to`) are sorted at construction, so equal content yields equal ids. `-0.0` is normalised to `0.0`.
+- **Identity is not semantic equivalence.** An id identifies one artifact, including its wording and provenance. Two formally equivalent claims can have different ids. Semantic equivalence must be decided from the formal structure (subject, relation, target, estimand/scope, expectation), never from `id`. Nothing in 0.1 does so.
 - **Collisions:** 128-bit truncation makes accidental collisions negligible. Containers must still reject two different records with one id (M1.6). Python's `hash()` is never used for identity. Golden ids in `tests/test_record_identity.py` pin the algorithm, and a cross-process test runs under different `PYTHONHASHSEED` values.
-- **Migrations change ids.** `record_version` is part of identity, so a migrated record gets a new id. Containers must remap references when migrating (M1.7).
+- **Schema migration may change record ids.** `record_version` is part of identity, so a migrated record gets a new id. M1.7 must remap references explicitly during migration, and must test it.
 
 ### A.4 Epistemic status (ADR-017)
 
 - `EvidenceStatus` is a plain `Enum`: **not ordered** (`<` raises `TypeError`) and not a `str`.
-- Status is a property of the *kind* (`STATUS` class variable), or a function of content for kinds that override the `status` property (e.g. a future effect record whose status follows its estimand). It is **never a constructor argument** and cannot be reassigned. `dataclasses.replace(rec, status=…)` raises `TypeError`.
+- Status is **never supplied by callers**: it is never a constructor argument, and it cannot be reassigned. `dataclasses.replace(rec, status=…)` raises `TypeError`.
+- Status is **intrinsic to a kind where the semantics guarantee it** (`STATUS`: input/output are OBSERVED, activation is MEASURED). It is **not universally fixed per kind**: kinds may derive status from content through the `status` property (e.g. a future effect record whose status follows its estimand; see the test-only `FakeEffect`).
+- **Measured state under intervention ≠ intervention effect.**
+  - Model state observed during an intervened execution is **MEASURED**, and the intervention is recorded in provenance / execution context (M1.2).
+  - **INTERVENTIONAL** is reserved for an intervention-derived *effect*: intervened compared against baseline (e.g. 0.91 → 0.34, effect −0.57).
 - **Derivation rules.** `derived_from` means "values computed from". Evidence records may only derive from evidence records whose status is allowed below. Context that *selected* what to compute (e.g. an attribution used to choose which unit to ablate) goes in provenance parameters, not lineage.
 
 | Child status | Allowed parent statuses |
@@ -114,6 +120,7 @@ Consequently, nothing except GENERATED can derive from GENERATED.
   - `INTERVENTIONAL` with a `POPULATION` estimand raises.
   - Non-causal evidence carries no estimand in 0.1.
 - `EvidenceRef.to(record)` builds a ref from a real record, and refuses status-less records (claims, specs, …).
+- **TODO (re-evaluate after M1.6):** keep the five typed references for now, because they enforce invariants locally. Reconsider them only if real traces show substantial API or maintenance problems.
 - **Refs carry the attributes needed for local checks.** This applies to `RecordRef`, `EvidenceRef`, `ClaimRef`, `SpecRef`, and `ResultRef`. Containers verify them against the referenced records with `verify_ref(ref, record)`: `verify_ref(ref, record)` holds exactly when `type(ref).to(record) == ref`.
 
 ### A.6 Estimand (ADR-013)

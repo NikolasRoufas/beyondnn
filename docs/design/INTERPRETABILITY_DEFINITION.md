@@ -10,13 +10,15 @@ This makes "how interpretable is this model?" meaningless on its own. "Which cla
 
 **Observation (OBSERVED).** A value that crossed the model boundary unchanged: the input, the output, the logits. It is exact for this run.
 
-**Measurement (MEASURED).** A value read from inside the model during an *unmodified* forward pass, such as a module output captured by a hook. It is exact for this run, at this module boundary. It says nothing about what the value *means* or whether it *matters*.
+**Measurement (MEASURED).** Directly observed internal model state, such as a module output captured by a hook. It is exact for this run, at this module boundary. It says nothing about what the value *means* or whether it *matters*.
+- It stays MEASURED when read during an **intervened** execution. The intervention is execution context and is recorded in provenance (ADR-017).
+- Measured state under intervention is not an intervention effect: see INTERVENTIONAL below.
 
 **Attribution (ATTRIBUTED).** A score that assigns output sensitivity to inputs or internal units, computed by a specific method (gradient, IG, …) relative to a specific baseline. It is method-relative, not a fact about the model. Different methods legitimately disagree.
 
 **Intervention.** A specified modification of an internal or input value during a forward pass. It always comes with: target (module path + selector), operation (zero / mean / constant / patch / scale), reference data (for mean or patch), and the inputs it was applied to.
 
-**Interventional effect (INTERVENTIONAL).** The measured change in a metric caused by an intervention, on specified inputs. *For that model, those inputs, that intervention, and that metric,* it is an exact causal quantity (a do-operation on a deterministic program). What it does **not** establish:
+**Interventional effect (INTERVENTIONAL).** The measured change in a metric caused by an intervention, on specified inputs: intervened behaviour compared against a baseline (e.g. baseline 0.91, intervened 0.34, effect −0.57). A raw tensor read while an intervention is active is MEASURED, not INTERVENTIONAL. An exact summary over exactly the measured inputs (finite sample) stays INTERVENTIONAL; a claim about a population is ESTIMATED_CAUSAL (ADR-013). *For that model, those inputs, that intervention, and that metric,* it is an exact causal quantity (a do-operation on a deterministic program). What it does **not** establish:
 - that the component "represents" anything;
 - that the effect generalises to other inputs;
 - that the intervention was in-distribution (zero ablation often is not);

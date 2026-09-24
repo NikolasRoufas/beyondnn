@@ -40,7 +40,6 @@ PROV = "prov:run-1"
 # A syntactically valid id of a kind that does not exist in schema 0.1. Evidence
 # references are container-verified; locally only their shape is checked.
 FAKE_EFFECT_ID = "causal_effect:" + "a" * 32
-OTHER_EFFECT_ID = "causal_effect:" + "b" * 32
 
 
 def _tref(shape: tuple[int, ...] = (2, 3), *, stats: bool = True) -> TensorRef:
@@ -134,7 +133,6 @@ def mk() -> SimpleNamespace:
         causal_ref=_causal_ref,
         PROV=PROV,
         FAKE_EFFECT_ID=FAKE_EFFECT_ID,
-        OTHER_EFFECT_ID=OTHER_EFFECT_ID,
     )
 
 

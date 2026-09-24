@@ -36,6 +36,7 @@ __all__ = [
     "EvidenceRef",
     "RecordRef",
     "is_record_id",
+    "migration_for",
     "record_kind",
     "register_migration",
     "registered_kinds",
@@ -184,6 +185,10 @@ class BaseRecord(Checked):
         name = type(self).__name__
         ids = [ref.record_id for ref in self.derived_from]
         require(len(set(ids)) == len(ids), f"{name}.derived_from contains duplicate ids")
+        # Lineage is a set: sort so parent order cannot change the id.
+        object.__setattr__(
+            self, "derived_from", tuple(sorted(self.derived_from, key=lambda r: r.record_id))
+        )
         check_derivation(self.status, self.derived_from)
         if self.provenance_id is None:
             if self.status is not None or type(self).REQUIRES_PROVENANCE:
@@ -248,6 +253,13 @@ def register_migration(
         return fn
 
     return decorate
+
+
+def migration_for(
+    kind: str, from_version: int
+) -> Callable[[dict[str, Any]], dict[str, Any]] | None:
+    """The registered migration of ``kind`` from ``from_version``, if any."""
+    return _MIGRATIONS.get((kind, from_version))
 
 
 def verify_ref(ref: Value, record: BaseRecord) -> None:

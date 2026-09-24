@@ -15,7 +15,13 @@ All notable changes to this project are documented here. The format follows
   - `Claim`, `ClaimTestSpec`, `ClaimTestResult`, and derived `Assessment` under explicit policies;
   - estimand scopes (instance / finite sample / population);
   - a strict, versioned JSON envelope.
-- ADR-016 to ADR-018 (proposed): record identity, status mechanism, assessment policies.
+- ADR-016 to ADR-018, accepted after review: record identity (identity ≠ semantic equivalence), status mechanism (measured state under intervention stays MEASURED; INTERVENTIONAL is reserved for effects), assessment policies (no universal thresholds).
+
+### Changed (M1.1 review fixes)
+- `ActivationRecord` / `MEASURED` semantics: directly observed state, including during intervened executions.
+- `derived_from` and `ClaimTestResult.evidence` are sorted at construction, and `-0.0` is normalised, so ids no longer depend on order or on the sign of zero.
+- The codec no longer imports the schema package from inside itself (the apparent import cycle is removed). Dead code is removed.
+- Second, independent guard tests added for derivation rules, population matching, policy coverage, and id integrity.
 - Design documentation: ecosystem audit, differentiation, interpretability definition, architecture proposal,
   trace schema proposal, roadmap, Phase 1 plan, research questions, experiment log.
 - Architecture decision records ADR-001 to ADR-015 (ADR-012 claims, ADR-013 estimand scope, ADR-014 incremental schema versioning, ADR-015 single-execution traces).

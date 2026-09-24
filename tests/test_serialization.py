@@ -292,3 +292,17 @@ def test_site_defaults_are_serialised_explicitly(mk: SimpleNamespace) -> None:
     env = to_dict(mk.activation())
     assert env["data"]["site"] == {"module": "layers.0", "io": "output", "output_path": ""}
     assert Site(module="layers.0") == from_dict(env).site  # type: ignore[attr-defined]
+
+
+def test_replaced_id_with_unchanged_content_is_detected(mk: SimpleNamespace) -> None:
+    env = _env(mk)
+    env["id"] = mk.activation("layers.9").id  # a valid id, but of different content
+    with pytest.raises(IntegrityError, match="does not match content"):
+        from_dict(env)
+
+
+def test_id_with_wrong_kind_prefix_is_detected(mk: SimpleNamespace) -> None:
+    env = _env(mk)
+    env["id"] = "input:" + env["id"].split(":", 1)[1]
+    with pytest.raises(IntegrityError):
+        from_dict(env)
