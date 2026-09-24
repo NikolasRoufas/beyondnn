@@ -1,6 +1,6 @@
 # Architecture Proposal
 
-Status: **design, pending implementation.** Resolved decisions are recorded in
+Status: **design; implementation in progress.** Milestone M1.1 (schema) is implemented, see `TRACE_SCHEMA_PROPOSAL.md` Part A. Resolved decisions are recorded in
 [`../decisions/ARCHITECTURE_DECISIONS.md`](../decisions/ARCHITECTURE_DECISIONS.md) and referenced here as ADR-NNN.
 Anything not backed by an ADR is still a proposal. A `TraceResult` is single-execution evidence; multi-input work belongs in a Phase 2 `Study` (ADR-015).
 
@@ -36,12 +36,19 @@ Existing tools *produce* activations, attributions, interventions and features. 
  Presentation     Why / render() / summary(): views over the above, never a source of truth
 ```
 
-The names are conceptual. The schema names are given in `TRACE_SCHEMA_PROPOSAL.md`.
+The names are conceptual. In schema 0.1 (implemented in M1.1):
+- **Measurement** is the evidence records (`InputRecord`, `OutputRecord`, `ActivationRecord`; later kinds in later schema versions);
+- **Claim** is `Claim`;
+- **Test** is `ClaimTestSpec`;
+- **Evidence** is `ClaimTestResult`, citing `EvidenceRef`s;
+- **Assessment** is `Assessment`, under an explicit `AssessmentPolicy` (ADR-018).
+
+Presentation is not implemented yet.
 
 **Separation rules:**
 1. **Measurements know nothing about claims.** A trace is valid with zero claims.
 2. **A claim has no status field.** Status is a function of (claim, results, policy), computed by an Assessment. Storing status on the claim would allow stale or unsupported status. (This is a deliberate deviation from the `Claim(status=…)` sketch.)
-3. **A test declares, before running, which relations it can bear on and what criteria decide its outcome.** `spec_hash` is computed at spec construction. Results reference it, so changing the criteria after seeing results produces a different, detectable hash.
+3. **A test declares, before running, which relations it can bear on and what criteria decide its outcome.** The spec's content-derived id (ADR-016) covers its criteria (`criteria_digest` fingerprints them alone). Results reference the spec id, so changing the criteria after seeing results produces a different spec that the results do not refer to.
 4. **An assessment is reproducible:** `assess(claim, results, policy)` is pure. A saved assessment can be recomputed and compared on load.
 5. **Presentation may only cite.** Rendered and generated text carries `supporting_records`, and nothing may cite generated text as support.
 
@@ -49,9 +56,9 @@ The names are conceptual. The schema names are given in `TRACE_SCHEMA_PROPOSAL.m
 
 | Mistake | Mechanism | Where enforced |
 |---|---|---|
-| Correlation presented as causation | Only `INTERVENTIONAL` / `ESTIMATED_CAUSAL` measurements can make a causal-relation test (`NECESSARY_FOR`, `SUFFICIENT_FOR`, `INCREASES`, `DECREASES`) return `SUPPORTS`. Other runners return `NOT_APPLICABLE` for those relations. | test registry (Phase 2) plus `ClaimTestResult` invariant (Phase 1 schema) |
+| Correlation presented as causation | A `SUPPORTS`/`CONTRADICTS` result on a causal relation must cite `INTERVENTIONAL`/`ESTIMATED_CAUSAL` evidence about the claim's estimand. Finite-sample evidence cannot decide a population claim (ADR-013). A causal claim cannot be assessed without a policy naming protocols (ADR-018). | `ClaimTestResult` and `derive_verdict` (implemented, M1.1); protocol registry (Phase 2) |
 | Probe success presented as model use | Detection/probe tests apply only to `ENCODES`. An `ENCODES` claim never implies `NECESSARY_FOR`. `VALIDATED_CONCEPT` requires both detection and causal tests (ADR-009). | registry, `Concept` invariant |
-| Generated labels presented as validated concepts | Labels enter as `PROPOSED_CONCEPT` with a `GENERATED` source. Only `validate()` can produce `VALIDATED_CONCEPT`. | `Concept.__post_init__` |
+| Generated labels presented as validated concepts | Labels enter as `PROPOSED_CONCEPT` with a `GENERATED` source. Only `validate()` can produce `VALIDATED_CONCEPT`. GENERATED records can never be cited as evidence, and nothing but GENERATED derives from them. | `EvidenceRef` and derivation rules (implemented, M1.1); `Concept` (Phase 6) |
 | Saliency presented as faithfulness | Attribution supports only `ATTRIBUTED_TO`. Faithfulness is a *test result* (comprehensiveness, sufficiency, random baseline) about a claim, never a property of a map. | registry; the renderer uses status-specific verbs |
 
 The renderer also uses **status-bound vocabulary**:

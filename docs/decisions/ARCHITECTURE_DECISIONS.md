@@ -363,3 +363,85 @@ Later-phase, algorithm-specific records (intervention, causal effect, attributio
 - `TraceResult.add()` (M1.6) validates only records belonging to that execution. It does not own claim/test/assessment bookkeeping for multi-input claims.
 - References between records carry the attributes needed for *local* invariant checks, such as an evidence reference carrying the referenced record's status and estimand. Containers (`TraceResult` now, `Study` later) verify that references match the records they point to.
 - `Study` may move earlier if implementation evidence shows it is needed.
+
+---
+
+## ADR-016: Content-derived record identity
+
+- **Date:** 2026-09-25
+- **Status:** Proposed. Made during M1.1 implementation; awaiting review.
+
+**Decision:** `record.id = f"{kind}:{sha256(canonical_json({kind, record_version, data}))[:32]}"`.
+- `data` is every init field, encoded.
+- Canonical JSON uses sorted keys, compact separators, UTF-8, and shortest round-trip floats.
+- Order-insensitive collections are sorted at construction.
+- The id is computed at construction, excluded from equality, and verified on decode.
+
+**Reason:**
+- Deterministic across processes and machines. Python's randomised `hash()` is never used.
+- Equal content gives an equal id, which makes deduplication and diffs trivial.
+- The id doubles as an integrity check for payloads.
+- References (`derived_from`, evidence) cannot silently point at modified content.
+
+**Alternatives considered:**
+- *Sequential per-trace ids (`act:0007`)*: the original proposal. Not stable across containers, so they conflict with container-neutral claims (ADR-015).
+- *uuid4*: not deterministic.
+- *Full 64-hex digests*: longer ids for negligible gain at this scale.
+- *Excluding `provenance_id` or `statement` from identity*: rejected for uniformity. One rule for all kinds.
+
+**Consequences:**
+- The same content under a different provenance is a different record, so provenance ids must be deterministic (constraint on M1.2).
+- Rewording a claim's statement yields a new claim, and results attached to the old one stay attached to the old one.
+- `record_version` is part of identity, so migrations change ids, and containers must remap references when migrating (M1.7).
+- Tensor bytes do not contribute unless `TensorRef.content_digest` is set.
+
+---
+
+## ADR-017: Status bound to record kind; explicit derivation rules
+
+- **Date:** 2026-09-25
+- **Status:** Proposed. Made during M1.1 implementation; awaiting review.
+
+**Decision:**
+- `EvidenceStatus` is a plain, unordered `Enum`.
+- A record's status is a property of its kind (`STATUS`), or a pure function of its content for kinds that override `status`. It is never a constructor argument, and it cannot be reassigned.
+- `ALLOWED_PARENT_STATUSES` states which parent statuses each evidence status may be derived from. Status-less records (claims, specs, results, assessments, limitations) may derive from anything, and evidence records may not derive from status-less records.
+
+**Reason:**
+- An ordering would imply a hierarchy that does not exist (ATTRIBUTED is not "more" or "less" than MEASURED).
+- Binding status to the kind makes relabelling impossible without defining a new kind, and that is visible in review.
+
+**Alternatives considered:**
+- A `status` field validated against an allowed set per kind: still allows choosing a status at construction.
+- An `IntEnum` hierarchy: rejected as scientifically wrong.
+
+**Consequences:**
+- `derived_from` means "values computed from". Selection context goes in provenance parameters.
+- A measurement taken during an intervened pass is not MEASURED. Its status (likely INTERVENTIONAL) will be defined with the Phase 2 records.
+- `EvidenceRef` refuses GENERATED and status-less records, so generated text cannot be cited as evidence anywhere.
+
+---
+
+## ADR-018: Explicit assessment policies; causal relations need named protocols
+
+- **Date:** 2026-09-25
+- **Status:** Proposed. Made during M1.1 implementation; awaiting review.
+
+**Decision:**
+- An `Assessment` is always computed under an explicit, versioned `AssessmentPolicy`, which is embedded in the assessment and so part of its identity.
+- A policy lists, per relation, the protocols that must each have a `SUPPORTS` result.
+- Assessing a causal relation under a policy that names no protocol for it raises.
+- The verdict follows a fixed outcome table (see the schema §A.7), and a stored verdict must equal the recomputed one.
+- BeyondNN ships no policy and no thresholds in schema 0.1.
+
+**Reason:**
+- This makes it impossible to reach `SUPPORTED` for `NECESSARY_FOR`/`SUFFICIENT_FOR` (or any causal relation) without an explicitly recorded statement of which protocols justify that wording.
+- It avoids inventing thresholds before the protocols exist.
+
+**Alternatives considered:**
+- *A built-in default policy*: would encode arbitrary requirements before Phase 2 evidence exists.
+- *Verdict from outcomes only, with no policy*: a single supporting test could make "necessary" SUPPORTED.
+
+**Consequences:**
+- Until Phase 2 adds a protocol registry that declares which relations each protocol justifies, policies are trusted as written. This is a documented gap.
+- Non-causal relations can be assessed under a policy with no requirements.

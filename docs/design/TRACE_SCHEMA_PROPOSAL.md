@@ -1,26 +1,198 @@
-# Trace Schema Proposal (schema_version 0.1)
+# Trace Schema (schema_version 0.1)
 
-Status: **design, pending implementation.**
+This document has two parts:
 
-Per **ADR-014**, schema 0.1 (Phase 1) stabilises only:
-- the record mechanism (identity, status, provenance reference, lineage, registry);
-- the serialisation envelope;
-- `InputRecord`, `OutputRecord`, `ActivationRecord`, `TensorRef`, `TraceLimitation`;
-- the claim types (ADR-012).
+- **Part A: Schema 0.1 as implemented.** Status: **Accepted** (the schema mechanism and the claim types, ADR-012 to ADR-015), plus **implementation choices from M1.1 that still await review** (ADR-016 to ADR-018). Code: `beyondnn/schema/`.
+- **Part B: Proposals for later schema versions.** The original design sketches, kept verbatim for history. Where Part B differs from Part A, **Part A wins**. Part B record types enter the schema only in later versions, once their semantics are validated (ADR-014).
 
-Records for later phases that appear below are **proposals**. They arrive in later schema versions, with their own `record_version`, once their semantics are validated.
+Relevant decisions: ADR-001 (frozen dataclasses), ADR-006/013 (interventional vs estimated causal; estimand scope), ADR-007 (no global confidence), ADR-009 (semantic states), ADR-012 (claims), ADR-014 (incremental versioning), ADR-015 (a trace is one execution), ADR-016 (identity), ADR-017 (status mechanism), ADR-018 (assessment policies).
 
-Relevant decisions:
-- ADR-001: frozen dataclasses;
-- ADR-006: `INTERVENTIONAL` vs `ESTIMATED_CAUSAL`;
-- ADR-007: no global confidence;
-- ADR-009: semantic states;
-- ADR-012: claims (accepted);
-- ADR-013: estimand scope;
-- ADR-014: incremental schema versioning;
-- ADR-015: a trace is a single execution.
+---
 
-## Design rules
+## Part A: Schema 0.1 as implemented (M1.1)
+
+### A.1 Modules
+
+| Module | Contents |
+|---|---|
+| `status.py` | `EvidenceStatus`, `EstimandScope`, `Relation`, `Outcome`, `Verdict`, `CAUSAL_RELATIONS`, `CAUSAL_EVIDENCE_STATUSES`, `ALLOWED_PARENT_STATUSES`, `check_derivation` |
+| `values.py` | Value types: `TensorStats`, `TensorRef`, `NamedTensor`, `Site`, `SiteIO`, `TargetSpec`, `Estimand`, `Subject`, `ClaimSource`, `ClaimSourceKind` |
+| `base.py` | `BaseRecord`, `RecordRef`, `EvidenceRef`, the kind registry (`record_kind`), migrations, `verify_ref`, id computation |
+| `records.py` | `InputRecord`, `OutputRecord`, `ActivationRecord` |
+| `limitations.py` | `Severity`, `LimitationDef`, `LIMITATIONS`, `TraceLimitation` |
+| `claims.py` | `Claim`, `ClaimTestSpec`, `ClaimTestResult`, `Assessment`, `AssessmentPolicy`, `PolicyRequirement`, the refs `ClaimRef`/`SpecRef`/`ResultRef`, `derive_verdict` |
+| `codec.py` | `SCHEMA_VERSION`, `to_dict`, `from_dict`, `to_json`, `from_json` |
+| `_types.py`, `_canonical.py` | Runtime type checking and field codec; canonical JSON, digests, `JsonMap` (internal) |
+| `errors.py` | The `SchemaError` family |
+
+`import beyondnn.schema` does not import `torch` (tested).
+
+### A.2 Records and values
+
+- **Records.** Every record is `@dataclass(frozen=True, slots=True, kw_only=True)`, a subclass of `BaseRecord`, and registered with `@record_kind(kind, version=n)`. Common fields:
+  - `provenance_id: str | None`: a reference only. Provenance records and generation are M1.2.
+  - `derived_from: tuple[RecordRef, ...]`: lineage.
+  - `id: str`: computed. Not an init field, and excluded from equality.
+- **Values.** Value types (`Value` subclasses) are frozen, slotted, keyword-only dataclasses without identity of their own.
+- **Construction.** Every field is type-checked at construction against a small annotation vocabulary: `str`, `int`, `float`, `bool`, `Enum`, `X | None`, `tuple[X, ...]`, `JsonMap`, `Value`.
+  - Lists are rejected where tuples are expected.
+  - `bool` is rejected where `int` is expected.
+  - An `int` passed for a `float` field is normalised to `float`.
+  - Mappings passed for `JsonMap` fields are deep-frozen.
+- **Unsupported annotations** fail when the kind is registered (at import).
+
+| Kind | Class | Status | Provenance | Fields (besides common) |
+|---|---|---|---|---|
+| `input` | `InputRecord` | OBSERVED | required | `tensors: tuple[NamedTensor, ...]`, `display: str \| None` |
+| `output` | `OutputRecord` | OBSERVED | required | `tensors` |
+| `activation` | `ActivationRecord` | MEASURED | required | `site: Site`, `value: TensorRef`, `call_index`, `pass_index` |
+| `limitation` | `TraceLimitation` | — | optional | `code`, `detail`, `applies_to: tuple[str, ...]` |
+| `claim` | `Claim` | — | optional | `statement`, `relation`, `subject`, `target`, `estimand`, `source` |
+| `claim_test_spec` | `ClaimTestSpec` | — | optional | `protocol`, `protocol_version`, `applicable_relations`, `criteria`, `params` |
+| `claim_test_result` | `ClaimTestResult` | — | **required** | `claim: ClaimRef`, `spec: SpecRef`, `outcome`, `evidence: tuple[EvidenceRef, ...]`, `statistics`, `error` |
+| `assessment` | `Assessment` | — | optional | `claim`, `policy`, `results: tuple[ResultRef, ...]`, `verdict`, `required_but_missing` |
+
+**`TensorRef`** holds `shape`, `dtype`, `device` (the original device), optional `stats: TensorStats`, optional `storage_key`, and optional `content_digest` (`sha256:<hex>`).
+- It never holds tensor data or a runtime tensor handle. The containing trace resolves `storage_key` (M1.6/M1.7).
+- `stats.numel` must match `shape`.
+- Non-finite stats are allowed, and are encoded as `"NaN"`, `"Infinity"`, or `"-Infinity"`.
+
+**`Site`** holds `module` (a dotted path; `""` is the root), `io` (`INPUT`/`OUTPUT`, default `OUTPUT`), and `output_path`. Time (`call_index`, `pass_index`) lives on the record, not in the site.
+
+**Deferred from 0.1 (ADR-014):**
+- all Phase 2–6 record kinds;
+- `SemanticStatus` and concept records (Phase 6; ADR-009 still governs them);
+- `TargetSpec.defaulted` (arrives with `explain()` in M1.8);
+- `Selector` (replaced for now by `Subject.units`);
+- opaque pass-through of unknown kinds (M1.7).
+
+### A.3 Record identity (ADR-016)
+
+```
+id = f"{kind}:{sha256(canonical_json({'kind': kind, 'record_version': v, 'data': encoded_init_fields}))[:32]}"
+```
+
+- **What contributes to identity:** every init field, including `provenance_id`, `derived_from`, `statement` (for claims), `criteria` and `params` (for specs), and all tensor *metadata* (shape, dtype, device, stats, storage key, content digest).
+- **What does not:**
+  - `id` itself;
+  - `schema_version` (the envelope version);
+  - tensor values, which are never in records. `content_digest` is the opt-in way to bind a record to exact bytes.
+- **Provenance changes:** the same content measured under a different `provenance_id` is a different record. M1.2 must therefore derive provenance ids deterministically, excluding timestamps.
+- **Canonical JSON:**
+  - sorted keys, compact separators, UTF-8;
+  - floats in shortest round-trip form;
+  - `1`, `1.0`, `true`, and `"1"` are distinct;
+  - non-finite floats are allowed only in typed float fields (as strings), and rejected in free-form JSON.
+- **Order normalisation:** order-insensitive collections (`Subject.units`, `applicable_relations`, `PolicyRequirement.protocols`, `AssessmentPolicy.requirements`, `Assessment.results`, `TraceLimitation.applies_to`) are sorted at construction, so equal content yields equal ids.
+- **Collisions:** 128-bit truncation makes accidental collisions negligible. Containers must still reject two different records with one id (M1.6). Python's `hash()` is never used for identity. Golden ids in `tests/test_record_identity.py` pin the algorithm, and a cross-process test runs under different `PYTHONHASHSEED` values.
+- **Migrations change ids.** `record_version` is part of identity, so a migrated record gets a new id. Containers must remap references when migrating (M1.7).
+
+### A.4 Epistemic status (ADR-017)
+
+- `EvidenceStatus` is a plain `Enum`: **not ordered** (`<` raises `TypeError`) and not a `str`.
+- Status is a property of the *kind* (`STATUS` class variable), or a function of content for kinds that override the `status` property (e.g. a future effect record whose status follows its estimand). It is **never a constructor argument** and cannot be reassigned. `dataclasses.replace(rec, status=…)` raises `TypeError`.
+- **Derivation rules.** `derived_from` means "values computed from". Evidence records may only derive from evidence records whose status is allowed below. Context that *selected* what to compute (e.g. an attribution used to choose which unit to ablate) goes in provenance parameters, not lineage.
+
+| Child status | Allowed parent statuses |
+|---|---|
+| OBSERVED | OBSERVED |
+| MEASURED | OBSERVED, MEASURED |
+| ATTRIBUTED | OBSERVED, MEASURED, ATTRIBUTED |
+| INTERVENTIONAL | OBSERVED, MEASURED, INTERVENTIONAL |
+| ESTIMATED_CAUSAL | OBSERVED, MEASURED, ATTRIBUTED, INTERVENTIONAL, ESTIMATED_CAUSAL |
+| VALIDATED_CONCEPT | OBSERVED, MEASURED, INTERVENTIONAL, ESTIMATED_CAUSAL, VALIDATED_CONCEPT |
+| GENERATED | any |
+| *(no status: claims, specs, results, assessments, limitations)* | any, including GENERATED and status-less records |
+
+Consequently, nothing except GENERATED can derive from GENERATED.
+
+### A.5 Evidence references and the generated-evidence rule
+
+- **`EvidenceRef(record_id, kind, status, estimand)`** is the only way to cite evidence. Its rules:
+  - `status == GENERATED` raises `EvidenceRuleError`.
+  - `INTERVENTIONAL`/`ESTIMATED_CAUSAL` must carry an `Estimand`.
+  - `INTERVENTIONAL` with a `POPULATION` estimand raises.
+  - Non-causal evidence carries no estimand in 0.1.
+- `EvidenceRef.to(record)` builds a ref from a real record, and refuses status-less records (claims, specs, …).
+- **Refs carry the attributes needed for local checks.** This applies to `RecordRef`, `EvidenceRef`, `ClaimRef`, `SpecRef`, and `ResultRef`. Containers verify them against the referenced records with `verify_ref(ref, record)`: `verify_ref(ref, record)` holds exactly when `type(ref).to(record) == ref`.
+
+### A.6 Estimand (ADR-013)
+
+| Scope | Required | Forbidden | Meaning |
+|---|---|---|---|
+| `INSTANCE` | `sample_id`, `n == 1` | `aggregation`, `population` | one identified input |
+| `FINITE_SAMPLE` | `sample_id`, `n ≥ 1`, `aggregation` | `population` | exactly those `n` inputs; `INTERVENTIONAL` if exact |
+| `POPULATION` | `population`, `aggregation` | — (`n`, `sample_id` optional) | beyond the measured inputs; always `ESTIMATED_CAUSAL` |
+
+- Scope is never inferred from `n`.
+- `claim_estimand.covers(evidence_estimand)` requires the same scope. For `INSTANCE` and `FINITE_SAMPLE` it also requires the same `(sample_id, n, aggregation)`. For `POPULATION` it requires the same `(population, aggregation)`.
+
+### A.7 Claims, tests, results, assessments (ADR-012, ADR-018)
+
+- **`Claim`** has no status, verdict, or confidence field. Its standing is only ever an `Assessment`.
+- **`ClaimTestSpec`:**
+  - `criteria` is required and non-empty, and its keys may not overlap `params`.
+  - `criteria_digest = "sha256:" + sha256(canonical_json(criteria))`.
+  - The spec id covers protocol, version, relations, criteria, and params. Changing any criterion yields a different spec, and results bind to the spec id.
+  - BeyondNN defines **no thresholds** in 0.1.
+- **`ClaimTestResult`** invariants:
+  1. `ERRORED` if and only if `error` is set.
+  2. A spec whose `applicable_relations` excludes the claim's relation yields only `NOT_APPLICABLE` or `ERRORED`.
+  3. `SUPPORTS`/`CONTRADICTS` must cite ≥ 1 evidence ref.
+  4. For causal relations (`NECESSARY_FOR`, `SUFFICIENT_FOR`, `INCREASES`, `DECREASES`), `SUPPORTS`/`CONTRADICTS` require ≥ 1 `INTERVENTIONAL`/`ESTIMATED_CAUSAL` ref whose estimand the claim's estimand `covers`. Therefore finite-sample evidence cannot decide a population claim, and attribution or measurement cannot decide a causal claim.
+- **`AssessmentPolicy(name, version, requirements)`:** each `PolicyRequirement` names protocols that must each have a `SUPPORTS` result. `derive_verdict` refuses to assess a **causal** relation under a policy that names no protocol for it. BeyondNN ships no policy in 0.1.
+- **`Assessment`:** `derive(claim, results, policy)` checks that every result is about the claim. Direct construction (used by decoding) recomputes the verdict and rejects any stored `verdict`/`required_but_missing` that does not follow. There is no numeric confidence.
+
+| Results (ignoring NOT_APPLICABLE) | Verdict |
+|---|---|
+| none | UNTESTED |
+| SUPPORTS and CONTRADICTS | MIXED |
+| CONTRADICTS only | CONTRADICTED |
+| SUPPORTS, nothing contradicting, all required protocols supported | SUPPORTED |
+| anything else (INCONCLUSIVE, ERRORED, required protocol missing) | INCONCLUSIVE |
+
+**Known gap (Phase 2):** a policy names protocols, but nothing yet checks that a named protocol genuinely justifies the relation's wording (e.g. that "necessary" is backed by an ablation-style protocol). The Phase 2 protocol registry will declare which relations each protocol justifies, and policies will be validated against it.
+
+### A.8 Limitations
+
+| Code | Severity | Meaning | Emitted when |
+|---|---|---|---|
+| `FUNCTIONAL_OPS_UNOBSERVED` | info | Computation between module boundaries is not observed. | Always, by `trace()`/`recording()` (M1.6). |
+| `PARTIAL_SITE_COVERAGE` | warning | Only a subset of modules was recorded. | Site patterns select fewer than all leaf modules (M1.6). |
+| `NO_ATTRIBUTION` | info | No attribution method was run. | `explain()` without attribution (M1.8). |
+| `NO_CAUSAL_EVIDENCE` | warning | No intervention was performed; nothing is causal evidence. | `explain()` without causal evidence (M1.8). |
+| `NO_CLAIMS_TESTED` | info | No claim has a test result. | `explain()` without results (M1.8). |
+
+- Unknown codes raise `UnknownLimitationCodeError`. The registry is read-only.
+- A code is added in the milestone that first emits it. For example, `TENSORS_NOT_RETAINED` and `MODEL_IN_TRAIN_MODE` arrive in M1.6.
+
+### A.9 Serialisation envelope and decoding (ADR-014)
+
+```json
+{"schema_version": "0.1", "kind": "activation", "record_version": 1,
+ "id": "activation:bf06…", "status": "measured", "data": {"call_index": 0, "...": "..."}}
+```
+
+`from_dict` / `from_json` are strict:
+- The envelope has exactly these six keys.
+- `schema_version` must equal `0.1` (while below 1.0, minors may break).
+- The kind must be registered, or `UnknownRecordKindError` is raised.
+- A newer `record_version` raises `UnsupportedVersionError`. An older one needs a registered migration chain.
+- Every field must be present, and no unknown field is allowed.
+- Values must have the right JSON types.
+- Construction invariants are re-run, wrapped in `DecodeError` with the original error as `__cause__`.
+- The stored `id` and `status` must match the recomputed ones (`IntegrityError`).
+- `NaN`/`Infinity` JSON literals are rejected.
+
+`to_json` output is canonical. Tensor sidecars are M1.7.
+
+---
+
+## Part B: Proposals for later schema versions (original design, kept for history)
+
+> These sketches predate M1.1. They are **not** part of schema 0.1. Where they conflict with Part A (for example, sequential ids like `act:0007`, `str` enums, a status field on records, `ConfidenceEstimate`, and `spec_hash` as a separate field), Part A is authoritative.
+
+### Design rules (original proposal)
 
 1. **Everything is a record.** Every record has `id`, `kind` (the codec discriminator, derived from the class), and `provenance_id` where it was produced by running something. Evidence-bearing records have a `status`.
 2. **Records are immutable** (`@dataclass(frozen=True, slots=True)`). Derived results are new records that list their parents in `ProvenanceRecord.derived_from`.
@@ -31,7 +203,7 @@ Relevant decisions:
 7. **Claims carry no status.** Standing is an `Assessment` derived from test results (ADR-012).
 8. **Generated content is never support.** No `supporting` / `produced` field may reference a `GeneratedText` record. The codec and `TraceResult.add()` both check this.
 
-## Enums
+### Enums
 
 ```python
 class EvidenceStatus(str, Enum):
@@ -71,7 +243,7 @@ class Verdict(str, Enum):                    # a claim's derived standing under 
 
 **Causal relations** are `NECESSARY_FOR`, `SUFFICIENT_FOR`, `INCREASES`, and `DECREASES`. A `ClaimTestResult` with `outcome=SUPPORTS` on a causal relation must reference at least one `CausalEffect` in `produced`. This is enforced in `__post_init__`. It is the schema-level guard against presenting correlation as causation.
 
-## Core value types
+### Core value types
 
 ```python
 @dataclass(frozen=True, slots=True)
@@ -108,7 +280,7 @@ class TargetSpec:
     reconstructible: bool = True        # False for custom metrics (callable not serialisable)
 ```
 
-## Provenance
+### Provenance
 
 ```python
 @dataclass(frozen=True, slots=True)
@@ -138,7 +310,7 @@ class ModelIdentity:
 - `trace.origin(record_or_id) -> ProvenanceTree` gives the provenance record plus the transitive `derived_from` chain.
 - **Open issue:** fingerprinting hashes every parameter byte. That is fine for tiny models and costly for large ones. See the Phase 1 plan, M1.2 risk.
 
-## Measurement records (Phase 1 unless noted)
+### Measurement records (Phase 1 unless noted)
 
 ```python
 @dataclass(frozen=True, slots=True)
@@ -234,7 +406,7 @@ class CausalEdge:                       # Phase 2+ targeted paths only
 
 The `CausalEffect` sketch above predates this rule. It will be redesigned around `Estimand` when it enters the schema in Phase 2.
 
-## Features and concepts (types Phase 1, logic Phase 6)
+### Features and concepts (types Phase 1, logic Phase 6)
 
 ```python
 @dataclass(frozen=True, slots=True)
@@ -280,7 +452,7 @@ A feature with no `Concept` referencing it is `UNLABELED_FEATURE` by definition,
 
 `ValidationResult` reuses the claim machinery. Validating a concept means testing two claims: `ENCODES` (detection) and a causal relation. This removes a parallel validation system.
 
-## Claim records (types Phase 1, runners Phase 2+, ADR-012)
+### Claim records (types Phase 1, runners Phase 2+, ADR-012)
 
 ```python
 @dataclass(frozen=True, slots=True)
@@ -376,7 +548,7 @@ class Assessment:
 
 - `CONTRADICTS` from any test (including `counterexample/v1`) gives `CONTRADICTED` if nothing supports, and `MIXED` otherwise.
 
-## Presentation records
+### Presentation records
 
 ```python
 @dataclass(frozen=True, slots=True)
@@ -394,7 +566,7 @@ class GeneratedText:                    # status GENERATED — Phase 4
     supporting_records: tuple[str, ...]
 ```
 
-## Container
+### Container
 
 ```python
 @dataclass(slots=True)
@@ -423,7 +595,7 @@ class TraceResult:                      # mutable container of immutable records
 - `records` holds claims, specs, results, and assessments as well. One trace is the unit of reproducibility.
 - **Resolved by ADR-015:** a `TraceResult` holds evidence from one execution. Multi-input claims, test results, and dataset-level assessments belong in a `Study` container (Phase 2). Claim types are container-neutral.
 
-## Why (presentation view, Phase 4; Phase 1 minimal)
+### Why (presentation view, Phase 4; Phase 1 minimal)
 
 ```python
 @dataclass(frozen=True, slots=True)
@@ -449,7 +621,7 @@ class Explanation:
     output: OutputRecord
 ```
 
-## Limitation code registry (initial)
+### Limitation code registry (initial)
 
 | Code | Emitted when | Phase |
 |---|---|---|
@@ -476,7 +648,7 @@ class Explanation:
 | `BASIS_RECONSTRUCTION_ERROR` | basis error above threshold | 6 |
 | `GENERATED_SUMMARY` | a generated summary is present | 4 |
 
-## Serialisation format
+### Serialisation format
 
 ```json
 {

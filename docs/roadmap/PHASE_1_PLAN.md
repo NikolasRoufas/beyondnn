@@ -38,7 +38,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Torch CPU wheels for 3.14 must be available on the pinned index.
 - **Scope:** about 150 lines of config. Done except for the first CI run.
 
-## M1.1: Schema types and invariants
+## M1.1: Schema types and invariants: **implemented, awaiting review**
 
 - **Goal (revised per ADR-014):** the smallest rigorous schema foundation:
   - the record mechanism (identity, status rules, provenance reference, lineage, registry);
@@ -47,7 +47,12 @@ Status: **planned, not started.** Implementation begins only after the architect
   - the approved claim types (ADR-012) with the estimand rule (ADR-013).
 
   Later-phase record types (intervention, effect, attribution, feature, concept) are **not** defined.
-- **Files:**
+- **As implemented:**
+  - Files: `beyondnn/schema/{__init__,status,values,base,records,limitations,claims,codec,errors,_types,_canonical}.py`.
+  - Tests: `tests/{conftest,test_trace_schema,test_record_identity,test_evidence_status,test_claims,test_estimand,test_limitations,test_serialization}.py`.
+  - The concept types and `SemanticStatus` were **not** implemented (deferred to Phase 6 per ADR-014).
+  - Implementation choices awaiting review are ADR-016 to ADR-018.
+- **Files (original plan):**
   - `beyondnn/schema/__init__.py`
   - `status.py` (EvidenceStatus, SemanticStatus, Severity, Relation, Outcome, Verdict)
   - `records.py` (measurement records, Site, Selector, TargetSpec, intervention/effect types)
@@ -273,7 +278,7 @@ Status: **planned, not started.** Implementation begins only after the architect
 | `test_serialization.py` | M1.7 | |
 | `test_cpu.py` | M1.6 | |
 | `test_tiny_mlp.py`, `test_tiny_cnn.py`, `test_tiny_transformer.py` | M1.3 + M1.6 | |
-| `test_concepts.py`, `test_feature_concept_distinction.py` | M1.1 (schema-level only) | logic tests in Phase 6 |
+| `test_concepts.py`, `test_feature_concept_distinction.py` | Phase 6 | concept types deferred by ADR-014; not created in M1.1 |
 | `test_interventions.py`, `test_intervention_cleanup.py`, `test_ablation.py`, `test_causal_effect.py` | Phase 2 | not created in Phase 1 |
 | `test_attribution.py` | Phase 3 | |
 | `test_audit.py` | Phase 7 | |
