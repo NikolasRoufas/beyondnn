@@ -1,7 +1,7 @@
 # BeyondNN
 
-> **Status: pre-alpha, design phase.** There is no implementation yet. Every API below is a **proposal**
-> and none of it is importable. See [`docs/roadmap/PHASE_1_PLAN.md`](docs/roadmap/PHASE_1_PLAN.md).
+> **Status: pre-alpha.** Phase 1 is in progress: the trace schema, provenance, and trace recording work.
+> Explanations, interventions, and claim testing are not implemented yet. See [`docs/roadmap/PHASE_1_PLAN.md`](docs/roadmap/PHASE_1_PLAN.md).
 
 BeyondNN is an interpretability evidence framework for PyTorch.
 
@@ -28,36 +28,40 @@ reported as supported. It also records what remains unknown.
 BeyondNN builds on PyTorch and is meant to work *alongside* Captum, nnsight, TransformerLens, and SAELens,
 not to replace them.
 
-## Proposed API (not implemented)
+## What works today (pre-alpha, local only)
+
+Trace recording is implemented: structured, provenance-bearing, and validated.
 
 ```python
+import torch
 import beyondnn as bnn
 
-trace = bnn.trace(model, x)                 # measured internal states, with provenance
-
-response = bnn.instrument(model).explain(   # the model itself is never modified
+trace = bnn.trace(
+    model,
     x,
-    target=target,                          # an explanation is always *of* something
+    sites=["blocks.*.attn"],      # module outputs; input_sites=[...] for module inputs
 )
 
-print(response.input)                       # observed
-print(response.why)                         # structured evidence, claims, assessments, limitations
-print(response.output)                      # observed
+for activation in trace.activations:      # MEASURED records, in execution order
+    print(activation.site, activation.pass_index, activation.call_index, activation.value.shape)
+
+print(trace.input, trace.output)          # OBSERVED root input/output
+print(trace.origin(trace.activations[0])) # model fingerprint + environment + execution conditions
+print(trace.limitations)                  # what the trace does NOT cover
 ```
 
-Testing a claim (proposed; Phase 2):
+- `bnn.recording(model, sites=[...])` records several forward passes in a `with` block. `ctx.result` is only available after a clean exit.
+- Retention is `summary` (default: metadata and summary statistics), `cpu` (detached CPU copies), or `none`.
+- Every trace states its limits. For example, `FUNCTIONAL_OPS_UNOBSERVED`: module hooks cannot see functional operations.
+
+## Still proposed (not implemented)
 
 ```python
-claim = bnn.claims.necessary(subject=bnn.site("layers.1", index=(..., 41)),
-                             target=bnn.targets.Logit(2), scope=eval_inputs, min_effect=0.1)
-result = bnn.test_claim(model, claim, inputs=eval_inputs,
-                        tests=[bnn.tests.Ablation(op=bnn.MeanAblation(ref=train_inputs)),
-                               bnn.tests.RandomBaseline(n=50)])
-result.assessment.verdict                   # SUPPORTED / CONTRADICTED / MIXED / INCONCLUSIVE / UNTESTED
+response = bnn.instrument(model).explain(x, target=target)   # M1.8
+result = bnn.test_claim(model, claim, inputs=..., tests=[...])  # Phase 2
 ```
 
-There is no single "explanation confidence" percentage. BeyondNN reports component evidence (effect
-versus random baseline, stability, method agreement, and so on) until an aggregate has been validated.
+There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.
 
 ## Documentation
 

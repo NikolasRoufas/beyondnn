@@ -21,6 +21,8 @@ def test_registry_contains_only_codes_needed_now() -> None:
     assert set(LIMITATIONS) == {
         "FUNCTIONAL_OPS_UNOBSERVED",
         "PARTIAL_SITE_COVERAGE",
+        "SELECTED_SITE_NOT_EXECUTED",
+        "NON_TENSOR_LEAVES_IGNORED",
         "NO_ATTRIBUTION",
         "NO_CAUSAL_EVIDENCE",
         "NO_CLAIMS_TESTED",

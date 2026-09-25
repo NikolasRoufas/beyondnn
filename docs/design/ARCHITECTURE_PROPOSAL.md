@@ -242,6 +242,31 @@ A hook event proves only that *this module object executed and this value crosse
 
 ---
 
+## Implemented API (M1.6)
+
+```python
+import torch
+import beyondnn as bnn
+from beyondnn._testing.models import TinyTransformer   # internal reference model
+
+model = TinyTransformer()
+tokens = torch.tensor([[1, 5, 9, 3]])
+
+trace = bnn.trace(model, tokens, sites=["blocks.*.attn"])          # outputs; input_sites=[...] for inputs
+trace.input, trace.output               # OBSERVED root records
+trace.activations                       # MEASURED, execution order, one per tensor leaf
+trace.activation("blocks.0.attn", output_path="[0]")               # strict lookup
+trace.origin(trace.activations[0])      # ProvenanceRecord (model state at the start of the pass)
+trace.limitations                       # e.g. FUNCTIONAL_OPS_UNOBSERVED, PARTIAL_SITE_COVERAGE
+
+with bnn.recording(model, sites=["lm_head"], retention="cpu") as ctx:
+    logits = model(tokens)              # the live output stays the caller's
+    model(tokens)                       # second pass
+ctx.result.activation("lm_head", pass_index=1)
+```
+
+The `Phase 1 API (final proposal)` below is kept for history. Where it differs from the above, the above is authoritative: `explain()` and `instrument()` are not implemented yet (M1.8).
+
 ## Phase 1 API (final proposal)
 
 Everything below is **proposed, not implemented.**

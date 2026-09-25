@@ -182,3 +182,21 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
 - **Mutation:** restoring the pre-fix design (claiming in the observation pre-hook, no guard) is caught by both regression tests. Before the fix, this scenario would have popped the outer frame.
 - **Conclusion:** fixed. Remaining pre-guard entry point: global module pre-hooks, which sessions now refuse.
 
+---
+
+## 2026-09-25: M1.6 trace pipeline mutation checks
+- **Commit:** "Add trace recording pipeline (M1.6)" (parent `b1e5234`)
+- **Results (tests/test_trace.py; failing tests per broken implementation):**
+
+  | Broken implementation | Failing tests |
+  |---|---|
+  | recording keeps the original tensors alive | 0, then **3** |
+  | `pass_index` flattened to 0 | 2 |
+  | `call_index` ignored | 4 |
+  | selected-not-executed limitation removed | 2 |
+  | provenance check removed | 2 |
+  | forged `EvidenceRef` accepted | 2 |
+  | `trace()` diverging from `recording()` | 4 |
+- **Negative finding (kept):** the first retention mutation survived. The weakref tests only used `trace()`, whose internal recording object is discarded on return. A test that keeps a live `recording()` context and its result now catches it.
+- **Conclusion:** all required guards are caught.
+

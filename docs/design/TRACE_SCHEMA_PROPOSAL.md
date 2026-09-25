@@ -44,8 +44,8 @@ Relevant decisions: ADR-001 (frozen dataclasses), ADR-006/013 (interventional vs
 
 | Kind | Class | Status | Provenance | Fields (besides common) |
 |---|---|---|---|---|
-| `input` | `InputRecord` | OBSERVED | required | `tensors: tuple[NamedTensor, ...]`, `display: str \| None` |
-| `output` | `OutputRecord` | OBSERVED | required | `tensors` |
+| `input` (v2) | `InputRecord` | OBSERVED | required | `tensors: tuple[NamedTensor, ...]`, `display: str \| None`, `pass_index: int \| None` (`None` only for migrated v1 records) |
+| `output` (v2) | `OutputRecord` | OBSERVED | required | `tensors`, `pass_index: int \| None` |
 | `activation` | `ActivationRecord` | MEASURED | required | `site: Site`, `value: TensorRef`, `call_index`, `pass_index` |
 | `limitation` | `TraceLimitation` | — | optional | `code`, `detail`, `applies_to: tuple[str, ...]` |
 | `claim` | `Claim` | — | optional | `statement`, `relation`, `subject`, `target`, `estimand`, `source` |
@@ -121,7 +121,7 @@ Consequently, nothing except GENERATED can derive from GENERATED.
   - `INTERVENTIONAL` with a `POPULATION` estimand raises.
   - Non-causal evidence carries no estimand in 0.1.
 - `EvidenceRef.to(record)` builds a ref from a real record, and refuses status-less records (claims, specs, …).
-- **TODO (re-evaluate after M1.6):** keep the five typed references for now, because they enforce invariants locally. Reconsider them only if real traces show substantial API or maintenance problems.
+- **Reviewed in M1.6 (ADR-023): keep all five typed references.** Real traces use `RecordRef` on every activation and output, and `TraceResult` verifies all five through one generic `verify_ref` path. No duplication burden was found.
 - **Refs carry the attributes needed for local checks.** This applies to `RecordRef`, `EvidenceRef`, `ClaimRef`, `SpecRef`, and `ResultRef`. Containers verify them against the referenced records with `verify_ref(ref, record)`: `verify_ref(ref, record)` holds exactly when `type(ref).to(record) == ref`.
 
 ### A.6 Estimand (ADR-013)
@@ -167,6 +167,8 @@ Consequently, nothing except GENERATED can derive from GENERATED.
 |---|---|---|---|
 | `FUNCTIONAL_OPS_UNOBSERVED` | info | Computation between module boundaries is not observed. | Always, by `trace()`/`recording()` (M1.6). |
 | `PARTIAL_SITE_COVERAGE` | warning | Only a subset of modules was recorded. | Site patterns select fewer than all leaf modules (M1.6). |
+| `SELECTED_SITE_NOT_EXECUTED` | warning | A selected site never executed, so it produced no evidence. | By traces, naming each silent selected (module, io) site (M1.6). |
+| `NON_TENSOR_LEAVES_IGNORED` | info | Non-tensor values in observed inputs/outputs were not recorded. | By traces when walked values contain non-tensor, non-`None` leaves (M1.6). |
 | `NO_ATTRIBUTION` | info | No attribution method was run. | `explain()` without attribution (M1.8). |
 | `NO_CAUSAL_EVIDENCE` | warning | No intervention was performed; nothing is causal evidence. | `explain()` without causal evidence (M1.8). |
 | `NO_CLAIMS_TESTED` | info | No claim has a test result. | `explain()` without results (M1.8). |
@@ -224,6 +226,17 @@ Types (torch-free, in `beyondnn/schema/provenance.py`):
 - `make_provenance(model_or_identity, method=…, execution=…, environment=None)`;
 - `record_occurrence(provenance, started_at=None)`;
 - `FingerprintError`.
+
+### A.11 TraceResult (M1.6, ADR-023)
+
+A `TraceResult` holds one recording context's records in execution order, retained tensors (`retention="cpu"`, keyed by `sha256:<digest>`), and a `TraceConfig` (`sites`, `input_sites`, `retention`).
+
+- **Per pass:** `ProvenanceRecord` (the state at the start of the root call), `ExecutionOccurrence`, `InputRecord`, the `ActivationRecord`s, and `OutputRecord`.
+- **Per trace:** `TraceLimitation`s.
+- **Access:** `inputs`, `outputs`, `input`/`output` (single pass only), `activations`, `activation(module, io=, output_path=, pass_index=, call_index=)`, `limitations`, `provenance`, `occurrences`, `origin(record)`, `tensor(ref)`, `get(id)`.
+- **Strict lookup:** zero or several matches raise `ActivationLookupError`.
+- **Every record entering is validated** (ids, references, provenance, dedup by canonical content). See ADR-023.
+- **Tensor-leaf paths:** `""`, `[i]`, `["key"]`, `[k]`; root and input leaves are prefixed `args`/`kwargs`/`output`.
 
 ---
 

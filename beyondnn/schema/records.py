@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from ._types import require
-from .base import BaseRecord, record_kind
+from .base import BaseRecord, record_kind, register_migration
 from .status import EvidenceStatus
 from .values import NamedTensor, Site, TensorRef
 
@@ -18,35 +18,45 @@ def _unique_paths(tensors: tuple[NamedTensor, ...], where: str) -> None:
     require(len(set(paths)) == len(paths), f"{where}.tensors has duplicate paths")
 
 
-@record_kind("input")
+def _check_pass(pass_index: int | None, where: str) -> None:
+    require(pass_index is None or pass_index >= 0, f"{where}.pass_index must be >= 0 or None")
+
+
+@record_kind("input", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class InputRecord(BaseRecord):
-    """The model's input for one execution. Status: OBSERVED.
+    """The root model's input for one root invocation (pass). Status: OBSERVED.
 
-    ``tensors`` are the tensor leaves of the positional/keyword inputs, in pytree
+    ``tensors`` are the tensor leaves of the positional/keyword inputs, in traversal
     order; ``display`` is an optional human rendering (e.g. decoded text).
+    ``pass_index`` identifies the root invocation; ``None`` only for records
+    migrated from record_version 1, which had no pass concept (never invented).
     """
 
     STATUS: ClassVar[EvidenceStatus | None] = EvidenceStatus.OBSERVED
 
     tensors: tuple[NamedTensor, ...] = ()
     display: str | None = None
+    pass_index: int | None = None
 
     def _validate(self) -> None:
         _unique_paths(self.tensors, "InputRecord")
+        _check_pass(self.pass_index, "InputRecord")
 
 
-@record_kind("output")
+@record_kind("output", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class OutputRecord(BaseRecord):
-    """The model's output for one execution. Status: OBSERVED."""
+    """The root model's output for one root invocation (pass). Status: OBSERVED."""
 
     STATUS: ClassVar[EvidenceStatus | None] = EvidenceStatus.OBSERVED
 
     tensors: tuple[NamedTensor, ...] = ()
+    pass_index: int | None = None
 
     def _validate(self) -> None:
         _unique_paths(self.tensors, "OutputRecord")
+        _check_pass(self.pass_index, "OutputRecord")
 
 
 @record_kind("activation")
@@ -72,3 +82,14 @@ class ActivationRecord(BaseRecord):
     def _validate(self) -> None:
         require(self.call_index >= 0, "ActivationRecord.call_index must be >= 0")
         require(self.pass_index >= 0, "ActivationRecord.pass_index must be >= 0")
+
+
+def _add_unknown_pass(data: dict[str, Any]) -> dict[str, Any]:
+    """record_version 1 had no pass concept: migrate as ``pass_index = None`` (unknown)."""
+    if "pass_index" in data:
+        raise ValueError("a record_version 1 payload cannot contain pass_index")
+    return data | {"pass_index": None}
+
+
+register_migration("input", 1)(_add_unknown_pass)
+register_migration("output", 1)(_add_unknown_pass)

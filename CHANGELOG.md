@@ -23,6 +23,13 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **M1.6: trace pipeline:** public `bnn.trace`, `bnn.recording`, `bnn.TraceResult`.
+  - Per-pass provenance, with the model fingerprinted at the start of each root call.
+  - OBSERVED root input/output and MEASURED activations, one per tensor leaf, with deterministic paths.
+  - Retention `summary`/`cpu`/`none`; no live tensors are retained.
+  - Container validation of every record and reference.
+  - Refusal of out-of-pass and aliased executions; honest limitations (`SELECTED_SITE_NOT_EXECUTED`, `NON_TENSOR_LEAVES_IGNORED`).
+  - `InputRecord`/`OutputRecord` v2 (`pass_index`). ADR-023.
 - **M1.5 fix: recursive pre-hook invocation bookkeeping.** A prepended guard pre-hook claims each attempt's call index, and the observation pre-hook (after user pre-hooks) emits INPUT. A user pre-hook raising inside recursion can no longer release the enclosing frame. Sessions refuse to start while global module forward pre-hooks are registered.
 - **Caller-declared model provenance** (M1.6 gate, ADR-022):
   - `ModelDeclaration` (config, implementation revision, checkpoint revision) in `ProvenanceRecord.declared_model`;

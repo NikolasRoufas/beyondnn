@@ -650,3 +650,65 @@ Revision note (2026-09-25, review, before acceptance):
 - The **M1.6 hard gate is resolved.** M1.6 decides whether traces without a declaration get a limitation (none is added now).
 - All existing provenance ids changed with the version bump. That is acceptable before any release.
 
+---
+
+## ADR-023: The trace pipeline: trace(), recording(), TraceResult
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for M1.6 implementation. Awaiting review.
+
+**Decision** (`beyondnn/core/trace.py`, `beyondnn/core/tensors.py`; public `bnn.trace`, `bnn.recording`, `bnn.TraceResult`):
+
+- **API.**
+  - `recording(model, *, sites=(), input_sites=(), retention="summary", declared_model=None, randomness=None)` is a single-use context.
+  - `trace(model, *inputs, …, model_kwargs=None)` is exactly `recording()` plus one root call. There is one engine.
+  - `sites` selects module OUTPUTS and `input_sites` selects INPUTS. The root (`""`) may not be selected: root inputs and outputs are always recorded, as OBSERVED `InputRecord`/`OutputRecord`.
+- **Result states.** `ctx.result` is only available after a clean exit. It raises `RecordingError` before exit, and after any failure, including a root call that raised even if the caller swallowed it, and a recording with no root call. There are no partial traces. A failed recording keeps only a message; tensors and traceback are dropped.
+- **Per-pass provenance.** The model is fingerprinted at the start of every root invocation. Each pass's evidence references the `ProvenanceRecord` for the state at its start, so state changes (BatchNorm running statistics, mutable buffers) yield new provenance. Unchanged state deduplicates to one record.
+  - Execution context: CLEAN; device (the first parameter/buffer, else the first input tensor, else cpu); `model.training`; `torch.is_grad_enabled()`; and the caller's declared `randomness`, if any.
+  - Method: `forward_hook` v1. Retention is not part of the method or model identity.
+  - One `ExecutionOccurrence` per pass.
+- **Records.**
+  - One `ActivationRecord` (MEASURED) per tensor leaf at each selected site. It carries `Site(module, io, output_path)`, `pass_index`, `call_index`, a `TensorRef`, `provenance_id`, and `derived_from` = the pass's `InputRecord`.
+  - `OutputRecord` derives from its pass's `InputRecord`.
+  - Records are kept in execution order.
+- **Tensor paths.**
+  - `""` for a bare tensor, `[i]` for sequences, `["key"]` (JSON-quoted) for str keys, `[k]` for int keys.
+  - Root and module-input leaves are prefixed `args`/`kwargs`; root outputs are prefixed `output`.
+  - Mappings are walked in insertion order.
+  - Non-tensor leaves are never stringified or pickled: they are counted, and reported as `NON_TENSOR_LEAVES_IGNORED`. `None` is skipped.
+- **Retention.**
+  - `none` (shape/dtype/device only);
+  - `summary` (default; plus float64 scalar stats computed without autograd, `None` for complex);
+  - `cpu` (plus a detached contiguous CPU clone, stored under key `sha256:<digest>` = `content_digest`; identical contents are stored once).
+  - There is no live/device retention.
+- **Refusals.**
+  - A selected module executing outside a root call raises `OutOfPassExecutionError`. `-1` is never stored or turned into 0.
+  - Aliased modules raise `AliasSiteAmbiguityError` (the group mode is not public).
+  - Re-entrant root calls raise `RecordingError`.
+- **Limitations emitted by traces:**
+  - `FUNCTIONAL_OPS_UNOBSERVED`, always;
+  - `PARTIAL_SITE_COVERAGE`, when output sites do not cover every named module;
+  - `SELECTED_SITE_NOT_EXECUTED`, which names every silent selected site;
+  - `NON_TENSOR_LEAVES_IGNORED`.
+
+  `NO_ATTRIBUTION`, `NO_CAUSAL_EVIDENCE` and `NO_CLAIMS_TESTED` are emitted by `explain()` (M1.8), not by plain traces.
+- **Container integrity** (`TraceResult._add`): every record entering a trace must pass all of these checks:
+  - the kind is registered and the id is recomputed from content;
+  - a duplicate id is deduplicated by canonical JSON, never `==` (NaN); conflicting content is rejected;
+  - every `RecordRef`/`EvidenceRef`/`ClaimRef`/`SpecRef`/`ResultRef` resolves to a record already in the trace and passes `verify_ref`;
+  - every `applies_to` id exists;
+  - every `provenance_id` names a `ProvenanceRecord` in the trace.
+
+  Finalised traces are read-only.
+- **Schema.** `InputRecord`/`OutputRecord` move to record_version 2 with `pass_index` (migration v1→v2 sets `None` = unknown, never an invented 0). There are two new limitation codes.
+
+**Typed-reference review (deferred from M1.1).** Keep all five reference types.
+- In real traces, `RecordRef` is used on every activation and output. The container verifies all five generically, with a single `verify_ref` path.
+- Their embedded attributes (status, estimand, relation, protocol) let schema invariants run locally *and* let the container prove the references true.
+- No duplication burden was found.
+
+**Consequences / caveats:**
+- An `ExecutionOccurrence` id includes a microsecond timestamp, so two passes starting in the same microsecond share one occurrence record. Occurrences are operational metadata and are not linked to passes.
+- Fingerprinting once per pass costs about 2 ms per ~1M float32 parameters.
+

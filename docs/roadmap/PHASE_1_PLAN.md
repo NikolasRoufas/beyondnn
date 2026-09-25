@@ -195,7 +195,18 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Backward hooks are deliberately not included in Phase 1.
 - **Scope:** about 200 LOC, about 350 LOC tests.
 
-## M1.6: `trace()` and `recording()`
+## M1.6: `trace()` and `recording()`: **implemented, awaiting review**
+
+- **As implemented:** `beyondnn/core/trace.py`, `beyondnn/core/tensors.py`, and `tests/test_trace.py`. Decisions are in ADR-023.
+- **Exit criteria from earlier reviews: met.**
+  - `verify_ref` is applied to every reference entering a trace.
+  - Records are identified by id and compared by canonical content (NaN test).
+  - `provenance_id` must resolve to a `ProvenanceRecord` in the trace.
+  - The declared-model gate is resolved (ADR-022).
+  - Out-of-pass and alias events are refused.
+  - The selected-but-not-executed limitation exists.
+
+**Original plan:**
 
 - **Goal:** produce a `TraceResult` of OBSERVED and MEASURED records with correct limitations.
 - **Files:** `beyondnn/core/trace.py`, `beyondnn/core/result.py` (TraceResult, ActivationView, TensorStore), `beyondnn/schema/tensors.py` (TensorRef, TensorStats).

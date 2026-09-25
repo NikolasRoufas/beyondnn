@@ -50,8 +50,24 @@ LIMITATIONS: Mapping[str, LimitationDef] = _defs(
     LimitationDef(
         "PARTIAL_SITE_COVERAGE",
         "Only a subset of modules was recorded; unrecorded modules may carry relevant computation.",
-        "By trace()/recording() when site patterns select fewer than all leaf modules.",
+        "By trace()/recording() when the output sites selected do not cover every named "
+        "(non-root) module of the model.",
         Severity.WARNING,
+    ),
+    LimitationDef(
+        "SELECTED_SITE_NOT_EXECUTED",
+        "A selected site was valid but never executed during the trace, so it produced "
+        "no evidence; this is not coverage.",
+        "By trace()/recording() for every selected (module, input|output) site with no "
+        "observed execution in any root pass (e.g. an iterated ModuleList).",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "NON_TENSOR_LEAVES_IGNORED",
+        "Some observed inputs/outputs contained non-tensor values (numbers, strings, "
+        "objects); they were not recorded as evidence.",
+        "By trace()/recording() when a walked value has leaves other than tensors or None.",
+        Severity.INFO,
     ),
     LimitationDef(
         "NO_ATTRIBUTION",
