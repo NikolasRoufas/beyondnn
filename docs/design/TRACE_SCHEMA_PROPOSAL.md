@@ -248,6 +248,17 @@ A `TraceResult` holds one recording context's records in execution order, retain
 
 It migrates old record versions and remaps every reference to ids that migration changed. The sidecar is only ever read with `torch.load(weights_only=True)`.
 
+### A.13 Interventions and causal effects (Phase 2, ADR-028)
+
+| Kind | Status | Fields |
+|---|---|---|
+| `intervention` | none (a specification) | `site` (module OUTPUT + `output_path` leaf), `call_index`, `operation` ZERO/CONSTANT/PATCH, `constant` (scalar), `value` (retained `TensorRef` with digest), `source` (`RecordRef` to a MEASURED activation, PATCH only) |
+| `causal_effect` | derived: INTERVENTIONAL (INSTANCE, FINITE_SAMPLE; `estimator="exact"`); ESTIMATED_CAUSAL only for POPULATION with a non-exact estimator | `interventions`, `metric` (`MetricSpec`: name, builtin, params), `estimand`, `baseline_value`, `intervention_value`, `effect = intervention_value − baseline_value`, `estimator` |
+
+- An INSTANCE effect derives from exactly the two paired `OutputRecord`s. A FINITE_SAMPLE effect derives from exactly `n` instance effects, and its values are means.
+- A `ProvenanceRecord` with `execution.mode = INTERVENTION` must name an `InterventionRecord` in the same trace.
+- Intervention tensors are retained tensors of the trace: persisted in `tensors.pt` and digest-checked on load.
+
 ---
 
 ## Part B: Proposals for later schema versions (original design, kept for history)

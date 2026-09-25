@@ -70,6 +70,35 @@ LIMITATIONS: Mapping[str, LimitationDef] = _defs(
         Severity.INFO,
     ),
     LimitationDef(
+        "ZERO_ABLATION_MAY_BE_OOD",
+        "The intervention replaced an activation with zeros; zero is not a neutral or "
+        "in-distribution value, so the effect may reflect an off-distribution state.",
+        "By intervene() for ZERO interventions.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "CONSTANT_REPLACEMENT_MAY_BE_OOD",
+        "The intervention replaced an activation with a caller-chosen constant, which "
+        "may not be a value the model produces; the effect may reflect an off-"
+        "distribution state.",
+        "By intervene() for CONSTANT interventions.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "PATCH_SOURCE_CONTEXT_DIFFERS",
+        "The patched activation came from an execution on a different input, so it is "
+        "placed into a context it was not computed in.",
+        "By intervene() for PATCH interventions whose source input differs from the target.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "CUSTOM_METRIC_UNVERIFIED",
+        "The outcome metric is caller-supplied code; BeyondNN recorded only its name and "
+        "cannot verify that it is deterministic or free of side effects.",
+        "By intervene() when the metric is not a BeyondNN built-in.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
         "NO_ATTRIBUTION",
         "No attribution method was run; no input or unit importance scores exist.",
         "By explain() when its plan contains no attribution method.",

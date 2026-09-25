@@ -8,6 +8,15 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 2: causal interventions** (`bnn.intervene`, `bnn.interventions`, ADR-028):
+  - `InterventionRecord`/`CausalEffect` schema;
+  - zero, constant, and patch interventions on module outputs, via BeyondNN-owned hooks inside one recording;
+  - paired baseline/intervention passes with refusal of training mode, RNG consumption, and state drift;
+  - INSTANCE and FINITE_SAMPLE INTERVENTIONAL effects (`intervention − baseline`);
+  - scalar metrics;
+  - the `intervention_threshold` claim protocol with a protocol registry;
+  - ground-truth causal models;
+  - four intervention limitations.
 - **M1.1: trace schema 0.1** (`beyondnn.schema`):
   - immutable records with content-derived ids;
   - evidence status bound to record kind, with explicit derivation rules;

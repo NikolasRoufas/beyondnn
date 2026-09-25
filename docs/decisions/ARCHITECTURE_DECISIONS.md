@@ -818,3 +818,42 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 
 **Alternative considered:** re-resolving and re-hooking mid-session. Rejected: it adds complexity and makes pass semantics ambiguous.
 
+---
+
+## ADR-028: Phase-2 interventions: one comparison = one recording; INTERVENTIONAL is reserved for effects
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for Phase 2 implementation. Awaiting Phase 2 review.
+
+**Decision:**
+- **Records** (`schema/interventions.py`):
+  - **`InterventionRecord`** (kind `intervention`, no status) specifies the replacement of one tensor leaf (`Site.output_path`) of one call (`call_index`) of a module OUTPUT. The operation is ZERO, CONSTANT (a finite scalar, or a retained exact-shape tensor), or PATCH (a retained value plus a `RecordRef` to the MEASURED source `ActivationRecord` in the same trace). Its content-derived id is the `intervention_id` in `ExecutionContext`, and the trace verifies that it resolves.
+  - **`CausalEffect`** (kind `causal_effect`) has fields `interventions`, `metric: MetricSpec`, `estimand`, `baseline_value`, `intervention_value`, `effect`, and `estimator`.
+  - **Sign convention:** `effect = intervention_value − baseline_value`, for every metric.
+  - **Status** is derived: INTERVENTIONAL for INSTANCE (exact, from the two paired `OutputRecord`s) and FINITE_SAMPLE (mean over exactly `n` instance effects). ESTIMATED_CAUSAL only for POPULATION with a non-exact estimator, which Phase 2 never produces.
+- **Runtime** (`beyondnn.interventions`): `intervene()` / `intervene_sample()` run one `recording()` per comparison. The passes are an optional CLEAN patch-source pass, a CLEAN baseline pass, and an INTERVENTION pass, all under `torch.no_grad()`.
+  - The replacement is done by a BeyondNN-owned forward hook registered through `HookSession.owned_forward_hook`. It counts as owned (foreign-hook protection unchanged) and runs before output observation, so the recorded activation is the replaced one. It stays **MEASURED** (ADR-017).
+  - **The comparison is refused** if any module is in training mode, if the CPU RNG state changes in either pass, if the model state fingerprint differs between the two passes, or if the declared call did not run exactly once.
+- **Metrics:** built-ins `select`, `difference`, `mean` (scalar, pure, recorded as `MetricSpec`). `custom(name, fn)` is recorded by name only and is never serialised; it emits `CUSTOM_METRIC_UNVERIFIED`.
+- **Claims:**
+  - The protocol registry is `interventions.PROTOCOLS`: `intervention_threshold` v1 justifies NECESSARY_FOR, DECREASES, and INCREASES. It closes the ADR-018 gap for this protocol, and `check_policy` validates policies against the registry.
+  - The criteria (`min_effect`) are declared before running.
+  - Any mismatch of site, metric, estimand, or operation gives NOT_APPLICABLE.
+  - `INTERVENTION_POLICY` covers the three relations. SUFFICIENT_FOR is covered by no protocol, so it cannot be assessed.
+- **Limitations:** `ZERO_ABLATION_MAY_BE_OOD`, `CONSTANT_REPLACEMENT_MAY_BE_OOD`, `PATCH_SOURCE_CONTEXT_DIFFERS`, `CUSTOM_METRIC_UNVERIFIED`, each scoped to the effect.
+
+**Reason:**
+- Keeping all passes of a comparison in one trace reuses Phase 1's record validation, per-pass provenance, and persistence with no new container or file format. The patch source is therefore a verifiable record, not an unexplained tensor.
+- Refusing unpaired comparisons prevents confounded differences from being reported as intervention effects.
+
+**Alternatives considered:**
+- A `Study` container (ADR-015): still deferred, because a controlled comparison is one recording context.
+- Patching from external saved traces: deferred. It needs cross-trace provenance.
+- RNG replay to allow stochastic models: rejected for Phase 2. Refusal is the conservative choice.
+
+**Consequences / limits:**
+- Output interventions only.
+- Finite-sample comparisons support ZERO/CONSTANT only.
+- Only CPU RNG is checked (CPU-only phase).
+- Effects are scoped to exactly the compared inputs. Nothing generalises to a population.
+

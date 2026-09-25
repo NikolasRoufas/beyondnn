@@ -99,6 +99,12 @@ class Instrumented:
             )
         )
 
+    def intervene(self, *inputs: Any, **kwargs: Any) -> Any:
+        """Exactly ``beyondnn.intervene(self.model, *inputs, **kwargs)`` (Phase 2)."""
+        from beyondnn.interventions import intervene
+
+        return intervene(self.model, *inputs, **kwargs)
+
     def __repr__(self) -> str:
         return f"Instrumented(model={type(self.model).__name__})"
 

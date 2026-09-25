@@ -60,7 +60,8 @@ user hook modifications.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from enum import Enum
 from types import MappingProxyType, TracebackType
@@ -180,6 +181,7 @@ class HookSession:
         self._root_depth = 0
         self._pass_calls: dict[int, int] = {}
         self._out_of_pass_calls: dict[int, int] = {}
+        self._targets: dict[int, _Target] = {}
 
     # ------------------------------------------------------------ lifecycle
 
@@ -190,6 +192,29 @@ class HookSession:
     @property
     def installed_hooks(self) -> int:
         return len(self._handles)
+
+    def current_invocation(self, module: nn.Module) -> tuple[int, int]:
+        """``(pass_index, call_index)`` of the innermost running call of an observed module."""
+        target = self._targets.get(id(module))
+        if target is None or not target.stack:
+            raise HookSessionError("module is not an observed module currently executing")
+        return target.stack[-1]
+
+    @contextmanager
+    def owned_forward_hook(self, module: nn.Module, hook: Callable[..., Any]) -> Iterator[None]:
+        """Temporarily register a BeyondNN-owned forward hook (with kwargs) that runs before
+        the session's own output hooks (``prepend=True``). It counts as owned, so
+        foreign-hook checks recognise it, and it is removed on exit or on any error."""
+        if not self.active:
+            raise HookSessionError("owned hooks can only be added to an active session")
+        handle = module.register_forward_hook(hook, with_kwargs=True, prepend=True)
+        self._handles.append(handle)
+        try:
+            yield
+        finally:
+            handle.remove()
+            if handle in self._handles:
+                self._handles.remove(handle)
 
     @property
     def owned_hook_ids(self) -> frozenset[int]:
@@ -263,6 +288,7 @@ class HookSession:
 
     def _install(self, targets: list[_Target]) -> None:
         root = self._model
+        self._targets = {id(t.module): t for t in targets}
         for target in targets:
             self._handles.append(
                 target.module.register_forward_pre_hook(

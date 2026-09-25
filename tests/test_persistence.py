@@ -253,7 +253,7 @@ def _drop_kind(kind: str) -> Callable[[dict[str, Any]], Any]:
 @pytest.mark.parametrize(
     ("change", "match"),
     [
-        (lambda d: d["records"][2].update(kind="causal_effect"), "unknown record kind"),
+        (lambda d: d["records"][2].update(kind="future_kind"), "unknown record kind"),
         (lambda d: d.update(schema_version="0.2"), "schema_version"),
         (lambda d: d["records"][0].update(schema_version="9.0"), "schema_version"),
         (lambda d: d["records"][3].update(id="activation:" + "0" * 32), "does not match content"),

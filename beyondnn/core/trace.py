@@ -20,7 +20,7 @@ every ``provenance_id`` must name a ``ProvenanceRecord`` in the trace.
 from __future__ import annotations
 
 import dataclasses
-from collections.abc import Iterator, Sequence
+from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass
 from types import TracebackType
 from typing import Any
@@ -39,6 +39,7 @@ from beyondnn.schema import (
     ExecutionMode,
     ExecutionOccurrence,
     InputRecord,
+    InterventionRecord,
     MethodIdentity,
     ModelDeclaration,
     NamedTensor,
@@ -214,6 +215,17 @@ class TraceResult:
                     raise TraceIntegrityError(
                         f"{record.id}: applies_to {target_id}, which is not in the trace"
                     )
+        if (
+            isinstance(record, ProvenanceRecord)
+            and record.execution.mode is ExecutionMode.INTERVENTION
+            and not isinstance(
+                self._records.get(record.execution.intervention_id or ""), InterventionRecord
+            )
+        ):
+            raise TraceIntegrityError(
+                f"{record.id}: intervention_id {record.execution.intervention_id} does not name "
+                "an InterventionRecord in this trace"
+            )
         if record.provenance_id is not None and not isinstance(
             self._records.get(record.provenance_id), ProvenanceRecord
         ):
@@ -239,6 +251,8 @@ class TraceResult:
                 yield record.value
             elif isinstance(record, (InputRecord, OutputRecord)):
                 yield from (t.ref for t in record.tensors)
+            elif isinstance(record, InterventionRecord) and record.value is not None:
+                yield record.value
 
     # ------------------------------------------------------------ reading
 
@@ -468,6 +482,9 @@ class Recording:
         self._state = "new"
         self._failure = ""
         self._result: TraceResult | None = None
+        # Internal hooks for beyondnn.interventions (not public API):
+        self._next_intervention: InterventionRecord | None = None
+        self._finalizers: list[Callable[[TraceResult], None]] = []
 
     # ------------------------------------------------------------ lifecycle
 
@@ -572,8 +589,12 @@ class Recording:
     def _begin_pass(self, event: HookEvent) -> None:
         model = self._model
         _refuse_foreign_hooks(model, self._session.owned_hook_ids, "at the start of a root pass")
+        intervention = self._next_intervention
+        if intervention is not None:
+            self._trace._add(intervention)
         execution = ExecutionContext(
-            mode=ExecutionMode.CLEAN,
+            mode=ExecutionMode.CLEAN if intervention is None else ExecutionMode.INTERVENTION,
+            intervention_id=None if intervention is None else intervention.id,
             device=_device(model, event.args),
             training=model.training,
             grad_enabled=torch.is_grad_enabled(),
@@ -662,6 +683,8 @@ class Recording:
                 "no partial trace is produced"
             )
         trace = self._trace
+        for finalizer in self._finalizers:
+            finalizer(trace)
         trace._add(TraceLimitation(code="FUNCTIONAL_OPS_UNOBSERVED"))
         output_paths = {p for p, io in self._selected if io is SiteIO.OUTPUT}
         if not set(self._named) <= output_paths:

@@ -35,6 +35,7 @@ from .errors import (
     UnknownRecordKindError,
     UnsupportedVersionError,
 )
+from .interventions import CausalEffect, InterventionOperation, InterventionRecord, MetricSpec
 from .limitations import LIMITATIONS, LimitationDef, Severity, TraceLimitation
 from .provenance import (
     EnvironmentIdentity,
@@ -82,6 +83,7 @@ __all__ = [
     "Assessment",
     "AssessmentPolicy",
     "BaseRecord",
+    "CausalEffect",
     "Claim",
     "ClaimRef",
     "ClaimSource",
@@ -101,9 +103,12 @@ __all__ = [
     "FingerprintMethod",
     "InputRecord",
     "IntegrityError",
+    "InterventionOperation",
+    "InterventionRecord",
     "JsonMap",
     "LimitationDef",
     "MethodIdentity",
+    "MetricSpec",
     "ModelDeclaration",
     "ModelIdentity",
     "NamedTensor",

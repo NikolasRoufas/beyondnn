@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from .core.persistence import load_trace
     from .core.trace import TraceResult, recording, trace
     from .explain import instrument
+    from .interventions import intervene
 
 __version__ = "0.0.0.dev0"
 
@@ -34,6 +35,8 @@ __all__ = [
     "Verdict",
     "__version__",
     "instrument",
+    "intervene",
+    "interventions",
     "load_trace",
     "recording",
     "schema",
@@ -46,10 +49,17 @@ _LAZY = {
     "TraceResult": "beyondnn.core.trace",
     "load_trace": "beyondnn.core.persistence",
     "instrument": "beyondnn.explain",
+    "intervene": "beyondnn.interventions",
 }
 
 
 def __getattr__(name: str) -> Any:
+    if name == "interventions":
+        import importlib
+
+        module = importlib.import_module("beyondnn.interventions")
+        globals()[name] = module
+        return module
     module_name = _LAZY.get(name)
     if module_name is None:
         raise AttributeError(f"module 'beyondnn' has no attribute {name!r}")

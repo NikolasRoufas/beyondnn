@@ -18,6 +18,7 @@ from beyondnn.schema import (
     Assessment,
     AssessmentPolicy,
     BaseRecord,
+    CausalEffect,
     ClaimTestResult,
     DecodeError,
     EnvironmentIdentity,
@@ -28,10 +29,14 @@ from beyondnn.schema import (
     ExecutionOccurrence,
     FingerprintMethod,
     IntegrityError,
+    InterventionOperation,
+    InterventionRecord,
     JsonMap,
     MethodIdentity,
+    MetricSpec,
     ModelIdentity,
     Outcome,
+    OutputRecord,
     PolicyRequirement,
     ProvenanceRecord,
     Randomness,
@@ -108,6 +113,21 @@ def _samples(mk: SimpleNamespace) -> list[BaseRecord]:
     occurrence = ExecutionOccurrence(
         provenance_id=provenance.id, started_at="2026-09-25T03:00:00.123456Z"
     )
+    intervention = InterventionRecord(
+        site=Site(module="layers.0", output_path="[0]"), operation=InterventionOperation.ZERO
+    )
+    out_a = OutputRecord(pass_index=0, provenance_id=mk.PROV)
+    out_b = OutputRecord(pass_index=1, provenance_id=mk.PROV)
+    effect = CausalEffect(
+        interventions=(RecordRef.to(intervention),),
+        metric=MetricSpec(name="select", builtin=True, params=JsonMap({"index": [0]})),
+        estimand=Estimand.instance("sha256:x"),
+        baseline_value=1.5,
+        intervention_value=0.25,
+        effect=0.25 - 1.5,
+        provenance_id=mk.PROV,
+        derived_from=(RecordRef.to(out_a), RecordRef.to(out_b)),
+    )
     return [
         inp,
         mk.output(),
@@ -119,6 +139,8 @@ def _samples(mk: SimpleNamespace) -> list[BaseRecord]:
         limitation,
         provenance,
         occurrence,
+        intervention,
+        effect,
     ]
 
 
@@ -177,7 +199,7 @@ def test_non_finite_stats_round_trip(mk: SimpleNamespace) -> None:
 
 def test_unknown_kind_fails_clearly(mk: SimpleNamespace) -> None:
     env = to_dict(mk.activation())
-    env["kind"] = "causal_effect"
+    env["kind"] = "future_kind"
     with pytest.raises(UnknownRecordKindError, match="newer BeyondNN"):
         from_dict(env)
 

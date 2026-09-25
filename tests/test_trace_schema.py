@@ -316,6 +316,8 @@ def test_registered_kinds_are_exactly_schema_0_1() -> None:
         "assessment",
         "provenance",
         "execution_occurrence",
+        "intervention",
+        "causal_effect",
     }
 
 

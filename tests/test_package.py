@@ -22,6 +22,8 @@ def test_top_level_api_is_the_reviewed_surface() -> None:
             "Verdict",
             "__version__",
             "instrument",
+            "intervene",
+            "interventions",
             "load_trace",
             "recording",
             "schema",

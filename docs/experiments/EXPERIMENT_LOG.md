@@ -292,3 +292,39 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 torch threads; warm-up
 - **Scientific-language audit:** the README intro implied interventions and claim testing were available, and that all evidence statuses were produced; it was corrected. Package docstrings and render strings contain only disclaimers or schema vocabulary.
 - **Gate:** GO WITH EXPLICIT LIMITATIONS.
 
+---
+
+## 2026-09-25: Phase 2 ground-truth intervention effects and mutation checks
+- **Commit:** "Add causal intervention records and paired comparisons" (parent `b6889c4`)
+- **Models:** `beyondnn/_testing/causal_models.py` (fixed weights, input `(x0, x1)`).
+- **Hardware:** CPU, Python 3.14.3, torch 2.12.0.
+- **Expectations:** written in `docs/PHASE_2_PLAN.md` before running.
+- **Results:** all reproduced exactly, with float equality:
+  - additive, zero `a`: `−x0` for (3, 5), (−2, 0.5), (0, 1);
+  - additive, constant 10: `10 − x0`;
+  - additive, patch from (7, 1): `+4`;
+  - identical-source patch: `0`; own-value constant: `0`;
+  - gated, zero gate: `−15` (output `0`);
+  - redundant, zero `p`: `−3`, with the output still `3`;
+  - interaction: `0` at `x1 = 0`, `−15` at (3, 5);
+  - finite sample {1, 2, 6}: mean `−3`, from 3 instance effects.
+- **Claim semantics:** on the redundant model, "p necessary with `min_effect = 6`" is CONTRADICTED (effect −3). A nonzero effect did not imply support.
+- **Mutations (failing tests per broken implementation):**
+
+  | Broken implementation | Failing tests |
+  |---|---|
+  | hook leak | 34 |
+  | baseline run under intervention mode | 1, then 2 after adding an independent test |
+  | intervention pass marked CLEAN | 2 |
+  | activations labelled INTERVENTIONAL | 23 |
+  | CausalEffect labelled MEASURED | 7 |
+  | sign reversed | 28 |
+  | patch source ignored | 4 |
+  | zero ablation not applied | 11 |
+  | stochastic comparison accepted | 1, then 2 |
+  | state-mutating passes paired | 1, then 2 |
+  | causal result without a CausalEffect | 10 |
+  | GENERATED as causal support | 2 |
+
+  All are caught.
+

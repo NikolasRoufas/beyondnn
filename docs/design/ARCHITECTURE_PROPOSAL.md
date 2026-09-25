@@ -230,6 +230,21 @@ Semantics:
 
 A hook event proves only that *this module object executed and this value crossed its boundary*.
 
+### Interventions (Phase 2, `beyondnn/interventions/`, ADR-028)
+
+```python
+import beyondnn as bnn
+iv = bnn.interventions
+result = bnn.intervene(model.eval(), x, intervention=iv.zero("a"), metric=iv.metrics.select([0, 0]))
+result.value            # intervention_value - baseline_value (INTERVENTIONAL CausalEffect, INSTANCE)
+result.trace            # one trace: CLEAN baseline pass, INTERVENTION pass (activations stay MEASURED)
+```
+
+- **Dependencies:** schema ← provenance ← core ← interventions.
+- **Operations:** zero, constant, and patch (from a source pass in the same recording).
+- **Refusals:** training mode, RNG consumption, model-state drift between the paired passes, and interventions that did not apply.
+- **Claims:** decided only by the declared `intervention_threshold` protocol. Sufficiency cannot be assessed.
+
 ## Mode A vs Mode B
 
 | | Mode A `instrument(model)` | Mode B `InterpretableModule` (deferred) |
