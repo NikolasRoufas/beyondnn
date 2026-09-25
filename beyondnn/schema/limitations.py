@@ -94,9 +94,43 @@ LIMITATIONS: Mapping[str, LimitationDef] = _defs(
     LimitationDef(
         "CUSTOM_METRIC_UNVERIFIED",
         "The outcome metric is caller-supplied code; BeyondNN recorded only its name and "
-        "cannot verify that it is deterministic or free of side effects.",
+        "the caller-declared revision/config (ADR-029), and cannot verify that the code "
+        "matches that declaration or is deterministic and free of side effects.",
         "By intervene() when the metric is not a BeyondNN built-in.",
         Severity.WARNING,
+    ),
+    LimitationDef(
+        "ATTRIBUTION_BASELINE_ASSUMPTION",
+        "The attribution is relative to a chosen baseline; a different baseline (zero is "
+        "not neutral) gives different attributions. Scores describe the path from the "
+        "baseline to the input, not the input alone.",
+        "By attribute() for every Integrated Gradients attribution (the detail names the "
+        "baseline).",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "ATTRIBUTION_NUMERICAL_APPROXIMATION",
+        "The attribution is a numerical approximation of an integral (finite steps of a "
+        "stated rule); the completeness delta is a diagnostic of that approximation, not "
+        "a confidence score.",
+        "By attribute() for every Integrated Gradients attribution.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "DISCRETE_INPUT_ATTRIBUTED_VIA_REPRESENTATION",
+        "The model has discrete (integer) inputs, which have no gradients; the attribution "
+        "is to a module's output representation (e.g. embedding dimensions per position), "
+        "not to the discrete ids themselves.",
+        "By attribute() for layer attributions when any model input tensor is not floating point.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "LAYER_ATTRIBUTION_PARTIAL_COVERAGE",
+        "The attribution is to one leaf of one call of one module output; computation that "
+        "bypasses it (residual connections, functional operations, other calls or modules) "
+        "is not attributed, so these scores need not account for the target.",
+        "By attribute() for every module (layer) attribution.",
+        Severity.INFO,
     ),
     LimitationDef(
         "NO_ATTRIBUTION",

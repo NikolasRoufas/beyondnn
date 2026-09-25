@@ -105,6 +105,12 @@ class Instrumented:
 
         return intervene(self.model, *inputs, **kwargs)
 
+    def attribute(self, *inputs: Any, **kwargs: Any) -> Any:
+        """Exactly ``beyondnn.attribute(self.model, *inputs, **kwargs)`` (Phase 3)."""
+        from beyondnn.attribution import attribute
+
+        return attribute(self.model, *inputs, **kwargs)
+
     def __repr__(self) -> str:
         return f"Instrumented(model={type(self.model).__name__})"
 

@@ -17,6 +17,11 @@ from beyondnn.schema import (
     ActivationRecord,
     Assessment,
     AssessmentPolicy,
+    AttributionBaseline,
+    AttributionMethodSpec,
+    AttributionRecord,
+    AttributionReduction,
+    BaselineKind,
     BaseRecord,
     CausalEffect,
     ClaimTestResult,
@@ -43,6 +48,7 @@ from beyondnn.schema import (
     RecordRef,
     Relation,
     Site,
+    SiteIO,
     TensorRef,
     TensorStats,
     TraceLimitation,
@@ -128,7 +134,44 @@ def _samples(mk: SimpleNamespace) -> list[BaseRecord]:
         provenance_id=mk.PROV,
         derived_from=(RecordRef.to(out_a), RecordRef.to(out_b)),
     )
+    digest = "sha256:" + "b" * 64
+    retained = TensorRef(
+        shape=(1, 2), dtype="float32", device="cpu", storage_key=digest, content_digest=digest
+    )
+    attribution = AttributionRecord(
+        method=AttributionMethodSpec(
+            name="integrated_gradients",
+            implementation="beyondnn",
+            implementation_version="1",
+            params=JsonMap({"n_steps": 8, "rule": "riemann_middle"}),
+        ),
+        target=MetricSpec(name="select", builtin=True, params=JsonMap({"index": [0, 0]})),
+        site=Site(module="", io=SiteIO.INPUT, output_path="args[0]"),
+        pass_index=0,
+        sample_id="sha256:x",
+        baseline=AttributionBaseline(kind=BaselineKind.ZERO),
+        value=retained,
+        target_value=21.0,
+        diagnostics=JsonMap(
+            {"baseline_target_value": 0.0, "attribution_sum": 21.0, "completeness_delta": 0.0}
+        ),
+        provenance_id=mk.PROV,
+        derived_from=(RecordRef.to(inp), RecordRef.to(mk.output())),
+    )
+    scalar = TensorRef(
+        shape=(), dtype="float64", device="cpu", storage_key=digest, content_digest=digest
+    )
+    reduction = AttributionReduction(
+        reduction="abs_sum",
+        dims=(0, 1),
+        value=scalar,
+        scalar=21.0,
+        provenance_id=mk.PROV,
+        derived_from=(RecordRef.to(attribution),),
+    )
     return [
+        attribution,
+        reduction,
         inp,
         mk.output(),
         act,

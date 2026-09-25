@@ -11,6 +11,13 @@ kinds arrive in later schema versions.
 """
 
 from ._canonical import JsonMap
+from .attribution import (
+    AttributionBaseline,
+    AttributionMethodSpec,
+    AttributionRecord,
+    AttributionReduction,
+    BaselineKind,
+)
 from .base import BaseRecord, EvidenceRef, RecordRef, verify_ref
 from .claims import (
     Assessment,
@@ -88,7 +95,12 @@ __all__ = [
     "ActivationRecord",
     "Assessment",
     "AssessmentPolicy",
+    "AttributionBaseline",
+    "AttributionMethodSpec",
+    "AttributionRecord",
+    "AttributionReduction",
     "BaseRecord",
+    "BaselineKind",
     "CausalEffect",
     "Claim",
     "ClaimRef",

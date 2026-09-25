@@ -1,4 +1,4 @@
-"""Audit guards (M1.10, updated for Phase 2): which evidence statuses can exist."""
+"""Audit guards (M1.10, updated for Phases 2 and 3): which evidence statuses can exist."""
 
 from __future__ import annotations
 
@@ -14,8 +14,12 @@ STRONGER = ("ATTRIBUTED", "INTERVENTIONAL", "ESTIMATED_CAUSAL", "VALIDATED_CONCE
 
 
 def test_only_causal_effects_carry_causal_status_and_nothing_stronger_exists() -> None:
+    attributed = {"attribution", "attribution_reduction"}
     for kind, cls in registered_kinds().items():
-        assert cls.STATUS in (EvidenceStatus.OBSERVED, EvidenceStatus.MEASURED, None), kind
+        if kind in attributed:
+            assert cls.STATUS is EvidenceStatus.ATTRIBUTED, kind
+        else:
+            assert cls.STATUS in (EvidenceStatus.OBSERVED, EvidenceStatus.MEASURED, None), kind
         if kind == "causal_effect":
             assert cls.status is not BaseRecord.status  # derived from estimand/estimator
         else:
@@ -39,6 +43,8 @@ def test_top_level_names_are_exactly_the_audited_surface() -> None:
             "TraceResult",
             "Verdict",
             "__version__",
+            "attribute",
+            "attribution",
             "instrument",
             "intervene",
             "interventions",

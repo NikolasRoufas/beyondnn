@@ -19,7 +19,10 @@ from typing import ClassVar
 
 from beyondnn.core.trace import TraceResult
 from beyondnn.schema import (
+    CAUSAL_EVIDENCE_STATUSES,
     ActivationRecord,
+    AttributionRecord,
+    ClaimTestResult,
     EvidenceStatus,
     InputRecord,
     NamedTensor,
@@ -31,7 +34,8 @@ from beyondnn.schema import (
 
 __all__ = ["EXPLANATION_LIMITATIONS", "ExplainResponse", "Why"]
 
-#: Emitted by every Phase-1 explanation: none of these methods has run.
+#: Emitted by an explanation whose trace lacks that kind of evidence (always, for
+#: ``explain()``, which runs none of these methods).
 EXPLANATION_LIMITATIONS = ("NO_ATTRIBUTION", "NO_CAUSAL_EVIDENCE", "NO_CLAIMS_TESTED")
 
 
@@ -54,11 +58,29 @@ class Why:
         return self.trace.activations
 
     @property
+    def attributions(self) -> tuple[AttributionRecord, ...]:
+        """ATTRIBUTED records present in the trace (only if an attribution was explicitly
+        run, e.g. ``ExplainResponse.from_trace(bnn.attribute(...).trace)``; ``explain()``
+        never runs one). Method-relative scores, not causes."""
+        return tuple(r for r in self.trace.records if isinstance(r, AttributionRecord))
+
+    @property
     def limitations(self) -> tuple[TraceLimitation, ...]:
-        """The trace's limitations, then the explanation-level ones."""
+        """The trace's limitations, then the explanation-level ones that apply (each is
+        emitted only when its kind of evidence is absent from the trace)."""
         own = self.trace.limitations
         codes = {lim.code for lim in own}
-        extra = tuple(TraceLimitation(code=c) for c in EXPLANATION_LIMITATIONS if c not in codes)
+        statuses = self.evidence_statuses
+        present = {
+            "NO_ATTRIBUTION": bool(self.attributions),
+            "NO_CAUSAL_EVIDENCE": bool(statuses & CAUSAL_EVIDENCE_STATUSES),
+            "NO_CLAIMS_TESTED": any(isinstance(r, ClaimTestResult) for r in self.trace.records),
+        }
+        extra = tuple(
+            TraceLimitation(code=c)
+            for c in EXPLANATION_LIMITATIONS
+            if c not in codes and not present[c]
+        )
         return own + extra
 
     @property

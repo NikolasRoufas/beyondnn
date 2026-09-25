@@ -876,3 +876,45 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 
 **Consequences:** declared identity is only as good as the caller's discipline: changing the function without changing the revision is undetectable. This is documented and not claimed as a guarantee.
 
+---
+
+## ADR-030: Phase-3 attribution: ATTRIBUTED by kind, explicit scalar targets and reductions, native references plus a Captum adapter
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for Phase 3 implementation. Awaiting Phase 3 review.
+
+**Decision:**
+- **Records** (`schema/attribution.py`):
+  - `AttributionRecord` (kind `attribution`) and `AttributionReduction` (kind `attribution_reduction`) have class-level status ATTRIBUTED. The status is never a constructor argument, and neither record is ever MEASURED or INTERVENTIONAL.
+  - Identity covers the method spec (name, implementation, implementation version, params), the target `MetricSpec`, the baseline (kind plus tensor digest), the site, call, pass, and sample, and the attribution tensor's digest.
+- **Targets** reuse the Phase-2 metric language. Built-in `select`, `difference`, and `mean` gained a differentiable form (`Metric.tensor`). A target that does not select exactly one element is refused, never summed. Caller metrics cannot be attribution targets in Phase 3.
+- **Attributed tensor:**
+  - A floating-point positional input `args[i]`. Integer inputs are refused (`DiscreteInputError`).
+  - Or one leaf of call `k` of one module's OUTPUT, targeted by a temporary hook that replaces exactly that call's leaf with the evaluation point.
+  - Alias paths are refused. The container verifies that the referenced activation has exactly the declared site, call, and pass.
+- **Methods:**
+  - Native reference implementations: `gradient`, `input_x_gradient`, `integrated_gradients`. IG uses rules `riemann_left`/`riemann_right`/`riemann_middle`/`trapezoid`, with float64 accumulation and a required baseline, which is ZERO only when explicitly requested.
+  - Captum 0.9.x adapters: `Saliency(abs=False)`, `InputXGradient`, `IntegratedGradients`, and `LayerIntegratedGradients` (single-call layers, input-space baselines).
+  - The adapters use `internal_batch_size=1` and a leading dimension of 1, so both implementations evaluate identical tensors.
+  - The adapter refuses Captum versions it was not verified against.
+- **Diagnostics:** IG records `completeness_delta = Σ attribution − (F(x) − F(x'))`. For layer IG, `F(x')` has the layer output replaced by the layer baseline. The delta is a numerical diagnostic, never a confidence score.
+- **Reductions** are only explicit (`reduce(kind, dims)`), and each is recorded as its own derived record.
+- **Execution:**
+  - Attribution passes run outside tracing, on detached clones, with `torch.autograd.grad` only.
+  - Before/after guards cover the model fingerprint, train/eval flags, parameter `.grad` (restored and refused), caller tensors (values, `requires_grad`, `.grad`), hook counts, and CPU RNG.
+  - Foreign forward, backward, and parameter-tensor hooks are refused up front.
+  - One CLEAN traced reference pass records provenance, the observed input/output, and the MEASURED attributed activation. The target value must agree with the attribution passes.
+- **Claims:** a central protocol registry (`beyondnn.protocols`). `attribution_threshold` v1 justifies ATTRIBUTED_TO only: Σ|attribution| over the subject ≥ a declared threshold under the declared method, baseline, and call. The existing `ClaimTestResult` rule already refuses non-causal evidence for causal relations.
+- **Limitations:** `ATTRIBUTION_BASELINE_ASSUMPTION` and `ATTRIBUTION_NUMERICAL_APPROXIMATION` (IG), `LAYER_ATTRIBUTION_PARTIAL_COVERAGE` (layer), and `DISCRETE_INPUT_ATTRIBUTED_VIA_REPRESENTATION` (layer attribution on a model with integer inputs).
+- **Deferred:** custom attribution methods, attribution to module inputs, multi-sample attribution, and faithfulness metrics.
+
+**Reason:**
+- Attribution is method-relative evidence. Making every choice part of its identity, and keeping its status fixed, prevents it from being mistaken for measurement or causation.
+- Reusing the trace, persistence, and claim machinery avoids a second evidence system.
+- Native references make the Captum integration testable against analytic ground truth.
+
+**Alternatives considered:**
+- Tracing every IG step: rejected, because it would add n_steps passes of records that describe method internals, not evidence.
+- An `Estimand` on attribution records: rejected, because it would make attribution look like causal evidence.
+- Accepting Captum's default `Saliency(abs=True)` or its `riemann_trapezoid` as equivalent to the native rules: rejected. Both are documented convention differences.
+

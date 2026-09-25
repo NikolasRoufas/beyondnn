@@ -23,7 +23,7 @@ import dataclasses
 from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass
 from types import TracebackType
-from typing import Any
+from typing import Any, NoReturn
 
 import torch
 from torch import nn
@@ -32,6 +32,8 @@ from beyondnn.provenance import collect_environment, fingerprint_model, make_pro
 from beyondnn.provenance import record_occurrence as _record_occurrence
 from beyondnn.schema import (
     ActivationRecord,
+    AttributionRecord,
+    AttributionReduction,
     BaseRecord,
     ClaimRef,
     EvidenceRef,
@@ -233,6 +235,87 @@ class TraceResult:
                 f"{record.id}: provenance_id {record.provenance_id} does not name a "
                 "ProvenanceRecord in this trace"
             )
+        if isinstance(record, AttributionRecord):
+            self._check_attribution(record)
+        elif isinstance(record, AttributionReduction):
+            source = self._records[record.derived_from[0].record_id]
+            assert isinstance(source, AttributionRecord)
+            shape = source.value.shape
+            if record.dims[-1] >= len(shape) or record.value.shape != tuple(
+                d for i, d in enumerate(shape) if i not in record.dims
+            ):
+                raise TraceIntegrityError(
+                    f"{record.id}: reduction over dims {record.dims} of shape {shape} cannot "
+                    f"have shape {record.value.shape}"
+                )
+
+    def _check_attribution(self, record: AttributionRecord) -> None:
+        """The attributed tensor, call and pass are exactly the ones referenced (no
+        misassignment across calls, passes or input leaves)."""
+        refs = {r.kind: self._records[r.record_id] for r in record.derived_from}
+        output, attributed = refs["output"], refs.get("input", refs.get("activation"))
+        site, value = record.site, record.value
+
+        def fail(reason: str) -> NoReturn:
+            raise TraceIntegrityError(f"{record.id}: {reason}")
+
+        if not isinstance(output, OutputRecord) or output.pass_index != record.pass_index:
+            fail("the referenced output is not from the attribution's reference pass")
+        if isinstance(attributed, InputRecord):
+            if attributed.pass_index != record.pass_index:
+                fail("the attributed input is not from the reference pass")
+            leaf = next((t.ref for t in attributed.tensors if t.path == site.output_path), None)
+            if leaf is None:
+                fail(f"the reference input has no tensor at {site.output_path!r}")
+        elif isinstance(attributed, ActivationRecord):
+            if (attributed.site, attributed.call_index, attributed.pass_index) != (
+                site,
+                record.call_index,
+                record.pass_index,
+            ):
+                fail("the attributed activation is not the declared site/call/pass")
+            leaf = attributed.value
+        else:
+            fail("an attribution must reference its attributed input or activation")
+        if (leaf.shape, leaf.dtype) != (value.shape, value.dtype):
+            fail(
+                f"attribution shape/dtype {value.shape}/{value.dtype} does not match the "
+                f"attributed tensor {leaf.shape}/{leaf.dtype}"
+            )
+        baseline = record.baseline
+        if baseline is not None and baseline.value is not None:
+            if baseline.input_path is None:
+                expected = (value.shape, value.dtype)
+            else:
+                inputs = next(
+                    (
+                        r
+                        for r in self._records.values()
+                        if isinstance(r, InputRecord) and r.pass_index == record.pass_index
+                    ),
+                    None,
+                )
+                base_leaf = (
+                    None
+                    if inputs is None
+                    else next(
+                        (t.ref for t in inputs.tensors if t.path == baseline.input_path), None
+                    )
+                )
+                if base_leaf is None:
+                    fail(f"the baseline replaces {baseline.input_path!r}, not a reference input")
+                expected = (base_leaf.shape, base_leaf.dtype)
+            if (baseline.value.shape, baseline.value.dtype) != expected:
+                fail("the baseline does not match the shape/dtype of what it replaces")
+        if record.provenance_id is not None:
+            ours = self._records[record.provenance_id]
+            ref_prov = self._records.get(output.provenance_id or "")
+            if not (
+                isinstance(ours, ProvenanceRecord)
+                and isinstance(ref_prov, ProvenanceRecord)
+                and ours.model == ref_prov.model
+            ):
+                fail("the attribution's model identity differs from its reference pass")
 
     def _add_tensor(self, key: str, tensor: torch.Tensor) -> None:
         if self._sealed:
@@ -252,6 +335,12 @@ class TraceResult:
             elif isinstance(record, (InputRecord, OutputRecord)):
                 yield from (t.ref for t in record.tensors)
             elif isinstance(record, InterventionRecord) and record.value is not None:
+                yield record.value
+            elif isinstance(record, AttributionRecord):
+                yield record.value
+                if record.baseline is not None and record.baseline.value is not None:
+                    yield record.baseline.value
+            elif isinstance(record, AttributionReduction):
                 yield record.value
 
     # ------------------------------------------------------------ reading

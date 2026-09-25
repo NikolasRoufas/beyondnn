@@ -16,9 +16,7 @@ and no protocol justifies it yet, so sufficiency claims cannot be assessed.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from types import MappingProxyType
-
+from beyondnn.protocols import INTERVENTION_THRESHOLD, PROTOCOLS, check_policy
 from beyondnn.schema import (
     AssessmentPolicy,
     CausalEffect,
@@ -43,17 +41,7 @@ __all__ = [
     "threshold_spec",
 ]
 
-INTERVENTION_THRESHOLD = "intervention_threshold"
 _DECREASING = frozenset({Relation.NECESSARY_FOR, Relation.DECREASES})
-
-#: Which relations each registered protocol can justify. SUFFICIENT_FOR: none.
-PROTOCOLS: Mapping[str, frozenset[Relation]] = MappingProxyType(
-    {
-        INTERVENTION_THRESHOLD: frozenset(
-            {Relation.NECESSARY_FOR, Relation.DECREASES, Relation.INCREASES}
-        )
-    }
-)
 
 #: The Phase-2 assessment policy: the causal relations above need a SUPPORTS result
 #: from ``intervention_threshold``. SUFFICIENT_FOR is deliberately absent.
@@ -65,18 +53,6 @@ INTERVENTION_POLICY = AssessmentPolicy(
         for r in (Relation.NECESSARY_FOR, Relation.DECREASES, Relation.INCREASES)
     ),
 )
-
-
-def check_policy(policy: AssessmentPolicy) -> None:
-    """Raise unless every protocol a policy requires is registered and justifies its relation."""
-    for requirement in policy.requirements:
-        for protocol in requirement.protocols:
-            justified = PROTOCOLS.get(protocol)
-            if justified is None or requirement.relation not in justified:
-                raise EvidenceRuleError(
-                    f"policy {policy.name}/v{policy.version}: protocol {protocol!r} does not "
-                    f"justify {requirement.relation.value}"
-                )
 
 
 def threshold_spec(

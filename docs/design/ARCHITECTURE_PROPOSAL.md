@@ -245,6 +245,35 @@ result.trace            # one trace: CLEAN baseline pass, INTERVENTION pass (act
 - **Refusals:** training mode, RNG consumption, model-state drift between the paired passes, and interventions that did not apply.
 - **Claims:** decided only by the declared `intervention_threshold` protocol. Sufficiency cannot be assessed.
 
+### Attribution (Phase 3, `beyondnn/attribution/`, ADR-030)
+
+```python
+import beyondnn as bnn
+A, iv = bnn.attribution, bnn.interventions
+r = bnn.attribute(model.eval(), x, target=iv.metrics.select([0, 3]),
+                  method=A.integrated_gradients(baseline=A.zero_baseline(), n_steps=64))
+r.value                 # raw attribution tensor (shape of x); r.record is ATTRIBUTED
+r.completeness_delta    # IG numerical diagnostic, not a confidence score
+bnn.attribute(lm.eval(), ids, target=..., method=..., at=A.layer("token_embedding"),
+              reductions=[A.reduce("sum", (-1,))])   # embedding dims -> explicit per-position score
+```
+
+- **Dependencies:** schema ← provenance ← core ← interventions (metrics, `sample_id`) ← attribution. Captum is an optional adapter, imported only when a Captum method is used.
+- **Execution:**
+  - gradient passes run outside tracing, on detached clones, with `torch.autograd.grad` only;
+  - one CLEAN traced reference pass then provides provenance and the observed/measured records the attribution derives from.
+- **Refusals:**
+  - training mode;
+  - foreign forward, backward, or tensor gradient hooks;
+  - alias paths;
+  - an undeclared or ambiguous call;
+  - integer inputs for input attribution;
+  - RNG consumption;
+  - a target that is not reproducible;
+  - any change to the model, gradients, caller tensors, or hooks (parameter gradients are restored first).
+- **Claims:** `attribution_threshold` justifies only ATTRIBUTED_TO.
+- **Explain:** `explain()` never runs attribution. `Why.attributions` shows attribution records when a trace has them (Phase 4 synthesises views).
+
 ## Mode A vs Mode B
 
 | | Mode A `instrument(model)` | Mode B `InterpretableModule` (deferred) |

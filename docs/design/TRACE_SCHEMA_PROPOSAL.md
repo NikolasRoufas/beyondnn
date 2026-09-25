@@ -259,6 +259,24 @@ It migrates old record versions and remaps every reference to ids that migration
 - A `ProvenanceRecord` with `execution.mode = INTERVENTION` must name an `InterventionRecord` in the same trace.
 - Intervention tensors are retained tensors of the trace: persisted in `tensors.pt` and digest-checked on load.
 
+### A.14 Attribution (Phase 3, ADR-030)
+
+| Kind | Status | Fields |
+|---|---|---|
+| `attribution` | ATTRIBUTED (by kind; never supplied) | `method` (`AttributionMethodSpec`: `name` ∈ {gradient, input_x_gradient, integrated_gradients}, `implementation` ∈ {beyondnn, captum}, `implementation_version`, `params`; IG requires `n_steps` and an implementation-specific `rule`), `target` (built-in `MetricSpec`), `site` (root input leaf `args[i]` with `io=INPUT`, or a module OUTPUT leaf), `call_index`, `pass_index`, `sample_id`, `baseline` (`AttributionBaseline`: ZERO / TENSOR / INPUT_TENSOR with retained tensor and replaced `input_path`), `value` (retained raw attribution tensor, same shape and dtype as the attributed tensor), `target_value`, `diagnostics` (IG only: `baseline_target_value`, `attribution_sum`, `completeness_delta`) |
+| `attribution_reduction` | ATTRIBUTED | `reduction` ∈ {sum, abs_sum, l2}, `dims` (explicit, sorted, normalised), `value` (retained), `scalar` (iff every dimension was reduced) |
+
+- An attribution derives from exactly the reference pass's `OutputRecord` and the attributed `InputRecord` (input site) or `ActivationRecord` (module site).
+- **Container checks:**
+  - the referenced activation has exactly the record's site, call, and pass;
+  - the input has a leaf at the site path;
+  - shapes and dtypes match the attributed tensor;
+  - an input baseline matches the input it replaces;
+  - the attribution's model identity equals the reference pass's;
+  - a reduction's shape is its source's shape without `dims`.
+- `sample_id` is deliberately not an `Estimand`: attribution is not causal evidence, and evidence references to it carry no estimand.
+- The derivation table (unchanged since M1.1) keeps ATTRIBUTED and INTERVENTIONAL apart: neither may derive from the other.
+
 ---
 
 ## Part B: Proposals for later schema versions (original design, kept for history)

@@ -7,6 +7,11 @@ implementation revision and config (:class:`~beyondnn.schema.MetricDeclaration`)
 their code is never serialised, inspected, or verified, and effects using them
 carry ``CUSTOM_METRIC_UNVERIFIED``.
 
+Built-ins are also differentiable (:meth:`Metric.tensor`), so the same metric
+language defines Phase-3 attribution targets. A target is exactly one element;
+anything else is refused, never summed. Caller metrics have no differentiable form
+and cannot be attribution targets.
+
 ``path`` selects a tensor leaf of the model's return value (``""`` = the value
 itself; ``"[0]"``, ``'["logits"]'``, ...: the same grammar as trace leaf paths).
 """
@@ -46,6 +51,24 @@ class Metric:
 
     spec: MetricSpec
     function: Callable[[Any], float]
+    tensor_function: Callable[[Any], torch.Tensor] | None = None
+
+    def tensor(self, output: Any) -> torch.Tensor:
+        """The metric as a differentiable 0-d float64 tensor (built-ins only)."""
+        if self.tensor_function is None:
+            raise MetricError(
+                f"metric {self.spec.name} has no differentiable form; caller metrics cannot "
+                "be attribution targets in Phase 3"
+            )
+        try:
+            value = self.tensor_function(output)
+        except MetricError:
+            raise
+        except Exception as exc:
+            raise MetricError(f"metric {self.spec.name} failed: {exc}") from exc
+        if value.numel() != 1:
+            raise MetricError(f"metric {self.spec.name} is not a single element; not summed")
+        return value.reshape(())
 
     def __call__(self, output: Any) -> float:
         try:
@@ -80,13 +103,28 @@ def _element(t: torch.Tensor, index: tuple[int, ...]) -> float:
     return float(selected.double().item())
 
 
+def _element_t(t: torch.Tensor, index: tuple[int, ...]) -> torch.Tensor:
+    if not t.is_floating_point():
+        raise MetricError(f"cannot differentiate a {t.dtype} output")
+    selected = t[index]
+    if selected.numel() != 1:
+        raise MetricError(
+            f"index {index} does not select a single element of shape {tuple(t.shape)}"
+        )
+    return selected.double().reshape(())
+
+
 def select(index: Sequence[int], *, path: str = "") -> Metric:
     """The element ``output[path][index]`` (e.g. one logit)."""
     idx = _index(index)
     spec = MetricSpec(
         name="select", builtin=True, params=JsonMap({"path": path, "index": list(idx)})
     )
-    return Metric(spec, lambda out: _element(get_leaf(out, path), idx))
+    return Metric(
+        spec,
+        lambda out: _element(get_leaf(out, path), idx),
+        lambda out: _element_t(get_leaf(out, path), idx),
+    )
 
 
 def difference(index_a: Sequence[int], index_b: Sequence[int], *, path: str = "") -> Metric:
@@ -100,13 +138,26 @@ def difference(index_a: Sequence[int], index_b: Sequence[int], *, path: str = ""
         leaf = get_leaf(out, path)
         return _element(leaf, a) - _element(leaf, b)
 
-    return Metric(spec, fn)
+    def fn_t(out: Any) -> torch.Tensor:
+        leaf = get_leaf(out, path)
+        return _element_t(leaf, a) - _element_t(leaf, b)
+
+    return Metric(spec, fn, fn_t)
 
 
 def mean(*, path: str = "") -> Metric:
     """The mean of all elements of ``output[path]`` (computed in float64)."""
     spec = MetricSpec(name="mean", builtin=True, params=JsonMap({"path": path}))
-    return Metric(spec, lambda out: float(get_leaf(out, path).detach().double().mean().item()))
+
+    def fn_t(out: Any) -> torch.Tensor:
+        leaf = get_leaf(out, path)
+        if not leaf.is_floating_point():
+            raise MetricError(f"cannot differentiate a {leaf.dtype} output")
+        return leaf.double().mean()
+
+    return Metric(
+        spec, lambda out: float(get_leaf(out, path).detach().double().mean().item()), fn_t
+    )
 
 
 def custom(

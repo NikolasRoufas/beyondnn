@@ -19,6 +19,7 @@ from . import schema
 from .schema import EstimandScope, EvidenceStatus, Outcome, Relation, Verdict
 
 if TYPE_CHECKING:
+    from .attribution import attribute
     from .core.persistence import load_trace
     from .core.trace import TraceResult, recording, trace
     from .explain import instrument
@@ -34,6 +35,8 @@ __all__ = [
     "TraceResult",
     "Verdict",
     "__version__",
+    "attribute",
+    "attribution",
     "instrument",
     "intervene",
     "interventions",
@@ -50,14 +53,15 @@ _LAZY = {
     "load_trace": "beyondnn.core.persistence",
     "instrument": "beyondnn.explain",
     "intervene": "beyondnn.interventions",
+    "attribute": "beyondnn.attribution",
 }
 
 
 def __getattr__(name: str) -> Any:
-    if name == "interventions":
+    if name in ("interventions", "attribution"):
         import importlib
 
-        module = importlib.import_module("beyondnn.interventions")
+        module = importlib.import_module(f"beyondnn.{name}")
         globals()[name] = module
         return module
     module_name = _LAZY.get(name)
