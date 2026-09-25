@@ -888,19 +888,7 @@ def curve(
             "points, anchors included; drop = F(x) - F(x_k)",
         }
         provenance = _provenance(trace, base_pass, f"{mode}_curve", {"points": len(pts)})
-        as_ranking = Selection(
-            ranking.site,
-            ranking.call_index,
-            ranking.source,
-            ranking.rule,
-            ranking.order,
-            n,
-            None,
-            ranking.sample_id,
-            ranking.scores,
-            ranking.source_record,
-            ranking.target,
-        )
+        as_ranking = ranking.with_k(None)  # keeps unit_axes / unit_reduction (ADR-034)
         trace._add(_selection_record(as_ranking, sample, provenance))
         measurements: dict[str, Any] = {
             "points": pts,

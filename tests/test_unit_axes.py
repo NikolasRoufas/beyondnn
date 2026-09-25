@@ -29,6 +29,7 @@ from beyondnn.faithfulness.claims import evaluate
 from beyondnn.schema import (
     CausalEffect,
     ClaimTestSpec,
+    EvidenceSelection,
     InterventionRecord,
     Outcome,
     SchemaError,
@@ -262,6 +263,27 @@ def test_diagnostics_rank_declared_units() -> None:
     assert d.measurements["topk_jaccard"] == 1.0
     assert d.protocol_result.params["unit_axes"] == (2, 3)
     bnn.compose(bnn.trace(model, IMG), attributions=[a, b], faithfulness=[d])
+
+
+def test_curves_over_declared_units_record_and_verify_their_units() -> None:
+    model = Pixels().eval()
+    attr = grad_attr(model)
+    c = F.curve(
+        model,
+        IMG,
+        ranking=F.ranking(attr, unit_axes=PIXELS, reduce="sum"),
+        target=SEL,
+        mode="remove",
+        points=[0, 1, 2],
+        controls=F.controls(5, seed=0),
+        attributions=[attr],
+    )
+    assert c.drops == (0.0, 99.0, 187.0)
+    (selection,) = [r for r in c.trace.records if isinstance(r, EvidenceSelection)]
+    assert selection.unit_axes == PIXELS
+    assert selection.unit_reduction == "sum"
+    assert selection.k is None
+    bnn.compose(bnn.trace(model, IMG), attributions=[attr], faithfulness=[c])
 
 
 # ------------------------------------------------------------------ magnitude-matched controls
