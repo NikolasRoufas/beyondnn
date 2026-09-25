@@ -252,3 +252,52 @@ def test_rendered_faithfulness_makes_no_global_statement() -> None:
     ):
         assert phrase not in lowered, phrase
     assert "each bears only on its own claim" in text
+
+
+def test_a_curve_with_another_target_is_refused_in_composition() -> None:
+    model = FM.Weighted8().eval()
+    attr = A.attribute(model, ONES, target=iv.metrics.mean(), method=A.gradient())
+    base = A.attribute(model, ONES, target=SEL, method=ig(8))
+    c = F.curve(
+        model, ONES, ranking=F.ranking(base), target=SEL, mode="remove", attributions=[base]
+    )
+    with pytest.raises(TargetMismatchError):
+        bnn.compose(bnn.trace(model, ONES), attributions=[attr], faithfulness=[c])
+
+
+def test_a_forged_sufficiency_result_is_refused(tmp_path: Path) -> None:
+    model = FM.EqualSum4().eval()
+    r = F.run(model, torch.ones(1, 4), test=suff(0.5), selection=declared(0, n=4))
+    assert r.outcome is Outcome.CONTRADICTS
+
+    def flip(data: dict[str, Any]) -> None:
+        data["outcome"] = "supports"
+
+    forged = F.FaithfulnessResult(_forge(tmp_path, r.trace, "claim_test_result", flip))
+    with pytest.raises(EvidenceIntegrityError, match="does not follow"):
+        bnn.compose(bnn.trace(model, torch.ones(1, 4)), faithfulness=[forged])
+
+
+def test_tampered_selection_scores_are_refused(tmp_path: Path) -> None:
+    attr = weighted8_attr()
+    model = FM.Weighted8().eval()
+    r = F.run(model, ONES, test=comp(), selection=F.top_k(attr, k=2), attributions=[attr])
+
+    def rescore(data: dict[str, Any]) -> None:
+        data["scores"] = [0.0] * len(data["scores"])
+
+    bad = F.FaithfulnessResult(_forge(tmp_path, r.trace, "evidence_selection", rescore), (attr,))
+    with pytest.raises(EvidenceIntegrityError, match="re-derive"):
+        bnn.compose(bnn.trace(model, ONES), faithfulness=[bad])
+
+
+def test_a_diagnostic_with_another_target_is_refused_in_composition() -> None:
+    model = FM.Weighted8().eval()
+    other = A.attribute(model, ONES, target=iv.metrics.mean(), method=A.gradient())
+    a1 = A.attribute(model, ONES, target=SEL, method=ig(8))
+    a2 = A.attribute(model, ONES, target=SEL, method=A.gradient())
+    agreement = F.method_agreement(model, ONES, a=a1, b=a2, target=SEL, k=2)
+    with pytest.raises(TargetMismatchError):
+        bnn.compose(bnn.trace(model, ONES), attributions=[other], faithfulness=[agreement])
+    ok = bnn.compose(bnn.trace(model, ONES), attributions=[a1], faithfulness=[agreement])
+    assert ok.why.coverage.faithfulness_protocols == ("method_agreement",)

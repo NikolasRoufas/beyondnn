@@ -625,3 +625,163 @@ def test_schema_rules_of_the_new_records() -> None:
             samples=("s",),
             provenance_id="p",
         )
+
+
+def test_paired_differences_pair_each_sample_with_its_own_controls() -> None:
+    samples = [ONES, torch.full((1, 8), 2.0), torch.arange(1.0, 9.0).reshape(1, 8)]
+    result = F.run_dataset(
+        FM.Weighted8().eval(),
+        samples,
+        test=comp(controls=F.controls(15, seed=3)),
+        rule=F.fixed(declared(0, 1, n=8)),
+        permutation_draws=200,
+    )
+    expected = []
+    for r in result.results:
+        controls = [float(d) for d in seq(r.statistics["control_drops"])]
+        expected.append(float(r.statistics["drop"]) - sum(controls) / len(controls))  # type: ignore[arg-type]
+    paired = result.summary("paired_control").measurements
+    assert list(seq(paired["paired_differences"])) == pytest.approx(expected)
+    assert paired["mean"] == pytest.approx(sum(expected) / 3)
+    assert [r.statistics["drop"] for r in result.results] == [12.0, 24.0, 16.0]
+
+
+# ------------------------------------------------------------------ independent guard tests
+
+
+def test_a_curve_ranked_on_another_input_is_refused() -> None:
+    attr = A.attribute(FM.Weighted8().eval(), torch.full((1, 8), 2.0), target=SEL, method=ig(8))
+    with pytest.raises(F.SelectionMismatchError, match="another input"):
+        F.curve(FM.Weighted8().eval(), ONES, ranking=F.ranking(attr), target=SEL, mode="remove")
+
+
+def test_a_faithfulness_run_leaves_the_global_rng_untouched() -> None:
+    model, other = FM.Weighted8().eval(), FM.Weighted8().eval()  # init draws happen here
+    ranking = F.ranking(weighted8_attr())
+    rng = torch.get_rng_state()
+    F.run(model, ONES, test=comp(controls=F.controls(20, seed=5)), selection=declared(0, 1, n=8))
+    F.curve(other, ONES, ranking=ranking, target=SEL, mode="retain", controls=F.controls(5, seed=2))
+    assert torch.equal(rng, torch.get_rng_state())
+
+
+def test_internal_retention_curves_carry_the_site_relative_limitation() -> None:
+    model = FM.ProbeReadable().eval()
+    attr = A.attribute(
+        model, x(3, 5), target=SEL, method=A.input_x_gradient(), at=A.layer("hidden")
+    )
+    c = F.curve(model, x(3, 5), ranking=F.ranking(attr), target=SEL, mode="retain")
+    assert "SITE_RELATIVE_SUFFICIENCY" in {lim.code for lim in c.trace.limitations}
+    assert c.drops == (6.0, 0.0, 0.0)
+    removal = F.curve(model, x(3, 5), ranking=F.ranking(attr), target=SEL, mode="remove")
+    assert "SITE_RELATIVE_SUFFICIENCY" not in {lim.code for lim in removal.trace.limitations}
+
+
+def test_sufficiency_paired_controls_are_oriented_and_exact() -> None:
+    samples = [ONES, torch.full((1, 8), 2.0)]
+    result = F.run_dataset(
+        FM.Weighted8().eval(),
+        samples,
+        test=suff(100.0, controls=F.controls(15, seed=1)),
+        rule=F.fixed(declared(0, 1, n=8)),
+        permutation_draws=100,
+    )
+    expected = []
+    for r in result.results:
+        controls = [float(d) for d in seq(r.statistics["control_drops"])]
+        expected.append(sum(controls) / len(controls) - float(r.statistics["drop"]))  # type: ignore[arg-type]
+    diffs = list(seq(result.summary("paired_control").measurements["paired_differences"]))
+    assert diffs == pytest.approx(expected)
+    assert all(d > 0 for d in expected)  # retaining the causal pair beats random pairs
+
+
+def test_a_crafted_spec_cannot_make_sufficiency_decide_necessity() -> None:
+    r = F.run(FM.EqualSum4().eval(), torch.ones(1, 4), test=suff(0.5), selection=declared(0, n=4))
+    from beyondnn.schema import Claim, ClaimTestSpec
+
+    spec = next(rec for rec in r.trace.records if isinstance(rec, ClaimTestSpec))
+    claim = next(rec for rec in r.trace.records if isinstance(rec, Claim))
+    crafted_claim = Claim(
+        statement=claim.statement,
+        relation=Relation.NECESSARY_FOR,
+        subject=claim.subject,
+        target=claim.target,
+        estimand=claim.estimand,
+        source=claim.source,
+    )
+    crafted_spec = ClaimTestSpec(
+        protocol=spec.protocol,
+        protocol_version=1,
+        applicable_relations=(Relation.NECESSARY_FOR,),
+        criteria=spec.criteria,
+        params=spec.params,
+    )
+    from beyondnn.schema import CausalEffect
+
+    effect = next(e for e in r.trace.records if isinstance(e, CausalEffect))
+    records = {rec.id: rec for rec in r.trace.records if rec.KIND == "intervention"}
+    result = F.evaluate(
+        crafted_claim,
+        crafted_spec,
+        effect,
+        (),
+        records,  # type: ignore[arg-type]
+        no_op=False,
+        provenance_id="p",
+    )
+    assert result.outcome is Outcome.NOT_APPLICABLE
+
+
+def test_an_internal_no_op_perturbation_is_inconclusive() -> None:
+    model = FM.ProbeReadable().eval()
+    r = F.run(
+        model,
+        x(3, 5),
+        test=comp(replacement=F.replacement(x(3, 5))),
+        selection=declared(0, n=2, site="hidden"),
+    )
+    assert r.outcome is Outcome.INCONCLUSIVE
+    assert r.statistics["no_op"] is True
+    assert r.drop == 0.0
+
+
+def test_default_curve_points_include_both_anchors() -> None:
+    attr = weighted8_attr()
+    for mode in ("remove", "retain"):
+        c = F.curve(FM.Weighted8().eval(), ONES, ranking=F.ranking(attr), target=SEL, mode=mode)
+        assert c.points == tuple(range(9))
+        anchor = 0 if mode == "remove" else 8
+        assert c.drops[anchor] == 0.0
+        assert seq(c.protocol_result.measurements["effects"])[anchor] is None
+
+
+def test_internal_sufficiency_failures_also_carry_the_site_relative_limitation() -> None:
+    lost = F.run(
+        FM.ProbeReadable().eval(),
+        x(3, 5),
+        test=suff(0.5),
+        selection=declared(1, n=2, site="hidden"),
+    )
+    assert lost.outcome is Outcome.CONTRADICTS
+    (lim,) = [lim for lim in lost.limitations if lim.code == "SITE_RELATIVE_SUFFICIENCY"]
+    assert lim.applies_to == (lost.result.id,)
+
+
+def test_every_counterexample_is_listed() -> None:
+    samples = [x(3, 5), x(3, 0), x(2, 2), x(5, 0)]
+    result = F.run_dataset(
+        Interaction().eval(), samples, test=comp(), rule=F.fixed(declared(0, n=1, site="a"))
+    )
+    assert result.counterexamples == (sample_id(x(3, 0)), sample_id(x(5, 0)))
+    assert result.summary("counterexample").measurements["held"] == 2
+
+
+def test_a_poor_retained_selection_has_negative_paired_differences() -> None:
+    result = F.run_dataset(
+        FM.Weighted8().eval(),
+        [ONES, torch.full((1, 8), 3.0)],
+        test=suff(100.0, controls=F.controls(30, seed=2)),
+        rule=F.fixed(declared(6, 7, n=8)),
+        permutation_draws=100,
+    )
+    diffs = list(seq(result.summary("paired_control").measurements["paired_differences"]))
+    assert all(d < 0 for d in diffs)  # retaining two unused units is worse than random pairs
