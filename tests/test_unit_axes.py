@@ -187,6 +187,27 @@ def test_unit_scores_need_declared_axes_and_an_explicit_reduction() -> None:
     assert c.n_units == 2
 
 
+class _Negated(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.inner = Pixels()
+
+    def forward(self, t: torch.Tensor) -> torch.Tensor:
+        out: torch.Tensor = -self.inner(t)
+        return out
+
+
+def test_a_declared_reduction_is_recorded_even_for_single_element_units() -> None:
+    model = _Negated().eval()
+    one_channel = torch.ones(1, 1, 3, 3)  # broadcast over the two weight channels
+    attr = grad_attr(model, one_channel)
+    sel = F.top_k(attr, k=1, unit_axes=PIXELS, reduce="l2")
+    assert sel.scores == tuple(11.0 * (u + 1) for u in range(9))  # |-11 (u + 1)|
+    r = F.run(model, one_channel, test=comp(50.0), selection=sel, attributions=[attr])
+    assert r.selection.unit_reduction == "l2"
+    bnn.compose(bnn.trace(model, one_channel), attributions=[attr], faithfulness=[r])
+
+
 def test_a_pixel_comprehensiveness_run_is_exact_recorded_and_composable() -> None:
     model = Pixels().eval()
     attr = grad_attr(model)

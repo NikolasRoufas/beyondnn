@@ -129,7 +129,6 @@ def ranking(
         raise TypeError("ranking() takes an AttributionResult")
     scores = unit_scores(result.value, unit_axes, reduce)
     axes = check_axes(unit_axes)
-    within = result.value.numel() // len(scores)
     record = result.record
     return Selection(
         site=record.site,
@@ -144,9 +143,9 @@ def ranking(
         source_record=record.id,
         target=record.target,
         unit_axes=axes,
-        unit_reduction=(reduce if reduce is not None else "sum")
-        if axes is not None and within > 1
-        else None,
+        # the declared reduction is recorded whenever unit axes are declared, even when
+        # each unit is one element: the scores were computed with it (ADR-034)
+        unit_reduction=reduce if axes is not None else None,
     )
 
 
