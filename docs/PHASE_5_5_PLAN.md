@@ -181,3 +181,42 @@ Hardware and all package versions are recorded.
 ## 18. Corrections log
 
 (Empty at pre-registration. Corrections are appended here, with the original text kept.)
+
+**Appended 2026-09-26, before the analysis script was run on any full result file.**
+- **What had been seen by then:**
+  - progress logs;
+  - the two-sample model-A smoke run (outcome counts for one sample);
+  - no aggregate over samples.
+
+**Corrections (the original text above is unchanged):**
+
+- **§4 / environment.** scikit-learn **1.9.1** was installed, not 1.9.0. The bundled `load_breast_cancer` and `load_digits` data are the same files across these versions. Recorded in every result's `environment`.
+- **§6, model C, IG.** Captum's `LayerIntegratedGradients` accepts only *input-space* baselines (token ids), so it cannot express the pre-registered *layer-space zero* baseline. The baseline is kept and the implementation changes: BeyondNN's native IG at `bert.embeddings.word_embeddings`. Models A and B use the Captum adapter at the input as planned.
+- **§6, random method.** The seeded permutation uses seed 30 000 + sample index (the seed was not stated).
+- **§6, ablation ranking.** It is computed per replacement, as single-unit removals under the same replacement as the test (circular, as §2 H2 says), and ranked by |drop| as in the general §6 rule.
+- **§8, curves.**
+  - `faithfulness.curve` refuses declared rankings (API review). The random reference is therefore the curve's own seeded random-ranking controls (N = 20, seed 10 000 + index).
+  - The ablation ranking's curve is built from public interventions in one `compare_family` (zero replacement).
+  - The library diagnostics `method_agreement` and `ig_step_sensitivity` take one reduction for both attributions, so they use `sum` for every method. H6 is computed from the per-method rankings (the §6 reductions).
+
+**Clarifications of the analysis rules (no hypothesis changed):**
+
+- **H1.** Evaluated per (model, site). "Holds" requires both IG and ablation to reach the bar. There is no cross-site aggregate.
+- **H1b, H7.** Evaluated in the H1 setting (p = 10%, r1, comprehensiveness); all k are also reported.
+- **H2.** k = 1 is the literal unit count. It is evaluated per replacement; r1 is primary.
+- **H3.** A cell "disagrees" if one test SUPPORTS and the other CONTRADICTS. Cells with an INCONCLUSIVE (no-op) outcome are excluded and counted. Reported per site and pooled.
+- **H5.** Cells are (sample, method, k, replacement, test) with count controls, no-ops excluded.
+- **H6.** Primary: the pairs of attribution methods (gradient, input × gradient, IG), r1, comprehensiveness. With ablation added as a secondary analysis.
+- **H9.** The aggregate is the majority outcome per (method, k, replacement, test) cell across samples. "Hidden" means the per-sample results that differ from the majority, as a share of the per-sample results in cells containing both SUPPORTS and CONTRADICTS.
+
+**Provenance of the runs:**
+
+- A framework BUG found by the realistic runs was fixed during the phase: ADR-036, "reproducibility tolerance" (`4862125`). Two defects in the ADR-034 implementation were also fixed: curve units (`2e4e662`) and the recorded reduction (`a5768ec`).
+- Model B was re-run from the start after those fixes.
+- The model-A and model-C main runs started at `622150d`. They are unaffected:
+  - A uses last-axis units;
+  - C's units always span 128 elements, so their reduction was always recorded;
+  - neither run uses curves;
+  - neither hit the tolerance refusal.
+- The model-C diagnostics started at `2e4e662`, before `a5768ec`, which does not affect C for the same reason. Each result file records its commit.
+
