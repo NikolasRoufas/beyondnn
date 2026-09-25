@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import gc
 import weakref
 from collections.abc import Callable
@@ -55,8 +56,8 @@ def test_hooks_exist_only_inside_the_session() -> None:
     assert hook_count(model) == 0  # nothing installed before entry
     with session:
         assert session.active
-        # root: pass-start + pass-end; shared: pre + output + cleanup
-        assert hook_count(model) == session.installed_hooks == 5
+        # root: pass-start + pass-end; shared: guard + observe + output + cleanup
+        assert hook_count(model) == session.installed_hooks == 6
     assert not session.active
     assert hook_count(model) == 0
 
@@ -64,11 +65,11 @@ def test_hooks_exist_only_inside_the_session() -> None:
 @pytest.mark.parametrize(
     ("kwargs", "expected"),
     [
-        ({"outputs": ["shared"]}, 5),
-        ({"inputs": ["shared"]}, 4),  # no output-observation hook
-        ({"inputs": ["shared"], "outputs": ["shared"]}, 5),  # INPUT+OUTPUT share pre/cleanup
-        ({"outputs": ["shared", "shared", "*.linear", "shared.**"]}, 8),  # dedup: shared + linear
-        ({"outputs": [""]}, 5),  # root: bookkeeping pair + its own three
+        ({"outputs": ["shared"]}, 6),
+        ({"inputs": ["shared"]}, 5),  # no output-observation hook
+        ({"inputs": ["shared"], "outputs": ["shared"]}, 6),  # INPUT+OUTPUT share guard/cleanup
+        ({"outputs": ["shared", "shared", "*.linear", "shared.**"]}, 10),  # shared + linear
+        ({"outputs": [""]}, 6),  # root: bookkeeping pair + its own four
     ],
 )
 def test_physical_hooks_are_installed_once(kwargs: dict[str, Any], expected: int) -> None:
@@ -553,7 +554,7 @@ def test_alias_group_mode_observes_each_execution_once_without_a_path() -> None:
     with HookSession(
         model, sink=seen.append, outputs=["left", "right"], alias_policy=AliasPolicy.GROUP
     ) as session:
-        assert session.installed_hooks == 2 + 3  # one physical module, hooked once
+        assert session.installed_hooks == 2 + 4  # one physical module, hooked once
         model(torch.ones(1, 2))
     assert [(e.paths, e.path_specific, e.call_index) for e in seen] == [
         (("left", "right"), False, 0),
@@ -624,3 +625,89 @@ def test_alias_group_emits_one_event_per_execution_for_any_selection() -> None:
     grouped = [e for e in seen if not e.path_specific]
     assert len(grouped) == 2  # two executions (left, right), not four
     assert [e.call_index for e in grouped] == [0, 1]
+
+
+# ----------------------------------------------------------------- M1.5 fix: invocation guard
+
+
+class RecursiveWithFailingInner(nn.Module):
+    """Outer call recurses; the first inner attempt is rejected by a user pre-hook."""
+
+    def forward(self, x: torch.Tensor, depth: int = 0) -> torch.Tensor:
+        if depth == 0:
+            with contextlib.suppress(RuntimeError):
+                self(x, depth=1)  # user pre-hook raises for depth == 1
+            inner: torch.Tensor = self(x, depth=2)  # a later inner call succeeds
+            return inner + 1
+        return x * 2
+
+
+def _reject_depth_1(module: nn.Module, args: Any, kwargs: dict[str, Any]) -> None:
+    if kwargs.get("depth") == 1:
+        raise RuntimeError("user pre-hook rejected the inner call")
+
+
+@pytest.mark.parametrize("as_child", [False, True])
+def test_user_pre_hook_failure_inside_recursion_keeps_outer_frame(as_child: bool) -> None:
+    core = RecursiveWithFailingInner()
+    model: nn.Module = nn.Sequential(core) if as_child else core
+    path = "0" if as_child else ""
+    user = core.register_forward_pre_hook(_reject_depth_1, with_kwargs=True)
+    rec = Recorder()
+    with HookSession(model, sink=rec, inputs=[path], outputs=[path]):
+        y = model(torch.ones(1, 2))
+        y2 = model(torch.ones(1, 2))
+    user.remove()
+    assert torch.equal(y, torch.full((1, 2), 3.0))
+    assert torch.equal(y2, y)
+    expected_pass = [
+        ("input", (path,), 0, 0),  # outer
+        # inner attempt: call 1 consumed by the guard, no INPUT event (rejected before observation)
+        ("input", (path,), 0, 2),
+        ("output", (path,), 0, 2),
+        ("output", (path,), 0, 0),  # outer output still paired with call 0
+    ]
+    second = [(io, p, 1, c) for io, p, _, c in expected_pass]
+    assert rec.events == expected_pass + second
+    assert hook_count(model) == 0
+
+
+def test_rejected_attempt_consumes_call_index_without_input_event() -> None:
+    model = TinyMLP()
+    state = {"reject": True}
+
+    def reject_once(module: nn.Module, args: Any) -> None:
+        if state["reject"]:
+            state["reject"] = False
+            raise RuntimeError("rejected")
+
+    user = model.shared.register_forward_pre_hook(reject_once)
+    rec = Recorder()
+    with HookSession(model, sink=rec, inputs=["shared"]):
+        with pytest.raises(RuntimeError, match="rejected"):
+            model(_mlp_x())
+        model.shared(torch.ones(1, 8))  # out of pass
+        model(_mlp_x())
+    user.remove()
+    assert rec.events == [
+        # pass 0: call 0 attempted and rejected -> nothing observed
+        ("input", ("shared",), -1, 0),
+        ("input", ("shared",), 1, 0),
+        ("input", ("shared",), 1, 1),
+    ]
+
+
+def test_sessions_refuse_global_forward_pre_hooks() -> None:
+    model = TinyMLP()
+    handle = nn.modules.module.register_module_forward_pre_hook(lambda m, a: None)
+    try:
+        with (
+            pytest.raises(HookSessionError, match="global module forward pre-hooks"),
+            HookSession(model, sink=Recorder(), outputs=["shared"]),
+        ):
+            pass
+    finally:
+        handle.remove()
+    assert hook_count(model) == 0
+    with HookSession(model, sink=Recorder(), outputs=["shared"]):
+        pass

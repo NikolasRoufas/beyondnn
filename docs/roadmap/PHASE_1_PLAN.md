@@ -166,7 +166,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Models that construct submodules lazily at first forward are unsupported in v0. They raise a clear error.
 - **Scope:** about 250 LOC, about 250 LOC tests.
 
-## M1.5: HookSession: **implemented, awaiting review**
+## M1.5: HookSession: **done (approved 2026-09-25 after the invocation-guard fix)**
 
 - **As implemented:** `beyondnn/core/hooks.py` (`HookSession`, `HookEvent`, `AliasPolicy`, `AliasSiteAmbiguityError`, `HookSessionError`; internal, not exported) and `tests/test_hooks.py`. Semantics are in ADR-021.
 

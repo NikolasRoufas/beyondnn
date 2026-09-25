@@ -173,3 +173,12 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
 - **Conclusion:** the M1.6 hard gate is resolved.
 - **Next action:** M1.5 and gate review, then M1.6.
 
+---
+
+## 2026-09-25: M1.5 invocation-guard fix: regression and mutation check
+- **Commit:** "Fix recursive hook invocation bookkeeping" (parent `5c96212`)
+- **Experiment:** a recursive module whose inner attempt (`depth=1`) is rejected by a user pre-hook. The outer call catches the error and makes another inner call. Tested both with the module as the root and as a child.
+- **Result:** the events are outer INPUT (call 0); inner attempt with call 1 consumed and no INPUT event; inner INPUT/OUTPUT (call 2); outer OUTPUT (call 0). Pass 1 repeats this exactly, and all hooks are removed afterwards.
+- **Mutation:** restoring the pre-fix design (claiming in the observation pre-hook, no guard) is caught by both regression tests. Before the fix, this scenario would have popped the outer frame.
+- **Conclusion:** fixed. Remaining pre-guard entry point: global module pre-hooks, which sessions now refuse.
+

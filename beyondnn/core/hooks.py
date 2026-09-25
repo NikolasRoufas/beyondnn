@@ -12,13 +12,24 @@ value means, or that the module caused any prediction.
 
 Hook layout (per session, per physical module object):
 
-* every observed module: one pre-hook (claims the invocation's call index; emits
-  INPUT if selected) and one ``always_call`` cleanup forward hook (releases the
-  invocation; never raises, never emits);
+* every observed module:
+    - a *guard* pre-hook, prepended so it runs before any user pre-hook: claims
+      the invocation's call index and pushes its frame; never emits;
+    - an *observation* pre-hook, appended so it runs after user pre-hooks: emits
+      INPUT (if selected) with the arguments ``forward`` actually receives;
+    - an ``always_call`` *cleanup* forward hook: pops exactly the frame the guard
+      pushed; never raises, never emits;
 * modules observed at OUTPUT: one more ordinary forward hook, which runs only when
   the call succeeded and emits OUTPUT;
-* the root model: one prepended pass-start pre-hook and one ``always_call``
-  pass-end forward hook for pass bookkeeping (never emit).
+* the root model: one pass-start pre-hook (prepended, runs first of all) and one
+  ``always_call`` pass-end forward hook for pass bookkeeping (never emit).
+
+Because the guard runs before user pre-hooks, a user pre-hook that raises
+(also inside a recursive call) cannot make the cleanup release an enclosing
+invocation's frame: the attempt consumed its own call index, produced no INPUT
+event, and its own frame is removed. Global module pre-hooks
+(``register_module_forward_pre_hook``) run before any per-module hook, so a
+session refuses to start while any are registered.
 
 Selecting a module through several patterns, paths, or both INPUT and OUTPUT
 never installs duplicate hooks.
@@ -183,6 +194,11 @@ class HookSession:
     def __enter__(self) -> HookSession:
         if self._state != "new":
             raise HookSessionError("a HookSession can be entered only once")
+        if _global_forward_pre_hooks():
+            raise HookSessionError(
+                "global module forward pre-hooks are registered; they run before BeyondNN's "
+                "invocation guard, so call pairing could not be guaranteed. Remove them first."
+            )
         targets = self._plan()
         self._state = "active"
         try:
@@ -242,12 +258,16 @@ class HookSession:
 
     def _install(self, targets: list[_Target]) -> None:
         root = self._model
-        self._handles.append(
-            root.register_forward_pre_hook(self._pass_start, with_kwargs=True, prepend=True)
-        )
         for target in targets:
             self._handles.append(
-                target.module.register_forward_pre_hook(self._pre_hook(target), with_kwargs=True)
+                target.module.register_forward_pre_hook(
+                    self._guard_hook(target), with_kwargs=True, prepend=True
+                )
+            )
+            self._handles.append(
+                target.module.register_forward_pre_hook(
+                    self._observe_hook(target), with_kwargs=True
+                )
             )
             if target.observe_output:
                 self._handles.append(
@@ -258,6 +278,10 @@ class HookSession:
                     self._cleanup_hook(target), with_kwargs=True, always_call=True
                 )
             )
+        # Registered last with prepend=True, so it runs before the root's guard.
+        self._handles.append(
+            root.register_forward_pre_hook(self._pass_start, with_kwargs=True, prepend=True)
+        )
         self._handles.append(
             root.register_forward_hook(self._pass_end, with_kwargs=True, always_call=True)
         )
@@ -287,10 +311,15 @@ class HookSession:
 
     # ------------------------------------------------------------ observation hooks
 
-    def _pre_hook(self, target: _Target) -> Callable[..., None]:
+    def _guard_hook(self, target: _Target) -> Callable[..., None]:
+        def hook(module: nn.Module, args: Any, kwargs: Any) -> None:
+            target.stack.append(self._claim(target))  # attempt identity; never emits
+
+        return hook
+
+    def _observe_hook(self, target: _Target) -> Callable[..., None]:
         def hook(module: nn.Module, args: tuple[Any, ...], kwargs: dict[str, Any]) -> None:
-            pass_index, call_index = self._claim(target)
-            target.stack.append((pass_index, call_index))
+            pass_index, call_index = target.stack[-1]
             if target.observe_input:
                 self._sink(
                     HookEvent(
@@ -331,3 +360,13 @@ class HookSession:
                 target.stack.pop()
 
         return hook
+
+
+def _global_forward_pre_hooks() -> bool:
+    """Whether any global module forward pre-hooks are registered (torch-private dict)."""
+    import torch.nn.modules.module as module_impl
+
+    registry = getattr(module_impl, "_global_forward_pre_hooks", None)
+    if registry is None:
+        raise HookSessionError("cannot inspect global forward pre-hooks on this torch version")
+    return len(registry) > 0

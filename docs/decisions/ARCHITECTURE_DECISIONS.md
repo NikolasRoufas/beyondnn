@@ -573,7 +573,7 @@ Revision note (2026-09-25, review, before acceptance):
 ## ADR-021: HookSession semantics: physical hooks, indices, aliases, no retention
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for M1.5 implementation. Awaiting M1.5 review.
+- **Status:** Accepted after the invocation-guard fix (M1.5 review of 2026-09-25). See the amendment at the end of this ADR.
 
 **Decision** (`beyondnn/core/hooks.py`, internal):
 - **Scope.** `HookSession(model, sink=…, outputs=[…], inputs=[…], alias_policy=REFUSE)` is a single-use context manager.
@@ -608,6 +608,16 @@ Revision note (2026-09-25, review, before acceptance):
 - Edge case: if a user or global pre-hook that runs *before* BeyondNN's raises during a *recursive* call of the same module, the cleanup hook can release the enclosing call's index.
 - A selected module that never executes (e.g. an iterated `ModuleList`) yields no events.
 - `pass_index = -1` events cannot become `ActivationRecord`s under schema 0.1 (`pass_index >= 0`). M1.6 must decide how to represent them, or refuse them, with a limitation.
+
+**Amendment (2026-09-25, M1.5 review): invocation guard.**
+- The recursive edge case above was not acceptable, because it could silently misattribute later evidence. Invocation bookkeeping now has two stages:
+  - a *guard* pre-hook, prepended so it runs before user pre-hooks, claims the call index and pushes the frame, and never emits;
+  - the *observation* pre-hook, which still runs after user pre-hooks, emits INPUT with the arguments `forward` actually receives.
+- If a user pre-hook raises, the attempt has consumed its own call index, no INPUT event exists, and the cleanup pops exactly that attempt's frame. The enclosing recursive frame stays intact (regression test, mutation-checked).
+- **Attempt identity ≠ observed input.**
+- Global module pre-hooks run before any per-module hook, so a session **refuses to start** while any are registered (`HookSessionError`).
+- Hook count per observed module: guard + observation + cleanup, plus an output hook when OUTPUT is selected.
+- The edge-case bullet above is superseded.
 
 ---
 
