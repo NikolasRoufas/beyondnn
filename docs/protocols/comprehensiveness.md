@@ -1,0 +1,45 @@
+# `comprehensiveness` v1 (claim test)
+
+- **Definition.** Tests the claim "removing unit set S (at site L, call c) decreases target F on input x by at least `min_drop`", under a declared replacement.
+- **Formal quantity:**
+  - `drop = F(x) − F(x with S := b)`, where b is the replacement at S; everything else is untouched.
+  - Controls: `drop_i` for N random sets Sᵢ of |S| units at the same site.
+  - Reported: `fraction_below` = #{drop_i < drop}/N, `fraction_tied`, `fraction_above`, and `P = (1 + #{drop_i ≥ drop})/(N + 1)`.
+- **Required inputs:**
+  - the model (in eval mode);
+  - the input;
+  - a selection (`top_k` of an attribution on this same input, or declared `units`);
+  - a target metric;
+  - a replacement (`zero()` or `replacement(tensor)` of the site's exact shape);
+  - `min_drop`;
+  - optionally `controls(n, seed)` and `min_fraction_below`.
+- **Perturbation semantics:** removal. Input level replaces elements of positional input `args[i]`; internal level replaces units of one module-output leaf and call. Both are ADR-032 interventions.
+- **Output:** a `ClaimTestResult`. Its evidence is the INTERVENTIONAL effects of the selection and every control; its statistics are the numbers above.
+  - SUPPORTS iff `drop ≥ min_drop` and, if declared, `fraction_below ≥ min_fraction_below`.
+  - CONTRADICTS otherwise.
+  - INCONCLUSIVE if the replacement equalled the original at every replaced position (a no-op).
+  - NOT_APPLICABLE on any mismatch.
+- **Interpretation:** under this replacement, on this input, removing S changed the target by this much. With controls: this much relative to random sets of the same size at the same site.
+- **Can support:** a NECESSARY_FOR / DECREASES claim about S, scoped to the replacement, the site, and this input (policy `COMPREHENSIVENESS_POLICY`).
+- **Cannot support:**
+  - that S is *the* reason for the output;
+  - that units outside S are unimportant;
+  - necessity under another replacement or on other inputs;
+  - sufficiency;
+  - anything about redundant mechanisms (scenario C: a causal unit with a redundant twin shows drop 0).
+- **Failure modes:**
+  - redundancy (necessity ≠ causal relevance);
+  - saturation;
+  - interactions (scenario F: `a·b` at b = 0);
+  - off-distribution replacements;
+  - a no-op replacement (RQ9);
+  - small unit counts limit what controls can show (scenario A: a perfect top-2 of 8 units has P ≈ 0.06 because 1/28 of random pairs coincide with it).
+- **Distribution shift:** replaced inputs or activations may never occur naturally (`ZERO_ABLATION_MAY_BE_OOD`, `CONSTANT_REPLACEMENT_MAY_BE_OOD`). The effect then mixes "S mattered" with "the model reacts to an unusual value".
+- **Baselines:** declared replacement values and matched random controls. Mean or resample replacement is the caller's explicit tensor.
+- **Example:** `F.run(model, x, test=F.comprehensiveness(target=m, min_drop=1.0, statement="...", controls=F.controls(200, seed=0)), selection=F.top_k(attr, k=2))`
+- **Limitations:**
+  - instance level (use `run_dataset` for declared sets);
+  - vector-shaped sites only;
+  - one site per test;
+  - no retraining (ROAR).
+- **References:** DeYoung et al. 2020; Samek et al. 2017; Hooker et al. 2019; Hase et al. 2021; Phipson & Smyth 2010.

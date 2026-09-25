@@ -1,0 +1,30 @@
+# `sufficiency` v1 (claim test)
+
+- **Definition.** Tests the claim "retaining only S (every other unit of the same site replaced) keeps target F on input x within `max_drop`".
+- **Formal quantity:**
+  - `drop = F(x) − F(x with (units ∉ S) := b)`;
+  - controls: the same with random retained sets of |S| units;
+  - reported: `fraction_above` = the share of controls with a *larger* drop, and `P = (1 + #{drop_i ≤ drop})/(N + 1)`.
+- **Required inputs:** as for comprehensiveness, plus `max_drop ≥ 0` and optionally `min_fraction_above`.
+  - Refused when S covers every unit (vacuous).
+- **Perturbation semantics:** retention within one site.
+  - **Input level:** every other element of `args[i]` is replaced (ERASER's "rationale only").
+  - **Internal level:** every other unit of that module-output leaf and call is replaced, and all computation that bypasses the site is untouched. This carries `SITE_RELATIVE_SUFFICIENCY`.
+- **Output:** a `ClaimTestResult`.
+  - SUPPORTS iff `drop ≤ max_drop` (and the declared control fraction).
+  - CONTRADICTS otherwise.
+  - INCONCLUSIVE for a no-op.
+- **Interpretation:** under this replacement, keeping only S at this site preserved the target to within `max_drop`.
+- **Can support:** a SUFFICIENT_FOR claim in exactly this declared, site-relative sense (`SUFFICIENCY_POLICY`). This is the only protocol that can decide SUFFICIENT_FOR.
+- **Cannot support:**
+  - sufficiency for the model's computation as a whole (internal level);
+  - minimality of S;
+  - necessity: in scenario K, {x0} of `max(x0, x1)` is sufficient but not necessary.
+- **Failure modes:**
+  - the replacement value can itself carry the signal (a "retain" result under mean replacement partly measures the mean);
+  - site-relative sufficiency can be trivial when the site is not on the main path.
+- **Distribution shift:** stronger than for removal, because most of the site is replaced.
+- **Baselines:** declared replacement and matched random retained sets.
+- **Example:** `F.run(model, x, test=F.sufficiency(target=m, max_drop=0.5, statement="..."), selection=F.units("hidden", (0,), n_units=2))`
+- **Limitations:** as for comprehensiveness. Sufficiency under internal interventions is only defined relative to one site: BeyondNN refuses the vacuous case and flags the site-relative one.
+- **References:** DeYoung et al. 2020; Wang et al. 2022; Miller et al. 2024.

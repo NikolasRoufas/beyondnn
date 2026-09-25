@@ -1,0 +1,27 @@
+# `stability` v1 (diagnostic)
+
+- **Definition.** Under a *caller-declared* transformation g, compare the target, the method's ranking, its top-k set, and optionally a claim-test outcome between x and g(x).
+  - BeyondNN does not decide which transformations are semantically irrelevant.
+- **Formal quantities** (reported separately, never combined):
+  - prediction `|F(g(x)) − F(x)|`;
+  - Spearman ρ of the two ordinal rankings (g(x)'s units mapped to x's via the declared `unit_map`; ties broken by lower index);
+  - top-k Jaccard;
+  - equality of the declared claim test's outcomes on x and g(x).
+- **Required inputs:**
+  - `transformation(name, fn, implementation_revision=..., config=..., unit_map=...)`;
+  - an attribution method, target, and k;
+  - optional per-aspect criteria and a claim-test template.
+  - **Refused:** a g(x) of a different shape or dtype; an identical g(x); in-place modification of x; a unit map that is not a permutation.
+- **Output:** a `ProtocolResult` with one outcome per aspect. PASS/FAIL only where a criterion was declared; otherwise INDETERMINATE (measured) or NOT_APPLICABLE (not requested).
+  - Carries `DECLARED_TRANSFORMATION_UNVERIFIED`.
+- **Interpretation (scenario E):** the prediction can be invariant (PASS) while the evidence is not (ρ = −1, FAIL). Both are reported.
+- **Can support:** statements of the form "under declared transformation g, aspect A changed by v".
+- **Cannot support:**
+  - that g is a true invariance of the task;
+  - robustness to transformations not tested;
+  - any single stability score.
+- **Failure modes:**
+  - a transformation that moves features without a correct `unit_map`, which makes a ranking look unstable;
+  - a caller function that is non-deterministic.
+- **Distribution shift:** g(x) may be off-distribution; that is the caller's declared premise.
+- **References:** Kindermans et al. 2019 (input invariance of saliency); Adebayo et al. 2018.

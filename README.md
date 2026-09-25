@@ -1,15 +1,16 @@
 # BeyondNN
 
-> **Status: pre-alpha, Phase 4 (structured WHY / evidence synthesis) implemented (local only, not released).**
+> **Status: pre-alpha, Phase 5 (faithfulness tests) implemented (local only, not released).**
 >
 > Implemented:
 > - the trace schema, provenance, trace recording and persistence;
 > - a minimal INPUT → WHY → OUTPUT view (WHY = measured evidence);
 > - controlled activation interventions with INTERVENTIONAL effect records;
 > - gradient, input × gradient, and Integrated Gradients attribution (native, and through Captum) with ATTRIBUTED records;
-> - a structured WHY that composes measured, attributed, and interventional evidence and declared claim tests without merging them.
+> - a structured WHY that composes measured, attributed, and interventional evidence and declared claim tests without merging them;
+> - faithfulness *protocols* (comprehensiveness, sufficiency, removal/retention curves, stability, counterexamples) with matched random controls. There is no faithfulness score.
 >
-> Faithfulness evaluation, sufficiency testing, and concepts are **not implemented**. See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md), and [`docs/PHASE_4_REPORT.md`](docs/PHASE_4_REPORT.md).
+> Concepts are **not implemented**. See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md), [`docs/PHASE_4_REPORT.md`](docs/PHASE_4_REPORT.md), and [`docs/PHASE_5_REPORT.md`](docs/PHASE_5_REPORT.md).
 
 BeyondNN is an interpretability evidence framework for PyTorch.
 
@@ -117,7 +118,7 @@ print([lim.code for lim in result.limitations])                         # e.g. Z
 
 - **What it runs:** `bnn.intervene` records a CLEAN baseline pass and an INTERVENTION pass of the same input in one trace. Activations in the intervened pass stay **MEASURED**; only the metric difference is **INTERVENTIONAL**.
 - **Scope of the effect:** it is scoped to exactly the input(s) compared. It is not a claim that `a` is necessary in general: a redundant path can make ablation look small, and other inputs can behave differently.
-- **Claims:** they are decided only by a threshold test declared in advance (`iv.threshold_spec`, `iv.make_claim`, `claims=[...]`). Sufficiency cannot be assessed yet.
+- **Claims:** they are decided only by a threshold test declared in advance (`iv.threshold_spec`, `iv.make_claim`, `claims=[...]`). Sufficiency can be assessed only by the Phase-5 `sufficiency` protocol, and only in its declared, site-relative sense.
 - **Refusals:** comparisons are refused if randomness is consumed, the model state changes between passes, or the intervention does not apply.
 
 ## Attribution (Phase 3)
@@ -220,9 +221,48 @@ print(response.why.coverage.faithfulness_evaluated)          # False: never eval
 
 **WHY keeps these statements separate.** It never combines them into one score and never generates a claim. It states what was not evaluated: faithfulness, comprehensiveness, sufficiency, and concepts. Evidence about a different model, declared model, input, or target is refused, not merged.
 
+## Faithfulness tests (Phase 5)
+
+```python
+# runnable example (executed by tests/test_readme.py)
+import torch
+from torch import nn
+
+import beyondnn as bnn
+
+A, F, iv = bnn.attribution, bnn.faithfulness, bnn.interventions
+
+
+class Saturated(nn.Module):
+    """y = tanh(4 x0) + 0.2 x1: x0 dominates y at x0 = 3, but its gradient is ~0."""
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return (torch.tanh(4 * x[:, 0]) + 0.2 * x[:, 1]).unsqueeze(1)
+
+
+model, x = Saturated().eval(), torch.tensor([[3.0, 1.0]])
+target = iv.metrics.select([0, 0])
+gradient = A.attribute(model, x, target=target, method=A.gradient())
+integrated = A.attribute(model, x, target=target,
+                         method=A.integrated_gradients(baseline=A.zero_baseline(), n_steps=64))
+
+# The same declared test for both rankings: does removing the top-1 unit drop y by >= 0.5?
+test = F.comprehensiveness(target=target, min_drop=0.5, replacement=F.zero(),
+                           statement="the top-ranked input unit is necessary for y")
+for name, attribution in (("gradient", gradient), ("integrated gradients", integrated)):
+    result = F.run(model, x, test=test, selection=F.top_k(attribution, k=1))
+    print(name, result.claim.subject.units, result.outcome.value, round(result.drop, 3))
+# gradient (1,) contradicts 0.2               <- a plausible ranking that misses x0
+# integrated gradients (0,) supports 1.0
+```
+
+- **What a result means:** "the claim passed `comprehensiveness/v1` under zero replacement on this input". It does not mean "the explanation is faithful".
+- **Where the results go:** into the structured WHY (`bnn.compose(..., faithfulness=[...])`), next to the attribution and intervention evidence, with their limitations, controls, and the list of protocols that were **not** run.
+- **Protocol documentation:** [`docs/protocols/`](docs/protocols/README.md).
+
 ## Still proposed (not implemented)
 
-Faithfulness and sufficiency protocols (Phase 5), and concepts (Phase 6).
+Concepts (Phase 6).
 
 There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.
 

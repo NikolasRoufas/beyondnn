@@ -1,0 +1,25 @@
+# `counterexample` v1 and `paired_control` v1 (dataset diagnostics)
+
+- **Definition.** `run_dataset` tests one declared claim template on every sample of a declared finite set, in one trace, with per-sample instance claims and results.
+  - `counterexample` lists every sample where the claim was CONTRADICTED.
+  - `paired_control` summarises, per sample, how the selection compared with that sample's own matched controls.
+- **Formal quantities:**
+  - counterexamples, held/n, and the per-sample outcomes and drops;
+  - `paired_control`: `d_s = drop_s − mean(control drops_s)` for removal, or `mean(control drops_s) − drop_s` for retention, so that positive means the selection did better. Also the mean and median of `d` and a seeded one-sided sign-flip permutation P for mean(d) > 0.
+- **Required inputs:**
+  - samples;
+  - a claim-test template;
+  - a selection rule: `selector(method, k)` (attribution computed explicitly per sample, in separate traces) or `fixed(units(...))`.
+- **Output:**
+  - `counterexample`: outcome `max_counterexamples`, FAIL if any counterexample, INDETERMINATE if some samples were inconclusive, PASS otherwise.
+  - `paired_control`: descriptive only; no outcome.
+- **Interpretation (scenario F):** "a is necessary for a·b" held on 3 of 4 declared samples, with a counterexample at b = 0.
+  - A counterexample weakens *that* claim template under its declared scope. It does not invalidate the attribution method.
+- **Can support:** statements about exactly the declared samples.
+- **Cannot support:**
+  - population claims (FINITE_SAMPLE is not POPULATION, ADR-013);
+  - "holds in general".
+- **Failure modes:**
+  - choosing samples after seeing results;
+  - too few samples for the permutation test to resolve anything (its resolution is 1/(draws + 1), and with n samples there are only 2ⁿ sign patterns).
+- **References:** Phipson & Smyth 2010; Good 2005 (permutation tests).

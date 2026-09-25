@@ -245,6 +245,24 @@ result.trace            # one trace: CLEAN baseline pass, INTERVENTION pass (act
 - **Refusals:** training mode, RNG consumption, model-state drift between the paired passes, and interventions that did not apply.
 - **Claims:** decided only by the declared `intervention_threshold` protocol. Sufficiency cannot be assessed.
 
+### Faithfulness tests (Phase 5, `beyondnn/faithfulness/`, ADR-032, ADR-033)
+
+```python
+test = F.comprehensiveness(target=m, min_drop=1.0, statement="...", controls=F.controls(200, seed=0))
+result = F.run(model, x, test=test, selection=F.top_k(attr, k=2))   # a ClaimTestResult + raw effects
+curve = F.curve(model, x, ranking=F.ranking(attr), target=m, mode="remove")
+bnn.compose(trace, attributions=[attr], faithfulness=[result, curve])
+```
+
+- **Orchestration only.** Perturbations are Phase-2 interventions: unit-level removal and retention and model-input sites (ADR-032), run in one recording per test (`compare_family`). Selections come from Phase-3 attributions; presentation is Phase 4.
+- **Records.**
+  - Raw measurements are INTERVENTIONAL effects.
+  - `comprehensiveness` and `sufficiency` are claim tests (`ClaimTestResult`).
+  - Curves, stability, counterexamples, paired controls, and method diagnostics are `ProtocolResult`s.
+  - `EvidenceSelection` records what was tested.
+  - There is no new status and no score.
+- **Controls and statistics.** Matched random selections from a seeded local generator; descriptive fractions, Monte-Carlo p, and a paired sign-flip test at dataset level.
+
 ### Evidence synthesis (Phase 4, `beyondnn/explain/`, ADR-031)
 
 ```python

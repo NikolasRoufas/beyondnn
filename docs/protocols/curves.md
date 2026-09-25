@@ -1,0 +1,23 @@
+# `removal_curve` v1 and `retention_curve` v1 (diagnostics)
+
+- **Definition.** Along a ranking R of a site's units, the drop of target F when the top-k units are removed (removal) or when only they are retained (retention), for declared k.
+  - Deletion and progressive ablation are the same removal curve; insertion and progressive retention are the same retention curve.
+  - The level (input or internal) is the site. Two curve types, not four.
+- **Formal quantity:** `drop(k) = F(x) − F(x_k)`, where `x_k` removes R[:k] or retains only R[:k].
+  - The anchors (removal k = 0, retention k = n) are unperturbed: drop 0 by definition, and no intervention is run.
+  - Optional `aopc_mean_drop = mean_k drop(k)` over the declared points, anchors included. The normalisation string is stored in `params`.
+  - Controls: N seeded random rankings evaluated at the same points, with the per-point mean, 5% and 95% quantiles, the per-point fraction of controls worse than R, and each control's AOPC.
+- **Required inputs:** a ranking (`F.ranking(attribution)` on the same input), target, mode, replacement, points (default 0..n), optional controls.
+- **Output:** a `ProtocolResult` holding the full curve (points, fractions, drops, effect ids) and the control summaries. There are no pass/fail outcomes.
+- **Interpretation:** how quickly the target degrades (removal) or recovers (retention) as more of the ranking is used, compared with random orderings of the same site.
+- **Can support:** a descriptive comparison of rankings under one declared replacement.
+- **Cannot support:**
+  - a claim;
+  - comparison of curves with different replacements, sites, or points (not comparable, and not compared);
+  - any statement that an area value is "the faithfulness".
+- **Failure modes:** area summaries hide crossings; non-monotone curves; off-distribution intermediate inputs; units that interact.
+- **Distribution shift:** grows with k (removal) or with n − k (retention).
+- **Example (scenario M):** `Weighted8`, IG ranking.
+  - Removal: drops 0, 8, 12, 14, 15, 15, 15, 15, 15; aopc 109/9.
+  - Retention: drops 15, 7, 3, 1, 0, …; aopc 26/9.
+- **References:** Samek et al. 2017; Petsiuk et al. 2018; DeYoung et al. 2020 (AOPC bins); Tomsett et al. 2020.

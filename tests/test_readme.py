@@ -36,3 +36,5 @@ def test_readme_examples_execute() -> None:
     assert "p receives attribution for y -> ['supported']" in text
     assert "p is necessary for y -> ['contradicted']" in text
     assert "NOT EVALUATED" in text
+    assert "gradient (1,) contradicts 0.2" in text
+    assert "integrated gradients (0,) supports 1.0" in text
