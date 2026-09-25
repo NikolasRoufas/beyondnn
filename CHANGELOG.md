@@ -23,6 +23,13 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **Caller-declared model provenance** (M1.6 gate, ADR-022):
+  - `ModelDeclaration` (config, implementation revision, checkpoint revision) in `ProvenanceRecord.declared_model`;
+  - `ProvenanceRecord` record_version 2, with a v1→v2 migration;
+  - `make_provenance(declared_model=…)`;
+  - migration errors now raise `DecodeError`.
+
+  Resolves the M1.3 `n_heads` identity gap without changing FULL v1.
 - **M1.5: safe hook session** (`beyondnn.core.hooks`, internal):
   - scoped hooks, removed on every exit path (normal exit, exceptions, sink errors, partial install);
   - physical-module dedup;

@@ -78,7 +78,7 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 
 ## Hard gates
 
-- **Before M1.6 (trace containers):** resolve a caller-declared model configuration / implementation revision in provenance, so that behaviourally different models with the same FULL v1 fingerprint cannot silently share provenance identity when the distinction is known (see the M1.3 finding below and `PHASE_1_PLAN.md` §M1.6). FULL v1 itself stays unchanged; the `n_heads` case is an accepted, documented limitation of automatic fingerprinting.
+- **RESOLVED (2026-09-25, ADR-022): before M1.6 (trace containers)**, resolve a caller-declared model configuration / implementation revision in provenance. Now `ModelDeclaration` in `ProvenanceRecord.declared_model`, record_version 2. Original gate text: so that behaviourally different models with the same FULL v1 fingerprint cannot silently share provenance identity when the distinction is known (see the M1.3 finding below and `PHASE_1_PLAN.md` §M1.6). FULL v1 itself stays unchanged; the `n_heads` case is an accepted, documented limitation of automatic fingerprinting.
 
 ## Open investigation items
 

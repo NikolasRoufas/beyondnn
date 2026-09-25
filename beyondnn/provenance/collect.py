@@ -14,6 +14,7 @@ from beyondnn.schema import (
     ExecutionContext,
     ExecutionOccurrence,
     MethodIdentity,
+    ModelDeclaration,
     ModelIdentity,
     ProvenanceRecord,
     Randomness,
@@ -69,12 +70,16 @@ def make_provenance(
     method: MethodIdentity,
     execution: ExecutionContext,
     environment: EnvironmentIdentity | None = None,
+    declared_model: ModelDeclaration | None = None,
 ) -> ProvenanceRecord:
     """Build the provenance record for evidence produced by ``method`` on ``model``.
 
     ``model`` may be a module (fingerprinted now, in full) or a precomputed
     :class:`~beyondnn.schema.ModelIdentity`. The environment is collected from this
-    process unless given. Contains no timestamp: see :func:`record_occurrence`.
+    process unless given. ``declared_model`` is caller-declared context (config,
+    implementation/checkpoint revision) that the automatic fingerprint cannot
+    see; it is recorded separately from ``model`` and is never inferred. Contains
+    no timestamp: see :func:`record_occurrence`.
     """
     identity = model if isinstance(model, ModelIdentity) else fingerprint_model(model)
     return ProvenanceRecord(
@@ -82,6 +87,7 @@ def make_provenance(
         environment=environment if environment is not None else collect_environment(),
         execution=execution,
         method=method,
+        declared_model=declared_model,
     )
 
 

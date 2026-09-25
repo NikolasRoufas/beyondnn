@@ -156,3 +156,20 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
 - **Conclusion:** all required guards are caught.
 - **Next action:** caller-declared model provenance (M1.6 gate), then M1.5 review.
 
+---
+
+## 2026-09-25: M1.6 gate: declared model context closes the n_heads gap
+- **Commit:** the declared-model provenance commit (parent: the M1.5 commit)
+- **Experiment:** repeat the M1.3 negative finding with a caller declaration.
+- **Model:** `TinyTransformer(n_heads=2, seed=0)` vs `TinyTransformer(n_heads=4, seed=0)`.
+- **Hardware:** Apple arm64 CPU, Python 3.14.3, torch 2.12.0.
+- **Result:**
+  - The FULL v1 fingerprints are still equal (limitation unchanged by design).
+  - Without a declaration, `provenance_id` is equal.
+  - With `declared_model=ModelDeclaration(config={"n_heads": 2})` vs `{"n_heads": 4}`, the `provenance_id`s **differ**, and `ModelIdentity` is identical in both.
+  - Implementation and checkpoint revisions also separate the ids.
+  - The v1→v2 migration decodes an old payload with `declared_model = None`.
+- **Mutation checks:** dropping the declaration in `make_provenance` is caught by 6 tests; removing the migration by 2.
+- **Conclusion:** the M1.6 hard gate is resolved.
+- **Next action:** M1.5 and gate review, then M1.6.
+

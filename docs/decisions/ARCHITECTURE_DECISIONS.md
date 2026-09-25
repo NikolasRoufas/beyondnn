@@ -609,3 +609,34 @@ Revision note (2026-09-25, review, before acceptance):
 - A selected module that never executes (e.g. an iterated `ModuleList`) yields no events.
 - `pass_index = -1` events cannot become `ActivationRecord`s under schema 0.1 (`pass_index >= 0`). M1.6 must decide how to represent them, or refuse them, with a limitation.
 
+---
+
+## ADR-022: Caller-declared model context in provenance (ProvenanceRecord v2)
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for the M1.6 gate. Awaiting review.
+
+**Decision:**
+- New value `ModelDeclaration(config: JsonMap = {}, implementation_revision: str | None, checkpoint_revision: str | None)`. At least one field must be set, and revisions are non-empty strings without whitespace.
+- It is entirely caller-supplied and optional. It is never inferred or scraped from Python attributes, never verified (e.g. no git or hub lookups), and carries no generated interpretation. `config` keys are not prescribed.
+- `ProvenanceRecord` gains `declared_model: ModelDeclaration | None = None`, kept separate from the automatically measured `model: ModelIdentity`, so the two epistemic origins stay inspectable and distinct. The FULL v1 fingerprint is unchanged.
+- **Versioning:** `ProvenanceRecord` moves to **record_version 2**. A registered migration upgrades v1 payloads by adding `declared_model = None`.
+  - A v1 payload that already contains the field is rejected.
+  - Migrated records get new ids (ADR-016). Remapping references stays M1.7's job.
+  - Migration errors are now reported as `DecodeError` (a small codec fix).
+- `make_provenance(…, declared_model=None)`. When nothing is declared, nothing is fabricated.
+
+**Reason:**
+- Closes the M1.3 finding: `TinyTransformer(n_heads=2)` and `n_heads=4` share a FULL v1 fingerprint. With `declared_model=ModelDeclaration(config={"n_heads": 2})` versus `{"n_heads": 4}`, their `provenance_id`s differ.
+- The fingerprint measures what BeyondNN can observe. The declaration records what only the experimenter knows. Merging the two would disguise claims as measurements.
+
+**Alternatives considered:**
+- *Auto-hashing module attributes or source*: rejected as fragile and unscoped (ADR-020).
+- *Folding the declaration into `ModelIdentity`*: mixes measured and declared data.
+- *Changing record_version 1 in place, since nothing was released*: rejected in favour of an explicit, tested version transition.
+
+**Consequences:**
+- `provenance_id` now covers `model`, `environment`, `execution`, `method`, and `declared_model`. With no declaration, the value is `null`.
+- The **M1.6 hard gate is resolved.** M1.6 decides whether traces without a declaration get a limitation (none is added now).
+- All existing provenance ids changed with the version bump. That is acceptable before any release.
+

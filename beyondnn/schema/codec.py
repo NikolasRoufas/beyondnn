@@ -111,7 +111,14 @@ def from_dict(payload: Any) -> BaseRecord:
             raise UnsupportedVersionError(
                 f"no migration registered for {kind} record_version {version}"
             )
-        data = migrate(data)
+        try:
+            data = migrate(data)
+        except DecodeError:
+            raise
+        except Exception as exc:
+            raise DecodeError(
+                f"migrating {kind} from record_version {version} failed: {exc}"
+            ) from exc
         version += 1
 
     try:

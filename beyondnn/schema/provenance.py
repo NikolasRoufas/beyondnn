@@ -20,11 +20,11 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from ._canonical import EMPTY_JSON, JsonMap
 from ._types import Value, require
-from .base import BaseRecord, record_kind
+from .base import BaseRecord, record_kind, register_migration
 from .errors import SchemaError
 
 __all__ = [
@@ -34,6 +34,7 @@ __all__ = [
     "ExecutionOccurrence",
     "FingerprintMethod",
     "MethodIdentity",
+    "ModelDeclaration",
     "ModelIdentity",
     "ProvenanceRecord",
     "Randomness",
@@ -198,7 +199,35 @@ class MethodIdentity(Value):
         _token(self.version, "MethodIdentity.version")
 
 
-@record_kind("provenance")
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ModelDeclaration(Value):
+    """Model context DECLARED by the caller: recorded as stated, never verified,
+    never inferred, and never merged into the automatic :class:`ModelIdentity`.
+
+    Use it for what the FULL fingerprint cannot see, e.g. plain hyperparameters
+    (``{"n_heads": 2}``), or the implementation / checkpoint revision
+    (``"git:abc123"``, ``"hf:org/model@rev"``, ``"checkpoint:epoch-12"``).
+    ``config`` keys are not prescribed. At least one field must be given.
+    """
+
+    config: JsonMap = EMPTY_JSON
+    implementation_revision: str | None = None
+    checkpoint_revision: str | None = None
+
+    def _validate(self) -> None:
+        require(
+            len(self.config) > 0
+            or self.implementation_revision is not None
+            or self.checkpoint_revision is not None,
+            "ModelDeclaration must declare a config or a revision (else use None)",
+        )
+        for name in ("implementation_revision", "checkpoint_revision"):
+            value = getattr(self, name)
+            if value is not None:
+                _token(value, f"ModelDeclaration.{name}")
+
+
+@record_kind("provenance", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ProvenanceRecord(BaseRecord):
     """The reproducible conditions under which evidence was produced.
@@ -206,12 +235,17 @@ class ProvenanceRecord(BaseRecord):
     Its id is what evidence records put in ``provenance_id``. Every field
     contributes to that id; nothing time- or machine-identity-dependent is stored.
     A provenance record has no provenance of its own and no lineage.
+
+    ``model`` is measured automatically; ``declared_model`` is what the caller
+    declared (``None`` if nothing was declared). Record version 2 added
+    ``declared_model`` (ADR-022); version-1 payloads migrate with ``None``.
     """
 
     model: ModelIdentity
     environment: EnvironmentIdentity
     execution: ExecutionContext
     method: MethodIdentity
+    declared_model: ModelDeclaration | None = None
 
     def _validate(self) -> None:
         require(self.provenance_id is None, "a ProvenanceRecord has no provenance_id")
@@ -238,3 +272,15 @@ class ExecutionOccurrence(BaseRecord):
             datetime.fromisoformat(self.started_at.replace("Z", "+00:00"))
         except ValueError as exc:
             raise SchemaError(f"started_at is not a valid timestamp: {exc}") from None
+
+
+@register_migration("provenance", 1)
+def _provenance_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
+    """v1 had no caller declaration: migrate it as ``declared_model = None``.
+
+    The migrated record's id differs from the v1 id (record_version is part of
+    identity, ADR-016); references to it must be remapped by the caller (M1.7).
+    """
+    if "declared_model" in data:
+        raise ValueError("a provenance v1 payload cannot contain declared_model")
+    return data | {"declared_model": None}
