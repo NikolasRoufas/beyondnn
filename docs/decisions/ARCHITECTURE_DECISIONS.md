@@ -975,3 +975,34 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 - no multi-target or multi-sample views;
 - no faithfulness, sufficiency, or concepts (Phases 5 and 6).
 
+---
+
+## ADR-032: Unit-level and model-input interventions, and comparison families, as Phase-2 extensions
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for Phase 5 implementation.
+
+**Problem:** faithfulness protocols perturb *parts* of a tensor (the top-k attributed input features, selected internal units) and need many perturbations per input, plus random controls. Phase 2 could only replace a whole module-output leaf, one intervention per recording. Recording unit-level perturbations as opaque exact-shape CONSTANT tensors would hide what was selected. Building a second perturbation engine for faithfulness would duplicate the pairing and refusal logic.
+
+**Decision** (extensions, not a new engine):
+- **`InterventionRecord` v2** adds `units: tuple[int, ...] | None` (indices along the leaf's last dimension; sorted, unique, non-empty) and `retain: bool`.
+  - With `retain=False` exactly the units are replaced (removal).
+  - With `retain=True` every *other* unit of the leaf is replaced (retention within that leaf only).
+  - `units=None` is the Phase-2 whole-leaf replacement.
+  - The replacement values come from the operation: ZERO, CONSTANT (a scalar or exact-shape tensor), or PATCH (source activation).
+  - v1 payloads migrate with `units=None, retain=False`; nothing is invented.
+- **Model-input interventions.** The site may be a positional model input leaf (`module=""`, `io=INPUT`, `args[i]`; ZERO or CONSTANT only). The intervention pass runs the model on the perturbed input.
+  - It is still a paired, CLEAN-baseline vs INTERVENTION comparison, with every Phase-2 refusal.
+  - The intervention pass's `InputRecord.sample_id` identifies the perturbed input exactly, so the perturbation is verifiable.
+  - The effect is an INSTANCE `CausalEffect` about the original input: do(x_S := b). Root *outputs* can never be intervened on.
+- **`compare_family(model, groups, metric, *, extend=...)`** runs all comparisons in **one recording**: one CLEAN baseline pass per input, then one INTERVENTION pass per intervention, each checked against that baseline.
+  - It returns `ComparisonFamily` (effects and records per group).
+  - `extend` adds records to the same trace during finalisation (used by faithfulness runs).
+  - N controls therefore cost N passes and one trace, not N traces.
+- Builders: `zero(..., units=, retain=)`, `constant(...)`, `patch(...)`, `zero_input(index, units=, retain=)`, `constant_input(value, index, units=, retain=)`.
+
+**Consequences:**
+- Perturbations are explicit in the record: which units, remove vs retain, and replacement values (digest).
+- A unit is a last-dimension index. Leaves with non-singleton leading dimensions are perturbed at those units across all leading positions; faithfulness selection refuses such tensors (see ADR-033).
+- The existing OOD limitations (`ZERO_ABLATION_MAY_BE_OOD`, `CONSTANT_REPLACEMENT_MAY_BE_OOD`) apply unchanged to input-level perturbations.
+

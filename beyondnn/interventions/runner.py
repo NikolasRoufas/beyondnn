@@ -32,7 +32,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -61,6 +61,7 @@ from beyondnn.schema import (
     RecordRef,
     Relation,
     Site,
+    SiteIO,
     Subject,
     TensorRef,
     TraceLimitation,
@@ -71,6 +72,7 @@ from .metrics import Metric, get_leaf
 from .spec import Intervention
 
 __all__ = [
+    "ComparisonFamily",
     "InterventionError",
     "InterventionNotAppliedError",
     "InterventionResult",
@@ -252,16 +254,15 @@ class _Replacer:
                 raise InterventionNotAppliedError("the source call ran more than once")
             self.capture = leaf.detach().to("cpu").clone(memory_format=torch.contiguous_format)
 
-    def replace_hook(self, module: nn.Module, args: Any, kwargs: Any, output: Any) -> Any:
-        leaf = self._leaf(module, output)
-        if leaf is None:
-            return None
+    def perturb(self, leaf: torch.Tensor) -> torch.Tensor:
+        """The replaced leaf: the operation's values at the replaced units (all units
+        when ``units`` is None; the complement of ``units`` when ``retain``)."""
         op = self.spec.operation
         if op is InterventionOperation.ZERO:
-            new = torch.zeros_like(leaf)
+            full = torch.zeros_like(leaf)
         elif op is InterventionOperation.CONSTANT and self.value is None:
             assert self.spec.constant is not None
-            new = torch.full_like(leaf, self.spec.constant)
+            full = torch.full_like(leaf, self.spec.constant)
         else:
             assert self.value is not None
             if self.value.shape != leaf.shape or self.value.dtype != leaf.dtype:
@@ -269,9 +270,37 @@ class _Replacer:
                     f"replacement of shape {tuple(self.value.shape)} / {self.value.dtype} does not "
                     f"match the activation {tuple(leaf.shape)} / {leaf.dtype}; no broadcasting"
                 )
-            new = self.value.to(leaf.device)
+            full = self.value.to(leaf.device)
+        units = self.spec.units
+        if units is None:
+            return full
+        if leaf.dim() == 0 or max(units) >= leaf.shape[-1]:
+            raise InterventionError(
+                f"units {list(units)} are out of range for a leaf of shape {tuple(leaf.shape)}"
+            )
+        mask = torch.zeros(leaf.shape[-1], dtype=torch.bool, device=leaf.device)
+        mask[list(units)] = True
+        if self.spec.retain:
+            mask = ~mask
+        return torch.where(mask, full, leaf)
+
+    def replace_hook(self, module: nn.Module, args: Any, kwargs: Any, output: Any) -> Any:
+        leaf = self._leaf(module, output)
+        if leaf is None:
+            return None
+        new = self.perturb(leaf)
         self.applied += 1
         return _replace_leaf(output, self.spec.output_path, new)
+
+    def perturb_inputs(self, inputs: tuple[Any, ...]) -> tuple[Any, ...]:
+        """Model-input interventions: the positional inputs with ``args[i]`` replaced."""
+        index = int(self.spec.output_path[len("args[") : -1])
+        if index >= len(inputs) or not isinstance(inputs[index], torch.Tensor):
+            raise InterventionError(f"positional input {index} is not a tensor input of this call")
+        args = list(inputs)
+        args[index] = self.perturb(inputs[index].detach())
+        self.applied += 1
+        return tuple(args)
 
 
 def _retained_ref(tensor: torch.Tensor, device: str) -> TensorRef:
@@ -297,7 +326,43 @@ def _check_not_training(model: nn.Module) -> None:
 def _unique_sites(target: str, sites: Sequence[str]) -> list[str]:
     if isinstance(sites, str):
         raise TypeError("sites must be a sequence of patterns, not a str")
+    if target == "":  # a model-input intervention: the root input is always observed
+        return list(dict.fromkeys(sites))
     return [target, *[s for s in sites if s != target]]
+
+
+def _run_pass(
+    recording: Recording, model: nn.Module, inputs: tuple[Any, ...], kwargs: dict[str, Any]
+) -> tuple[int, Any]:
+    before = set(recording._passes)
+    output = model(*inputs, **kwargs)
+    (index,) = set(recording._passes) - before
+    return index, output
+
+
+def _baseline_pass(
+    recording: Recording,
+    model: nn.Module,
+    metric: Metric,
+    inputs: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> tuple[int, float]:
+    rng = torch.get_rng_state()
+    before = sample_id(*inputs, model_kwargs=kwargs)
+    base_pass, base_out = _run_pass(recording, model, inputs, kwargs)
+    if sample_id(*inputs, model_kwargs=kwargs) != before:
+        raise StatefulComparisonError(
+            "the baseline pass modified its inputs in place; the intervention pass would "
+            "not see the same input"
+        )
+    base_value = metric(base_out)
+    del base_out
+    if not torch.equal(rng, torch.get_rng_state()):
+        raise StochasticComparisonError(
+            "the baseline pass consumed random numbers; its difference from the "
+            "intervention pass would not be attributable to the intervention"
+        )
+    return base_pass, base_value
 
 
 class _Experiment:
@@ -318,14 +383,15 @@ class _Experiment:
         return self.recording._trace
 
     def _pass(self, inputs: tuple[Any, ...], kwargs: dict[str, Any]) -> tuple[int, Any]:
-        before = set(self.recording._passes)
-        output = self.model(*inputs, **kwargs)
-        (index,) = set(self.recording._passes) - before
-        return index, output
+        return _run_pass(self.recording, self.model, inputs, kwargs)
 
     def prepare(self) -> InterventionRecord:
         spec = self.spec
-        site = Site(module=spec.site, output_path=spec.output_path)
+        site = (
+            Site(module="", io=SiteIO.INPUT, output_path=spec.output_path)
+            if spec.on_input
+            else Site(module=spec.site, output_path=spec.output_path)
+        )
         if spec.operation is InterventionOperation.PATCH:
             replacer = _Replacer(self.recording, spec, None)
             with self.recording._session.owned_forward_hook(self.module, replacer.capture_hook):
@@ -352,42 +418,56 @@ class _Experiment:
                 operation=spec.operation,
                 value=ref,
                 source=RecordRef.to(source),
+                units=spec.units,
+                retain=spec.retain,
             )
         if spec.tensor is not None:
             self.value = spec.tensor
             ref = _retained_ref(self.value, "cpu")
             self.trace._add_tensor(ref.storage_key or "", self.value)
             return InterventionRecord(
-                site=site, call_index=spec.call_index, operation=spec.operation, value=ref
+                site=site,
+                call_index=spec.call_index,
+                operation=spec.operation,
+                value=ref,
+                units=spec.units,
+                retain=spec.retain,
             )
         return InterventionRecord(
-            site=site, call_index=spec.call_index, operation=spec.operation, constant=spec.constant
+            site=site,
+            call_index=spec.call_index,
+            operation=spec.operation,
+            constant=spec.constant,
+            units=spec.units,
+            retain=spec.retain,
         )
 
     def compare(
         self, inputs: tuple[Any, ...], kwargs: dict[str, Any]
     ) -> tuple[int, float, int, float]:
+        base_pass, base_value = self.baseline(inputs, kwargs)
+        int_pass, int_value = self.intervened(inputs, kwargs, base_pass)
+        return base_pass, base_value, int_pass, int_value
+
+    def baseline(self, inputs: tuple[Any, ...], kwargs: dict[str, Any]) -> tuple[int, float]:
+        """The CLEAN baseline pass (shared by every intervention on this input)."""
+        return _baseline_pass(self.recording, self.model, self.metric, inputs, kwargs)
+
+    def intervened(
+        self, inputs: tuple[Any, ...], kwargs: dict[str, Any], base_pass: int
+    ) -> tuple[int, float]:
+        """One INTERVENTION pass on ``inputs``, checked against the baseline ``base_pass``."""
         assert self.record is not None
         rng = torch.get_rng_state()
         before = sample_id(*inputs, model_kwargs=kwargs)
-        base_pass, base_out = self._pass(inputs, kwargs)
-        if sample_id(*inputs, model_kwargs=kwargs) != before:
-            raise StatefulComparisonError(
-                "the baseline pass modified its inputs in place; the intervention pass would "
-                "not see the same input"
-            )
-        base_value = self.metric(base_out)
-        del base_out
-        if not torch.equal(rng, torch.get_rng_state()):
-            raise StochasticComparisonError(
-                "the baseline pass consumed random numbers; its difference from the "
-                "intervention pass would not be attributable to the intervention"
-            )
         replacer = _Replacer(self.recording, self.spec, self.value)
         self.recording._next_intervention = self.record
         try:
-            with self.recording._session.owned_forward_hook(self.module, replacer.replace_hook):
-                int_pass, int_out = self._pass(inputs, kwargs)
+            if self.spec.on_input:
+                int_pass, int_out = self._pass(replacer.perturb_inputs(inputs), kwargs)
+            else:
+                with self.recording._session.owned_forward_hook(self.module, replacer.replace_hook):
+                    int_pass, int_out = self._pass(inputs, kwargs)
         finally:
             self.recording._next_intervention = None
         int_value = self.metric(int_out)
@@ -419,7 +499,7 @@ class _Experiment:
                 "execution conditions (training/grad/device/randomness) differ between the "
                 "baseline and intervention passes"
             )
-        return base_pass, base_value, int_pass, int_value
+        return int_pass, int_value
 
     def _input(self, pass_index: int) -> Any:
         return next(r for r in self.trace.inputs if r.pass_index == pass_index)
@@ -598,3 +678,101 @@ def _add_claims(
                 claim, spec, effect, experiment.record, provenance_id=effect.provenance_id or ""
             )
         )
+
+
+@dataclass(frozen=True, slots=True, eq=False)
+class ComparisonFamily:
+    """Several interventions compared with one shared baseline pass per input, all in ONE
+    recording (``compare_family``). ``effects[g][j]`` is the INSTANCE ``CausalEffect`` of
+    intervention ``j`` of group ``g``; ``records[g][j]`` its ``InterventionRecord``."""
+
+    trace: TraceResult
+    samples: tuple[str, ...]
+    baseline_values: tuple[float, ...]
+    baseline_passes: tuple[int, ...]
+    intervention_passes: tuple[tuple[int, ...], ...]
+    records: tuple[tuple[InterventionRecord, ...], ...]
+    effects: tuple[tuple[CausalEffect, ...], ...]
+
+
+def compare_family(
+    model: nn.Module,
+    groups: Sequence[tuple[tuple[Any, ...], dict[str, Any], Sequence[Intervention]]],
+    metric: Metric,
+    *,
+    sites: Sequence[str] = (),
+    retention: str = "summary",
+    declared_model: ModelDeclaration | None = None,
+    extend: Callable[[TraceResult, ComparisonFamily], None] | None = None,
+) -> ComparisonFamily:
+    """Paired comparisons for many interventions (Phase-5 orchestration; ADR-032).
+
+    Each group is ``(inputs, model_kwargs, interventions)``: one CLEAN baseline pass on
+    ``inputs``, then one INTERVENTION pass per intervention, each checked against that
+    baseline with every Phase-2 pairing check. A group may have no interventions (its
+    baseline is still recorded). ``extend(trace, family)`` runs inside the recording's
+    finalisation, so callers can add records that reference the effects to the same
+    trace. Nothing new is estimated: every effect is an exact INSTANCE effect.
+    """
+    if not isinstance(metric, Metric):
+        raise TypeError("metric must be a beyondnn.interventions.metrics Metric")
+    if isinstance(sites, str):
+        raise TypeError("sites must be a sequence of patterns, not a str")
+    _check_not_training(model)
+    planned = []
+    for inputs, kwargs, specs in groups:
+        specs = tuple(specs)
+        if not all(isinstance(s, Intervention) for s in specs):
+            raise TypeError("interventions must be built with the beyondnn.interventions builders")
+        planned.append((tuple(inputs), dict(kwargs), specs))
+    if not planned:
+        raise InterventionError("compare_family needs at least one group")
+    targets = [s.site for _, _, specs in planned for s in specs if s.site]
+    all_sites = list(dict.fromkeys([*targets, *[s for s in sites if s]]))
+    recording = Recording(
+        model, sites=all_sites, retention=retention, declared_model=declared_model
+    )
+    runs: list[tuple[str, int, float, list[tuple[_Experiment, int, float]]]] = []
+    holder: list[ComparisonFamily] = []
+    with torch.no_grad(), recording:
+        for inputs, kwargs, specs in planned:
+            sample = sample_id(*inputs, model_kwargs=kwargs)
+            experiments = [_Experiment(recording, model, spec, metric) for spec in specs]
+            for experiment in experiments:
+                experiment.record = experiment.prepare()
+            base_pass, base_value = _baseline_pass(recording, model, metric, inputs, kwargs)
+            done = []
+            for experiment in experiments:
+                int_pass, int_value = experiment.intervened(inputs, kwargs, base_pass)
+                done.append((experiment, int_pass, int_value))
+            runs.append((sample, base_pass, base_value, done))
+
+        def finalize(trace: TraceResult) -> None:
+            effects = []
+            for sample, base_pass, base_value, done in runs:
+                row = []
+                for experiment, int_pass, int_value in done:
+                    effect = experiment.instance_effect(
+                        sample, base_pass, base_value, int_pass, int_value
+                    )
+                    experiment.limitations(effect, {sample})
+                    row.append(effect)
+                effects.append(tuple(row))
+            family = ComparisonFamily(
+                trace=trace,
+                samples=tuple(r[0] for r in runs),
+                baseline_values=tuple(r[2] for r in runs),
+                baseline_passes=tuple(r[1] for r in runs),
+                intervention_passes=tuple(tuple(d[1] for d in r[3]) for r in runs),
+                records=tuple(
+                    tuple(d[0].record for d in r[3] if d[0].record is not None) for r in runs
+                ),
+                effects=tuple(effects),
+            )
+            holder.append(family)
+            if extend is not None:
+                extend(trace, family)
+
+        recording._finalizers.append(finalize)
+    recording.result  # noqa: B018 - raises if the recording failed
+    return holder[0]

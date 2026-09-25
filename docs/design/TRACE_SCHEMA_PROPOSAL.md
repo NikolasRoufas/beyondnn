@@ -259,6 +259,12 @@ It migrates old record versions and remaps every reference to ids that migration
 - A `ProvenanceRecord` with `execution.mode = INTERVENTION` must name an `InterventionRecord` in the same trace.
 - Intervention tensors are retained tensors of the trace: persisted in `tensors.pt` and digest-checked on load.
 
+### A.16 Intervention v2 (Phase 5, ADR-032)
+
+- `intervention` is record version 2. It adds `units` (last-dimension indices, sorted and unique, or `None` for the whole leaf) and `retain` (replace the complement of `units`).
+- The site may also be a positional model input (`module=""`, `io=INPUT`, `args[i]`; ZERO/CONSTANT).
+- v1 payloads migrate with `units=None`, `retain=False`.
+
 ### A.15 Input identity (Phase 4, ADR-031)
 
 - `input` is record version 3 and gains `sample_id: str | None`. It is the exact SHA-256 identity of the root input (tensor dtypes, shapes, and bytes plus JSON scalars; `beyondnn.core.samples`), the same identity used by effect estimands, `AttributionRecord.sample_id`, and claim estimands.

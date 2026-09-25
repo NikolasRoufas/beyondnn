@@ -104,7 +104,7 @@ def test_patch_needs_a_retained_value_and_a_measured_activation_source(mk: Simpl
 def test_only_non_root_module_outputs_can_be_intervened() -> None:
     with pytest.raises(SchemaError, match="OUTPUT"):
         InterventionRecord(site=Site(module="a", io=SiteIO.INPUT), operation=ZERO)
-    with pytest.raises(SchemaError, match="root"):
+    with pytest.raises(SchemaError, match="positional input"):  # the root OUTPUT: never
         InterventionRecord(site=Site(module=""), operation=ZERO)
     with pytest.raises(SchemaError):
         _zero(call_index=-1)

@@ -49,10 +49,19 @@ class InterventionOperation(Enum):
     PATCH = "patch"
 
 
-@record_kind("intervention")
+_INPUT_LEAF_RE = re.compile(r"^args\[(0|[1-9][0-9]*)\]$")
+
+
+@record_kind("intervention", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class InterventionRecord(BaseRecord):
-    """Replace one tensor leaf of one call of a module's output.
+    """Replace one tensor leaf of one call of a module's output, or a positional model
+    input leaf (``Site(module="", io=INPUT, output_path="args[i]")``; ZERO/CONSTANT).
+
+    ``units`` (record version 2; ADR-032) restricts the replacement to indices along the
+    leaf's last dimension: with ``retain=False`` exactly those units are replaced
+    (removal); with ``retain=True`` every *other* unit is replaced (retention within
+    this leaf only). ``units=None`` replaces the whole leaf (Phase-2 behaviour).
 
     ZERO: ``zeros_like`` (no other fields). CONSTANT: exactly one of ``constant``
     (a scalar, filled into the leaf's shape) or ``value`` (a tensor of exactly the
@@ -67,11 +76,33 @@ class InterventionRecord(BaseRecord):
     constant: float | None = None
     value: TensorRef | None = None
     source: RecordRef | None = None
+    units: tuple[int, ...] | None = None
+    retain: bool = False
+
+    @property
+    def on_input(self) -> bool:
+        """Whether this intervenes on a positional model input (not a module output)."""
+        return self.site.module == ""
 
     def _validate(self) -> None:
-        require(self.site.io is SiteIO.OUTPUT, "Phase 2 supports module OUTPUT interventions only")
-        require(bool(self.site.module), "the root output cannot be intervened on")
         require(self.call_index >= 0, "InterventionRecord.call_index must be >= 0")
+        if self.on_input:
+            require(
+                self.site.io is SiteIO.INPUT and bool(_INPUT_LEAF_RE.match(self.site.output_path)),
+                "a model-input intervention targets a positional input leaf ('args[i]')",
+            )
+            require(self.call_index == 0, "model-input interventions have call_index 0")
+            require(
+                self.operation is not InterventionOperation.PATCH,
+                "model inputs are replaced with ZERO or CONSTANT (a patch has no source site)",
+            )
+        else:
+            require(self.site.io is SiteIO.OUTPUT, "module interventions target OUTPUT leaves")
+        if self.units is not None:
+            require(len(self.units) > 0, "units must be non-empty (None means the whole leaf)")
+            require(all(u >= 0 for u in self.units), "units must be >= 0")
+            require(list(self.units) == sorted(set(self.units)), "units must be sorted and unique")
+        require(not self.retain or self.units is not None, "retain requires units")
         op = self.operation
         if op is InterventionOperation.ZERO:
             require(
@@ -244,3 +275,11 @@ def _causal_effect_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(metric, dict) or "declaration" in metric:
         raise ValueError("a causal_effect v1 payload has a metric without declaration")
     return data | {"metric": metric | {"declaration": None}}
+
+
+@register_migration("intervention", 1)
+def _intervention_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
+    """v1 interventions replaced whole module-output leaves: ``units=None``, ``retain=False``."""
+    if "units" in data or "retain" in data:
+        raise ValueError("an intervention v1 payload cannot contain units/retain")
+    return data | {"units": None, "retain": False}

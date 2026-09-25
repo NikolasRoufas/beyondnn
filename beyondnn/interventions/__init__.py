@@ -19,22 +19,25 @@ from .claims import (
     threshold_spec,
 )
 from .runner import (
+    ComparisonFamily,
     InterventionError,
     InterventionNotAppliedError,
     InterventionResult,
     StatefulComparisonError,
     StochasticComparisonError,
+    compare_family,
     intervene,
     intervene_sample,
     make_claim,
     sample_id,
 )
-from .spec import Intervention, constant, patch, zero
+from .spec import Intervention, constant, constant_input, patch, zero, zero_input
 
 __all__ = [
     "INTERVENTION_POLICY",
     "INTERVENTION_THRESHOLD",
     "PROTOCOLS",
+    "ComparisonFamily",
     "Intervention",
     "InterventionError",
     "InterventionNotAppliedError",
@@ -42,7 +45,9 @@ __all__ = [
     "StatefulComparisonError",
     "StochasticComparisonError",
     "check_policy",
+    "compare_family",
     "constant",
+    "constant_input",
     "evaluate_claim",
     "intervene",
     "intervene_sample",
@@ -52,4 +57,5 @@ __all__ = [
     "sample_id",
     "threshold_spec",
     "zero",
+    "zero_input",
 ]
