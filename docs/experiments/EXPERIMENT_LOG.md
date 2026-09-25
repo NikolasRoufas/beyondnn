@@ -508,7 +508,7 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 threads; warm-up 1, 10
   - k ∈ {1, 5, 10, 20}%;
   - three replacements;
   - comprehensiveness and sufficiency with N = 50 count-matched controls, plus comprehensiveness with N = 50 magnitude-matched controls under r1.
-  - Totals: 37,695 claim-test runs (A 16,800; B 14,700; C 5,195), all kept (`results/faithfulness_*.json.gz`).
+  - Totals: 36,155 claim-test runs (A 16,800; B 14,700; C 4,655), all kept (`results/faithfulness_*.json.gz`).
 
 **Pre-registered hypotheses (per site; analysis rules in plan §18):**
 
@@ -520,7 +520,7 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 threads; warm-up 1, 10
 | H3 | comprehensiveness and sufficiency disagree in ≥ 10% of cells | 24–52% per site; 36.6% pooled | **held**, far above |
 | H4 | ≥ 10% of outcomes change across replacements, plus ≥ 1 ordering reversal | A 33%/28%, B 49%/31%, C 5.0%; reversals at every site | **held** for A and B; **not held** for C (5%) |
 | H5 | ≥ 20% of cells change outcome across t ∈ {0.25, 0.5, 0.75} | A 25%/32%, B 28%/34%, C 17% | **held** for A and B; **not held** for C |
-| H6 | ρ(Jaccard, \|Δdrop\|) < 0 and \|ρ\| < 0.5 | −0.60 to −0.86 | **not held**: the association is *stronger* than predicted (partly mechanical: Jaccard 1 ⇒ Δ = 0) |
+| H6 | ρ(Jaccard, \|Δdrop\|) < 0 and \|ρ\| < 0.5 | −0.56 to −0.86 | **not held**: the association is *stronger* than predicted (partly mechanical: Jaccard 1 ⇒ Δ = 0) |
 | H7 | random method median superiority in [0.35, 0.65] | 0.45–0.54 | **held** |
 | H8 | A expressible; B and C not, without a unit-axes abstraction | the pre-change probe refused pixels, channels and tokens | **held** (confirmed before any change); ADR-034 |
 | H9 | mixed SUPPORTS/CONTRADICTS cells exist, and a majority aggregate hides ≥ 10% | mixed cells 68–100% per site; hidden 20–29% | **held** |
@@ -531,7 +531,7 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 threads; warm-up 1, 10
 - **Relative vs absolute.** Beating controls is not the same as supporting the claim. IG's selections beat count-matched controls (median superiority ≥ 0.94 everywhere), but IG comprehensiveness SUPPORTS at t = 0.5 held for only 6/60 (A-input), 19/60 (A-hidden), 42/60 (B-pixels), 21/60 (B-channels), and 16/40 (C).
 - **Stronger controls weaken the pixel result.** On B pixels, magnitude-matched controls cut superiority from 0.99 to 0.85 (IG) and from 0.98 to 0.83 (IxG) at p = 10%, and to 0.75/0.69 at p = 20%. In the worst single case (IG, sample 493, k = 13) superiority fell from 0.94 to 0.42.
 - **Gradient.** On B pixels under zero replacement gradient is near chance at small k (superiority 0.43 at p = 1%), because it ranks black pixels, whose zeroing is a no-op (22 no-op top-k selections). Under the mean-image replacement it becomes the best attribution method (0.98 vs IG 0.91): the ordering reverses.
-- **Dead ReLUs.** On A's hidden layer, gradient's top unit was a dead ReLU in 39 selections: zero removal is an exact no-op, reported as INCONCLUSIVE.
+- **Dead ReLUs.** On A's hidden layer, 39 gradient top-k selections (sample × k, r1 comprehensiveness) consisted only of dead ReLU units: zero removal is an exact no-op, reported as INCONCLUSIVE.
 - **Replacement flips.** The same IG selection changed outcome with the replacement in 88 (A-input), 71 (A-hidden), 131 (B-pixels), 73 (B-channels) and 7 (C) (sample, k) cases.
 - **Redundancy in C.** In C, removing the top-2 tokens rarely halves the margin, while *retaining* only them keeps it: IG sufficiency drop 5.6% of the margin vs 97% for random retention. 972 of 975 disagreeing C cells are "not necessary but sufficient".
 - **Stability (B, 1-pixel roll).** Median prediction change 2.56 logits (45% of samples change by more than half their margin); ranking ρ 0.95 but top-k Jaccard 0.40; claim outcome the same in 77%. 17 samples have IG–ablation agreement ≥ 0.5 but stability Jaccard ≤ 0.3.
@@ -553,12 +553,12 @@ Open items are listed in `docs/PHASE_5_5_API_REVIEW.md`.
 
 - Model B's re-run reproduced all 14,700 rows exactly, including content-derived result ids.
 - C's first 3 sentences reproduced 315/315 rows at HEAD.
-- Composition re-derived every first-sample result at every site: 700 claim-test results, plus curves and diagnostics.
+- Composition re-derived every first-sample result at every site: 630 claim-test results, plus curves and diagnostics.
 
 **Mutation checks:** 20 mutations of the new code (unit mapping, reduction axes, strata, magnitudes, the evaluator's unit-axes checks, curve unit fields, tolerances, keyword inputs). **All caught.**
 
 **Performance** (idle, one thread; `results/performance.json`):
 - Forward pass: A 0.012 ms, B 0.027 ms, C 0.28 ms.
-- One faithfulness test with N = 50: A 32–38 ms, B 33–39 ms, C 0.51 s.
+- One faithfulness test with N = 50: A 32–39 ms, B 33–39 ms, C 0.51 s.
 - Controls scale linearly (C: N = 10, 50, 200 → 0.12, 0.51, 2.04 s).
-- Dataset runtime: A 33 min, B 19 min, C 75 min for the full grid.
+- Dataset runtime (full grid, 3 or 4 concurrent runs on 8 cores): A 29 min, B 19 min, C 75 min.
