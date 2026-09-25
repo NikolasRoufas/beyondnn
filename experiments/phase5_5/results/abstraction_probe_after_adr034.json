@@ -1,0 +1,128 @@
+{
+ "environment": {
+  "beyondnn_commit": "efa0712a46cd27688ff3c09dc0e7592c1dc8e8db",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 4,
+  "transformers": "5.17.0"
+ },
+ "log": [
+  {
+   "ok": true,
+   "step": "A input IG"
+  },
+  {
+   "ok": true,
+   "step": "A input top_k + comprehensiveness"
+  },
+  {
+   "ok": true,
+   "step": "A hidden gradient"
+  },
+  {
+   "ok": true,
+   "step": "A hidden top_k + comprehensiveness"
+  },
+  {
+   "ok": true,
+   "step": "B input IG"
+  },
+  {
+   "error": "FaithfulnessError: selection needs an attribution whose non-last dimensions are 1 (got shape (1, 1, 8, 8)); declare unit_axes (and a reduce) for images, channels or sequences (ADR-034)",
+   "ok": false,
+   "step": "B pixels top_k",
+   "where": "unit_scores"
+  },
+  {
+   "error": "FaithfulnessError: the input has shape (1, 1, 8, 8); unit selection needs all non-last dimensions to be 1 unless unit_axes are declared (ADR-034)",
+   "ok": false,
+   "step": "B pixels declared units(n_units=64)",
+   "where": "_check_units"
+  },
+  {
+   "ok": true,
+   "step": "B channel gradient"
+  },
+  {
+   "error": "FaithfulnessError: selection needs an attribution whose non-last dimensions are 1 (got shape (1, 16, 8, 8)); declare unit_axes (and a reduce) for images, channels or sequences (ADR-034)",
+   "ok": false,
+   "step": "B channels top_k",
+   "where": "unit_scores"
+  },
+  {
+   "error": "FaithfulnessError: site Site(module='relu2', io=<SiteIO.OUTPUT: 'output'>, output_path='') has shape (1, 16, 8, 8); unit selection needs all non-last dimensions to be 1 unless unit_axes are declared (ADR-034)",
+   "ok": false,
+   "step": "B channels declared units(n_units=16)",
+   "where": "_check_units"
+  },
+  {
+   "ok": true,
+   "step": "C trace"
+  },
+  {
+   "error": "DiscreteInputError: positional input 0 is torch.int64: gradients with respect to discrete values (e.g. token ids) are undefined. Attribute to a representation instead, e.g. attribution.layer('token_embedding') (embedding dimensions per position).",
+   "ok": false,
+   "step": "C input gradient on ids",
+   "where": "__init__"
+  },
+  {
+   "ok": true,
+   "step": "C word-embedding IxG"
+  },
+  {
+   "error": "FaithfulnessError: selection needs an attribution whose non-last dimensions are 1 (got shape (1, 9, 128)); declare unit_axes (and a reduce) for images, channels or sequences (ADR-034)",
+   "ok": false,
+   "step": "C tokens top_k",
+   "where": "unit_scores"
+  },
+  {
+   "ok": true,
+   "step": "C input-id masking (zero_input units = positions)"
+  },
+  {
+   "error": "FaithfulnessError: site Site(module='bert.embeddings.word_embeddings', io=<SiteIO.OUTPUT: 'output'>, output_path='') has shape (1, 9, 128); unit selection needs all non-last dimensions to be 1 unless unit_axes are declared (ADR-034)",
+   "ok": false,
+   "step": "C token positions declared units(n=T) on word embeddings",
+   "where": "_check_units"
+  },
+  {
+   "ok": true,
+   "step": "AFTER B pixels top_k(unit_axes=(2,3), reduce='sum')"
+  },
+  {
+   "ok": true,
+   "step": "AFTER B pixels comprehensiveness"
+  },
+  {
+   "ok": true,
+   "step": "AFTER B declared pixels units(n_units=64, unit_axes=(2,3))"
+  },
+  {
+   "ok": true,
+   "step": "AFTER B channels top_k(unit_axes=(1,), reduce='sum')"
+  },
+  {
+   "ok": true,
+   "step": "AFTER B declared channel units(n_units=16, unit_axes=(1,))"
+  },
+  {
+   "ok": true,
+   "step": "AFTER C tokens top_k(unit_axes=(1,), reduce='sum')"
+  },
+  {
+   "ok": true,
+   "step": "AFTER C declared token positions (unit_axes=(1,)) comprehensiveness"
+  },
+  {
+   "error": "FaithfulnessError: each unit spans 64 elements of shape (1, 16, 8, 8); declare reduce='sum', 'abs_sum' or 'l2' (never aggregated implicitly)",
+   "ok": false,
+   "step": "AFTER B channels top_k WITHOUT reduce (expected refusal: never aggregated implicitly)",
+   "where": "unit_scores"
+  }
+ ]
+}

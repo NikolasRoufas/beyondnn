@@ -32,6 +32,81 @@ def attempt(label: str, fn: Any, log: list[dict[str, Any]]) -> Any:
         return None
 
 
+def after_adr034(
+    log: list[dict[str, Any]],
+    mB: Any,
+    xb: Any,
+    metric_b: Any,
+    ab: Any,
+    ac: Any,
+    mC: Any,
+    ids: Any,
+    kwargs: Any,
+    metric_c: Any,
+    ae: Any,
+) -> None:
+    """The same B/C steps with declared unit axes (ADR-034), after the change."""
+    test_b = F.comprehensiveness(target=metric_b, min_drop=0.1, statement="s")
+    attempt(
+        "AFTER B pixels top_k(unit_axes=(2,3), reduce='sum')",
+        lambda: F.top_k(ab, k=4, unit_axes=(2, 3), reduce="sum"),
+        log,
+    )
+    attempt(
+        "AFTER B pixels comprehensiveness",
+        lambda: F.run(
+            mB,
+            xb,
+            test=test_b,
+            selection=F.top_k(ab, k=4, unit_axes=(2, 3), reduce="sum"),
+            attributions=[ab],
+        ),
+        log,
+    )
+    attempt(
+        "AFTER B declared pixels units(n_units=64, unit_axes=(2,3))",
+        lambda: F.run(
+            mB, xb, test=test_b, selection=F.units(A.input(), (0, 1), n_units=64, unit_axes=(2, 3))
+        ),
+        log,
+    )
+    attempt(
+        "AFTER B channels top_k(unit_axes=(1,), reduce='sum')",
+        lambda: F.top_k(ac, k=2, unit_axes=(1,), reduce="sum"),
+        log,
+    )
+    attempt(
+        "AFTER B declared channel units(n_units=16, unit_axes=(1,))",
+        lambda: F.run(
+            mB, xb, test=test_b, selection=F.units("relu2", (0,), n_units=16, unit_axes=(1,))
+        ),
+        log,
+    )
+    attempt(
+        "AFTER C tokens top_k(unit_axes=(1,), reduce='sum')",
+        lambda: F.top_k(ae, k=2, unit_axes=(1,), reduce="sum"),
+        log,
+    )
+    attempt(
+        "AFTER C declared token positions (unit_axes=(1,)) comprehensiveness",
+        lambda: F.run(
+            mC,
+            ids,
+            test=F.comprehensiveness(target=metric_c, min_drop=0.1, statement="s"),
+            selection=F.units(
+                "bert.embeddings.word_embeddings", (1,), n_units=ids.shape[1], unit_axes=(1,)
+            ),
+            model_kwargs=kwargs,
+        ),
+        log,
+    )
+    attempt(
+        "AFTER B channels top_k WITHOUT reduce (expected refusal: never aggregated implicitly)",
+        lambda: F.top_k(ac, k=2, unit_axes=(1,)),
+        log,
+    )
+
+
 def main() -> None:
     log: list[dict[str, Any]] = []
     # A: vector input
@@ -166,6 +241,8 @@ def main() -> None:
         ),
         log,
     )
+    if len(sys.argv) > 1:
+        after_adr034(log, mB, xb, metric_b, ab, ac, mC, ids, kwargs, metric_c, ae)
     for row in log:
         print(
             ("OK   " if row["ok"] else "FAIL ")
