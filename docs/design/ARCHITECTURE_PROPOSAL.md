@@ -245,6 +245,21 @@ result.trace            # one trace: CLEAN baseline pass, INTERVENTION pass (act
 - **Refusals:** training mode, RNG consumption, model-state drift between the paired passes, and interventions that did not apply.
 - **Claims:** decided only by the declared `intervention_threshold` protocol. Sufficiency cannot be assessed.
 
+### Evidence synthesis (Phase 4, `beyondnn/explain/`, ADR-031)
+
+```python
+trace = handle.trace(x, sites=["p", "q"])                     # OBSERVED + MEASURED
+attr = handle.attribute(x, target=m, method=..., at=...)      # ATTRIBUTED (explicit)
+effect = handle.intervene(x, intervention=..., metric=m)      # INTERVENTIONAL (explicit)
+response = bnn.compose(trace, attributions=[attr], interventions=[effect],
+                       policies=[A.ATTRIBUTION_POLICY, iv.INTERVENTION_POLICY])
+response.why.by_status(EvidenceStatus.ATTRIBUTED)   # original records, never merged
+print(response.render())
+```
+
+- **Methods run explicitly; composition only reads.** The `EvidenceBundle` validates one explanation context: model, declaration, exact sample, scope, and target. It re-derives recorded claim results and refuses anything incompatible.
+- **What `Why` shows:** status sections, declared claims with every test and assessment, the limitations union, `Coverage` (not confidence), and unanswered questions.
+
 ### Attribution (Phase 3, `beyondnn/attribution/`, ADR-030)
 
 ```python

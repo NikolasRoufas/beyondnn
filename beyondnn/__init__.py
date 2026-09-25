@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from .attribution import attribute
     from .core.persistence import load_trace
     from .core.trace import TraceResult, recording, trace
-    from .explain import instrument
+    from .explain import compose, instrument
     from .interventions import intervene
 
 __version__ = "0.0.0.dev0"
@@ -37,6 +37,7 @@ __all__ = [
     "__version__",
     "attribute",
     "attribution",
+    "compose",
     "instrument",
     "intervene",
     "interventions",
@@ -52,6 +53,7 @@ _LAZY = {
     "TraceResult": "beyondnn.core.trace",
     "load_trace": "beyondnn.core.persistence",
     "instrument": "beyondnn.explain",
+    "compose": "beyondnn.explain",
     "intervene": "beyondnn.interventions",
     "attribute": "beyondnn.attribution",
 }

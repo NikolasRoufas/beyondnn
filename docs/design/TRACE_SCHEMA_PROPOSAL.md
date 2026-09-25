@@ -259,6 +259,12 @@ It migrates old record versions and remaps every reference to ids that migration
 - A `ProvenanceRecord` with `execution.mode = INTERVENTION` must name an `InterventionRecord` in the same trace.
 - Intervention tensors are retained tensors of the trace: persisted in `tensors.pt` and digest-checked on load.
 
+### A.15 Input identity (Phase 4, ADR-031)
+
+- `input` is record version 3 and gains `sample_id: str | None`. It is the exact SHA-256 identity of the root input (tensor dtypes, shapes, and bytes plus JSON scalars; `beyondnn.core.samples`), the same identity used by effect estimands, `AttributionRecord.sample_id`, and claim estimands.
+- `None` means the input had no deterministic identity, or the record was migrated from v2 (never invented).
+- Phase 4 adds no record kind and no evidence status. `EvidenceBundle` and the WHY views are presentation objects over existing records and are never serialised.
+
 ### A.14 Attribution (Phase 3, ADR-030)
 
 | Kind | Status | Fields |

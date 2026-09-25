@@ -28,9 +28,34 @@ def test_only_causal_effects_carry_causal_status_and_nothing_stronger_exists() -
 
 def test_execution_layers_never_name_a_stronger_status() -> None:
     pattern = re.compile(r"EvidenceStatus\.(" + "|".join(STRONGER) + r")\b")
-    for package in ("core", "explain", "provenance", "_testing"):
+    for package in ("core", "provenance", "_testing"):
         for path in (ROOT / package).rglob("*.py"):
             assert not pattern.search(path.read_text()), path
+
+
+EVIDENCE_KINDS = (
+    "InputRecord",
+    "OutputRecord",
+    "ActivationRecord",
+    "AttributionRecord",
+    "AttributionReduction",
+    "CausalEffect",
+    "InterventionRecord",
+    "ProvenanceRecord",
+    "ClaimTestResult",
+    "Claim",
+)
+
+
+def test_the_presentation_layer_never_constructs_evidence() -> None:
+    # Phase 4 (ADR-031): explain/ groups records by status (so it may name statuses),
+    # but it only reads records; it never builds evidence, claims, or test results.
+    constructor = re.compile(r"(?<![\w.])(" + "|".join(EVIDENCE_KINDS) + r")\(")
+    forged = re.compile(r"\.(for_claim|to)\(|_add\(|_add_tensor\(")
+    for path in (ROOT / "explain").rglob("*.py"):
+        text = path.read_text()
+        assert not constructor.search(text), (path, constructor.search(text))
+        assert not forged.search(text), (path, forged.search(text))
 
 
 def test_top_level_names_are_exactly_the_audited_surface() -> None:
@@ -45,6 +70,7 @@ def test_top_level_names_are_exactly_the_audited_surface() -> None:
             "__version__",
             "attribute",
             "attribution",
+            "compose",
             "instrument",
             "intervene",
             "interventions",

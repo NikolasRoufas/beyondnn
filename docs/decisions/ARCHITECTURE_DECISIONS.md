@@ -774,7 +774,7 @@ Revision note (2026-09-25, review, before acceptance):
 ## ADR-026: instrument() handle and the Phase-1 INPUT → WHY → OUTPUT view
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for M1.8. Refines ADR-002, whose attribute-delegating handle is **not** implemented.
+- **Status:** Accepted for M1.8. Refines ADR-002, whose attribute-delegating handle is **not** implemented. **Amended by ADR-031 (Phase 4)** — see "Amendment" at the end of this ADR.
 
 **Decision** (`beyondnn/explain/`):
 - **`instrument(model)`** returns `Instrumented`: a frozen handle holding only `model`.
@@ -800,6 +800,19 @@ Revision note (2026-09-25, review, before acceptance):
 **Reason:** the user-facing shape exists now without claiming knowledge that later phases must earn. The trace remains the single source of truth.
 
 **Top-level API:** `trace`, `recording`, `TraceResult`, `load_trace`, `instrument`, plus the status enums and `schema`. `ExplainResponse` and `Why` are importable from `beyondnn.explain`.
+
+**Amendment (Phase 4, ADR-031, 2026-09-25).** What changes, and what stays the same:
+- **Unchanged:**
+  - `handle.explain(...)`, `ExplainResponse(trace)`, `from_trace`, `input`, `output`, `Why(trace)`, `Why.activations`, `QUESTION` and `NOT_ANSWERED`.
+  - The measured-only meaning.
+  - The measured-only render lines: verified to be identical to the Phase-3 renderer output for the same traces.
+  - The limitations and evidence statuses of a measured-only view.
+- **Changed (additive):**
+  - `ExplainResponse` has an optional `bundle` (an `EvidenceBundle`). `ExplainResponse(trace)` composes a trace-only bundle.
+  - `from_evidence(...)` and `bnn.compose(...)` present explicitly computed attributions, interventions, and declared claims in separate status sections.
+  - `Why` gains `observations`, `measurements`, `attributions`/`attribution_views`, `effects`/`intervention_views`, `estimated_causal`, `claims`, `assessments`, `by_status`, `origin`, `coverage`, `unanswered`, `target`, and `question`/`not_answered`.
+  - The measured-only render appends a NOT EVALUATED block (faithfulness, comprehensiveness, sufficiency, concept validation).
+- **Still true:** `explain()` never runs attribution, interventions, or claim tests.
 
 ---
 
@@ -917,4 +930,48 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 - Tracing every IG step: rejected, because it would add n_steps passes of records that describe method internals, not evidence.
 - An `Estimand` on attribution records: rejected, because it would make attribution look like causal evidence.
 - Accepting Captum's default `Saliency(abs=True)` or its `riemann_trapezoid` as equivalent to the native rules: rejected. Both are documented convention differences.
+
+---
+
+## ADR-031: Phase-4 evidence synthesis: EvidenceBundle, structured WHY, exact input identity
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for Phase 4 implementation. Awaiting Phase 4 review.
+
+**Decision:**
+- **Input identity.** `InputRecord.sample_id` (record version 3) holds the exact identity of the root input: the same SHA-256 algorithm used by effect estimands, attributions, and claims, now in `beyondnn.core.samples`.
+  - v2 records migrate with `None`.
+  - Summary statistics cannot identify an input (they cannot tell (3, 5) from (5, 3)), so without this field composition could not avoid silent sample misassignment.
+  - Privacy: the digest can confirm a guessed low-entropy input. It was already present in Phase 2/3 records.
+- **`EvidenceBundle`** (`beyondnn.explain`): the deferred multi-evidence container (ADR-015), in its smallest form.
+  - It is built only by `EvidenceBundle.compose(trace, *, attributions, interventions, claims, policies)`. It is immutable and is **not evidence**.
+  - It covers **one explanation context**: one reference single-pass trace, one automatic `ModelIdentity` and one `ModelDeclaration` across every provenance record, one exact input sample, INSTANCE scope only, and at most one scalar target (`MetricSpec`; claims must match `target()`).
+  - Incompatible evidence is refused (`CompositionError` subclasses), never merged or grouped silently.
+  - It revalidates everything it is given:
+    - record ids against content;
+    - references within each source trace;
+    - conflicting content under one id;
+    - evidence cited by claim-test results;
+    - every decisive result, re-derived with its registered protocol's evaluator and required to be identical. An unregistered protocol is refused.
+- **Assessments** are derived with `Assessment.derive` under caller-supplied, registry-checked policies (`check_policy`).
+  - A claim is assessed only under policies that name a protocol for its relation, using every recorded result about it.
+  - There is no default or universal Phase-4 policy.
+- **Claims** are only those declared by the caller or recorded with the evidence. None are generated.
+- **Presentation:**
+  - `bnn.compose(...)` returns an `ExplainResponse`. `Why` groups evidence by status (OBSERVED, MEASURED, ATTRIBUTED, INTERVENTIONAL, and a separate ESTIMATED_CAUSAL section).
+  - Views (`AttributionView`, `InterventionView`, `ClaimView`) reference the original record objects.
+  - Limitations are the deduplicated union of every source trace's limitations (details preserved), plus `NO_*` codes only where that kind of evidence is absent.
+  - `Coverage` states which evidence exists. `faithfulness_evaluated` and `concepts_validated` are `False` and cannot be set otherwise.
+  - `render()` is deterministic text. `to_dict()` is a deterministic presentation summary; the codec remains the serialisation.
+- **No computation:** composition and rendering never execute the model, use autograd or Captum, install hooks, touch RNG, or write tensors. This is verified with a tripwire model and patched autograd/hook entry points.
+- **No persistence format:** an explanation is reconstructed from its persisted traces by composing again.
+- **Naming:** the top-level function is `compose`, not `explain`, because `beyondnn.explain` is the subpackage: importing it would rebind a top-level `explain` function.
+
+**Not done (by design):**
+- no confidence, agreement, or combined score;
+- no ranking or "most important";
+- no `EVIDENCE_CONFLICT` for attribution/intervention differences (they answer different questions);
+- no generated text or claims;
+- no multi-target or multi-sample views;
+- no faithfulness, sufficiency, or concepts (Phases 5 and 6).
 
