@@ -115,7 +115,7 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 - Every test gets a documentation page covering its formal definition, implementation, interpretation, and limitations.
 - Also Research Question 8: can any aggregate predict held-out outcomes on ground-truth models?
 
-## Phase 5.5: Realistic faithfulness validation: see `docs/PHASE_5_5_REPORT.md` for the gate (2026-09-26; ADR-034 to ADR-037)
+## Phase 5.5: Realistic faithfulness validation: **gate READY FOR PHASE 6 WITH EXPLICIT LIMITATIONS** (2026-09-26; `docs/PHASE_5_5_REPORT.md`, ADR-034 to ADR-038)
 
 - Pre-registered validation on a trained MLP (breast_cancer), a trained CNN (digits) and BERT-tiny (SST-2), with 60/60/40 held-out samples.
 - **Framework changes forced by the realistic runs:**
