@@ -60,7 +60,6 @@ from beyondnn.schema import (
     Relation,
     Site,
     Subject,
-    TargetSpec,
     TensorRef,
     TraceLimitation,
 )
@@ -169,7 +168,7 @@ def make_claim(
         statement=statement,
         relation=relation,
         subject=Subject(site=Site(module=intervention.site, output_path=intervention.output_path)),
-        target=TargetSpec(metric=metric.spec.name, params=metric.spec.params),
+        target=metric.spec.target(),
         estimand=Estimand.instance(sample_id(*inputs, model_kwargs=model_kwargs)),
         source=source or ClaimSource(kind=ClaimSourceKind.USER),
     )

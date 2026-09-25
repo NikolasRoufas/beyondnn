@@ -201,7 +201,7 @@ def test_limitations_follow_the_operation_and_metric() -> None:
         Additive(),
         x(1, 2),
         intervention=iv.zero("a"),
-        metric=iv.metrics.custom("sum", lambda o: o.sum()),
+        metric=iv.metrics.custom("sum", lambda o: o.sum(), implementation_revision="v1"),
     )
     assert "CUSTOM_METRIC_UNVERIFIED" in codes(custom)
     assert "CUSTOM_METRIC_UNVERIFIED" not in codes(const)
@@ -335,7 +335,13 @@ def test_foreign_hooks_are_still_refused_and_ours_are_recognised() -> None:
     [
         {"metric": iv.metrics.select([0, 9])},  # metric error
         {"intervention": iv.constant("a", torch.zeros(3))},  # replacement error
-        {"metric": iv.metrics.custom("boom", lambda o: (_ for _ in ()).throw(KeyboardInterrupt()))},
+        {
+            "metric": iv.metrics.custom(
+                "boom",
+                lambda o: (_ for _ in ()).throw(KeyboardInterrupt()),
+                implementation_revision="v1",
+            )
+        },
     ],
 )
 def test_no_hooks_leak_on_any_failure(failing: dict[str, Any]) -> None:
@@ -620,3 +626,61 @@ class TogglesMode(nn.Module):
 def test_execution_condition_drift_is_refused() -> None:
     with pytest.raises(iv.StatefulComparisonError, match="execution conditions"):
         iv.intervene(TogglesMode().eval(), x(1, 2), intervention=iv.zero("a"), metric=SEL)
+
+
+# ------------------------------------- caller metric identity (Phase 2 hardening)
+
+
+def _first(o: torch.Tensor) -> float:
+    return float(o[0, 0])
+
+
+def _doubled(o: torch.Tensor) -> float:
+    return 2 * float(o[0, 0])
+
+
+def test_unversioned_custom_metrics_are_refused() -> None:
+    with pytest.raises(TypeError):
+        iv.metrics.custom("score", _first)  # type: ignore[call-arg]
+    with pytest.raises(ValueError, match="implementation_revision"):
+        iv.metrics.custom("score", _first, implementation_revision="")
+    with pytest.raises(ValueError, match="implementation_revision"):
+        iv.metrics.custom("score", _first, implementation_revision="has space")
+
+
+def test_same_name_different_functions_have_distinct_declared_identity() -> None:
+    a = iv.metrics.custom("score", _first, implementation_revision="git:aaa")
+    b = iv.metrics.custom("score", _doubled, implementation_revision="git:bbb")
+    c = iv.metrics.custom("score", _first, implementation_revision="git:aaa", config={"k": 1})
+    assert len({a.spec, b.spec, c.spec}) == 3
+    assert len({a.spec.target(), b.spec.target(), c.spec.target()}) == 3
+    ra = run(Additive(), x(3, 5), intervention=iv.zero("a"), metric=a)
+    rb = run(Additive(), x(3, 5), intervention=iv.zero("a"), metric=b)
+    assert (ra.value, rb.value) == (-3.0, -6.0)
+    assert ra.effect.metric != rb.effect.metric
+    assert ra.effect.id != rb.effect.id
+    decl = ra.effect.metric.declaration
+    assert decl is not None
+    assert decl.implementation_revision == "git:aaa"
+    assert "CUSTOM_METRIC_UNVERIFIED" in codes(ra)
+
+
+def test_claims_about_one_declared_revision_do_not_match_another() -> None:
+    a = iv.metrics.custom("score", _first, implementation_revision="git:aaa")
+    b = iv.metrics.custom("score", _doubled, implementation_revision="git:bbb")
+    inputs = x(3.0, 5.0)
+    spec = iv.threshold_spec(operation=InterventionOperation.ZERO, min_effect=1.0)
+    claim_b = _claim(Relation.NECESSARY_FOR, inputs, metric=b)
+    claim_a = _claim(Relation.NECESSARY_FOR, inputs, metric=a)
+    claims = [(claim_b, spec), (claim_a, spec)]
+    r = run(Additive(), inputs, intervention=iv.zero("a"), metric=a, claims=claims)
+    assert [res.outcome for res in r.claim_results] == [Outcome.NOT_APPLICABLE, Outcome.SUPPORTS]
+
+
+def test_declared_custom_metric_identity_persists(tmp_path: Path) -> None:
+    m = iv.metrics.custom("score", _first, implementation_revision="git:aaa", config={"k": 1})
+    r = run(Additive(), x(3, 5), intervention=iv.zero("a"), metric=m)
+    r.trace.save(tmp_path / "t")
+    loaded = iv.InterventionResult.from_trace(bnn.load_trace(tmp_path / "t"))
+    assert loaded.effect == r.effect
+    assert loaded.effect.metric.declaration == m.spec.declaration

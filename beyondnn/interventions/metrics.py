@@ -2,8 +2,10 @@
 
 Built-ins are BeyondNN's own pure functions of the model output; their identity and
 configuration are recorded as a :class:`~beyondnn.schema.MetricSpec`. Caller
-metrics (:func:`custom`) are recorded by name only; their code is never
-serialised or verified, and effects using them carry ``CUSTOM_METRIC_UNVERIFIED``.
+metrics (:func:`custom`) are identified by name plus a caller-DECLARED
+implementation revision and config (:class:`~beyondnn.schema.MetricDeclaration`);
+their code is never serialised, inspected, or verified, and effects using them
+carry ``CUSTOM_METRIC_UNVERIFIED``.
 
 ``path`` selects a tensor leaf of the model's return value (``""`` = the value
 itself; ``"[0]"``, ``'["logits"]'``, ...: the same grammar as trace leaf paths).
@@ -12,14 +14,14 @@ itself; ``"[0]"``, ``'["logits"]'``, ...: the same grammar as trace leaf paths).
 from __future__ import annotations
 
 import re
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
 import torch
 
 from beyondnn.core.tensors import walk
-from beyondnn.schema import JsonMap, MetricSpec
+from beyondnn.schema import JsonMap, MetricDeclaration, MetricSpec
 
 __all__ = ["Metric", "custom", "difference", "get_leaf", "mean", "select"]
 
@@ -107,10 +109,24 @@ def mean(*, path: str = "") -> Metric:
     return Metric(spec, lambda out: float(get_leaf(out, path).detach().double().mean().item()))
 
 
-def custom(name: str, function: Callable[[Any], float]) -> Metric:
-    """A caller-supplied metric, recorded as ``custom:<name>``; never serialised or verified."""
+def custom(
+    name: str,
+    function: Callable[[Any], float],
+    *,
+    implementation_revision: str,
+    config: Mapping[str, Any] | None = None,
+) -> Metric:
+    """A caller-supplied metric, recorded as ``custom:<name>`` with the DECLARED
+    ``implementation_revision`` (required, e.g. ``"git:abc123"`` or ``"v2"``) and
+    ``config``. The function is never serialised, inspected, or hashed: a declaration
+    is the caller's statement, so change the revision whenever the function changes."""
     if not _NAME.match(name):
         raise ValueError(f"invalid metric name {name!r}")
     if not callable(function):
         raise TypeError("function must be callable")
-    return Metric(MetricSpec(name=f"custom:{name}", builtin=False), function)
+    declaration = MetricDeclaration(
+        implementation_revision=implementation_revision, config=JsonMap(dict(config or {}))
+    )
+    return Metric(
+        MetricSpec(name=f"custom:{name}", builtin=False, declaration=declaration), function
+    )

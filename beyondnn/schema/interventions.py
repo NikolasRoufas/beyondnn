@@ -20,17 +20,27 @@ Pure data. The runtime lives in :mod:`beyondnn.interventions`.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 from ._canonical import EMPTY_JSON, JsonMap
 from ._types import Value, require
-from .base import BaseRecord, RecordRef, record_kind
+from .base import BaseRecord, RecordRef, record_kind, register_migration
 from .errors import EvidenceRuleError
 from .status import EstimandScope, EvidenceStatus
-from .values import Estimand, Site, SiteIO, TensorRef
+from .values import Estimand, Site, SiteIO, TargetSpec, TensorRef
 
-__all__ = ["CausalEffect", "InterventionOperation", "InterventionRecord", "MetricSpec"]
+__all__ = [
+    "CausalEffect",
+    "InterventionOperation",
+    "InterventionRecord",
+    "MetricDeclaration",
+    "MetricSpec",
+]
+
+_TOKEN_RE = re.compile(r"^\S+$")
 
 
 class InterventionOperation(Enum):
@@ -92,17 +102,40 @@ class InterventionRecord(BaseRecord):
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
+class MetricDeclaration(Value):
+    """Identity of a caller metric as DECLARED by the caller (like ``ModelDeclaration``).
+
+    Recorded as stated and never verified: BeyondNN does not serialise, inspect,
+    scrape, or hash the function. ``implementation_revision`` (e.g. ``"git:abc123"``,
+    ``"v2"``) is required so two different functions sharing a human-readable name
+    can be told apart; ``config`` holds the caller's declared parameters.
+    """
+
+    implementation_revision: str
+    config: JsonMap = EMPTY_JSON
+
+    def _validate(self) -> None:
+        require(
+            bool(_TOKEN_RE.match(self.implementation_revision)),
+            "MetricDeclaration.implementation_revision must be a non-empty token",
+        )
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class MetricSpec(Value):
     """Identity and configuration of a scalar outcome metric.
 
-    ``builtin`` metrics are BeyondNN's own (pure, deterministic). Caller metrics are
-    recorded by name only (``custom:<name>``); their code is never serialised,
-    inspected, or verified.
+    ``builtin`` metrics are BeyondNN's own (pure, deterministic), identified by name
+    and ``params``. Caller metrics are named ``custom:<name>``, have no ``params``,
+    and must carry a caller :class:`MetricDeclaration` (declared revision and
+    config): an undeclared caller metric has no scientific identity and is refused.
+    Their code is never serialised, inspected, or verified.
     """
 
     name: str
     builtin: bool
     params: JsonMap = EMPTY_JSON
+    declaration: MetricDeclaration | None = None
 
     def _validate(self) -> None:
         require(bool(self.name) and " " not in self.name, f"invalid metric name {self.name!r}")
@@ -110,9 +143,32 @@ class MetricSpec(Value):
             self.builtin != self.name.startswith("custom:"),
             "caller metrics are named 'custom:<name>'; built-ins are not",
         )
+        if self.builtin:
+            require(self.declaration is None, "built-in metrics are identified automatically")
+        else:
+            require(
+                self.declaration is not None,
+                "a caller metric needs a MetricDeclaration (declared implementation_revision)",
+            )
+            require(len(self.params) == 0, "caller metric parameters go in declaration.config")
+
+    def target(self) -> TargetSpec:
+        """The claim target this metric defines (one deterministic mapping; claims and
+        evidence about different declared revisions never match)."""
+        if self.declaration is None:
+            return TargetSpec(metric=self.name, params=self.params)
+        return TargetSpec(
+            metric=self.name,
+            params=JsonMap(
+                {
+                    "declared_implementation_revision": self.declaration.implementation_revision,
+                    "declared_config": self.declaration.config.to_plain(),
+                }
+            ),
+        )
 
 
-@record_kind("causal_effect")
+@record_kind("causal_effect", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class CausalEffect(BaseRecord):
     """A scalar intervention effect: ``effect = intervention_value - baseline_value``.
@@ -120,6 +176,10 @@ class CausalEffect(BaseRecord):
     INSTANCE: ``derived_from`` holds the paired baseline and intervention
     ``OutputRecord``s; the effect is exact. FINITE_SAMPLE: ``derived_from`` holds the
     ``n`` instance effects and the values are their means (aggregation ``mean``).
+
+    Record version 2 added ``MetricSpec.declaration``. Version-1 payloads migrate
+    with ``declaration = None``; a v1 effect on a caller metric therefore fails to
+    load (its metric identity is ambiguous) rather than gaining an invented revision.
     """
 
     interventions: tuple[RecordRef, ...]
@@ -176,3 +236,11 @@ class CausalEffect(BaseRecord):
                 ),
                 "effect must equal intervention_value - baseline_value",
             )
+
+
+@register_migration("causal_effect", 1)
+def _causal_effect_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
+    metric = data.get("metric")
+    if not isinstance(metric, dict) or "declaration" in metric:
+        raise ValueError("a causal_effect v1 payload has a metric without declaration")
+    return data | {"metric": metric | {"declaration": None}}

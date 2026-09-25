@@ -823,7 +823,7 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 ## ADR-028: Phase-2 interventions: one comparison = one recording; INTERVENTIONAL is reserved for effects
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for Phase 2 implementation. Awaiting Phase 2 review.
+- **Status:** Accepted. Phase 2 closed (GO WITH EXPLICIT LIMITATIONS). Custom metric identity amended by ADR-029.
 
 **Decision:**
 - **Records** (`schema/interventions.py`):
@@ -834,7 +834,7 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 - **Runtime** (`beyondnn.interventions`): `intervene()` / `intervene_sample()` run one `recording()` per comparison. The passes are an optional CLEAN patch-source pass, a CLEAN baseline pass, and an INTERVENTION pass, all under `torch.no_grad()`.
   - The replacement is done by a BeyondNN-owned forward hook registered through `HookSession.owned_forward_hook`. It counts as owned (foreign-hook protection unchanged) and runs before output observation, so the recorded activation is the replaced one. It stays **MEASURED** (ADR-017).
   - **The comparison is refused** if any module is in training mode, if the CPU RNG state changes in either pass, if the model state fingerprint differs between the two passes, or if the declared call did not run exactly once.
-- **Metrics:** built-ins `select`, `difference`, `mean` (scalar, pure, recorded as `MetricSpec`). `custom(name, fn)` is recorded by name only and is never serialised; it emits `CUSTOM_METRIC_UNVERIFIED`.
+- **Metrics:** built-ins `select`, `difference`, `mean` (scalar, pure, recorded as `MetricSpec`). `custom(name, fn, implementation_revision=...)` is never serialised; it emits `CUSTOM_METRIC_UNVERIFIED`. Identity per ADR-029.
 - **Claims:**
   - The protocol registry is `interventions.PROTOCOLS`: `intervention_threshold` v1 justifies NECESSARY_FOR, DECREASES, and INCREASES. It closes the ADR-018 gap for this protocol, and `check_policy` validates policies against the registry.
   - The criteria (`min_effect`) are declared before running.
@@ -856,4 +856,23 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 - Finite-sample comparisons support ZERO/CONSTANT only.
 - Only CPU RNG is checked (CPU-only phase).
 - Effects are scoped to exactly the compared inputs. Nothing generalises to a population.
+
+---
+
+## ADR-029: Caller metrics carry a declared identity; undeclared caller metrics are refused
+
+- **Date:** 2026-09-25
+- **Status:** Accepted (Phase 2 hardening, before Phase 3).
+
+**Problem:** a Phase 2 caller metric was identified only by its friendly name (`custom:<name>`). Two different functions with the same name therefore had the same `MetricSpec`, so their effects and claim targets were indistinguishable.
+
+**Decision:**
+- New value `MetricDeclaration(implementation_revision: str, config: JsonMap)`. It is **declared** by the caller, recorded as stated, never verified, and kept apart from anything BeyondNN measures. This is the same principle as `ModelDeclaration` (ADR-022).
+- `MetricSpec.declaration` is **required** for caller metrics and forbidden for built-ins. Built-ins are identified automatically by name and `params`. Caller metrics keep their parameters in `declaration.config`, never in `params`.
+- `metrics.custom(name, fn, *, implementation_revision, config=None)`: the revision is a required keyword. An unversioned caller metric is **refused** (option A) rather than allowed with a limitation, because a limitation cannot remove the identity ambiguity. `CUSTOM_METRIC_UNVERIFIED` still applies, because a declaration is not verification.
+- The function is never serialised. Source code is never scraped, there is no bytecode hashing, and there is no repository lookup.
+- `MetricSpec.target()` is the single deterministic mapping from a metric to a claim `TargetSpec`. For caller metrics it includes the declared revision and config, so a claim about revision A is NOT_APPLICABLE to evidence from revision B.
+- `causal_effect` is now record version 2. v1 payloads migrate with `declaration = None`. A v1 effect on a caller metric therefore **fails to load** instead of gaining an invented revision. Nothing was ever published, so no real data is affected.
+
+**Consequences:** declared identity is only as good as the caller's discipline: changing the function without changing the revision is undetectable. This is documented and not claimed as a guarantee.
 

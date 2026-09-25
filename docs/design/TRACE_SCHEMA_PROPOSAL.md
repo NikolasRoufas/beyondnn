@@ -253,7 +253,7 @@ It migrates old record versions and remaps every reference to ids that migration
 | Kind | Status | Fields |
 |---|---|---|
 | `intervention` | none (a specification) | `site` (module OUTPUT + `output_path` leaf), `call_index`, `operation` ZERO/CONSTANT/PATCH, `constant` (scalar), `value` (retained `TensorRef` with digest), `source` (`RecordRef` to a MEASURED activation, PATCH only) |
-| `causal_effect` | derived: INTERVENTIONAL (INSTANCE, FINITE_SAMPLE; `estimator="exact"`); ESTIMATED_CAUSAL only for POPULATION with a non-exact estimator | `interventions`, `metric` (`MetricSpec`: name, builtin, params), `estimand`, `baseline_value`, `intervention_value`, `effect = intervention_value − baseline_value`, `estimator` |
+| `causal_effect` | derived: INTERVENTIONAL (INSTANCE, FINITE_SAMPLE; `estimator="exact"`); ESTIMATED_CAUSAL only for POPULATION with a non-exact estimator | `interventions`, `metric` (`MetricSpec`: name, builtin, params, `declaration`: a caller `MetricDeclaration(implementation_revision, config)`, required iff not built-in; ADR-029; record version 2), `estimand`, `baseline_value`, `intervention_value`, `effect = intervention_value − baseline_value`, `estimator` |
 
 - An INSTANCE effect derives from exactly the two paired `OutputRecord`s. A FINITE_SAMPLE effect derives from exactly `n` instance effects, and its values are means.
 - A `ProvenanceRecord` with `execution.mode = INTERVENTION` must name an `InterventionRecord` in the same trace.

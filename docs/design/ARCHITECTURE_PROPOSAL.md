@@ -153,7 +153,7 @@ class Metric(Protocol):
     def __call__(self, output: Any, *, inputs: Any) -> torch.Tensor: ...  # shape [batch]
 ```
 Built-ins: `Logit(cls)`, `Prob(cls)`, `LogitDiff(a, b)`, `LogProb(token_id, position)`, `Loss(fn, y)`, `Output(path)`.
-- Custom metrics have a `name` and return a `TargetSpec` with `metric="custom:<name>"`.
+- Custom metrics have a `name` and a caller-declared `implementation_revision`/`config` (ADR-029). Their `TargetSpec` is `metric="custom:<name>"` with the declared identity in its params.
 - Custom metrics are not reconstructible from JSON. That is recorded, not hidden.
 
 ### D7. Interventions are data (Phase 2)

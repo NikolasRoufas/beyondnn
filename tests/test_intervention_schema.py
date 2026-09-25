@@ -20,6 +20,7 @@ from beyondnn.schema import (
     InterventionOperation,
     InterventionRecord,
     JsonMap,
+    MetricDeclaration,
     MetricSpec,
     Outcome,
     OutputRecord,
@@ -118,7 +119,24 @@ def test_intervention_identity_is_deterministic_and_a_spec_not_evidence() -> Non
 
 
 def test_metric_spec_names() -> None:
-    MetricSpec(name="custom:my_metric", builtin=False)
+    MetricSpec(
+        name="custom:my_metric",
+        builtin=False,
+        declaration=MetricDeclaration(implementation_revision="v1"),
+    )
+    with pytest.raises(SchemaError, match="MetricDeclaration"):
+        MetricSpec(name="custom:my_metric", builtin=False)
+    with pytest.raises(SchemaError, match="automatically"):
+        MetricSpec(
+            name="select", builtin=True, declaration=MetricDeclaration(implementation_revision="v1")
+        )
+    with pytest.raises(SchemaError, match=r"declaration\.config"):
+        MetricSpec(
+            name="custom:m",
+            builtin=False,
+            params=JsonMap({"k": 1}),
+            declaration=MetricDeclaration(implementation_revision="v1"),
+        )
     with pytest.raises(SchemaError):
         MetricSpec(name="my_metric", builtin=False)
     with pytest.raises(SchemaError):
@@ -194,3 +212,26 @@ def test_effects_round_trip_and_back_causal_claim_results(mk: SimpleNamespace) -
         claim, mk.spec(), outcome=Outcome.SUPPORTS, evidence=(effect,), provenance_id=PROV
     )
     assert result.outcome is Outcome.SUPPORTS
+
+
+def _as_v1(effect: CausalEffect) -> dict[str, Any]:
+    from beyondnn.schema.codec import _expected_id, to_dict
+
+    payload = to_dict(effect)
+    del payload["data"]["metric"]["declaration"]
+    payload["record_version"] = 1
+    payload["id"] = _expected_id("causal_effect", 1, payload["data"])
+    return payload
+
+
+def test_v1_builtin_effects_migrate_and_v1_caller_metric_effects_are_refused() -> None:
+    from beyondnn.schema import DecodeError, from_dict
+
+    migrated = from_dict(_as_v1(_effect()))
+    assert isinstance(migrated, CausalEffect)
+    assert migrated.metric == METRIC
+    custom = MetricSpec(
+        name="custom:m", builtin=False, declaration=MetricDeclaration(implementation_revision="v1")
+    )
+    with pytest.raises(DecodeError, match="MetricDeclaration"):
+        from_dict(_as_v1(_effect(metric=custom)))

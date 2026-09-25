@@ -17,6 +17,7 @@ All notable changes to this project are documented here. The format follows
   - the `intervention_threshold` claim protocol with a protocol registry;
   - ground-truth causal models;
   - four intervention limitations.
+- Caller metrics carry a declared identity (ADR-029): `metrics.custom(name, fn, *, implementation_revision, config)`, `MetricDeclaration`, and `MetricSpec.target()`. Unversioned caller metrics are refused. `causal_effect` is now record version 2, with a migration.
 - Phase 2 benchmark (`benchmarks/bench_interventions.py`), a README intervention example executed by tests, and the Phase 2 report (gate: GO WITH EXPLICIT LIMITATIONS).
 - Comparisons also refuse input modification in place and drift in execution conditions between the paired passes.
 - **M1.1: trace schema 0.1** (`beyondnn.schema`):

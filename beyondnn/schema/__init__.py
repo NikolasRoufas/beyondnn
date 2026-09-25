@@ -35,7 +35,13 @@ from .errors import (
     UnknownRecordKindError,
     UnsupportedVersionError,
 )
-from .interventions import CausalEffect, InterventionOperation, InterventionRecord, MetricSpec
+from .interventions import (
+    CausalEffect,
+    InterventionOperation,
+    InterventionRecord,
+    MetricDeclaration,
+    MetricSpec,
+)
 from .limitations import LIMITATIONS, LimitationDef, Severity, TraceLimitation
 from .provenance import (
     EnvironmentIdentity,
@@ -108,6 +114,7 @@ __all__ = [
     "JsonMap",
     "LimitationDef",
     "MethodIdentity",
+    "MetricDeclaration",
     "MetricSpec",
     "ModelDeclaration",
     "ModelIdentity",

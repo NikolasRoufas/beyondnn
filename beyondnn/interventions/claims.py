@@ -32,7 +32,6 @@ from beyondnn.schema import (
     Outcome,
     PolicyRequirement,
     Relation,
-    TargetSpec,
 )
 
 __all__ = [
@@ -127,7 +126,7 @@ def evaluate_claim(
         and spec.params.get("operation") == intervention.operation.value
         and claim.subject.site == intervention.site
         and claim.subject.units is None
-        and claim.target == TargetSpec(metric=effect.metric.name, params=effect.metric.params)
+        and claim.target == effect.metric.target()
         and claim.estimand == effect.estimand
     )
     if not applicable:
