@@ -171,7 +171,9 @@ def units(
     unit_axes: tuple[int, ...] | None = None,
 ) -> Selection:
     """A declared set of units. ``site`` is a module path, or an ``attribution.input(i)``
-    / ``attribution.layer(...)`` spec; ``n_units`` is the size of the last dimension."""
+    / ``attribution.layer(...)`` spec; ``n_units`` is the number of units: the size of the
+    last dimension, or, with declared ``unit_axes``, the size of their row-major sub-grid
+    (ADR-034)."""
     if isinstance(site, At):
         where = site.site()
         call_index = site.call_index
