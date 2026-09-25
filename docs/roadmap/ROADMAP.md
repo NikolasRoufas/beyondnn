@@ -76,6 +76,10 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 - Capability and correctness vs nnsight, Captum, TransformerLens, and pyvene on the tiny models, plus runtime and memory.
 - Ease of use is assessed through task scripts and reported qualitatively.
 
+## Hard gates
+
+- **Before M1.6 (trace containers):** resolve a caller-declared model configuration / implementation revision in provenance, so that behaviourally different models with the same FULL v1 fingerprint cannot silently share provenance identity when the distinction is known (see the M1.3 finding below and `PHASE_1_PLAN.md` §M1.6). FULL v1 itself stays unchanged; the `n_heads` case is an accepted, documented limitation of automatic fingerprinting.
+
 ## Open investigation items
 
 - **Implementation revision in provenance** (from the M1.2 review). The FULL fingerprint does not hash Python code (ADR-020). Investigate an optional, caller-supplied `implementation_revision` / code revision / repository commit / model revision for reproducibility. Automatic source hashing is out of scope. There is no schema change until implementation evidence shows it is needed.

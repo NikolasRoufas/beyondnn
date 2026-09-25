@@ -23,6 +23,14 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **M1.4: deterministic module site resolution** in `beyondnn.core.sites` (not exported):
+  - segment-based `*` / `**` pattern language; the root is selected only by `""`;
+  - strict (unmatched or invalid patterns raise);
+  - traversal-order results, deduplicated by exact path;
+  - alias paths preserved as distinct sites;
+  - no forward, hooks, or RNG use.
+
+  Also: a hard roadmap gate before M1.6 for caller-declared model config/revision.
 - **M1.3: deterministic tiny reference models** in the internal, unstable `beyondnn._testing.models`:
   - `TinyMLP` (139 params; shared module called twice; functional op; keyword-only `scale`);
   - `TinyCNN` (396; BatchNorm buffers; tuple output);

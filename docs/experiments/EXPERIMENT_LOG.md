@@ -107,3 +107,24 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
 - **Mutation check:** removing RNG isolation, the tie, the causal mask, or the second shared call is caught by 5, 4, 1, and 1 tests respectively.
 - **Next action:** decide on caller-declared config/revision in provenance (roadmap investigation item) before comparing differently configured models. M1.4 site resolution next.
 
+---
+
+## 2026-09-25: M1.4 site-resolution guard (mutation) checks
+- **Commit:** the M1.4 commit (parent `ff34413`)
+- **Experiment:** break the resolver in a scratch copy, one defect at a time, and run `tests/test_sites.py` (59 tests).
+- **Hardware:** Apple arm64 CPU, Python 3.14.3, torch 2.12.0.
+- **Results (failing tests per broken implementation):**
+
+  | Broken implementation | Failing tests |
+  |---|---|
+  | `*` matches multiple segments | 8 |
+  | alias modules deduplicated by object identity | 1, then 2 after adding an independent wildcard-alias test |
+  | pattern order controls result order | 3 |
+  | no-match patterns silently ignored | 3 |
+  | parameterless modules skipped | 11 |
+  | `**` matches the root | 9 |
+  | modules with a tied weight collapsed | 4 |
+- **Conclusion:** every required guard is caught by at least 2 tests.
+- **Torch versions:** traversal order and alias preservation from `named_modules(remove_duplicate=False)` behaved identically on torch 2.12 (Python 3.14) and torch 2.14 (Python 3.10, 3.12).
+- **Next action:** M1.5 hook lifecycle.
+
