@@ -23,6 +23,7 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **M1.9: `benchmarks/bench_trace_overhead.py`**: CPU characterisation of baseline, trace none/summary/cpu, fingerprint, save/load, and exact byte sizes. Results are in the experiment log. There is no pass/fail threshold and no optimisation.
 - **M1.8: `bnn.instrument(model)`**: a frozen handle referencing the original model.
   - `handle.trace`/`recording` are exactly the public pipeline.
   - `handle.explain(...)` gives `ExplainResponse` (INPUT → WHY → OUTPUT) over one single-pass trace. Phase-1 `why` is measured evidence (activations, limitations, provenance) with `NO_ATTRIBUTION`/`NO_CAUSAL_EVIDENCE`/`NO_CLAIMS_TESTED`, never a causal explanation.

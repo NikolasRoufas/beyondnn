@@ -309,7 +309,15 @@ Status: **planned, not started.** Implementation begins only after the architect
   - `explain()` in Phase 1 may be perceived as underwhelming. That is intentional, and the docs must say so.
 - **Scope:** about 400 LOC, about 350 LOC tests, about 120 LOC examples.
 
-## M1.9: Overhead benchmark
+## M1.9: Overhead benchmark: **done (characterisation; results in the experiment log)**
+
+- **As implemented:** `benchmarks/bench_trace_overhead.py`, `benchmarks/README.md`, and `tests/test_benchmark_smoke.py` (a one-iteration run in CI).
+- **Scope changes from the original plan:**
+  - A 1M dense model instead of 10M.
+  - No RSS or tracemalloc figures; exact byte counts instead.
+  - Save/load of a cpu-retained trace was added.
+
+**Original plan:**
 
 - **Goal:** baseline cost numbers before interventions exist.
 - **Files:** `benchmarks/bench_trace_overhead.py`, `benchmarks/README.md`.

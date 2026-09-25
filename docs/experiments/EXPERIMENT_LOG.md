@@ -226,3 +226,45 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
   With `weights_only=False`, the pickled payload (a harmless `echo`) really executed in the scratch copy, so the guard matters. With shape or dtype validation removed, the content-digest check still rejects the file, but with a different error; the tests pin the specific check.
 - **Conclusion:** all required guards are caught.
 
+---
+
+## 2026-09-25: M1.9 Phase-1 tracing overhead characterisation
+- **Commit:** "Add Phase 1 performance benchmarks (M1.9)" (parent `a969d4a`)
+- **Script:** `benchmarks/bench_trace_overhead.py` (rerunnable: `python benchmarks/bench_trace_overhead.py`).
+- **Models and sites:**
+  - TinyMLP: sites `**`, input 32×4;
+  - TinyCNN (eval): sites `**`, input 8×1×8×8;
+  - TinyTransformer: sites `blocks.*.attn`, `blocks.*.mlp`, `lm_head`, input 4×8 tokens;
+  - Dense~1M: `Linear(1000,1000)–ReLU–Linear(1000,2)`, sites `**`, input 16×1000.
+- **Seeds:** fixed (model seed 0; input generators seed 0).
+- **Methodology:** everything runs under `torch.no_grad()`, with 3 warm-up and 30 measured iterations; save/load use 1 warm-up. Median and p90 are reported. Sizes are exact bytes. No tracemalloc.
+
+**Final run** (the script as committed):
+
+Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 torch threads; warm-up 3, 30 measured iterations; times are median / p90 in ms, under no_grad.
+
+| model | params | input | sites | act. records | baseline | fingerprint | trace none | trace summary | trace cpu | fingerprint share of summary overhead | save (cpu) | load (cpu) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| TinyMLP | 139 | (32, 4) | 4 | 6 | 0.021 / 0.024 | 0.067 / 0.070 | 0.786 / 0.816 | 1.028 / 1.053 | 1.080 / 1.111 | 7% | 0.616 / 0.670 | 1.330 / 1.373 |
+| TinyCNN | 396 | (8, 1, 8, 8) | 9 | 9 | 0.108 / 0.114 | 0.155 / 0.160 | 1.282 / 1.347 | 1.626 / 1.651 | 1.737 / 1.788 | 10% | 0.624 / 0.656 | 1.776 / 1.828 |
+| TinyTransformer | 5,120 | (4, 8) | 5 | 7 | 0.255 / 0.263 | 0.297 / 0.306 | 1.592 / 1.662 | 1.864 / 1.924 | 1.965 / 2.036 | 18% | 0.652 / 0.792 | 1.558 / 1.593 |
+| Dense~1M | 1,003,002 | (16, 1000) | 3 | 3 | 0.272 / 0.317 | 1.922 / 2.077 | 2.847 / 3.021 | 3.100 / 3.295 | 3.174 / 3.407 | 68% | 0.707 / 0.855 | 1.239 / 1.452 |
+
+| model | records | retained tensor bytes (cpu) | trace.json bytes | tensors.pt bytes |
+|---|---|---|---|---|
+| TinyMLP | 11 | 6,016 | 12,803 | 9,233 |
+| TinyCNN | 14 | 41,344 | 16,985 | 45,381 |
+| TinyTransformer | 13 | 16,640 | 14,654 | 20,173 |
+| Dense~1M | 8 | 192,128 | 8,794 | 194,589 |
+
+**Earlier run** (same logic, before a lint-driven refactor that changed the measurement order): Dense~1M fingerprint 1.83 ms (58% of summary overhead); tiny-model trace times within about 3% of the final run. Both runs are kept, to show the run-to-run spread.
+
+- **Findings:**
+  1. **Fixed per-trace cost of about 0.8–1.3 ms** on the tiny models. In relative terms that is large (~5–40× a 0.02–0.25 ms forward); in absolute terms it is small. A profile of TinyMLP attributes about a third of it to per-record integrity work (content hashing at construction, plus id recomputation and canonical JSON in `TraceResult._add`). The rest is tensor summaries and per-pass provenance.
+  2. **Fingerprint cost is re-measured, not copied:** 1.92 ms median (p90 2.08) for the 1,003,002-parameter dense model (~4 MB float32), versus 1.83 ms in the earlier run. That is 58–68% of its summary-trace overhead; for the tiny models it is 7–19%. This is consistent with the earlier ~1.8 ms/1M figure *on this machine only*.
+  3. **Retention mode barely changes time** at these sizes: none < summary ≈ cpu. `cpu` retention stores exactly the retained tensor bytes shown, and `tensors.pt` adds ~2–4 KB of container overhead.
+  4. **Save takes ~0.6 ms and load ~1.3–1.8 ms**, dominated by full re-validation (by design).
+- **Conclusion:** nothing pathological, so there is **no optimisation in Phase 1**.
+- **Candidates for later:** skip the redundant id recomputation for records the container itself just built; batch statistics.
+- **Not measured:** GPU, large models, peak process memory.
+
