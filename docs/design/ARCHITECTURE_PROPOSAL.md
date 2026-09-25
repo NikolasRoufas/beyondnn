@@ -265,7 +265,14 @@ with bnn.recording(model, sites=["lm_head"], retention="cpu") as ctx:
 ctx.result.activation("lm_head", pass_index=1)
 ```
 
-The `Phase 1 API (final proposal)` below is kept for history. Where it differs from the above, the above is authoritative: `explain()` and `instrument()` are not implemented yet (M1.8).
+M1.8 adds `handle = bnn.instrument(model)` and `response = handle.explain(x, sites=[...])` (ADR-026):
+- `response.input` and `response.output` are OBSERVED;
+- `response.why.activations` are MEASURED;
+- `response.why.limitations` include `NO_ATTRIBUTION`, `NO_CAUSAL_EVIDENCE`, `NO_CLAIMS_TESTED`.
+
+**Phase-1 WHY is measured internal evidence, not a causal or attributed explanation.**
+
+The `Phase 1 API (final proposal)` below is kept for history. Where it differs from the above, the above is authoritative: there is no `target=` and no attribute-delegating handle.
 
 ## Phase 1 API (final proposal)
 

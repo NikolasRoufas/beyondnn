@@ -769,3 +769,35 @@ Revision note (2026-09-25, review, before acceptance):
 
 **Consequence:** users who rely on their own forward hooks must remove them before recording, until a future phase can represent hook-modified computation in provenance.
 
+---
+
+## ADR-026: instrument() handle and the Phase-1 INPUT → WHY → OUTPUT view
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for M1.8. Refines ADR-002, whose attribute-delegating handle is **not** implemented.
+
+**Decision** (`beyondnn/explain/`):
+- **`instrument(model)`** returns `Instrumented`: a frozen handle holding only `model`.
+  - It is not an `nn.Module` and not callable.
+  - It does not delegate module attributes, register, copy, patch, or hook the model.
+  - `handle.model` is the original object.
+  - `handle.trace(...)` and `handle.recording(...)` are exactly `bnn.trace(model, ...)` and `bnn.recording(model, ...)`.
+- **`handle.explain(*inputs, sites=(), input_sites=(), retention="summary", declared_model=None, randomness=None, model_kwargs=None)`** runs one trace and returns `ExplainResponse`. There is **no `target` parameter**, because it would have no effect until attribution or interventions exist.
+- **`ExplainResponse(trace)`**
+  - It is frozen, and requires a single-pass trace.
+  - `input` and `output` are the trace's OBSERVED records.
+  - `why` is `Why(trace)`.
+  - `render()` is a deterministic text restatement of the records: not generated prose, no LLM.
+  - `from_trace(trace)` rebuilds the response after `load_trace`. There is no second persistence format.
+- **`Why(trace)`** is a structured view:
+  - `activations`: the trace's own MEASURED records, not copies;
+  - `limitations`: the trace's limitations, plus `NO_ATTRIBUTION`, `NO_CAUSAL_EVIDENCE`, `NO_CLAIMS_TESTED`;
+  - `provenance`;
+  - `evidence_statuses`;
+  - the constants `QUESTION` and `NOT_ANSWERED`.
+- **Scientific meaning:** Phase-1 WHY answers *what internal evidence was measured while this output was produced*, and **not** *which internal state caused the output*. Nothing is ranked or called important, supporting, causal, decisive, or a reason. Phase 1 produces only OBSERVED and MEASURED evidence.
+
+**Reason:** the user-facing shape exists now without claiming knowledge that later phases must earn. The trace remains the single source of truth.
+
+**Top-level API:** `trace`, `recording`, `TraceResult`, `load_trace`, `instrument`, plus the status enums and `schema`. `ExplainResponse` and `Why` are importable from `beyondnn.explain`.
+

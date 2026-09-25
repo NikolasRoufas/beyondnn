@@ -21,15 +21,16 @@ def test_top_level_api_is_the_reviewed_surface() -> None:
             "TraceResult",
             "Verdict",
             "__version__",
+            "instrument",
             "load_trace",
             "recording",
             "schema",
             "trace",
         ]
     )
+    # The subpackage beyondnn.explain may appear as an attribute; no explain() function may.
+    assert not callable(getattr(beyondnn, "explain", None))
     for name in (
-        "instrument",
-        "explain",
         "test_claim",
         "Study",
         "HookSession",

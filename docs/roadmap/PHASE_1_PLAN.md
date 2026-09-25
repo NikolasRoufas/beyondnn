@@ -279,7 +279,13 @@ Status: **planned, not started.** Implementation begins only after the architect
 - **Known risk:** determinism vs timestamps and uuids. A `normalize_for_diff()` helper that masks volatile fields is used in tests and documented for users.
 - **Scope:** about 350 LOC, about 350 LOC tests.
 
-## M1.8: `instrument()`, targets, minimal `explain()`, examples
+## M1.8: `instrument()`, minimal `explain()`, examples: **implemented, awaiting review**
+
+- **As implemented** (ADR-026): `beyondnn/explain/` (`instrument`, `Instrumented`, `ExplainResponse`, `Why`) and `tests/test_explain.py`.
+  - The runnable README example is executed by `tests/test_readme.py`.
+  - **Not implemented as originally planned:** `bnn.targets` / `target=` (no effect without attribution or interventions), attribute delegation on the handle, and a separate `bnn.explain` function.
+
+**Original plan:**
 
 - **Goal:** the pass-through handle (ADR-002) and an honest Phase-1 explanation.
 - **Files:** `beyondnn/core/instrument.py`, `beyondnn/core/targets.py`, `beyondnn/explain/__init__.py`, `why.py`, `render.py`, `examples/01_trace_mlp.py`, `02_trace_cnn.py`, `03_trace_transformer.py`.

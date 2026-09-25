@@ -23,6 +23,11 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **M1.8: `bnn.instrument(model)`**: a frozen handle referencing the original model.
+  - `handle.trace`/`recording` are exactly the public pipeline.
+  - `handle.explain(...)` gives `ExplainResponse` (INPUT → WHY → OUTPUT) over one single-pass trace. Phase-1 `why` is measured evidence (activations, limitations, provenance) with `NO_ATTRIBUTION`/`NO_CAUSAL_EVIDENCE`/`NO_CLAIMS_TESTED`, never a causal explanation.
+  - A deterministic `render()`.
+  - README examples are executed by the test suite. ADR-026.
 - **Trace occurrence and hook provenance fixes (ADR-025):**
   - `ExecutionOccurrence` v2 carries `pass_index`, one per pass, with v1 migrating to `None`.
   - Public `trace()`/`recording()` refuse foreign forward/forward-pre hooks (local or global), checked at entry and at every pass start/end.

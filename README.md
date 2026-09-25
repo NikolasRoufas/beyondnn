@@ -30,36 +30,58 @@ not to replace them.
 
 ## What works today (pre-alpha, local only)
 
-Trace recording is implemented: structured, provenance-bearing, and validated.
+Trace recording and a minimal INPUT → WHY → OUTPUT view are implemented, with structured, provenance-bearing, validated records.
 
 ```python
+# runnable example (executed by tests/test_readme.py)
 import torch
+from torch import nn
+
 import beyondnn as bnn
 
-trace = bnn.trace(
-    model,
-    x,
-    sites=["blocks.*.attn"],      # module outputs; input_sites=[...] for module inputs
-)
 
-for activation in trace.activations:      # MEASURED records, in execution order
-    print(activation.site, activation.pass_index, activation.call_index, activation.value.shape)
+class TinyNet(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.encoder = nn.Sequential(nn.Linear(4, 8), nn.ReLU())
+        self.head = nn.Linear(8, 2)
 
-print(trace.input, trace.output)          # OBSERVED root input/output
-print(trace.origin(trace.activations[0])) # model fingerprint + environment + execution conditions
-print(trace.limitations)                  # what the trace does NOT cover
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.head(self.encoder(x))
+
+
+torch.manual_seed(0)
+model = TinyNet()
+x = torch.randn(3, 4)
+
+handle = bnn.instrument(model)          # a handle referencing the original model; nothing is modified
+response = handle.explain(x, sites=["encoder.*", "head"])
+
+print(response.input)                   # OBSERVED root input
+print(response.why.activations)         # MEASURED internal states, in execution order
+print(response.why.limitations)         # what this does NOT cover, as structured records
+print(response.output)                  # OBSERVED root output
+print(response.render())                # deterministic text view of the same records
+
+trace = bnn.trace(model, x, sites=["head"], retention="cpu")   # the underlying evidence
+print(trace.activation("head"), trace.origin(trace.activation("head")).model)
 ```
 
-- `bnn.recording(model, sites=[...])` records several forward passes in a `with` block. `ctx.result` is only available after a clean exit.
-- Retention is `summary` (default: metadata and summary statistics), `cpu` (detached CPU copies), or `none`.
-- Every trace states its limits. For example, `FUNCTIONAL_OPS_UNOBSERVED`: module hooks cannot see functional operations.
-- `trace.save("run1/")` and `bnn.load_trace("run1/")` persist traces as `trace.json` plus an optional `tensors.pt`. The sidecar is only ever read with `weights_only=True`, and everything is re-validated on load.
+> **In Phase 1, `WHY` is measured internal evidence, not a causal or attributed explanation.** It answers
+> "what internal evidence was measured while this output was produced?". It does not answer "which
+> internal state caused the output?". No activation is ranked, called important, or treated as a reason.
+> Every explanation carries the `NO_ATTRIBUTION`, `NO_CAUSAL_EVIDENCE` and `NO_CLAIMS_TESTED` limitations.
+
+- **Recording several passes:** `bnn.recording(model, sites=[...])` records several forward passes in a `with` block. `ctx.result` is only available after a clean exit.
+- **Retention:** `summary` (default: metadata and summary statistics), `cpu` (detached CPU copies), or `none`.
+- **Honest limits:** every trace states its limits. For example, `FUNCTIONAL_OPS_UNOBSERVED`: module hooks cannot see functional operations or residual additions.
+- **Persistence:** `trace.save("run1/")` and `bnn.load_trace("run1/")` persist traces as `trace.json` plus an optional `tensors.pt`. The sidecar is only ever read with `weights_only=True`, and everything is re-validated on load.
+- **Refusals:** public tracing refuses models that carry forward hooks not installed by BeyondNN, and models whose tensors span several devices. Only CPU is verified in Phase 1.
 
 ## Still proposed (not implemented)
 
 ```python
-response = bnn.instrument(model).explain(x, target=target)   # M1.8
-result = bnn.test_claim(model, claim, inputs=..., tests=[...])  # Phase 2
+result = bnn.test_claim(model, claim, inputs=..., tests=[...])   # Phase 2+: interventions, causal tests
 ```
 
 There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.

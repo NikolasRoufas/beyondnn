@@ -2,8 +2,10 @@
 
 Implemented: the trace schema (:mod:`beyondnn.schema`), provenance
 (:mod:`beyondnn.provenance`), trace recording (:func:`trace`,
-:func:`recording`, :class:`TraceResult`) and persistence (``TraceResult.save``,
-:func:`load_trace`).
+:func:`recording`, :class:`TraceResult`), persistence (``TraceResult.save``,
+:func:`load_trace`), and :func:`instrument` (``handle.explain`` returns
+INPUT -> WHY -> OUTPUT, where Phase-1 WHY is measured internal evidence, not a
+causal or attributed explanation).
 
 ``import beyondnn`` does not import torch; the tracing names are loaded lazily on
 first use, so :mod:`beyondnn.schema` stays usable without torch.
@@ -19,6 +21,7 @@ from .schema import EstimandScope, EvidenceStatus, Outcome, Relation, Verdict
 if TYPE_CHECKING:
     from .core.persistence import load_trace
     from .core.trace import TraceResult, recording, trace
+    from .explain import instrument
 
 __version__ = "0.0.0.dev0"
 
@@ -30,6 +33,7 @@ __all__ = [
     "TraceResult",
     "Verdict",
     "__version__",
+    "instrument",
     "load_trace",
     "recording",
     "schema",
@@ -41,6 +45,7 @@ _LAZY = {
     "recording": "beyondnn.core.trace",
     "TraceResult": "beyondnn.core.trace",
     "load_trace": "beyondnn.core.persistence",
+    "instrument": "beyondnn.explain",
 }
 
 
