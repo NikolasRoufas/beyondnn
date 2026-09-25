@@ -1,14 +1,15 @@
 # BeyondNN
 
-> **Status: pre-alpha, Phase 3 (attribution) implemented (local only, not released).**
+> **Status: pre-alpha, Phase 4 (structured WHY / evidence synthesis) implemented (local only, not released).**
 >
 > Implemented:
 > - the trace schema, provenance, trace recording and persistence;
 > - a minimal INPUT → WHY → OUTPUT view (WHY = measured evidence);
 > - controlled activation interventions with INTERVENTIONAL effect records;
-> - gradient, input × gradient, and Integrated Gradients attribution (native, and through Captum) with ATTRIBUTED records.
+> - gradient, input × gradient, and Integrated Gradients attribution (native, and through Captum) with ATTRIBUTED records;
+> - a structured WHY that composes measured, attributed, and interventional evidence and declared claim tests without merging them.
 >
-> Concepts, sufficiency testing, and combined evidence views are **not implemented**. See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), and [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md).
+> Faithfulness evaluation, sufficiency testing, and concepts are **not implemented**. See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md), and [`docs/PHASE_4_REPORT.md`](docs/PHASE_4_REPORT.md).
 
 BeyondNN is an interpretability evidence framework for PyTorch.
 
@@ -18,7 +19,8 @@ It turns claims about neural-network computation into structured, provenance-awa
 - explicit epistemic status;
 - controlled interventions whose effects are recorded as INTERVENTIONAL evidence;
 - method-relative attributions recorded as ATTRIBUTED evidence (never as causes);
-- threshold claim tests that must be declared before they run.
+- threshold claim tests that must be declared before they run;
+- one structured WHY view that keeps each kind of evidence separate.
 
 BeyondNN does not assume that an attribution, a probe, a generated explanation, or a readable feature is automatically a faithful explanation of model computation. The schema labels every result with how it was obtained:
 - observed or measured;
@@ -151,9 +153,76 @@ print([lim.code for lim in result.limitations])   # ATTRIBUTION_BASELINE_ASSUMPT
 - **Token models:** integer token ids are refused. `at=A.layer("token_embedding")` attributes to embedding dimensions per position, not to token ids. Any per-token score comes only from an explicit `reductions=[A.reduce("sum", (-1,))]`.
 - **Refusals:** training mode; foreign forward or backward hooks; alias paths; RNG use; and any change to model state, gradients, or caller tensors.
 
+## The full progression: one structured WHY (Phase 4)
+
+```python
+# runnable example (executed by tests/test_readme.py)
+import torch
+from torch import nn
+
+import beyondnn as bnn
+from beyondnn.schema import InterventionOperation, Relation
+
+A, iv = bnn.attribution, bnn.interventions
+
+
+class TwoEqualPaths(nn.Module):
+    """y = p(x) + q(x), where p and q both compute x0: two redundant paths."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.p = nn.Linear(2, 1, bias=False)
+        self.q = nn.Linear(2, 1, bias=False)
+        with torch.no_grad():
+            self.p.weight.copy_(torch.tensor([[1.0, 0.0]]))
+            self.q.weight.copy_(torch.tensor([[1.0, 0.0]]))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.p(x) + self.q(x)
+
+
+handle = bnn.instrument(TwoEqualPaths().eval())
+x = torch.tensor([[3.0, 5.0]])
+target = iv.metrics.select([0, 0])
+
+# 1. Measure (OBSERVED + MEASURED).
+trace = handle.trace(x, sites=["p", "q"])
+
+# 2. Attribute, with a claim declared before running (ATTRIBUTED).
+ig = A.integrated_gradients(baseline=A.zero_baseline(), n_steps=16)
+credit = A.make_claim(A.layer("p"), target, x, statement="p receives attribution for y")
+attr = handle.attribute(
+    x, target=target, method=ig, at=A.layer("p"),
+    claims=[(credit, A.threshold_spec(ig, at=A.layer("p"), min_abs_attribution=2.0))],
+)
+
+# 3. Intervene, with a causal claim declared before running (INTERVENTIONAL).
+necessary = iv.make_claim(iv.zero("p"), target, Relation.NECESSARY_FOR, x,
+                          statement="p is necessary for y")
+effect = handle.intervene(
+    x, intervention=iv.zero("p"), metric=target,
+    claims=[(necessary, iv.threshold_spec(operation=InterventionOperation.ZERO, min_effect=6.0))],
+)
+
+# 4. Compose (runs nothing; refuses evidence about another model, input, or target).
+response = bnn.compose(trace, attributions=[attr], interventions=[effect],
+                       policies=[A.ATTRIBUTION_POLICY, iv.INTERVENTION_POLICY])
+print(response.render())
+for claim in response.why.claims:
+    print(claim.claim.statement, "->", [a.verdict.value for a in claim.assessments])
+print(response.why.coverage.faithfulness_evaluated)          # False: never evaluated here
+```
+
+- **Measured evidence** says what was observed internally.
+- **Attribution** says what a method assigned credit to (here, `p` receives 3.0).
+- **An intervention** says what changed under a controlled manipulation (zeroing `p` changes `y` by −3.0, yet `y` stays 3.0: by construction, `q` computes the same value).
+- **Claims** say what was explicitly tested: "p ATTRIBUTED_TO y" is *supported*; "p NECESSARY_FOR y" is *contradicted*.
+
+**WHY keeps these statements separate.** It never combines them into one score and never generates a claim. It states what was not evaluated: faithfulness, comprehensiveness, sufficiency, and concepts. Evidence about a different model, declared model, input, or target is refused, not merged.
+
 ## Still proposed (not implemented)
 
-Concepts, sufficiency tests, and combined evidence views (Phase 4+).
+Faithfulness and sufficiency protocols (Phase 5), and concepts (Phase 6).
 
 There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.
 

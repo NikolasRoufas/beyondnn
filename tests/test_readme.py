@@ -33,3 +33,6 @@ def test_readme_examples_execute() -> None:
     assert "ZERO_ABLATION_MAY_BE_OOD" in text
     assert "EvidenceStatus.ATTRIBUTED" in text
     assert "ATTRIBUTION_BASELINE_ASSUMPTION" in text
+    assert "p receives attribution for y -> ['supported']" in text
+    assert "p is necessary for y -> ['contradicted']" in text
+    assert "NOT EVALUATED" in text

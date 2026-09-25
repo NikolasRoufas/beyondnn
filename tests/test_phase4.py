@@ -565,3 +565,17 @@ def test_rendered_text_makes_no_unlicensed_statements() -> None:
         found = FORBIDDEN.search(stated)
         assert found is None, found
         assert "does not answer:" in text
+
+
+def test_the_phase_4_example_script_runs() -> None:
+    import importlib.util
+
+    path = Path(__file__).resolve().parents[1] / "examples" / "phase4_redundant_path.py"
+    spec = importlib.util.spec_from_file_location("phase4_example", path)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    response = module.build()
+    verdicts = [a.verdict for v in response.why.claims for a in v.assessments]
+    assert verdicts == [Verdict.SUPPORTED, Verdict.CONTRADICTED]

@@ -54,7 +54,7 @@ follow_imports = "skip"
 follow_imports_for_stubs = true
 
 [tool.hatch.build.targets.sdist]
-include = ["beyondnn", "tests", "README.md", "LICENSE", "CHANGELOG.md"]
+include = ["beyondnn", "tests", "examples", "README.md", "LICENSE", "CHANGELOG.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
