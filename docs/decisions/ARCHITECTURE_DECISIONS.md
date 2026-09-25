@@ -894,7 +894,7 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 ## ADR-030: Phase-3 attribution: ATTRIBUTED by kind, explicit scalar targets and reductions, native references plus a Captum adapter
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for Phase 3 implementation. Awaiting Phase 3 review.
+- **Status:** Accepted. Phase 3 reviewed and closed (GO WITH EXPLICIT LIMITATIONS).
 
 **Decision:**
 - **Records** (`schema/attribution.py`):
@@ -936,7 +936,7 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 ## ADR-031: Phase-4 evidence synthesis: EvidenceBundle, structured WHY, exact input identity
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for Phase 4 implementation. Awaiting Phase 4 review.
+- **Status:** Accepted and final. Phase 4 reviewed and closed (GO WITH EXPLICIT LIMITATIONS); `InputRecord.sample_id` explicitly approved by the owner as the exact input-identity mechanism (2026-09-25). The privacy limitation stands: the hash may confirm a guessed low-entropy input and is not an anonymisation mechanism.
 
 **Decision:**
 - **Input identity.** `InputRecord.sample_id` (record version 3) holds the exact identity of the root input: the same SHA-256 algorithm used by effect estimands, attributions, and claims, now in `beyondnn.core.samples`.
