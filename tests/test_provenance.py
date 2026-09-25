@@ -312,3 +312,28 @@ def test_environment_fields_are_exactly_the_documented_set() -> None:
         "platform_machine",
     }
     assert env.torch_version == str(torch.__version__)
+
+
+def test_occurrences_of_different_passes_never_collide() -> None:
+    p = _prov()
+    stamp = datetime(2026, 9, 25, 3, 0, tzinfo=timezone.utc)
+    a = record_occurrence(p, started_at=stamp, pass_index=0)
+    b = record_occurrence(p, started_at=stamp, pass_index=1)
+    assert a.provenance_id == b.provenance_id
+    assert a.started_at == b.started_at
+    assert a.id != b.id
+    with pytest.raises(SchemaError):
+        record_occurrence(p, pass_index=-1)
+
+
+def test_occurrence_v1_migrates_with_unknown_pass() -> None:
+    from beyondnn.schema import from_dict, to_dict
+    from beyondnn.schema.codec import _expected_id
+
+    env = to_dict(record_occurrence(_prov(), pass_index=3))
+    env["record_version"] = 1
+    del env["data"]["pass_index"]
+    env["id"] = _expected_id("execution_occurrence", 1, env["data"])
+    migrated = from_dict(env)
+    assert isinstance(migrated, ExecutionOccurrence)
+    assert migrated.pass_index is None

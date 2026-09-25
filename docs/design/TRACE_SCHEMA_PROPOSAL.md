@@ -210,7 +210,7 @@ Types (torch-free, in `beyondnn/schema/provenance.py`):
 | `MethodIdentity` | `name` (`forward_hook`, `captum:IntegratedGradients`, …), `version`, `params` (`JsonMap`) | |
 | `ModelDeclaration` | `config` (`JsonMap`), `implementation_revision`, `checkpoint_revision` | **Caller-declared**, unverified, never inferred; at least one field (ADR-022) |
 | `ProvenanceRecord` (kind `provenance`, **record_version 2**) | `model`, `environment`, `execution`, `method`, `declared_model` (optional) | Its id is the `provenance_id` of evidence. It has no `provenance_id` and no lineage of its own. v1 payloads migrate with `declared_model = null` |
-| `ExecutionOccurrence` (kind `execution_occurrence`) | `provenance_id` (required), `started_at` (UTC, `…Z`) | Occurrence identity. Timestamps live only here |
+| `ExecutionOccurrence` (kind `execution_occurrence`, **record_version 2**) | `provenance_id` (required), `started_at` (UTC, `…Z`), `pass_index` (`None` only for migrated v1) | One occurrence per root pass. Timestamps live only here (ADR-025) |
 
 - **What `provenance_id` means:** the reproducible conditions of an execution, plus what the caller declared about the model. It is the ADR-016 hash of exactly `{model, environment, execution, method, declared_model}` (record_version 2). Different timestamps never change it. Any change in model state or structure, environment, execution conditions (mode, intervention, device, train/eval, grad mode, randomness), or method name, version or params does change it.
 - **What a model fingerprint means:** the FULL v1 algorithm in ADR-020 and the `beyondnn/provenance/fingerprint.py` docstring.

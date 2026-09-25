@@ -18,11 +18,13 @@ from beyondnn._testing.models import TinyCNN, TinyMLP, TinyTransformer
 from beyondnn.core.hooks import AliasSiteAmbiguityError
 from beyondnn.core.trace import (
     ActivationLookupError,
+    ExternalForwardHooksError,
     OutOfPassExecutionError,
     RecordingError,
     TraceConfig,
     TraceIntegrityError,
     TraceResult,
+    UnsupportedExecutionError,
 )
 from beyondnn.provenance import fingerprint_model
 from beyondnn.schema import (
@@ -211,27 +213,41 @@ def test_summary_statistics_are_correct() -> None:
     assert (stats.min, stats.max) == (x.min().item(), x.max().item())
 
 
+class Probe(nn.Module):
+    """Test-local wrapper recording weakrefs to its inner module's tensor input/output
+    from inside forward (public tracing refuses foreign hooks, so no hooks here)."""
+
+    def __init__(self, inner: nn.Module) -> None:
+        super().__init__()
+        self.inner = inner
+        self.refs: list[weakref.ref[torch.Tensor]] = []
+
+    def forward(self, x: torch.Tensor, *rest: Any) -> Any:
+        out = self.inner(x, *rest)
+        self.refs.append(weakref.ref(x))
+        self.refs.append(weakref.ref(out[0] if isinstance(out, tuple) else out))
+        return out
+
+
 @pytest.mark.parametrize("retention", ["none", "summary"])
 def test_non_cpu_retention_keeps_no_tensors(retention: str) -> None:
     model = TinyMLP()
-    seen: list[weakref.ref[torch.Tensor]] = []
-    handle = model.head.register_forward_hook(lambda m, a, o: seen.append(weakref.ref(o)))
+    probe = Probe(model.head)
+    model.set_submodule("head", probe)
     t = bnn.trace(model, _x(), sites=["**"], retention=retention)
-    handle.remove()
     gc.collect()
-    assert seen
-    assert all(r() is None for r in seen)
+    assert probe.refs
+    assert all(r() is None for r in probe.refs)
     assert t._tensors == {}
 
 
 def test_cpu_retention_keeps_detached_independent_copies_only() -> None:
     model = TinyMLP()
-    seen: list[weakref.ref[torch.Tensor]] = []
-    handle = model.head.register_forward_hook(lambda m, a, o: seen.append(weakref.ref(o)))
+    probe = Probe(model.head)
+    model.set_submodule("head", probe)
     t = bnn.trace(model, _x(), sites=["**"], retention="cpu")
-    handle.remove()
     gc.collect()
-    assert all(r() is None for r in seen)  # the live output (with its graph) is gone
+    assert all(r() is None for r in probe.refs)  # the live output (with its graph) is gone
     for stored in t._tensors.values():
         assert stored.device.type == "cpu"
         assert stored.grad_fn is None
@@ -560,22 +576,17 @@ def test_outputs_are_derived_from_their_pass_input() -> None:
 @pytest.mark.parametrize("retention", ["none", "summary", "cpu"])
 def test_live_context_and_result_do_not_retain_live_tensors(retention: str) -> None:
     model = TinyTransformer()
-    seen: list[weakref.ref[torch.Tensor]] = []
-
-    def capture(module: nn.Module, args: Any, output: Any) -> None:
-        seen.append(weakref.ref(args[0]))
-        seen.append(weakref.ref(output[0]))
-
-    handle = model.get_submodule("blocks.0.attn").register_forward_hook(capture)
+    probe = Probe(model.get_submodule("blocks.0.attn"))
+    block = model.get_submodule("blocks.0")
+    block.attn = probe
     with bnn.recording(model, sites=["**"], input_sites=["**"], retention=retention) as ctx:
         y = model(_tok())
         torch.autograd.backward(y.square().mean())
         del y
-    handle.remove()
     result = ctx.result  # context and result both still alive
     gc.collect()
-    assert seen
-    assert all(r() is None for r in seen)
+    assert probe.refs
+    assert all(r() is None for r in probe.refs)
     assert result.passes == 1
 
 
@@ -614,3 +625,98 @@ def test_evidence_ref_to_a_non_evidence_record_is_rejected(mk: Any) -> None:
     )
     with pytest.raises(TraceIntegrityError):
         t._add(result)
+
+
+def test_each_pass_has_its_own_occurrence() -> None:
+    model = TinyMLP()
+    with bnn.recording(model, sites=["head"]) as ctx:
+        for _ in range(3):
+            model(_x())
+    t = ctx.result
+    assert [o.pass_index for o in t.occurrences] == [0, 1, 2]
+    assert len({o.id for o in t.occurrences}) == 3
+    assert len(t.provenance) == 1
+
+
+# ----------------------------------------------------------------- external hooks (public tracing)
+
+
+def test_external_forward_pre_hook_is_refused() -> None:
+    model = TinyMLP()
+    model.head.register_forward_pre_hook(lambda m, a: None)
+    with pytest.raises(ExternalForwardHooksError, match=r"head \(forward_pre\)"):
+        bnn.trace(model, _x(), sites=["shared"])
+    assert hook_count(model) == 1  # only the user's own hook remains
+
+
+def test_external_forward_hook_is_refused_even_on_unselected_modules() -> None:
+    model = TinyMLP()
+    model.projection.register_forward_hook(lambda m, a, o: None)
+    with pytest.raises(ExternalForwardHooksError, match=r"projection \(forward\)"):
+        bnn.trace(model, _x(), sites=["head"])
+
+
+def test_global_forward_hooks_are_refused() -> None:
+    handle = nn.modules.module.register_module_forward_hook(lambda m, a, o: None)
+    try:
+        with pytest.raises(ExternalForwardHooksError, match="global"):
+            bnn.trace(TinyMLP(), _x())
+    finally:
+        handle.remove()
+
+
+def test_hook_added_after_entry_refuses_the_pass() -> None:
+    model = TinyMLP()
+    ctx = bnn.recording(model, sites=["shared"])
+
+    def run() -> None:
+        with ctx:
+            model(_x())
+            model.head.register_forward_hook(lambda m, a, o: o * 2)
+            model(_x())
+
+    with pytest.raises(ExternalForwardHooksError, match="start of a root pass"):
+        run()
+    with pytest.raises(RecordingError):
+        _ = ctx.result
+    assert hook_count(model) == 1  # BeyondNN's hooks are gone; the user's remains
+
+
+def test_hook_added_during_a_pass_is_refused_at_pass_end() -> None:
+    class Sneaky(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.lin = nn.Linear(2, 2)
+
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            self.lin.register_forward_hook(lambda m, a, o: o)
+            out: torch.Tensor = self.lin(x)
+            return out
+
+    model = Sneaky()
+    with pytest.raises(ExternalForwardHooksError, match="end of a root pass"):
+        bnn.trace(model, torch.ones(1, 2))
+
+
+def test_beyondnn_hooks_are_not_mistaken_for_external_hooks() -> None:
+    model = TinyTransformer()
+    with bnn.recording(model, sites=["**"], input_sites=["**"]) as ctx:
+        model(_tok())
+        model(_tok())
+    assert ctx.result.passes == 2
+    assert hook_count(model) == 0
+
+
+def test_multiple_devices_are_refused() -> None:
+    class Split(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.a = nn.Linear(2, 2)
+            self.b = nn.Linear(2, 2, device="meta")
+
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            out: torch.Tensor = self.a(x)
+            return out
+
+    with pytest.raises(UnsupportedExecutionError, match="several devices"):
+        bnn.trace(Split(), torch.ones(1, 2))

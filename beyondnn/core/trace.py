@@ -64,6 +64,7 @@ from .tensors import RETENTIONS, tensor_ref, walk
 
 __all__ = [
     "ActivationLookupError",
+    "ExternalForwardHooksError",
     "OutOfPassExecutionError",
     "Recording",
     "RecordingError",
@@ -71,6 +72,7 @@ __all__ = [
     "TraceError",
     "TraceIntegrityError",
     "TraceResult",
+    "UnsupportedExecutionError",
     "recording",
     "trace",
 ]
@@ -89,6 +91,16 @@ class TraceError(RuntimeError):
 
 class RecordingError(TraceError):
     """The recording failed or its result is not (yet) available."""
+
+
+class ExternalForwardHooksError(RecordingError):
+    """Forward (pre-)hooks not installed by BeyondNN are present. They can change what a
+    module receives or returns without being represented in provenance, so public
+    trace recording refuses to run (HookSession itself tolerates them)."""
+
+
+class UnsupportedExecutionError(RecordingError):
+    """The execution cannot be represented faithfully in Phase 1 (e.g. several devices)."""
 
 
 class OutOfPassExecutionError(TraceError):
@@ -377,10 +389,53 @@ def _as_patterns(value: Sequence[str], name: str) -> tuple[str, ...]:
 
 
 def _device(model: nn.Module, args: Any) -> str:
-    for tensor in (*model.parameters(), *model.buffers()):
-        return str(tensor.device)
-    leaves, _ = walk(args)
-    return str(leaves[0].tensor.device) if leaves else "cpu"
+    """The single execution device. Several distinct devices are refused (Phase 1
+    records one device and has only verified CPU)."""
+    devices = {str(t.device) for t in (*model.parameters(), *model.buffers())}
+    if not devices:
+        leaves, _ = walk(args)
+        devices = {str(leaf.tensor.device) for leaf in leaves} or {"cpu"}
+    if len(devices) > 1:
+        raise UnsupportedExecutionError(
+            f"model tensors are on several devices {sorted(devices)}; Phase 1 traces record "
+            "a single execution device"
+        )
+    return next(iter(devices))
+
+
+def _foreign_forward_hooks(model: nn.Module, owned: frozenset[int]) -> list[str]:
+    """Where forward/forward-pre hooks not owned by BeyondNN are registered."""
+    import torch.nn.modules.module as module_impl
+
+    found: list[str] = []
+    for name in ("_global_forward_hooks", "_global_forward_pre_hooks"):
+        registry = getattr(module_impl, name, None)
+        if registry is None:
+            raise ExternalForwardHooksError(f"cannot inspect torch global hooks ({name})")
+        if len(registry):
+            found.append(f"<global {name.removeprefix('_global_')}>")
+    seen: set[int] = set()
+    for path, module in model.named_modules(remove_duplicate=False):
+        if id(module) in seen:
+            continue
+        seen.add(id(module))
+        for kind, hooks in (
+            ("forward_pre", module._forward_pre_hooks),
+            ("forward", module._forward_hooks),
+        ):
+            if set(hooks) - owned:
+                found.append(f"{path or '<root>'} ({kind})")
+    return found
+
+
+def _refuse_foreign_hooks(model: nn.Module, owned: frozenset[int], when: str) -> None:
+    found = _foreign_forward_hooks(model, owned)
+    if found:
+        raise ExternalForwardHooksError(
+            f"forward hooks not installed by BeyondNN are present {when}: {', '.join(found)}. "
+            "They could alter module inputs/outputs without being represented in provenance; "
+            "remove them before recording."
+        )
 
 
 class Recording:
@@ -429,6 +484,7 @@ class Recording:
                         (r.path, io) for r in resolve_sites(self._model, patterns, io=io)
                     ]
             self._named = [p for p, _ in self._model.named_modules(remove_duplicate=False) if p]
+            _refuse_foreign_hooks(self._model, frozenset(), "before recording")
             self._environment = collect_environment()
             self._trace = TraceResult(config)
             self._passes: dict[int, _Pass] = {}
@@ -513,6 +569,7 @@ class Recording:
 
     def _begin_pass(self, event: HookEvent) -> None:
         model = self._model
+        _refuse_foreign_hooks(model, self._session.owned_hook_ids, "at the start of a root pass")
         execution = ExecutionContext(
             mode=ExecutionMode.CLEAN,
             device=_device(model, event.args),
@@ -528,7 +585,7 @@ class Recording:
             declared_model=self._declared,
         )
         self._trace._add(provenance)
-        self._trace._add(_record_occurrence(provenance))
+        self._trace._add(_record_occurrence(provenance, pass_index=event.pass_index))
         record = InputRecord(
             tensors=tuple(NamedTensor(path=p, ref=r) for p, r in self._input_refs(event)),
             pass_index=event.pass_index,
@@ -538,6 +595,9 @@ class Recording:
         self._passes[event.pass_index] = _Pass(provenance.id, RecordRef.to(record))
 
     def _end_pass(self, event: HookEvent) -> None:
+        _refuse_foreign_hooks(
+            self._model, self._session.owned_hook_ids, "at the end of a root pass"
+        )
         state = self._passes[event.pass_index]
         refs = self._refs_for(event.output, "output")
         record = OutputRecord(

@@ -23,6 +23,10 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **Trace occurrence and hook provenance fixes (ADR-025):**
+  - `ExecutionOccurrence` v2 carries `pass_index`, one per pass, with v1 migrating to `None`.
+  - Public `trace()`/`recording()` refuse foreign forward/forward-pre hooks (local or global), checked at entry and at every pass start/end.
+  - Models whose tensors are on several devices are refused instead of being labelled with one device.
 - **M1.7: trace persistence:** `TraceResult.save(dir)` and `bnn.load_trace(dir)`.
   - Deterministic `trace.json` with an optional `tensors.pt`, read only with `weights_only=True`. No paths are taken from JSON, and symlinks are refused.
   - Atomic save; the target is never overwritten.

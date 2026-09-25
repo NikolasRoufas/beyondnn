@@ -200,13 +200,19 @@ def test_cascading_id_changes_are_remapped(tmp_path: Path) -> None:
     t = bnn.trace(TinyMLP(), torch.ones(2, 4), sites=["shared"])
     t.save(tmp_path / "trace")
     document = json.loads((tmp_path / "trace" / "trace.json").read_text())
-    _write(tmp_path / "trace", _downgrade(document, {"provenance", "input", "output"}))
+    _write(
+        tmp_path / "trace",
+        _downgrade(document, {"provenance", "input", "output", "execution_occurrence"}),
+    )
     loaded = bnn.load_trace(tmp_path / "trace")
     (inp,) = loaded.inputs
     assert inp.pass_index is None  # v1 had no pass concept: unknown, not invented
     assert inp.id != t.input.id
     for record in (*loaded.activations, loaded.output):
         assert record.derived_from[0].record_id == inp.id
+    (occurrence,) = loaded.occurrences
+    assert occurrence.pass_index is None
+    assert occurrence.provenance_id == loaded.provenance[0].id
 
 
 def test_tampered_old_record_fails_before_migration(tmp_path: Path) -> None:

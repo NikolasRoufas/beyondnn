@@ -748,3 +748,24 @@ Revision note (2026-09-25, review, before acceptance):
 - The file format is versioned separately from the schema. Old traces load only through registered migrations.
 - `torch.save` output is not byte-deterministic; `trace.json` is.
 
+---
+
+## ADR-025: Occurrence per pass; public tracing refuses foreign forward hooks and multi-device models
+
+- **Date:** 2026-09-25
+- **Status:** Accepted (required by the M1.6/M1.7 review).
+
+**Decisions:**
+1. **Occurrences.** `ExecutionOccurrence` moves to record_version 2 with `pass_index: int | None`.
+   - New traces set it to the root pass, so one occurrence corresponds to exactly one root invocation, even when two passes start within the clock resolution.
+   - v1 records migrate to `None` (unknown, never invented). References to changed ids are remapped by the M1.7 loader.
+2. **External forward hooks.** Public `trace()`/`recording()` produce provenance-bearing evidence. Forward or forward-pre hooks that BeyondNN did not install could change module inputs or outputs without being represented in `ModelIdentity`, `ModelDeclaration`, or `ProvenanceRecord`.
+   - So public recording raises `ExternalForwardHooksError` if any such hook (on any module of the tree, or registered globally) is present. The check runs at context entry, and again at the start and end of every root pass.
+   - BeyondNN's own handles are recognised by hook id.
+   - Callback source code is not inspected or fingerprinted.
+   - `HookSession` is a general internal observation primitive and keeps its tested coexistence behaviour; **public trace recording has stricter reproducibility requirements.**
+   - A hook added and removed entirely inside one forward call cannot be detected (documented).
+3. **Devices.** The execution device is the set of devices of the model's parameters and buffers (or of the input tensors if the model has none). More than one distinct device raises `UnsupportedExecutionError`; one device is never silently chosen. Phase 1 has verified CPU only.
+
+**Consequence:** users who rely on their own forward hooks must remove them before recording, until a future phase can represent hook-modified computation in provenance.
+

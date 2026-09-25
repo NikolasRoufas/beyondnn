@@ -252,20 +252,28 @@ class ProvenanceRecord(BaseRecord):
         require(self.derived_from == (), "a ProvenanceRecord has no lineage")
 
 
-@record_kind("execution_occurrence")
+@record_kind("execution_occurrence", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ExecutionOccurrence(BaseRecord):
-    """One occurrence of an execution under a provenance: observational metadata.
+    """One root invocation (pass) under a provenance: observational metadata.
 
-    ``started_at`` is UTC ISO-8601 with a ``Z`` suffix. It is part of this record's
-    id (an occurrence identity) and never part of ``provenance_id``.
+    ``started_at`` is UTC ISO-8601 with a ``Z`` suffix; ``pass_index`` is the root
+    pass it belongs to (record_version 2), so two passes starting within the same
+    clock resolution are still distinct occurrences. ``pass_index`` is ``None`` only
+    for records migrated from record_version 1, where the pass is unknown. Neither
+    field is ever part of ``provenance_id``.
     """
 
     REQUIRES_PROVENANCE: ClassVar[bool] = True
 
     started_at: str
+    pass_index: int | None = None
 
     def _validate(self) -> None:
+        require(
+            self.pass_index is None or self.pass_index >= 0,
+            "ExecutionOccurrence.pass_index must be >= 0 or None",
+        )
         if not _UTC_RE.match(self.started_at):
             raise SchemaError(f"started_at must be UTC ISO-8601 ending in 'Z': {self.started_at!r}")
         try:
@@ -284,3 +292,11 @@ def _provenance_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
     if "declared_model" in data:
         raise ValueError("a provenance v1 payload cannot contain declared_model")
     return data | {"declared_model": None}
+
+
+@register_migration("execution_occurrence", 1)
+def _occurrence_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
+    """v1 occurrences had no pass: migrate as ``pass_index = None`` (unknown, not invented)."""
+    if "pass_index" in data:
+        raise ValueError("an execution_occurrence v1 payload cannot contain pass_index")
+    return data | {"pass_index": None}

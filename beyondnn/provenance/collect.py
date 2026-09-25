@@ -92,11 +92,15 @@ def make_provenance(
 
 
 def record_occurrence(
-    provenance: ProvenanceRecord, *, started_at: datetime | None = None
+    provenance: ProvenanceRecord,
+    *,
+    started_at: datetime | None = None,
+    pass_index: int | None = None,
 ) -> ExecutionOccurrence:
-    """Record that an execution under ``provenance`` happened at ``started_at`` (UTC now)."""
+    """Record that root pass ``pass_index`` ran under ``provenance`` at ``started_at``
+    (default: now, UTC)."""
     when = started_at if started_at is not None else datetime.now(timezone.utc)
     if when.tzinfo is None:
         raise ValueError("started_at must be timezone-aware")
     stamp = when.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-    return ExecutionOccurrence(provenance_id=provenance.id, started_at=stamp)
+    return ExecutionOccurrence(provenance_id=provenance.id, started_at=stamp, pass_index=pass_index)

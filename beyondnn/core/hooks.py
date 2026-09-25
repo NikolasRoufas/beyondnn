@@ -191,6 +191,11 @@ class HookSession:
     def installed_hooks(self) -> int:
         return len(self._handles)
 
+    @property
+    def owned_hook_ids(self) -> frozenset[int]:
+        """Ids of the hook handles this session installed (to tell them from foreign hooks)."""
+        return frozenset(handle.id for handle in self._handles)
+
     def __enter__(self) -> HookSession:
         if self._state != "new":
             raise HookSessionError("a HookSession can be entered only once")
