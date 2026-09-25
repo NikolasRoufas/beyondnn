@@ -424,6 +424,26 @@ def test_forged_magnitudes_and_unit_fields_are_refused(tmp_path: Path) -> None:
             bnn.compose(bnn.trace(model, _image()), attributions=[attr], faithfulness=[forged])
 
 
+def test_rounding_level_magnitude_differences_are_accepted(tmp_path: Path) -> None:
+    """Realistic failure (Phase 5.5, CNN channels): the magnitudes come from a separate
+    traced pass whose conv kernels rounded 1 ulp differently from the family's pass."""
+    model, attr, r = _magnitude_run()
+
+    def nudge(data: dict[str, Any]) -> None:
+        mags = data["params"]["controls"]["magnitudes"]
+        data["params"]["controls"]["magnitudes"] = [m * (1 + 1e-7) for m in mags]
+
+    def inflate(data: dict[str, Any]) -> None:
+        mags = data["params"]["controls"]["magnitudes"]
+        data["params"]["controls"]["magnitudes"] = [m * 1.01 for m in mags]
+
+    ok = F.FaithfulnessResult(_forge(tmp_path, r.trace, "claim_test_spec", nudge), (attr,))
+    bnn.compose(bnn.trace(model, _image()), attributions=[attr], faithfulness=[ok])
+    bad = F.FaithfulnessResult(_forge(tmp_path, r.trace, "claim_test_spec", inflate), (attr,))
+    with pytest.raises(EvidenceIntegrityError, match="magnitudes"):
+        bnn.compose(bnn.trace(model, _image()), attributions=[attr], faithfulness=[bad])
+
+
 def test_evaluation_requires_matching_unit_axes_for_claim_and_controls() -> None:
     model = Pixels().eval()
     r = F.run(

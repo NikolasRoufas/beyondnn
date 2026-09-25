@@ -1180,3 +1180,27 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 
 **Consequences:**
 - The diagnostics are expressible for models with keyword inputs. Regression tests: `tests/test_diagnostics_kwargs.py`.
+
+## ADR-038: Magnitude re-derivation within rounding tolerance
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 5.5. Awaiting Phase 5.5 review.
+- **Refines ADR-035:** only its verification step. The recorded magnitudes and the exact re-drawing of the controls are unchanged.
+
+**Observed realistic failure** (Phase 5.5, model B, conv-channel site `relu2`, held-out sample 1):
+- Composition refused all 15 magnitude-matched results: "declared control magnitudes do not re-derive from the trace".
+- The magnitudes are computed from a separate traced pass, taken before the comparison family runs. The conv activation of that pass differs from the family's clean pass by 9.5e-7, one float32 ulp; the magnitudes differ by up to 1.2e-6.
+- The records were correct, but verification used exact float equality. This is a BUG in the ADR-035 verification. It is invisible on the MLP and the embedding site.
+
+**Decision:**
+- Verification accepts recorded magnitudes that differ from the re-derived ones by at most 16 × `eps(dtype)` × √(elements per unit) × the largest |site| or |replacement| value.
+- The controls are still re-drawn **exactly** from the recorded magnitudes, so the tolerance bounds only how far the record may differ from the trace, never which controls were drawn.
+
+**Alternatives considered:**
+- *Compute the magnitudes from the family's own clean pass:* the magnitudes are needed to choose the controls before the family runs. That would need two families, and so two different clean passes to reconcile.
+- *Record the site tensor instead of the magnitudes:* larger records, and the same rounding question when comparing it with the family's retained activation.
+- *Keep exact equality:* rejects correct records on realistic CNNs.
+
+**Consequences:**
+- A forged magnitude vector is still refused: 1% inflation and reordering are both refused by tests.
+- A forgery smaller than the tolerance, and small enough not to change the magnitude strata, is not detected. Such a forgery cannot change which controls were drawn from the recorded values.

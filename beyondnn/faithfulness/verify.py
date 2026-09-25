@@ -18,6 +18,7 @@ Nothing here runs a model.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable, Mapping
 from typing import Any
 
@@ -205,7 +206,19 @@ def _check_magnitudes(
     else:
         replacement = torch.zeros_like(original)
     derived = unit_values(original.double() - replacement.double(), record.unit_axes, "l2")
-    if [float(v) for v in derived.tolist()] != magnitudes:
+    # The magnitudes were computed from a separate traced pass before the family ran;
+    # kernels may round that pass differently by a few ulps (ADR-036). Allow 16 ulps
+    # per within-unit element of the largest site/replacement magnitude. The controls
+    # are re-drawn exactly from the recorded magnitudes, so the tolerance only bounds how
+    # far the record may differ from the trace, not which controls were drawn.
+    within = max(1, original.numel() // max(1, derived.numel()))
+    eps = torch.finfo(original.dtype).eps if original.is_floating_point() else 0.0
+    scale = max(float(original.abs().max()), float(replacement.abs().max()), 0.0)
+    tolerance = 16 * eps * math.sqrt(within) * scale
+    if len(magnitudes) != derived.numel() or any(
+        not abs(float(d) - m) <= tolerance
+        for d, m in zip(derived.tolist(), magnitudes, strict=True)
+    ):
         raise VerificationError("declared control magnitudes do not re-derive from the trace")
 
 
