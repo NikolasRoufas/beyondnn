@@ -489,3 +489,76 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 threads; warm-up 1, 10
 - **RQ8:** not attempted. There are 8 ground-truth tasks, which is too few to split into calibration and held-out sets. Logged as a deliberate negative decision.
 - **Next action:** owner review of the Phase 5 report.
 
+
+## 2026-09-26: Phase 5.5 realistic faithfulness validation (pre-registered)
+
+- **Commits:** `23c0047` (literature + plan) through the Phase 5.5 report commit.
+- **Pre-registration:** `docs/PHASE_5_5_PLAN.md`. §18 records the corrections and analysis-rule clarifications, made before any aggregate was computed, and the run provenance.
+- **Environment:** Python 3.12.13, torch 2.14.0, Captum 0.9.0, transformers 5.17.0, scikit-learn 1.9.1, numpy 2.5.3; macOS arm64 (8 cores), CPU only, one torch thread per run. The pinned requirements are in `experiments/phase5_5/requirements.txt`, outside the core install.
+- **Models** (none hand-constructed):
+
+| ID | Model | Data | Held-out samples | Test accuracy | Checkpoint |
+|---|---|---|---|---|---|
+| A | MLP 30→64→32→2, trained (seed 0) | breast_cancer | 60 correct test rows (seed 1234) | 0.974 | sha256:4c19a8dafa3c0b38… |
+| B | CNN (2 conv + head), trained (seed 0) | digits 8×8 | 60 correct test images (seed 1234) | 0.964 | sha256:d799d1e89efd31f2… |
+| C | BERT-tiny fine-tuned on SST-2, `41ad6709…` | SST-2 validation (`bcdcba79…`) | 40 of 368 eligible sentences (seed 1234) | — (pretrained) | sha256:e2b44a0891e8b46f… |
+
+- **Grid** per sample and site:
+  - methods: gradient, input × gradient, IG n = 32, ablation ranking, random ranking;
+  - k ∈ {1, 5, 10, 20}%;
+  - three replacements;
+  - comprehensiveness and sufficiency with N = 50 count-matched controls, plus comprehensiveness with N = 50 magnitude-matched controls under r1.
+  - Totals: 37,695 claim-test runs (A 16,800; B 14,700; C 5,195), all kept (`results/faithfulness_*.json.gz`).
+
+**Pre-registered hypotheses (per site; analysis rules in plan §18):**
+
+| H | Prediction | Result | Verdict |
+|---|---|---|---|
+| H1 | IG and ablation median superiority ≥ 0.8 (A/B), ≥ 0.6 (C), p = 10%, r1 | A 1.00/1.00, 1.00/1.00; B 0.99/1.00, 0.995/0.995; C 0.945/0.92 | **held** at every site |
+| H1b | magnitude-matched controls lower IxG's superiority more than IG's | decrease IxG vs IG: A-in 0.01 vs 0.005; A-hid 0 vs 0; B-pix 0.15 vs 0.14; B-ch 0.04 vs 0.04; C 0.08 vs 0.105 | **mostly not held** (2 of 5, both by ≤ 0.01) |
+| H2 | median drop at k = 1: ablation ≥ IG ≥ IxG ≥ gradient | held under r1 in 4 of 5 sites (A-input fails: IxG 1.71 > IG 1.69); under r2/r3 it fails for A-input and B-pixels | **partly held**; replacement-dependent |
+| H3 | comprehensiveness and sufficiency disagree in ≥ 10% of cells | 24–52% per site; 36.6% pooled | **held**, far above |
+| H4 | ≥ 10% of outcomes change across replacements, plus ≥ 1 ordering reversal | A 33%/28%, B 49%/31%, C 5.0%; reversals at every site | **held** for A and B; **not held** for C (5%) |
+| H5 | ≥ 20% of cells change outcome across t ∈ {0.25, 0.5, 0.75} | A 25%/32%, B 28%/34%, C 17% | **held** for A and B; **not held** for C |
+| H6 | ρ(Jaccard, \|Δdrop\|) < 0 and \|ρ\| < 0.5 | −0.60 to −0.86 | **not held**: the association is *stronger* than predicted (partly mechanical: Jaccard 1 ⇒ Δ = 0) |
+| H7 | random method median superiority in [0.35, 0.65] | 0.45–0.54 | **held** |
+| H8 | A expressible; B and C not, without a unit-axes abstraction | the pre-change probe refused pixels, channels and tokens | **held** (confirmed before any change); ADR-034 |
+| H9 | mixed SUPPORTS/CONTRADICTS cells exist, and a majority aggregate hides ≥ 10% | mixed cells 68–100% per site; hidden 20–29% | **held** |
+
+**Negative and limiting results (kept):**
+
+- **Circularity.** Under r1 (zero replacement) in the piecewise-linear A and B networks, the IxG, IG and ablation selections were identical at the hidden and channel sites (top-k Jaccard 1, identical drops). Their agreement with interventions under zero ablation is partly by construction, not independent evidence.
+- **Relative vs absolute.** Beating controls is not the same as supporting the claim. IG's selections beat count-matched controls (median superiority ≥ 0.94 everywhere), but IG comprehensiveness SUPPORTS at t = 0.5 held for only 6/60 (A-input), 19/60 (A-hidden), 42/60 (B-pixels), 21/60 (B-channels), and 16/40 (C).
+- **Stronger controls weaken the pixel result.** On B pixels, magnitude-matched controls cut superiority from 0.99 to 0.85 (IG) and from 0.98 to 0.83 (IxG) at p = 10%, and to 0.75/0.69 at p = 20%. In the worst single case (IG, sample 493, k = 13) superiority fell from 0.94 to 0.42.
+- **Gradient.** On B pixels under zero replacement gradient is near chance at small k (superiority 0.43 at p = 1%), because it ranks black pixels, whose zeroing is a no-op (22 no-op top-k selections). Under the mean-image replacement it becomes the best attribution method (0.98 vs IG 0.91): the ordering reverses.
+- **Dead ReLUs.** On A's hidden layer, gradient's top unit was a dead ReLU in 39 selections: zero removal is an exact no-op, reported as INCONCLUSIVE.
+- **Replacement flips.** The same IG selection changed outcome with the replacement in 88 (A-input), 71 (A-hidden), 131 (B-pixels), 73 (B-channels) and 7 (C) (sample, k) cases.
+- **Redundancy in C.** In C, removing the top-2 tokens rarely halves the margin, while *retaining* only them keeps it: IG sufficiency drop 5.6% of the margin vs 97% for random retention. 972 of 975 disagreeing C cells are "not necessary but sufficient".
+- **Stability (B, 1-pixel roll).** Median prediction change 2.56 logits (45% of samples change by more than half their margin); ranking ρ 0.95 but top-k Jaccard 0.40; claim outcome the same in 77%. 17 samples have IG–ablation agreement ≥ 0.5 but stability Jaccard ≤ 0.3.
+- **Curves.** Removal and retention curves rank method pairs differently in 18% (A-input), 13% (A-hidden), 9% (B-pixels), 0% (B-channels) and 33% (C) of decided pairs.
+- **Random SUPPORTS.** The seeded random method received comprehensiveness SUPPORTS 218 times (API review F-21).
+- **Pre-registration errors.** The plan's predicted failure "the [CLS]/[SEP] embeddings dominate in C" did not occur: every attribution top-1 was a word token. H1b's premise did not hold in general.
+
+**API failures found by the realistic runs (all four BUGs fixed in-phase, regression tests fail before the fixes):**
+
+- the pre-change probe could not express pixels, channels or tokens (ADR-034);
+- a false stochasticity refusal on the CNN (ADR-036);
+- curve records dropped `unit_axes`, and a declared reduction was dropped for single-element units (ADR-034 fixes);
+- diagnostics refused every BERT sample for lack of `model_kwargs` (ADR-037);
+- magnitude re-derivation refused correct results at a conv site (ADR-038).
+
+Open items are listed in `docs/PHASE_5_5_API_REVIEW.md`.
+
+**Reproducibility:**
+
+- Model B's re-run reproduced all 14,700 rows exactly, including content-derived result ids.
+- C's first 3 sentences reproduced 315/315 rows at HEAD.
+- Composition re-derived every first-sample result at every site: 700 claim-test results, plus curves and diagnostics.
+
+**Mutation checks:** 20 mutations of the new code (unit mapping, reduction axes, strata, magnitudes, the evaluator's unit-axes checks, curve unit fields, tolerances, keyword inputs). **All caught.**
+
+**Performance** (idle, one thread; `results/performance.json`):
+- Forward pass: A 0.012 ms, B 0.027 ms, C 0.28 ms.
+- One faithfulness test with N = 50: A 32–38 ms, B 33–39 ms, C 0.51 s.
+- Controls scale linearly (C: N = 10, 50, 200 → 0.12, 0.51, 2.04 s).
+- Dataset runtime: A 33 min, B 19 min, C 75 min for the full grid.
