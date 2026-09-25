@@ -408,3 +408,84 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64; warm-up 3, 30 iterations
 
 - **Gate:** GO WITH EXPLICIT LIMITATIONS.
 
+---
+
+## 2026-09-25: Phase 5 faithfulness tests: pre-registered scenarios, premise test, mutations, benchmark
+
+- **Commits:** `b7e1073` (plan) through the Phase-5 report commit. CPU; Python 3.14.3 / torch 2.12.0 for the numbers below.
+- **Pre-registration:** `docs/PHASE_5_PLAN.md` §17 (scenarios A–N, RQ9), committed before any Phase-5 code.
+- **Seeds:** controls use `F.controls(n, seed)` with the seed in each test: A/K seed 0; H seeds 0–39 for controls and 1000–1039 for the random methods.
+
+| Scenario | Configuration | Result | Pre-registered | Conclusion |
+|---|---|---|---|---|
+| A: true causal selection | `Weighted8`, x = 1, IG top-2, N = 200 | drop 12; fraction_below 0.945; tied 0.055; P = 0.060 | drop 12; 0.964 ± 0.04; P in [0.006, 0.066] | Met. **Negative/limiting result:** a perfect selection does not reach P < 0.05 with 8 units, because 1/28 of random pairs coincide with it. |
+| B: plausible distractor | `ProxyDistractor`, IG vs correlation ranking | IG {x0}: drop 3, SUPPORTS; correlation {x2}: drop 0, CONTRADICTS | same | Met. **The premise holds here:** only the protocol exposes the correlation ranking. |
+| C: redundancy | `RedundantMax` (3, 3) | {x0}: 0 (CONTRADICTS); {x0, x1}: 3 | same | Met. Necessity is not causal relevance. |
+| D: insufficient set | `EqualSum4` | retain {x0}: drop 3 (CONTRADICTS); remove {x0}: 1 (SUPPORTS) | same | Met. |
+| E: invariance | `Additive`, swap values, IxG | prediction PASS; rho = -1 FAIL; Jaccard 0 FAIL | same | Met; not collapsed. |
+| F: counterexample | `Interaction`, internal `a` | 3 of 4 held; counterexample (3, 0) | same | Met; recorded. |
+| G: wrong sample | selection from (3, 5) on (1, 1) | refused (run and composition) | refused | Met. |
+| H: random method | 40 random rankings vs N = 200 | mean superiority within [0.40, 0.60] (asserted); IG >= 0.95 | same | Met. |
+| I: misleading gradient | `SaturatingPlus` | gradient top-1 {x1}: drop 0.2 CONTRADICTS; IG {x0}: 1.0 SUPPORTS; agreement rho = -1 FAIL | gradient about 6e-10 | Met. **Deviation:** the float32 gradient of tanh(12) underflows to exactly 0. |
+| J: pre-ADR-031 trace | reference without sample_id | measured-only works; faithfulness refused | same | Met. |
+| K: metrics disagree | `RedundantMax` {x0} | comprehensiveness CONTRADICTED, sufficiency SUPPORTED, both in WHY | same | Met. |
+| L: readable but unused | `ProbeReadable` | h1 = x1 (readable); drops 6 / 0; retain {0} SUPPORTS with the site-relative limitation | same | Met. |
+| M: curves | `Weighted8`, IG ranking | removal 0, 8, 12, 14, 15x5 (aopc 109/9); retention 15, 7, 3, 1, 0x5 (26/9) | same | Met, exact. |
+| N: diagnostics | Product baselines; Saturating steps | baseline_sensitivity rho = -1 FAIL; step max diff 2.1e-5 PASS | same | Met. |
+| RQ9: replacement choice | `Weighted8` x = (1, 1, 1, 1, 5, 5, 5, 5) | zero: drops 8, 4, 2, 1, 0, 0, 0, 0; "mean" (= x): all INCONCLUSIVE (no-op) | same | Met. The replacement choice alone can erase the signal. |
+
+- **Mutation audit** (plan §13, 20 mutations on scratch copies). The first run had two survivors, both test gaps that were fixed:
+  - a composition target check masked by claim targets;
+  - retention orientation of paired controls.
+
+  After the fixes, every guard is caught by at least 2 tests:
+
+```
+   2  1 selection sample-id check skipped
+  11  2 ranking direction reversed
+   6  3 controls of a different size
+   2  4a controls from the global RNG
+   2  4b control seed ignored
+  68  5 perturbation not applied
+  17  6 retain replaces S instead of its complement
+   2  7 faithfulness target not checked in composition
+   2  8 site-relative sufficiency limitation dropped
+   2  9 paired orientation ignored for retention
+   2  10 paired with another sample's controls
+   2  11 faithfulness_evaluated without results
+   2  12 sufficiency decides NECESSARY_FOR
+   2  13 counterexample dropped from the summary
+   2  14 no-op reported as CONTRADICTS
+   2  15 stability aspects collapsed
+   2  16 forged faithfulness result accepted
+   3  17 curve k=0 anchor dropped
+   2  18 aopc normalisation changed
+   2  19 selection re-derivation skipped in composition
+   2  20 concepts_validated becomes true
+ALL CAUGHT
+```
+
+- **Benchmark** (`benchmarks/bench_faithfulness.py`): cost is linear in perturbation passes (about 0.6–0.9 ms/pass, about 6 records/pass) and nearly flat in the number of units.
+
+Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 threads; warm-up 1, 10 iterations; median / p90 ms.
+
+| case | varied | value | passes | records | time |
+|---|---|---|---|---|---|
+| comprehensiveness, 50 controls | units d | 8 | 52 | 289 | 30.1 / 30.6 |
+| comprehensiveness, 50 controls | units d | 32 | 52 | 343 | 31.0 / 31.1 |
+| comprehensiveness, 50 controls | units d | 128 | 52 | 388 | 31.9 / 32.1 |
+| comprehensiveness, d=16 | controls N | 0 | 2 | 18 | 1.3 / 1.3 |
+| comprehensiveness, d=16 | controls N | 25 | 27 | 209 | 15.9 / 16.0 |
+| comprehensiveness, d=16 | controls N | 100 | 102 | 716 | 67.0 / 67.2 |
+| comprehensiveness, d=16 | controls N | 400 | 402 | 2369 | 360.5 / 369.7 |
+| removal curve, 10 control rankings, d=16 | curve points | 5 | 45 | 324 | 27.8 / 30.3 |
+| removal curve, 10 control rankings, d=16 | curve points | 9 | 89 | 673 | 59.4 / 60.6 |
+| removal curve, 10 control rankings, d=16 | curve points | 17 | 177 | 1362 | 135.1 / 141.0 |
+| dataset comprehensiveness, 20 controls, d=16 | samples | 1 | 22 | 151 | 13.8 / 13.9 |
+| dataset comprehensiveness, 20 controls, d=16 | samples | 4 | 88 | 484 | 57.6 / 58.1 |
+| dataset comprehensiveness, 20 controls, d=16 | samples | 16 | 352 | 1816 | 287.9 / 339.8 |
+| internal comprehensiveness, 50 controls, d=16 | units d | 16 | 52 | 363 | 40.7 / 41.2 |
+
+- **RQ8:** not attempted. There are 8 ground-truth tasks, which is too few to split into calibration and held-out sets. Logged as a deliberate negative decision.
+- **Next action:** owner review of the Phase 5 report.
+

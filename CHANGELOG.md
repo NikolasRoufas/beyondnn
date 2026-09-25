@@ -8,12 +8,26 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 5: faithfulness tests** (`bnn.faithfulness`, ADR-032, ADR-033):
+  - unit-level and model-input interventions and comparison families (`InterventionRecord` v2);
+  - `comprehensiveness`/`sufficiency` claim tests with matched random controls;
+  - removal/retention curves;
+  - `stability` under caller-declared transformations;
+  - dataset runs with `counterexample` and `paired_control` summaries;
+  - method diagnostics;
+  - `EvidenceSelection` and `ProtocolResult` records; no new evidence status;
+  - composition into the structured WHY, with re-derivation of every result;
+  - `Coverage.faithfulness_protocols`;
+  - ground-truth models;
+  - protocol documentation;
+  - a faithfulness benchmark and the Phase 5 report.
 - **Phase 4: structured WHY / evidence synthesis** (`bnn.compose`, ADR-031, ADR-026 amended):
   - `EvidenceBundle` validates one explanation context (model, declaration, exact input sample, instance scope, one target) and refuses anything incompatible;
   - recorded claim-test results are re-derived from their evidence;
   - `Why` sections by epistemic status over the original records, with claims, tests, and policy assessments (MIXED preserved), the limitations union, `Coverage` (faithfulness and concepts never evaluated), `by_status`, and `origin`;
   - deterministic `render()` and `to_dict()`;
   - README walk-through, `examples/phase4_redundant_path.py`, a synthesis benchmark, and the Phase 4 report (gate: GO WITH EXPLICIT LIMITATIONS).
+- ADR-030 and ADR-031 finalized (owner approval of `InputRecord.sample_id`).
 - `InputRecord.sample_id` (record version 3): the exact input identity, with a migration from v2.
 
 ### Fixed

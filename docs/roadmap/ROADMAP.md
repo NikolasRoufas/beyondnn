@@ -93,7 +93,23 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 - A template `summary()` with `supporting_records`. An optional LLM summariser goes behind an extra and is always `GENERATED`.
 - `explain(x, target, plan)`: proposes candidate claims (`ClaimSource.method`), runs the plan's tests, and assesses.
 
-## Phase 5: Faithfulness tests
+## Phase 5: Faithfulness tests: **IMPLEMENTED, gate GO WITH EXPLICIT LIMITATIONS** (2026-09-25; `docs/PHASE_5_REPORT.md`, ADR-032, ADR-033)
+
+- **As built:**
+  - `comprehensiveness` and `sufficiency` claim tests, at input and internal level;
+  - removal and retention curves;
+  - matched random controls;
+  - `stability` under declared transformations;
+  - `counterexample` and `paired_control` over declared sample sets;
+  - method diagnostics;
+  - a ground-truth validation suite;
+  - protocol docs (`docs/protocols/`).
+- **Not built:**
+  - RQ8, deferred with reason: too few ground-truth tasks for a held-out evaluation;
+  - ROAR retraining;
+  - Quantus/Captum-metric adapters.
+
+**Original plan:**
 - New test kinds: `comprehensiveness/v1`, `sufficiency/v1` (input and internal), `stability/v1` (user-declared invariances only), and `counterexample/v1`.
 - Assessment components are exposed. There is no aggregate score (ADR-007).
 - Every test gets a documentation page covering its formal definition, implementation, interpretation, and limitations.

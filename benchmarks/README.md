@@ -19,3 +19,5 @@ python benchmarks/bench_trace_overhead.py --json out.json
 Results are logged, with methodology, in `docs/experiments/EXPERIMENT_LOG.md`. This is characterisation, **not** a pass/fail gate. Numbers depend on the machine; rerun rather than reuse them.
 
 `bench_synthesis.py` characterises Phase-4 composition and rendering (no model runs in the timed region; the evidence is computed beforehand): measured-only, plus attribution, plus intervention, and everything plus claims. It uses the same flags.
+
+`bench_faithfulness.py` characterises Phase-5 faithfulness tests: time, passes, and records as the number of units, random controls, curve points, and dataset samples grows (input level, plus one internal-site case). It uses the same flags.

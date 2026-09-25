@@ -10,6 +10,7 @@
 
 ## Where to start
 
+0. [`PHASE_5_REPORT.md`](PHASE_5_REPORT.md), [`PHASE_5_PLAN.md`](PHASE_5_PLAN.md), and [`protocols/`](protocols/README.md): faithfulness protocols, controls, and what each can and cannot support.
 0. [`PHASE_4_REPORT.md`](PHASE_4_REPORT.md) and [`PHASE_4_PLAN.md`](PHASE_4_PLAN.md): the structured WHY; how evidence is composed without being merged.
 0. [`PHASE_3_REPORT.md`](PHASE_3_REPORT.md) and [`PHASE_3_PLAN.md`](PHASE_3_PLAN.md): attribution (ATTRIBUTED evidence), Captum integration, and why attribution is not causation.
 0. [`PHASE_2_REPORT.md`](PHASE_2_REPORT.md) and [`PHASE_2_PLAN.md`](PHASE_2_PLAN.md): causal interventions, with their guarantees and limits.

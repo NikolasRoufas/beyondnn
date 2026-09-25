@@ -980,7 +980,7 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 ## ADR-032: Unit-level and model-input interventions, and comparison families, as Phase-2 extensions
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for Phase 5 implementation.
+- **Status:** Accepted for Phase 5 implementation. Awaiting Phase 5 review.
 
 **Problem:** faithfulness protocols perturb *parts* of a tensor (the top-k attributed input features, selected internal units) and need many perturbations per input, plus random controls. Phase 2 could only replace a whole module-output leaf, one intervention per recording. Recording unit-level perturbations as opaque exact-shape CONSTANT tensors would hide what was selected. Building a second perturbation engine for faithfulness would duplicate the pairing and refusal logic.
 
