@@ -8,6 +8,8 @@ python benchmarks/bench_trace_overhead.py --quick      # smoke run
 python benchmarks/bench_trace_overhead.py --json out.json
 ```
 
+`bench_interventions.py` characterises Phase-2 comparison cost. For TinyMLP and TinyTransformer it times a plain forward, a baseline trace, a zero-ablation comparison, and a patch comparison. It uses the same flags (`--quick`, `--json`).
+
 - **Timing:** everything runs under `torch.no_grad()`. Times are the median and p90 of wall-clock milliseconds.
 - **Sizes:** exact byte counts (retained tensor bytes, `trace.json`, `tensors.pt`).
 - **Memory:** no `tracemalloc` figures are reported, because it misses native PyTorch allocations.
