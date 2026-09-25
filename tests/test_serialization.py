@@ -20,12 +20,21 @@ from beyondnn.schema import (
     BaseRecord,
     ClaimTestResult,
     DecodeError,
+    EnvironmentIdentity,
     Estimand,
     EvidenceRuleError,
+    ExecutionContext,
+    ExecutionMode,
+    ExecutionOccurrence,
+    FingerprintMethod,
     IntegrityError,
     JsonMap,
+    MethodIdentity,
+    ModelIdentity,
     Outcome,
     PolicyRequirement,
+    ProvenanceRecord,
+    Randomness,
     RecordRef,
     Relation,
     Site,
@@ -65,7 +74,51 @@ def _samples(mk: SimpleNamespace) -> list[BaseRecord]:
     )
     assessment = Assessment.derive(claim, [result], policy, provenance_id=mk.PROV)
     limitation = TraceLimitation(code="NO_CAUSAL_EVIDENCE", applies_to=(act.id,))
-    return [inp, mk.output(), act, claim, spec, result, assessment, limitation]
+    provenance = ProvenanceRecord(
+        model=ModelIdentity(
+            model_class="tests.Net",
+            method=FingerprintMethod.FULL,
+            algorithm_version=1,
+            structure_digest="sha256:" + "1" * 64,
+            state_digest="sha256:" + "2" * 64,
+            parameter_tensors=2,
+            parameter_elements=10,
+            buffer_tensors=0,
+            buffer_elements=0,
+        ),
+        environment=EnvironmentIdentity(
+            python_implementation="CPython",
+            python_version="3.12.0",
+            torch_version="2.12.0",
+            beyondnn_version="0.0.0.dev0",
+            platform_system="Linux",
+            platform_machine="x86_64",
+        ),
+        execution=ExecutionContext(
+            mode=ExecutionMode.INTERVENTION,
+            intervention_id="intervention:x",
+            device="cpu",
+            training=False,
+            grad_enabled=False,
+            randomness=Randomness(declared_seed=0),
+        ),
+        method=MethodIdentity(name="forward_hook", version="1", params=JsonMap({"k": [1, 2]})),
+    )
+    occurrence = ExecutionOccurrence(
+        provenance_id=provenance.id, started_at="2026-09-25T03:00:00.123456Z"
+    )
+    return [
+        inp,
+        mk.output(),
+        act,
+        claim,
+        spec,
+        result,
+        assessment,
+        limitation,
+        provenance,
+        occurrence,
+    ]
 
 
 def test_samples_cover_every_registered_kind(mk: SimpleNamespace) -> None:

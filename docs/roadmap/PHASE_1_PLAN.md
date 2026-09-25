@@ -38,7 +38,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Torch CPU wheels for 3.14 must be available on the pinned index.
 - **Scope:** about 150 lines of config. Done except for the first CI run.
 
-## M1.1: Schema types and invariants: **implemented and reviewed (2026-09-25); final checkpoint pending**
+## M1.1: Schema types and invariants: **done (approved and closed 2026-09-25)**
 
 - **Goal (revised per ADR-014):** the smallest rigorous schema foundation:
   - the record mechanism (identity, status rules, provenance reference, lineage, registry);
@@ -79,7 +79,17 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Designing claim types before any runner exists may need revision in Phase 2. That is accepted, and handled by bumping `schema_version` to 0.2 if needed.
 - **Scope:** about 600 LOC library, about 500 LOC tests.
 
-## M1.2: Provenance and model identity
+## M1.2: Provenance and model identity: **implemented, awaiting review**
+
+- **As implemented:**
+  - schema types in `beyondnn/schema/provenance.py`;
+  - collection in `beyondnn/provenance/{fingerprint,collect}.py`;
+  - tests in `tests/test_fingerprint.py` and `tests/test_provenance.py`;
+  - decisions in ADR-019 and ADR-020.
+- **Public API** (in `beyondnn.provenance`, not top-level): `fingerprint_model`, `collect_environment`, `capture_cpu_rng`, `make_provenance`, `record_occurrence`, `FingerprintError`. The originally planned `bnn.model_identity` was not added at top level.
+- **Timing:** about 1.8 ms per ~1M float32 parameters (experiment log).
+
+**Original plan:**
 
 - **Goal:** every record can answer "how was this produced?".
 - **Files:** `beyondnn/schema/provenance.py` (ProvenanceRecord, ModelIdentity, ProvenanceTree), `beyondnn/core/fingerprint.py`.
@@ -189,6 +199,11 @@ Status: **planned, not started.** Implementation begins only after the architect
   - in-place mutation is flagged;
   - cross-record invariants enforced by `TraceResult.add`.
 - **Review item from M1.1:** re-evaluate the five typed reference types (`RecordRef`, `EvidenceRef`, `ClaimRef`, `SpecRef`, `ResultRef`) once real traces exercise them. Keep them unless there are substantial API or maintenance problems.
+- **Requirements carried from M1.1/M1.2 review:**
+  - **Reference integrity (exit criterion):** `TraceResult` must call `verify_ref` for **every** reference entering it (`derived_from`, evidence, claim/spec/result refs). It must also check that every `provenance_id` names a `ProvenanceRecord` it holds. Required tests: a forged `RecordRef` status, a forged `EvidenceRef`, and a dangling `provenance_id` are each rejected.
+  - **Identity, not `==`:** containers compare records by id and verify content and reference integrity explicitly. They must not rely on dataclass equality, because NaN-bearing values (e.g. `TensorStats`) are not reflexively equal. Required test: a record with NaN stats is found, deduplicated, and verified by id.
+  - Decide how a trace references its `ExecutionOccurrence` (run identity), and keep it out of `provenance_id` (ADR-019).
+  - Build `ExecutionContext` from the live run (`model.training`, `torch.is_grad_enabled()`, device).
 - **Exit criteria:** all pass. `recording()` over two forward passes yields distinct `pass_index` values. No tensor is retained under `summary` (weakref).
 - **Known risk:**
   - Defining "top-level forward pass" inside `recording()`: counting root-module calls fails if the user calls a submodule directly. The rule is documented as "a pass = one call of the root module's forward"; submodule-only calls get `pass_index=-1` plus a limitation.

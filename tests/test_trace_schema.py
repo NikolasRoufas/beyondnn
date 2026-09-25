@@ -314,6 +314,8 @@ def test_registered_kinds_are_exactly_schema_0_1() -> None:
         "claim_test_spec",
         "claim_test_result",
         "assessment",
+        "provenance",
+        "execution_occurrence",
     }
 
 

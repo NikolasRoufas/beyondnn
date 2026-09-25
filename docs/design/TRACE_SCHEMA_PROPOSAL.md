@@ -2,7 +2,7 @@
 
 This document has two parts:
 
-- **Part A: Schema 0.1 as implemented.** Status: **Accepted** (ADR-012 to ADR-018; M1.1 reviewed 2026-09-25). Code: `beyondnn/schema/`.
+- **Part A: Schema 0.1 as implemented.** Status: **Accepted** (ADR-012 to ADR-018; M1.1 reviewed 2026-09-25). Provenance types (§A.10, ADR-019/020) were added in M1.2 and await review. Code: `beyondnn/schema/`.
 - **Part B: Proposals for later schema versions.** The original design sketches, kept verbatim for history. Where Part B differs from Part A, **Part A wins**. Part B record types enter the schema only in later versions, once their semantics are validated (ADR-014).
 
 Relevant decisions: ADR-001 (frozen dataclasses), ADR-006/013 (interventional vs estimated causal; estimand scope), ADR-007 (no global confidence), ADR-009 (semantic states), ADR-012 (claims), ADR-014 (incremental versioning), ADR-015 (a trace is one execution), ADR-016 (identity), ADR-017 (status mechanism), ADR-018 (assessment policies).
@@ -85,7 +85,8 @@ id = f"{kind}:{sha256(canonical_json({'kind': kind, 'record_version': v, 'data':
   - `1`, `1.0`, `true`, and `"1"` are distinct;
   - non-finite floats are allowed only in typed float fields (as strings), and rejected in free-form JSON.
 - **Order normalisation:** order-insensitive collections (`derived_from`, `ClaimTestResult.evidence`, `Subject.units`, `applicable_relations`, `PolicyRequirement.protocols`, `AssessmentPolicy.requirements`, `Assessment.results`, `TraceLimitation.applies_to`) are sorted at construction, so equal content yields equal ids. `-0.0` is normalised to `0.0`.
-- **Identity is not semantic equivalence.** An id identifies one artifact, including its wording and provenance. Two formally equivalent claims can have different ids. Semantic equivalence must be decided from the formal structure (subject, relation, target, estimand/scope, expectation), never from `id`. Nothing in 0.1 does so.
+- **Identity is not semantic equivalence.** An id identifies one artifact, including its wording and provenance. Two formally equivalent claims can have different ids. Semantic equivalence must be decided from the formal claim structure available in the schema (in 0.1: subject, relation, target, estimand/scope; the direction is carried by the relation and quantitative criteria by `ClaimTestSpec`), never from `id`. Nothing in 0.1 does so. A future version may add an explicit expectation field if Phase 2 shows it is needed.
+- **No Unicode normalisation.** Strings enter identity exactly as given. `"é"` (one code point) and `"e"` plus a combining accent are distinct content (ADR-016 amendment).
 - **Collisions:** 128-bit truncation makes accidental collisions negligible. Containers must still reject two different records with one id (M1.6). Python's `hash()` is never used for identity. Golden ids in `tests/test_record_identity.py` pin the algorithm, and a cross-process test runs under different `PYTHONHASHSEED` values.
 - **Schema migration may change record ids.** `record_version` is part of identity, so a migrated record gets a new id. M1.7 must remap references explicitly during migration, and must test it.
 
@@ -192,6 +193,36 @@ Consequently, nothing except GENERATED can derive from GENERATED.
 - `NaN`/`Infinity` JSON literals are rejected.
 
 `to_json` output is canonical. Tensor sidecars are M1.7.
+
+### A.10 Provenance (M1.2; ADR-019, ADR-020)
+
+Types (torch-free, in `beyondnn/schema/provenance.py`):
+
+| Type | Fields | Notes |
+|---|---|---|
+| `ModelIdentity` | `model_class`, `method` (`FULL`), `algorithm_version` (1), `structure_digest`, `state_digest`, `parameter_tensors`, `parameter_elements`, `buffer_tensors`, `buffer_elements` | Counts are over distinct tensors (tied counted once) and persistent buffers only |
+| `EnvironmentIdentity` | `python_implementation`, `python_version`, `torch_version`, `beyondnn_version`, `platform_system`, `platform_machine` | No hostname, username, paths, or hardware ids |
+| `Randomness` | `declared_seed`, `rng_generator`, `rng_state_digest` | A seed and a captured state are distinct facts; at least one is required, and the generator is named iff a digest is given |
+| `ExecutionMode` | `CLEAN`, `INTERVENTION` | |
+| `ExecutionContext` | `mode`, `device`, `training`, `grad_enabled`, `intervention_id`, `randomness` | `intervention_id` is absent iff CLEAN |
+| `MethodIdentity` | `name` (`forward_hook`, `captum:IntegratedGradients`, …), `version`, `params` (`JsonMap`) | |
+| `ProvenanceRecord` (kind `provenance`) | `model`, `environment`, `execution`, `method` | Its id is the `provenance_id` of evidence. It has no `provenance_id` and no lineage of its own |
+| `ExecutionOccurrence` (kind `execution_occurrence`) | `provenance_id` (required), `started_at` (UTC, `…Z`) | Occurrence identity. Timestamps live only here |
+
+- **What `provenance_id` means:** the reproducible conditions of an execution. It is the ADR-016 hash of exactly `{model, environment, execution, method}`. Different timestamps never change it. Any change in model state or structure, environment, execution conditions (mode, intervention, device, train/eval, grad mode, randomness), or method name, version or params does change it.
+- **What a model fingerprint means:** the FULL v1 algorithm in ADR-020 and the `beyondnn/provenance/fingerprint.py` docstring.
+  - Tied parameters and shared modules are represented as sorted name groups.
+  - Parameters and persistent buffers are hashed bitwise, with dtype, shape, name and role.
+  - Device, `requires_grad`, and non-persistent buffer values are excluded.
+  - Unsupported tensor types raise instead of being skipped.
+
+**Collection** (torch-dependent, in `beyondnn/provenance/`, never imported by `beyondnn.schema`):
+- `fingerprint_model(model)`;
+- `collect_environment()`;
+- `capture_cpu_rng(declared_seed=None)`;
+- `make_provenance(model_or_identity, method=…, execution=…, environment=None)`;
+- `record_occurrence(provenance, started_at=None)`;
+- `FingerprintError`.
 
 ---
 

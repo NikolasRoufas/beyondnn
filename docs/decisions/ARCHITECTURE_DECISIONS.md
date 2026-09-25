@@ -398,12 +398,16 @@ Later-phase, algorithm-specific records (intervention, causal effect, attributio
 **Record identity is NOT semantic equivalence** (added at acceptance).
 - `record.id` identifies a specific artifact: exactly this content, under this provenance, with this wording.
 - Two formally equivalent claims can have different ids, because their statements, provenance, or other non-semantic metadata differ.
-- Later phases must **never** use `record.id` to decide whether two claims mean the same thing. Semantic equivalence must be defined over the formal claim structure: subject, relation, target, estimand/scope, and expectation.
+- Later phases must **never** use `record.id` to decide whether two claims mean the same thing. Semantic equivalence is based on the formal claim structure available in the schema: in schema 0.1, subject, relation, target and estimand/scope. The qualitative direction is carried by the relation; quantitative decision criteria belong to `ClaimTestSpec`. Future schema versions may add an explicit expectation field if Phase 2 experiments show it is necessary.
 - No semantic-equivalence mechanism is built now.
 
 Revision note (2026-09-25, during review, before acceptance):
 - `derived_from` and `ClaimTestResult.evidence` are also sorted at construction, so parent and evidence order cannot change ids.
 - `-0.0` is normalised to `0.0` in float fields and JSON data, so records that compare equal have equal ids.
+
+**Amendment (2026-09-25, M1.2 kickoff review).**
+- *Expectation wording.* The equivalence sentence above originally listed "expectation" as if a field existed. It was corrected to describe the schema-0.1 structure. No schema change was made.
+- *Unicode.* BeyondNN does **not** Unicode-normalise strings that enter record identity. `"é"` as one code point and `"e"` followed by a combining accent are distinct content, and may yield different ids. This is intentional: identity is about the artifact exactly as produced. Semantic-equivalence layers may normalise text later, if a specific protocol requires it. User content is never silently NFC/NFKC-normalised.
 
 ---
 
@@ -466,3 +470,80 @@ Revision note (2026-09-25, review, before acceptance):
 - Non-causal relations can be assessed under a policy with no requirements.
 - **No universal numeric thresholds.** Policies and specs may declare thresholds as their own criteria, but BeyondNN does not present hand-picked defaults as scientifically validated. Any future default policy must be versioned, documented, and tested on controlled ground-truth models before researchers are encouraged to rely on it (added at acceptance).
 - The v0 verdict rules are kept: support plus contradiction gives MIXED, and a missing required protocol gives INCONCLUSIVE.
+
+---
+
+## ADR-019: Provenance identity is reproducible conditions; occurrence is separate
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for M1.2 implementation. Awaiting M1.2 review.
+
+**Decision:**
+- A `ProvenanceRecord` answers **how** evidence was produced, never what it means. It holds exactly four immutable values:
+  - `ModelIdentity`;
+  - `EnvironmentIdentity`: Python implementation and version, torch version, BeyondNN version, OS family, CPU architecture;
+  - `ExecutionContext`: mode CLEAN/INTERVENTION, `intervention_id` (absent iff CLEAN), device, `training`, `grad_enabled`, and optional `Randomness`;
+  - `MethodIdentity`: name, version, and canonical params.
+- Its id (`provenance:<hash>`, per ADR-016) is what evidence records store in `provenance_id`. All four values contribute, and nothing else does.
+- **Occurrence is separate.** When an execution happened is recorded in a separate `ExecutionOccurrence` record (`provenance_id`, `started_at` in UTC ISO-8601 with `Z`). Its id is an occurrence identity. Timestamps therefore never change `provenance_id`, and two executions under identical conditions share it.
+- **Randomness** distinguishes a *declared seed* (as stated by the caller, unverified) from a *captured RNG-state digest* (SHA-256 of `torch.get_rng_state()`, read without mutation; the raw state is not stored). RNG capture is opt-in, because a captured state legitimately changes the conditions after every random draw.
+- **Privacy.** Automatically collected provenance never contains hostname, username, home directory, working directory, file paths, or hardware identifiers. Machine identity is never part of model identity.
+
+**Reason:**
+- M1.1 record ids include `provenance_id`, so provenance ids must be deterministic.
+- Separating conditions from occurrences keeps useful timestamps without making every record id run-specific.
+
+**Alternatives considered:**
+- *A timestamp inside `ProvenanceRecord`, excluded from identity*: two records with the same id but different content would violate ADR-016's collision rule.
+- *No timestamps*: loses useful operational metadata.
+- *uuid run ids in provenance*: turns provenance ids into run ids.
+
+**Consequences:**
+- Identical conditions on different machines differ only if `EnvironmentIdentity` differs (e.g. OS or architecture). Machine identity itself is not recorded.
+- `ExecutionOccurrence` is a minimal placeholder for run-level metadata. M1.6 decides how a `TraceResult` references it.
+- Evidence records' `provenance_id` is still only token-checked locally. M1.6 containers must verify that it names a `ProvenanceRecord` they hold.
+
+---
+
+## ADR-020: FULL model fingerprint, algorithm v1
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for M1.2 implementation. Awaiting M1.2 review.
+
+**Decision:** `ModelIdentity` carries two SHA-256 digests plus counts, computed by `beyondnn.provenance.fingerprint_model` with method `FULL`, `algorithm_version = 1`.
+
+- **Structure digest.** Canonical JSON of:
+  - every module path from `named_modules(remove_duplicate=False)`, with its fully qualified class;
+  - *module alias groups*: paths that are the same module object;
+  - every parameter and persistent buffer: name, role, dtype, shape;
+  - the names of non-persistent buffers;
+  - *tensor alias groups*: names that are the same tensor object, i.e. tied parameters.
+
+  Groups are sorted lists of names, never object ids or addresses.
+- **State digest.** SHA-256 over a version tag, then, for each distinct parameter or persistent buffer ordered by representative name (the smallest name in its alias group), a length-prefixed canonical header (name, role, dtype, shape, nbytes) followed by the raw bytes. The bytes come from a contiguous CPU copy with lazy conj/neg bits resolved. Values are hashed bitwise and never converted between dtypes.
+- **Excluded:** device placement (for device-independent identity), `requires_grad`, train/eval mode (execution context), non-persistent buffer values, and `None` parameter/buffer slots.
+- **Unsupported, failing with `FingerprintError` rather than hashing partially:**
+  - tensor subclasses other than `nn.Parameter`, including lazy/uninitialised parameters;
+  - meta, sparse and other non-strided, quantized, and nested tensors;
+  - modules with a custom `get_extra_state`;
+  - big-endian hosts.
+
+  Non-persistent buffers are never read, so they cannot trigger this.
+- **No sampled/partial/fast modes and no caching.** Every call re-reads every value, so in-place mutation is always seen.
+
+**Reason:**
+- The digest must change for any value, dtype, shape, structure, or aliasing change, and stay identical across processes and hash seeds.
+- Tied versus equal-but-copied weights are different models: training behaviour differs.
+- Device independence lets the same state on CPU, CUDA, or MPS share one identity. Only CPU is tested in v0.
+
+**Alternatives considered:**
+- `torch.save`, pickle, or `repr` hashing: nondeterministic or not content-based.
+- `state_dict()` iteration: loses aliasing topology, and is subject to user state-dict hooks.
+- Hashing with object ids: not reproducible.
+- Sampled hashing for scale: rejected. A sample must never be presented as full identity.
+
+**Consequences:**
+- Module classes are identified by qualified name (`module.qualname`). If a class moves between modules, for example across torch versions, the structure digest changes even though the model is the same.
+- Uses the private-but-stable `nn.Module._non_persistent_buffers_set`. Its absence raises.
+- The measured cost is about 1.8 ms per ~1M float32 parameters on Apple arm64 CPU (see the experiment log). The earlier `bytes(untyped_storage())` path took about 3 s and was replaced by a byte-identical `ctypes.string_at` read.
+- Any algorithm change requires `algorithm_version` 2. Golden digests in `tests/test_fingerprint.py` pin v1.

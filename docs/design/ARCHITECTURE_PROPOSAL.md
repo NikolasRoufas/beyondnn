@@ -92,6 +92,12 @@ A unit test lints the renderer templates against this table.
           adapters/ (optional extras): captum, nnsight, sae_lens, transformer_lens
 ```
 
+**Package layout as implemented:**
+- `beyondnn/schema/` holds pure data and imports no torch.
+- `beyondnn/provenance/` (M1.2) holds torch-dependent collection: model fingerprints, environment, RNG, provenance records. It depends on `schema`, never the reverse.
+- Future tracing (`core/`) depends on both.
+- The top-level `beyondnn` package imports only `schema`, so `import beyondnn` stays torch-free until tracing exists.
+
 **Rules:**
 - Dependencies point downward only.
 - `schema` imports only the stdlib, plus `torch` for `TensorRef` construction helpers.

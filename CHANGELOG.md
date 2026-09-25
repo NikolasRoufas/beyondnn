@@ -17,6 +17,12 @@ All notable changes to this project are documented here. The format follows
   - a strict, versioned JSON envelope.
 - ADR-016 to ADR-018, accepted after review: record identity (identity ≠ semantic equivalence), status mechanism (measured state under intervention stays MEASURED; INTERVENTIONAL is reserved for effects), assessment policies (no universal thresholds).
 
+- **M1.2: provenance and model fingerprinting**:
+  - schema types `ModelIdentity`, `EnvironmentIdentity`, `ExecutionContext` (CLEAN/INTERVENTION), `Randomness`, `MethodIdentity`, `ProvenanceRecord`, `ExecutionOccurrence`;
+  - `beyondnn.provenance` with the FULL v1 model fingerprint (structure plus bitwise state, tied-parameter and shared-module topology), environment collection without machine identity, read-only CPU RNG digest, and provenance and occurrence builders;
+  - ADR-019 and ADR-020;
+  - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
+
 ### Changed (M1.1 review fixes)
 - `ActivationRecord` / `MEASURED` semantics: directly observed state, including during intervened executions.
 - `derived_from` and `ClaimTestResult.evidence` are sorted at construction, and `-0.0` is normalised, so ids no longer depend on order or on the sign of zero.

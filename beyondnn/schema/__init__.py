@@ -6,7 +6,8 @@ not import ``torch``.
 
 Stable in 0.1 (ADR-014): the record mechanism and envelope, ``InputRecord``,
 ``OutputRecord``, ``ActivationRecord``, ``TensorRef``, ``TraceLimitation``, and the
-claim types (ADR-012). Later-phase record kinds arrive in later schema versions.
+claim types (ADR-012), and the provenance types (M1.2, ADR-019). Later-phase record
+kinds arrive in later schema versions.
 """
 
 from ._canonical import JsonMap
@@ -35,6 +36,17 @@ from .errors import (
     UnsupportedVersionError,
 )
 from .limitations import LIMITATIONS, LimitationDef, Severity, TraceLimitation
+from .provenance import (
+    EnvironmentIdentity,
+    ExecutionContext,
+    ExecutionMode,
+    ExecutionOccurrence,
+    FingerprintMethod,
+    MethodIdentity,
+    ModelIdentity,
+    ProvenanceRecord,
+    Randomness,
+)
 from .records import ActivationRecord, InputRecord, OutputRecord
 from .status import (
     ALLOWED_PARENT_STATUSES,
@@ -76,19 +88,28 @@ __all__ = [
     "ClaimTestResult",
     "ClaimTestSpec",
     "DecodeError",
+    "EnvironmentIdentity",
     "Estimand",
     "EstimandScope",
     "EvidenceRef",
     "EvidenceRuleError",
     "EvidenceStatus",
+    "ExecutionContext",
+    "ExecutionMode",
+    "ExecutionOccurrence",
+    "FingerprintMethod",
     "InputRecord",
     "IntegrityError",
     "JsonMap",
     "LimitationDef",
+    "MethodIdentity",
+    "ModelIdentity",
     "NamedTensor",
     "Outcome",
     "OutputRecord",
     "PolicyRequirement",
+    "ProvenanceRecord",
+    "Randomness",
     "RecordRef",
     "Relation",
     "ResultRef",
