@@ -8,6 +8,16 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 3: attribution** (`bnn.attribute`, `bnn.attribution`, ADR-030):
+  - ATTRIBUTED `AttributionRecord` and `AttributionReduction` records, with container checks for site/call/pass and shape;
+  - native gradient, input × gradient, and Integrated Gradients (explicit baseline, declared rule, completeness diagnostic) on float inputs or one call of a module output;
+  - explicit scalar targets (built-in metrics, never an implicit sum) and explicit reductions;
+  - guards on model state, gradients, caller tensors, hooks, and RNG;
+  - Captum 0.9 adapters (optional extra `beyondnn[captum]`) cross-checked against native;
+  - the `attribution_threshold` protocol (ATTRIBUTED_TO only) in a central protocol registry (`beyondnn.protocols`);
+  - four attribution limitations;
+  - `Why.attributions`;
+  - an attribution benchmark and the Phase 3 report (gate: GO WITH EXPLICIT LIMITATIONS).
 - **Phase 2: causal interventions** (`bnn.intervene`, `bnn.interventions`, ADR-028):
   - `InterventionRecord`/`CausalEffect` schema;
   - zero, constant, and patch interventions on module outputs, via BeyondNN-owned hooks inside one recording;

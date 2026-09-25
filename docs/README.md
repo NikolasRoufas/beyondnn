@@ -10,6 +10,7 @@
 
 ## Where to start
 
+0. [`PHASE_3_REPORT.md`](PHASE_3_REPORT.md) and [`PHASE_3_PLAN.md`](PHASE_3_PLAN.md): attribution (ATTRIBUTED evidence), Captum integration, and why attribution is not causation.
 0. [`PHASE_2_REPORT.md`](PHASE_2_REPORT.md) and [`PHASE_2_PLAN.md`](PHASE_2_PLAN.md): causal interventions, with their guarantees and limits.
 0. [`PHASE_1_REPORT.md`](PHASE_1_REPORT.md): what exists now, its guarantees and limits, and the Phase 1 gate decision.
 

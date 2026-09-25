@@ -46,6 +46,13 @@ module = ["captum", "captum.*"]
 ignore_missing_imports = true
 follow_imports = "skip"
 
+[[tool.mypy.overrides]]
+# numpy arrives with Captum; its stubs use syntax newer than python_version = 3.10.
+# BeyondNN does not use numpy directly.
+module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+
 [tool.hatch.build.targets.sdist]
 include = ["beyondnn", "tests", "README.md", "LICENSE", "CHANGELOG.md"]
 
@@ -75,3 +82,10 @@ files = ["beyondnn", "tests"]
 module = ["captum", "captum.*"]
 ignore_missing_imports = true
 follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+# numpy arrives with Captum; its stubs use syntax newer than python_version = 3.10.
+# BeyondNN does not use numpy directly.
+module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true

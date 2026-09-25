@@ -31,3 +31,5 @@ def test_readme_examples_execute() -> None:
     assert "not a causal or attributed explanation" in text
     assert "EvidenceStatus.INTERVENTIONAL" in text
     assert "ZERO_ABLATION_MAY_BE_OOD" in text
+    assert "EvidenceStatus.ATTRIBUTED" in text
+    assert "ATTRIBUTION_BASELINE_ASSUMPTION" in text

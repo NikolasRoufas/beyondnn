@@ -1,13 +1,14 @@
 # BeyondNN
 
-> **Status: pre-alpha, Phase 2 (causal interventions) implemented (local only, not released).**
+> **Status: pre-alpha, Phase 3 (attribution) implemented (local only, not released).**
 >
 > Implemented:
 > - the trace schema, provenance, trace recording and persistence;
 > - a minimal INPUT → WHY → OUTPUT view (WHY = measured evidence);
-> - controlled activation interventions with INTERVENTIONAL effect records.
+> - controlled activation interventions with INTERVENTIONAL effect records;
+> - gradient, input × gradient, and Integrated Gradients attribution (native, and through Captum) with ATTRIBUTED records.
 >
-> Attribution, concepts, and sufficiency testing are **not implemented**. See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md) and [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md).
+> Concepts, sufficiency testing, and combined evidence views are **not implemented**. See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), and [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md).
 
 BeyondNN is an interpretability evidence framework for PyTorch.
 
@@ -16,6 +17,7 @@ It turns claims about neural-network computation into structured, provenance-awa
 - provenance;
 - explicit epistemic status;
 - controlled interventions whose effects are recorded as INTERVENTIONAL evidence;
+- method-relative attributions recorded as ATTRIBUTED evidence (never as causes);
 - threshold claim tests that must be declared before they run.
 
 BeyondNN does not assume that an attribution, a probe, a generated explanation, or a readable feature is automatically a faithful explanation of model computation. The schema labels every result with how it was obtained:
@@ -25,7 +27,7 @@ BeyondNN does not assume that an attribution, a probe, a generated explanation, 
 - validated concept;
 - generated.
 
-**Today BeyondNN produces observed, measured, and (from controlled interventions) interventional evidence only.** The other statuses exist in the schema for later phases.
+**Today BeyondNN produces observed, measured, attributed, and (from controlled interventions) interventional evidence only.** The other statuses exist in the schema for later phases.
 
 BeyondNN builds on PyTorch and is meant to work *alongside* Captum, nnsight, TransformerLens, and SAELens, not to replace them.
 
@@ -116,11 +118,42 @@ print([lim.code for lim in result.limitations])                         # e.g. Z
 - **Claims:** they are decided only by a threshold test declared in advance (`iv.threshold_spec`, `iv.make_claim`, `claims=[...]`). Sufficiency cannot be assessed yet.
 - **Refusals:** comparisons are refused if randomness is consumed, the model state changes between passes, or the intervention does not apply.
 
-## Still proposed (not implemented)
+## Attribution (Phase 3)
 
 ```python
-bnn.attribute(model, x, method=...)   # Phase 3+: attribution (not implemented)
+# runnable example (executed by tests/test_readme.py)
+import torch
+from torch import nn
+
+import beyondnn as bnn
+
+A, iv = bnn.attribution, bnn.interventions
+
+torch.manual_seed(0)
+model = nn.Sequential(nn.Linear(2, 3), nn.Tanh(), nn.Linear(3, 1)).eval()
+x = torch.tensor([[1.0, -2.0]])
+
+result = bnn.attribute(
+    model,
+    x,
+    target=iv.metrics.select([0, 0]),                  # one explicit scalar; outputs are never summed
+    method=A.integrated_gradients(baseline=A.zero_baseline(), n_steps=64),  # the baseline is a choice
+)
+print(result.value)                  # raw attribution tensor, same shape as x
+print(result.record.status)          # EvidenceStatus.ATTRIBUTED (never interventional)
+print(result.completeness_delta)     # sum(attr) - (F(x) - F(baseline)): a numerical diagnostic
+print([lim.code for lim in result.limitations])   # ATTRIBUTION_BASELINE_ASSUMPTION, ...
 ```
+
+- **What it answers:** "under method A (configuration C, baseline B), for target T on this input, what score was assigned to each input element?" It does not answer what caused the output.
+- **Attribution is not necessity:** on a model with two redundant paths, one path receives substantial attribution, yet ablating it leaves the output unchanged (see the Phase 3 report). Attribution cannot support NECESSARY_FOR or SUFFICIENT_FOR claims; only ATTRIBUTED_TO, under a declared `attribution_threshold` test.
+- **Other methods:** `A.gradient()` and `A.input_x_gradient()` are separate methods. Captum implementations are available through `beyondnn.attribution.captum` (optional: `pip install beyondnn[captum]`, Captum 0.9.x).
+- **Token models:** integer token ids are refused. `at=A.layer("token_embedding")` attributes to embedding dimensions per position, not to token ids. Any per-token score comes only from an explicit `reductions=[A.reduce("sum", (-1,))]`.
+- **Refusals:** training mode; foreign forward or backward hooks; alias paths; RNG use; and any change to model state, gradients, or caller tensors.
+
+## Still proposed (not implemented)
+
+Concepts, sufficiency tests, and combined evidence views (Phase 4+).
 
 There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.
 

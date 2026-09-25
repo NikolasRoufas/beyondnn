@@ -287,6 +287,11 @@ def test_integer_token_ids_are_not_differentiable_inputs() -> None:
         A.attribute(TinyTransformer().eval(), ids, target=target, method=A.gradient())
 
 
+def test_integer_inputs_of_any_model_are_refused_for_input_attribution() -> None:
+    with pytest.raises(A.DiscreteInputError, match="discrete"):
+        run(Irrelevant(), torch.tensor([[1, 2]]), method=ig(4))
+
+
 def test_embedding_layer_attribution_is_explicitly_not_token_attribution() -> None:
     ids = torch.tensor([[1, 2, 3, 4]])
     r = A.attribute(
@@ -368,10 +373,10 @@ def test_the_container_rejects_an_attribution_assigned_to_another_call() -> None
         fresh._add(wrong)
 
 
-def test_alias_paths_are_refused() -> None:
-    for path in ("first", "alias"):
-        with pytest.raises(AliasSiteAmbiguityError):
-            run(Aliased(), x(1, 2), method=A.gradient(), at=A.layer(path))
+@pytest.mark.parametrize("path", ["first", "alias"])
+def test_alias_paths_are_refused_before_any_attribution_runs(path: str) -> None:
+    with pytest.raises(AliasSiteAmbiguityError, match="attribution to one path"):
+        run(Aliased(), x(1, 2), method=A.gradient(), at=A.layer(path))
 
 
 def test_layer_attribution_and_its_limitations() -> None:
@@ -436,10 +441,11 @@ class _WritesGrad(nn.Module):
         return out
 
 
-def test_parameter_grad_changes_are_restored_and_refused() -> None:
+@pytest.mark.parametrize("at", [A.input(), A.layer("lin")])
+def test_parameter_grad_changes_are_restored_and_refused(at: A.At) -> None:
     model = _WritesGrad().eval()
     with pytest.raises(A.AutogradStateError, match="restored"):
-        run(model, x(1, 2), method=A.gradient())
+        run(model, x(1, 2), method=A.gradient(), at=at)
     assert model.lin.weight.grad is None
 
 
@@ -495,6 +501,45 @@ def test_state_and_randomness_are_refused_not_averaged() -> None:
     flags = [m.training for m in model.modules()]
     run(model, x(1, 2), method=A.gradient())
     assert [m.training for m in model.modules()] == flags
+
+
+class _MarksInput(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.lin = nn.Linear(2, 1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if x.is_leaf:
+            x.requires_grad_(True)
+        out: torch.Tensor = self.lin(x)
+        return out
+
+
+@pytest.mark.parametrize("method", [A.gradient(), ig(2)])
+def test_a_change_to_caller_autograd_state_is_refused(method: A.Method) -> None:
+    inputs = x(1, 2)
+    with pytest.raises(A.AutogradStateError, match="autograd state"):
+        run(_MarksInput(), inputs, method=method, at=A.layer("lin"))
+
+
+class _GradModeState(nn.Module):
+    """Updates a buffer only in grad mode: the traced (no_grad) pass looks clean."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.lin = nn.Linear(2, 1)
+        self.register_buffer("seen", torch.zeros(()))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if torch.is_grad_enabled():
+            self.get_buffer("seen").add_(1)
+        out: torch.Tensor = self.lin(x)
+        return out
+
+
+def test_a_state_change_during_the_attribution_passes_is_refused() -> None:
+    with pytest.raises(A.StatefulAttributionError, match="during attribution"):
+        run(_GradModeState(), x(1, 2), method=A.gradient())
 
 
 def test_in_place_input_modification_is_refused() -> None:
@@ -601,6 +646,7 @@ def test_attribution_threshold_decides_only_attributed_to() -> None:
     "mismatch",
     [
         {"spec_method": ig(8)},  # declared configuration differs from the one run
+        {"spec_method": ig(4, "trapezoid")},
         {"spec_method": ig(4, baseline=A.baseline(x(1, 1)))},  # declared baseline differs
         {"spec_method": A.gradient()},
         {"inputs": x(3, 4)},
@@ -614,6 +660,13 @@ def test_mismatched_attribution_claims_are_not_applicable(mismatch: dict[str, An
     claim = _claim(mismatch.get("inputs", x(3, 5)), mismatch.get("units"), mismatch.get("at"))
     r = run(Linear(), x(3, 5), method=method, claims=[(claim, spec)])
     assert [res.outcome for res in r.claim_results] == [Outcome.NOT_APPLICABLE]
+
+
+def test_the_registry_lets_attribution_justify_only_attributed_to() -> None:
+    from beyondnn.protocols import ATTRIBUTION_THRESHOLD, PROTOCOLS
+
+    assert PROTOCOLS[ATTRIBUTION_THRESHOLD] == frozenset({Relation.ATTRIBUTED_TO})
+    check_policy(A.ATTRIBUTION_POLICY)
 
 
 def test_call_index_mismatch_is_not_applicable() -> None:

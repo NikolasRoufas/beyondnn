@@ -56,7 +56,18 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
   - Built with hand-set weights (exact ground truth) and also trained (does training preserve it?).
   - Expected results are written *before* running, and outcomes are logged whatever they are.
 
-## Phase 3: Attribution
+## Phase 3: Attribution: **IMPLEMENTED, gate GO WITH EXPLICIT LIMITATIONS** (2026-09-25; `docs/PHASE_3_REPORT.md`, ADR-029, ADR-030)
+
+- **As built:**
+  - ATTRIBUTED `AttributionRecord`/`AttributionReduction`;
+  - native gradient, input × gradient, and IG on inputs or one call of a module output;
+  - Captum 0.9 adapters (Saliency, InputXGradient, IntegratedGradients, LayerIntegratedGradients) cross-checked against native;
+  - explicit scalar targets and reductions;
+  - `attribution_threshold` (ATTRIBUTED_TO only);
+  - analytic ground truth, including the redundant-path negative example.
+- **Not built from the original list below:** FeatureAblation/Occlusion adapters, `EvidenceSpan`, `method_agreement/v1`, and the top-attributed-vs-random ablation experiment.
+
+**Original plan:**
 - Native gradient and input × gradient.
 - A Captum adapter (IG, FeatureAblation, Occlusion, LayerIntegratedGradients). It must be numerically equal to direct Captum calls.
 - `EvidenceSpan` derivation. `ATTRIBUTED_TO` claims and the `method_agreement/v1` test.

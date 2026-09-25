@@ -17,6 +17,18 @@ def _load(name: str) -> Any:
     return module
 
 
+def test_attribution_benchmark_runs() -> None:
+    module = _load("bench_attribution")
+    report = module.run(warmup=0, iterations=1)
+    assert [r["model"] for r in report["results"]] == [
+        "Product (analytic)",
+        "TinyMLP",
+        "TinyCNN",
+        "TinyTransformer",
+    ]
+    assert "|" in module.markdown(report)
+
+
 def test_intervention_benchmark_runs() -> None:
     module = _load("bench_interventions")
     report = module.run(warmup=0, iterations=1)

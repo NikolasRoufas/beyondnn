@@ -349,3 +349,33 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 threads; warm-up 3, 30
 - **Validation:** 699 tests on Python 3.10, 3.12, and 3.14. The clean-venv wheel smoke tests and README examples pass.
 - **Gate:** GO WITH EXPLICIT LIMITATIONS.
 
+---
+
+## 2026-09-25: Phase 3 attribution: ground truth, Captum cross-check, mutations, benchmark
+
+- **Pre-registration:** `docs/PHASE_3_PLAN.md` (`dd1bffc`) holds every expected value and tolerance, written before any attribution code.
+- **Ground truth:** every expectation was met; see `docs/PHASE_3_REPORT.md` §5.
+  - Linear, irrelevant-input, and product models: exact.
+  - Saturating IG error vs tanh 3: 2.9e-5 / 1.8e-6 / 1.5e-7 at n = 16 / 64 / 256. The declared bound 2.25/n² was never approached.
+  - One-sided-rule completeness deltas: exactly ∓15/n.
+  - Per-call gradients on Twice: 2 and 1.
+- **Negative example:** on the redundant model, `p` receives attribution 3.0 (ATTRIBUTED_TO supported), while zero-ablating `p` leaves the output at 3 (necessity contradicted).
+- **Captum 0.9.0 cross-check:** max abs difference 1.2e-7 for IG (three rules, four models), for gradient/Saliency(abs=False) and IxG, and for layer IG on TinyTransformer embeddings.
+  - Found by inspection before implementation, then confirmed: Captum's `riemann_trapezoid` weights sum to (n−1)/n (6.75 vs 7.5 on Product, n = 10).
+- **Mutations:** 21 applied to scratch copies; all caught (report §9).
+  - First pass: two survivors, neither a defect. One mutation was not actually a broken state; the other was masked by the second alias defence. Both were replaced by real or independent checks.
+  - Seven single-test catches each got a second, independent test.
+- **Validation:** 770 tests plus 1 reported skip without Captum, and 791 with Captum, on Python 3.10, 3.12, and 3.14. mypy is clean with and without Captum; after Captum pulled in numpy, numpy's stubs needed a `follow_imports=skip` override.
+- **Benchmark** (`benchmarks/bench_attribution.py`, batch-1 inputs, 3 warm-up, 30 iterations):
+
+Environment: Python 3.14.3, torch 2.12.0, Captum 0.9.0, Darwin arm64, 4 threads; warm-up 3, 30 iterations; median / p90 ms. IG: zero baseline (input ids 0 for TinyTransformer), rule riemann_middle.
+
+| model | attributed | forward | trace | gradient | input x grad | IG 16 | IG 64 | Captum IG 16 | Captum IG 64 |
+|---|---|---|---|---|---|---|---|---|---|
+| Product (analytic) | input | 0.004 / 0.004 | 0.333 / 0.341 | 0.648 / 0.669 | 0.643 / 0.663 | 1.450 / 1.489 | 3.570 / 3.643 | 1.866 / 1.911 | 5.074 / 5.175 |
+| TinyMLP | input | 0.020 / 0.020 | 0.456 / 0.471 | 0.957 / 1.000 | 0.954 / 0.988 | 2.297 / 2.354 | 6.190 / 7.189 | 2.823 / 3.139 | 7.646 / 8.343 |
+| TinyCNN | input | 0.071 / 0.084 | 0.683 / 0.717 | 1.532 / 1.563 | 1.553 / 1.690 | 5.232 / 6.373 | 14.969 / 15.911 | 5.505 / 5.582 | 16.934 / 17.389 |
+| TinyTransformer | token_embedding | 0.185 / 0.199 | 1.188 / 1.223 | 3.128 / 3.188 | 3.140 / 3.473 | 14.511 / 16.530 | 40.464 / 41.236 | 14.014 / 14.239 | 44.319 / 49.170 |
+
+- **Gate:** GO WITH EXPLICIT LIMITATIONS.
+
