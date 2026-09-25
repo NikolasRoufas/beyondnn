@@ -1,0 +1,8 @@
+# Phase 5.5 validation environment (NOT BeyondNN runtime dependencies).
+# Run:  uv run --no-project --python 3.12 --with-requirements experiments/phase5_5/requirements.txt python ...
+torch==2.14.0
+numpy==2.5.3
+scikit-learn==1.9.1
+captum==0.9.0
+transformers==5.17.0
+pyarrow==25.0.1

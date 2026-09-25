@@ -29,3 +29,6 @@ runs/
 .DS_Store
 .idea/
 .vscode/
+
+# Phase 5.5 experiment artifacts (checkpoints, downloads, raw per-test traces)
+experiments/phase5_5/artifacts/

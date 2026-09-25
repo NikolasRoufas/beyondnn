@@ -1,0 +1,94 @@
+{
+ "environment": {
+  "beyondnn_commit": "23c00471a587d174e3d8607019e20372135cc4a7",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 4,
+  "transformers": "5.17.0"
+ },
+ "log": [
+  {
+   "ok": true,
+   "step": "A input IG"
+  },
+  {
+   "ok": true,
+   "step": "A input top_k + comprehensiveness"
+  },
+  {
+   "ok": true,
+   "step": "A hidden gradient"
+  },
+  {
+   "ok": true,
+   "step": "A hidden top_k + comprehensiveness"
+  },
+  {
+   "ok": true,
+   "step": "B input IG"
+  },
+  {
+   "error": "FaithfulnessError: selection needs an attribution whose non-last dimensions are 1 (got shape (1, 1, 8, 8)); per-position selection needs an explicit reduction and is not supported in Phase 5",
+   "ok": false,
+   "step": "B pixels top_k",
+   "where": "_vector_scores"
+  },
+  {
+   "error": "FaithfulnessError: the input has shape (1, 1, 8, 8); unit selection needs all non-last dimensions to be 1",
+   "ok": false,
+   "step": "B pixels declared units(n_units=64)",
+   "where": "_check_vector"
+  },
+  {
+   "ok": true,
+   "step": "B channel gradient"
+  },
+  {
+   "error": "FaithfulnessError: selection needs an attribution whose non-last dimensions are 1 (got shape (1, 16, 8, 8)); per-position selection needs an explicit reduction and is not supported in Phase 5",
+   "ok": false,
+   "step": "B channels top_k",
+   "where": "_vector_scores"
+  },
+  {
+   "error": "FaithfulnessError: site Site(module='relu2', io=<SiteIO.OUTPUT: 'output'>, output_path='') has shape (1, 16, 8, 8); unit selection needs all non-last dimensions to be 1",
+   "ok": false,
+   "step": "B channels declared units(n_units=16)",
+   "where": "_check_vector"
+  },
+  {
+   "ok": true,
+   "step": "C trace"
+  },
+  {
+   "error": "DiscreteInputError: positional input 0 is torch.int64: gradients with respect to discrete values (e.g. token ids) are undefined. Attribute to a representation instead, e.g. attribution.layer('token_embedding') (embedding dimensions per position).",
+   "ok": false,
+   "step": "C input gradient on ids",
+   "where": "__init__"
+  },
+  {
+   "ok": true,
+   "step": "C word-embedding IxG"
+  },
+  {
+   "error": "FaithfulnessError: selection needs an attribution whose non-last dimensions are 1 (got shape (1, 9, 128)); per-position selection needs an explicit reduction and is not supported in Phase 5",
+   "ok": false,
+   "step": "C tokens top_k",
+   "where": "_vector_scores"
+  },
+  {
+   "ok": true,
+   "step": "C input-id masking (zero_input units = positions)"
+  },
+  {
+   "error": "FaithfulnessError: site Site(module='bert.embeddings.word_embeddings', io=<SiteIO.OUTPUT: 'output'>, output_path='') has shape (1, 9, 128); unit selection needs all non-last dimensions to be 1",
+   "ok": false,
+   "step": "C token positions declared units(n=T) on word embeddings",
+   "where": "_check_vector"
+  }
+ ]
+}
