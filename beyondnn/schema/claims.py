@@ -24,11 +24,18 @@ from __future__ import annotations
 import re
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from ._canonical import EMPTY_JSON, JsonMap
 from ._types import Value, require
-from .base import BaseRecord, EvidenceRef, RecordRef, is_record_id, record_kind
+from .base import (
+    BaseRecord,
+    EvidenceRef,
+    RecordRef,
+    is_record_id,
+    record_kind,
+    register_migration,
+)
 from .errors import EvidenceRuleError
 from .status import CAUSAL_EVIDENCE_STATUSES, CAUSAL_RELATIONS, Outcome, Relation, Verdict
 from .values import ClaimSource, Estimand, Subject, TargetSpec
@@ -57,7 +64,7 @@ def _sorted_relations(relations: Iterable[Relation]) -> tuple[Relation, ...]:
 # --------------------------------------------------------------------------- claim
 
 
-@record_kind("claim")
+@record_kind("claim", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class Claim(BaseRecord):
     """A testable proposition about the model's computation.
@@ -412,3 +419,12 @@ class Assessment(BaseRecord):
             provenance_id=provenance_id,
             derived_from=tuple(RecordRef.to(r) for r in results),
         )
+
+
+@register_migration("claim", 1)
+def _claim_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
+    """v1 subjects had last-axis units: ``unit_axes=None`` keeps that meaning (ADR-034)."""
+    subject = data.get("subject")
+    if not isinstance(subject, dict) or "unit_axes" in subject:
+        raise ValueError("a claim v1 payload has a subject without unit_axes")
+    return data | {"subject": subject | {"unit_axes": None}}

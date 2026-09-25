@@ -95,6 +95,7 @@ def evaluate(
         and claim.relation in DECIDABLE[protocol]
         and claim.subject.site == main.site
         and claim.subject.units == main.units
+        and claim.subject.unit_axes == main.unit_axes
         and main.retain is retain
         and main.call_index == params.get("call_index")
         and main.units is not None
@@ -104,6 +105,7 @@ def evaluate(
         and all(c.metric == primary.metric and c.estimand == primary.estimand for c in controls)
         and all(
             r.site == main.site
+            and r.unit_axes == main.unit_axes
             and r.call_index == main.call_index
             and r.retain is retain
             and r.units is not None

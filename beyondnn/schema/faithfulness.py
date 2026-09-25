@@ -25,11 +25,11 @@ import math
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from ._canonical import EMPTY_JSON, JsonMap
 from ._types import Value, require
-from .base import BaseRecord, record_kind
+from .base import BaseRecord, record_kind, register_migration
 from .interventions import MetricSpec
 from .values import Site, SiteIO
 
@@ -57,7 +57,7 @@ class SelectionSource(Enum):
     RANDOM = "random"
 
 
-@record_kind("evidence_selection")
+@record_kind("evidence_selection", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class EvidenceSelection(BaseRecord):
     """An ordered selection of units (last-dimension indices) of one site.
@@ -84,6 +84,8 @@ class EvidenceSelection(BaseRecord):
     source_record: str | None = None
     seed: int | None = None
     target: MetricSpec | None = None
+    unit_axes: tuple[int, ...] | None = None
+    unit_reduction: str | None = None
 
     @property
     def selected(self) -> tuple[int, ...]:
@@ -131,6 +133,21 @@ class EvidenceSelection(BaseRecord):
         require(
             (self.seed is not None) == (self.source is SelectionSource.RANDOM),
             "exactly the random selections carry a seed",
+        )
+        if self.unit_axes is not None:
+            require(
+                len(self.unit_axes) > 0
+                and all(a >= 0 for a in self.unit_axes)
+                and list(self.unit_axes) == sorted(set(self.unit_axes)),
+                "unit_axes must be non-negative, sorted and unique (ADR-034)",
+            )
+        require(
+            self.unit_reduction in (None, "sum", "abs_sum", "l2"),
+            f"unknown unit_reduction {self.unit_reduction!r}",
+        )
+        require(
+            self.unit_reduction is None or self.source is SelectionSource.ATTRIBUTION,
+            "only attribution selections reduce scores to units",
         )
 
 
@@ -187,3 +204,11 @@ class ProtocolResult(BaseRecord):
                     o.aspect in self.criteria,
                     f"aspect {o.aspect!r} has a pass/fail outcome but no declared criterion",
                 )
+
+
+@register_migration("evidence_selection", 1)
+def _selection_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
+    """v1 selections used last-axis vector units (ADR-034)."""
+    if "unit_axes" in data or "unit_reduction" in data:
+        raise ValueError("an evidence_selection v1 payload cannot contain unit axes")
+    return data | {"unit_axes": None, "unit_reduction": None}

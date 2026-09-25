@@ -144,6 +144,7 @@ def evaluate_claim(
         and spec.params.get("baseline") == _jsonish(_record_baseline(record.baseline))
         and spec.params.get("call_index") == record.call_index
         and claim.subject.site == record.site
+        and claim.subject.unit_axes is None  # last-axis units only (ADR-034)
         and claim.target == record.target.target()
         and claim.estimand == Estimand.instance(record.sample_id)
         and (units is None or (attribution.dim() > 0 and max(units) < attribution.shape[-1]))

@@ -12,7 +12,8 @@
   - a target metric;
   - a replacement (`zero()` or `replacement(tensor)` of the site's exact shape);
   - `min_drop`;
-  - optionally `controls(n, seed)` and `min_fraction_below`.
+  - optionally `controls(n, seed)` (or `controls(n, seed=, match="magnitude")`, ADR-035) and `min_fraction_below`;
+  - for images, channels, or token positions: `unit_axes` on the selection (and `reduce` for attribution scores), ADR-034.
 - **Perturbation semantics:** removal. Input level replaces elements of positional input `args[i]`; internal level replaces units of one module-output leaf and call. Both are ADR-032 interventions.
 - **Output:** a `ClaimTestResult`. Its evidence is the INTERVENTIONAL effects of the selection and every control; its statistics are the numbers above.
   - SUPPORTS iff `drop ≥ min_drop` and, if declared, `fraction_below ≥ min_fraction_below`.

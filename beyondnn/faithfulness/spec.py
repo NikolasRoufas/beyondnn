@@ -6,13 +6,14 @@ recorded; nothing here runs a model.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 import torch
 
 from beyondnn.attribution import AttributionResult
 from beyondnn.attribution.spec import At, Method, tensor_digest
+from beyondnn.core.units import UnitError, check_axes, unit_count, unit_values
 from beyondnn.interventions.metrics import Metric
 from beyondnn.schema import MetricSpec, Relation, SelectionSource, Site, SiteIO
 
@@ -62,6 +63,8 @@ class Selection:
     scores: tuple[float, ...] | None = None
     source_record: str | None = None
     target: MetricSpec | None = None
+    unit_axes: tuple[int, ...] | None = None
+    unit_reduction: str | None = None
 
     @property
     def is_input(self) -> bool:
@@ -73,41 +76,60 @@ class Selection:
             raise FaithfulnessError("this selection is a ranking without k")
         return tuple(sorted(self.order[: self.k]))
 
-    def with_k(self, k: int) -> Selection:
-        if not 1 <= k <= len(self.order):
+    def with_k(self, k: int | None) -> Selection:
+        if k is not None and not 1 <= k <= len(self.order):
             raise FaithfulnessError(f"k={k} must be in [1, {len(self.order)}]")
-        return Selection(
-            self.site,
-            self.call_index,
-            self.source,
-            self.rule,
-            self.order,
-            self.n_units,
-            k,
-            self.sample_id,
-            self.scores,
-            self.source_record,
-            self.target,
-        )
+        return replace(self, k=k)
 
 
-def _vector_scores(result: AttributionResult) -> tuple[float, ...]:
-    value = result.value
-    if value.dim() == 0 or any(d != 1 for d in value.shape[:-1]):
+def unit_scores(
+    value: torch.Tensor, unit_axes: tuple[int, ...] | None, reduce: str | None
+) -> tuple[float, ...]:
+    """Per-unit scores of an attribution tensor (ADR-034).
+
+    ``unit_axes=None``: the Phase-5 vector rule (every non-last dimension must be 1).
+    Otherwise units are the declared axes; if a unit spans more than one element, an
+    explicit ``reduce`` (``sum``/``abs_sum``/``l2``) is required. Nothing is aggregated
+    silently."""
+    if unit_axes is None:
+        if reduce is not None:
+            raise FaithfulnessError("reduce applies only with declared unit_axes")
+        if value.dim() == 0 or any(d != 1 for d in value.shape[:-1]):
+            raise FaithfulnessError(
+                f"selection needs an attribution whose non-last dimensions are 1 (got shape "
+                f"{tuple(value.shape)}); declare unit_axes (and a reduce) for images, "
+                "channels or sequences (ADR-034)"
+            )
+        return tuple(float(v) for v in value.double().flatten().tolist())
+    try:
+        axes = check_axes(unit_axes)
+        n = unit_count(tuple(value.shape), axes)
+    except UnitError as exc:
+        raise FaithfulnessError(str(exc)) from None
+    within = value.numel() // max(n, 1)
+    if within > 1 and reduce is None:
         raise FaithfulnessError(
-            f"selection needs an attribution whose non-last dimensions are 1 (got shape "
-            f"{tuple(value.shape)}); per-position selection needs an explicit reduction and "
-            "is not supported in Phase 5"
+            f"each unit spans {within} elements of shape {tuple(value.shape)}; declare "
+            "reduce='sum', 'abs_sum' or 'l2' (never aggregated implicitly)"
         )
-    return tuple(float(v) for v in value.double().flatten().tolist())
+    how = reduce if reduce is not None else "sum"
+    return tuple(float(v) for v in unit_values(value, axes, how).tolist())
 
 
-def ranking(result: AttributionResult, *, by: str = "abs") -> Selection:
+def ranking(
+    result: AttributionResult,
+    *,
+    by: str = "abs",
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
+) -> Selection:
     """The full ranking of the attributed units (descending |score| or signed score;
     ties broken by lower index), e.g. for curves."""
     if not isinstance(result, AttributionResult):
         raise TypeError("ranking() takes an AttributionResult")
-    scores = _vector_scores(result)
+    scores = unit_scores(result.value, unit_axes, reduce)
+    axes = check_axes(unit_axes)
+    within = result.value.numel() // len(scores)
     record = result.record
     return Selection(
         site=record.site,
@@ -121,12 +143,23 @@ def ranking(result: AttributionResult, *, by: str = "abs") -> Selection:
         scores=scores,
         source_record=record.id,
         target=record.target,
+        unit_axes=axes,
+        unit_reduction=(reduce if reduce is not None else "sum")
+        if axes is not None and within > 1
+        else None,
     )
 
 
-def top_k(result: AttributionResult, *, k: int, by: str = "abs") -> Selection:
+def top_k(
+    result: AttributionResult,
+    *,
+    k: int,
+    by: str = "abs",
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
+) -> Selection:
     """The top-``k`` units of an attribution (see :func:`ranking`)."""
-    return ranking(result, by=by).with_k(k)
+    return ranking(result, by=by, unit_axes=unit_axes, reduce=reduce).with_k(k)
 
 
 def units(
@@ -136,6 +169,7 @@ def units(
     n_units: int,
     call_index: int = 0,
     output_path: str = "",
+    unit_axes: tuple[int, ...] | None = None,
 ) -> Selection:
     """A declared set of units. ``site`` is a module path, or an ``attribution.input(i)``
     / ``attribution.layer(...)`` spec; ``n_units`` is the size of the last dimension."""
@@ -151,8 +185,19 @@ def units(
         raise FaithfulnessError("a declared selection needs distinct units")
     if any(not isinstance(u, int) or isinstance(u, bool) or not 0 <= u < n_units for u in chosen):
         raise FaithfulnessError(f"units must be ints in [0, {n_units})")
+    try:
+        axes = check_axes(unit_axes)
+    except UnitError as exc:
+        raise FaithfulnessError(str(exc)) from None
     return Selection(
-        where, call_index, SelectionSource.DECLARED, "declared", chosen, n_units, len(chosen)
+        where,
+        call_index,
+        SelectionSource.DECLARED,
+        "declared",
+        chosen,
+        n_units,
+        len(chosen),
+        unit_axes=axes,
     )
 
 
@@ -186,25 +231,44 @@ def replacement(tensor: torch.Tensor) -> Replacement:
 
 @dataclass(frozen=True, slots=True)
 class Controls:
-    """Matched random controls: ``n`` draws (same site, same size), seeded locally."""
+    """Matched random controls: ``n`` draws (same site, same size), seeded locally.
+
+    ``match="count"`` (Phase 5): uniform random sets of the same size at the same site.
+    ``match="magnitude"`` (ADR-035): additionally stratified on each unit's
+    perturbation magnitude ``||x_u - b_u||_2`` into ``strata`` equal-count strata, so
+    a control perturbs the input by similar amounts as the selection does."""
 
     n: int
     seed: int
+    match: str = "count"
+    strata: int = 4
 
     def identity(self) -> dict[str, Any]:
+        if self.match == "count":
+            return {
+                "n": self.n,
+                "seed": self.seed,
+                "strategy": "uniform_without_replacement_same_site_same_size",
+            }
         return {
             "n": self.n,
             "seed": self.seed,
-            "strategy": "uniform_without_replacement_same_site_same_size",
+            "strata": self.strata,
+            "strategy": "perturbation_magnitude_stratified_same_site_same_size",
         }
 
 
-def controls(n: int, *, seed: int) -> Controls:
+def controls(n: int, *, seed: int, match: str = "count", strata: int = 4) -> Controls:
+    """Matched random controls (see :class:`Controls`)."""
     if isinstance(n, bool) or not isinstance(n, int) or n < 1:
         raise ValueError("n must be an int >= 1")
     if isinstance(seed, bool) or not isinstance(seed, int):
         raise ValueError("seed must be an int")
-    return Controls(n, seed)
+    if match not in ("count", "magnitude"):
+        raise ValueError("match must be 'count' or 'magnitude'")
+    if isinstance(strata, bool) or not isinstance(strata, int) or strata < 1:
+        raise ValueError("strata must be an int >= 1")
+    return Controls(n, seed, match, strata)
 
 
 # ------------------------------------------------------------------ test templates
@@ -320,13 +384,24 @@ class SelectionRule:
     k: int
     by: str = "abs"
     fixed: Selection | None = None
+    unit_axes: tuple[int, ...] | None = None
+    reduce: str | None = None
 
 
-def selector(method: Method, *, k: int, by: str = "abs", at: At | None = None) -> SelectionRule:
-    """Per sample: run ``method`` explicitly (``bnn.attribute``), take its top-``k``."""
+def selector(
+    method: Method,
+    *,
+    k: int,
+    by: str = "abs",
+    at: At | None = None,
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
+) -> SelectionRule:
+    """Per sample: run ``method`` explicitly (``bnn.attribute``), take its top-``k``
+    units (declared ``unit_axes``/``reduce`` for non-vector sites, ADR-034)."""
     if not isinstance(method, Method):
         raise TypeError("method must come from beyondnn.attribution")
-    return SelectionRule(method, at, k, by)
+    return SelectionRule(method, at, k, by, None, check_axes(unit_axes), reduce)
 
 
 def fixed(selection: Selection) -> SelectionRule:

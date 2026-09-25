@@ -121,3 +121,40 @@ def sign_flip_p(differences: Sequence[float], draws: int, seed: int) -> float:
         if flipped / len(differences) >= observed:
             count += 1
     return (1 + count) / (draws + 1)
+
+
+def magnitude_strata(magnitudes: Sequence[float], strata: int) -> list[list[int]]:
+    """Units ordered by magnitude (descending; ties by lower index), split into
+    ``strata`` contiguous groups whose sizes differ by at most one."""
+    order = sorted(range(len(magnitudes)), key=lambda u: (-magnitudes[u], u))
+    k = min(strata, len(order))
+    base, extra = divmod(len(order), k)
+    out, start = [], 0
+    for i in range(k):
+        size = base + (1 if i < extra else 0)
+        out.append(order[start : start + size])
+        start += size
+    return out
+
+
+def stratified_subsets(
+    magnitudes: Sequence[float], selected: Sequence[int], draws: int, seed: int, strata: int
+) -> list[tuple[int, ...]]:
+    """``draws`` random sets matched to ``selected`` by perturbation-magnitude stratum
+    (ADR-035): each selected unit is replaced by a uniform draw, without replacement,
+    from its own stratum. Local seeded generator; returned sorted."""
+    groups = magnitude_strata(magnitudes, strata)
+    where = {u: i for i, g in enumerate(groups) for u in g}
+    need: dict[int, int] = {}
+    for u in selected:
+        need[where[u]] = need.get(where[u], 0) + 1
+    g = _generator(seed)
+    out = []
+    for _ in range(draws):
+        chosen: list[int] = []
+        for stratum in sorted(need):
+            members = groups[stratum]
+            pick = torch.randperm(len(members), generator=g)[: need[stratum]].tolist()
+            chosen += [members[i] for i in pick]
+        out.append(tuple(sorted(chosen)))
+    return out

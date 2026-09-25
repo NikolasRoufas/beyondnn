@@ -252,15 +252,26 @@ class Estimand(Value):
 class Subject(Value):
     """What a claim is about: a site, optionally restricted to units.
 
-    ``units`` are indices along the last dimension of the site's tensor, stored
-    sorted; ``None`` means the whole site. Feature/concept subjects arrive with
-    their record types in later schema versions (ADR-014).
+    ``units`` index the site's evidence units, stored sorted: indices along the last
+    dimension when ``unit_axes`` is ``None`` (the Phase-1..5 meaning), otherwise
+    row-major indices of the sub-grid of the declared ``unit_axes`` (ADR-034).
+    ``units=None`` means the whole site. Feature/concept subjects arrive with their
+    record types in later schema versions (ADR-014).
     """
 
     site: Site
     units: tuple[int, ...] | None = None
+    unit_axes: tuple[int, ...] | None = None
 
     def _validate(self) -> None:
+        if self.unit_axes is not None:
+            require(self.units is not None, "Subject.unit_axes requires units")
+            require(
+                len(self.unit_axes) > 0
+                and all(a >= 0 for a in self.unit_axes)
+                and list(self.unit_axes) == sorted(set(self.unit_axes)),
+                "Subject.unit_axes must be non-negative, sorted and unique",
+            )
         if self.units is not None:
             require(len(self.units) > 0, "Subject.units must be non-empty or None")
             require(all(u >= 0 for u in self.units), "Subject.units must be >= 0")

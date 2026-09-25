@@ -42,6 +42,7 @@ from torch import nn
 from beyondnn.core.samples import SampleIdentityError
 from beyondnn.core.samples import sample_id as _sample_id
 from beyondnn.core.trace import Recording, TraceError, TraceResult
+from beyondnn.core.units import UnitError, unit_mask
 from beyondnn.provenance.fingerprint import tensor_bytes
 from beyondnn.schema import (
     CausalEffect,
@@ -274,15 +275,23 @@ class _Replacer:
         units = self.spec.units
         if units is None:
             return full
+        if self.spec.unit_axes is not None:
+            try:
+                mask = unit_mask(tuple(leaf.shape), self.spec.unit_axes, units, leaf.device)
+            except UnitError as exc:
+                raise InterventionError(str(exc)) from None
+            if self.spec.retain:
+                mask = ~mask
+            return torch.where(mask, full, leaf)
         if leaf.dim() == 0 or max(units) >= leaf.shape[-1]:
             raise InterventionError(
                 f"units {list(units)} are out of range for a leaf of shape {tuple(leaf.shape)}"
             )
-        mask = torch.zeros(leaf.shape[-1], dtype=torch.bool, device=leaf.device)
-        mask[list(units)] = True
+        last = torch.zeros(leaf.shape[-1], dtype=torch.bool, device=leaf.device)
+        last[list(units)] = True
         if self.spec.retain:
-            mask = ~mask
-        return torch.where(mask, full, leaf)
+            last = ~last
+        return torch.where(last, full, leaf)
 
     def replace_hook(self, module: nn.Module, args: Any, kwargs: Any, output: Any) -> Any:
         leaf = self._leaf(module, output)
@@ -420,6 +429,7 @@ class _Experiment:
                 source=RecordRef.to(source),
                 units=spec.units,
                 retain=spec.retain,
+                unit_axes=spec.unit_axes,
             )
         if spec.tensor is not None:
             self.value = spec.tensor
@@ -432,6 +442,7 @@ class _Experiment:
                 value=ref,
                 units=spec.units,
                 retain=spec.retain,
+                unit_axes=spec.unit_axes,
             )
         return InterventionRecord(
             site=site,
@@ -440,6 +451,7 @@ class _Experiment:
             constant=spec.constant,
             units=spec.units,
             retain=spec.retain,
+            unit_axes=spec.unit_axes,
         )
 
     def compare(

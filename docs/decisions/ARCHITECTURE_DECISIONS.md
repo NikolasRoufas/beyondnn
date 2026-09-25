@@ -1011,7 +1011,7 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 ## ADR-033: Phase-5 faithfulness tests: claim protocols, diagnostic results, controls, and no new status
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for Phase 5 implementation. Awaiting Phase 5 review.
+- **Status:** Accepted; the "Units" bullet is superseded by ADR-034 (in part).
 
 **Decision:**
 - **No new `EvidenceStatus`.**
@@ -1060,3 +1060,72 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 - Removal/retention inputs are off-distribution (recorded via the Phase-2 OOD limitations); BeyondNN documents this confound but cannot remove it.
 - With few units, matched controls often coincide with the selection, so a perfect selection can have a Monte-Carlo p above 0.05. This is reported, not hidden.
 
+
+## ADR-034: Declared unit axes for images, channels and token positions
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 5.5. Awaiting Phase 5.5 review.
+- **Supersedes ADR-033 in part:** only its "Units" bullet (last-dimension units only). Everything else in ADR-033 stands.
+
+**Observed realistic failure** (Phase 5.5, before any change; `experiments/phase5_5/results/abstraction_probe.json`):
+- Model B (trained CNN, digits): `F.top_k` over the pixel attribution `(1, 1, 8, 8)` and over the conv-channel attribution `(1, 16, 4, 4)` was refused ("non-last dimensions").
+- A declared pixel/channel selection was refused only **after** every perturbation pass had run (ergonomics).
+- Model C (BERT-tiny, SST-2): the same for token positions of the word-embedding output `(1, T, 128)`.
+- Interventions could address only the last axis, so "pixel (h, w) in every channel", "channel c everywhere" and "token t (all hidden dims)" were not expressible without reshaping the model (an architecture-specific hack).
+- This was predicted in the pre-registration (H8) and confirmed.
+
+**Decision:**
+- An optional `unit_axes` (non-negative, sorted, unique tensor axes) is added to:
+  - interventions: `Intervention` and every builder; `InterventionRecord` v3;
+  - selections: `Selection`, `EvidenceSelection` v2, with `unit_reduction`;
+  - claim subjects: `Subject.unit_axes`, `Claim` v2.
+- A unit is a **row-major index into the sub-grid of the declared axes**. Every other axis lies within the unit and is perturbed together: pixels `(2, 3)`, channels `(1,)`, token positions `(1,)`.
+- `unit_axes=None` keeps the Phase-5 last-axis meaning exactly.
+  - Legacy records migrate with `unit_axes=None` and no invented axes (intervention v2→v3, claim v1→v2, selection v1→v2).
+  - Phase-5 records created without `unit_axes` keep their content, except `Claim`, whose v2 serialisation adds `subject.unit_axes`. The golden claim id therefore changed, deliberately (`tests/test_record_identity.py`).
+- **Scores per unit need an explicit `reduce`** (`sum`, `abs_sum`, `l2`) whenever a unit spans more than one element. Nothing is aggregated implicitly. The reduction is recorded in the `EvidenceSelection` and re-derived by the verifier.
+- Diagnostics (`stability`, `method_agreement`, `baseline_sensitivity`, `ig_step_sensitivity`) take the same `unit_axes`/`reduce`. They are recorded in `ProtocolResult.params` only when declared, so Phase-5 diagnostic ids are unchanged.
+- **Input units are checked before any pass runs.**
+- The faithfulness evaluator is applicable only if the claim's `unit_axes` equal the intervention's, and every control's.
+- `attribution_threshold` (Phase 3) remains last-axis only and is NOT_APPLICABLE to a subject with `unit_axes`.
+
+**Alternatives considered:**
+- *Flatten in user code* (reshape the input or wrap the model): works only at inputs, not at internal sites. It changes the recorded site, loses the unit ↔ tensor-position link, and is architecture-specific.
+- *An arbitrary boolean mask per unit:* maximally general, but not auditable in a record (masks would have to be stored), and it invites overlapping units.
+- *A named-dimension API* (for example "C", "H", "W"): readable, but model-specific, and it needs dimension names that PyTorch modules do not carry.
+- *Implicit reduction* (for example sum by default): rejected. The reduction changes rankings, and silently choosing one is what ADR-030 forbids for targets.
+
+**Consequences:**
+- CNN pixel/channel units and transformer token units are expressible with general abstractions and verified in composition.
+- Units are always axis-aligned grids. Superpixels, spans, and other irregular groups remain unsupported (a documented limitation).
+- The migration changes the `Claim` serialisation, so claim ids made before Phase 5.5 differ from those made after. A loaded v1 claim is migrated, gets a new id, and references are remapped (as for every migration).
+
+## ADR-035: Perturbation-magnitude-matched random controls
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 5.5. Awaiting Phase 5.5 review.
+
+**Context:** Count-matched controls (ADR-033) answer "does the selection beat a random set of the same size?". On trained models, input × gradient and similar methods favour units with large |x − b|. A selection can beat count-matched controls just because it perturbs the input more (the ROAD/Blücher confound; `docs/research/PHASE_5_5_LITERATURE.md`).
+
+**Decision:**
+- `faithfulness.controls(n, seed=, match="magnitude", strata=4)`:
+  - each unit's perturbation magnitude is ‖x_u − b_u‖₂ over its within-unit elements, where b is the declared replacement at the same site;
+  - units are split into `strata` equal-count strata by magnitude (descending, ties by lower index);
+  - each control replaces every selected unit by a uniform draw, without replacement, from the same stratum;
+  - draws come from the seeded local generator, as in ADR-033.
+- The per-unit magnitudes and `strata` are recorded in the spec's `controls` identity (strategy `perturbation_magnitude_stratified_same_site_same_size`).
+- **Verification re-derives the magnitudes** from the retained clean site tensor and the recorded replacement, then re-draws the controls. Forged magnitudes are refused.
+- For internal sites the magnitudes come from one public traced pass (`bnn.trace`, CPU retention).
+- `count` remains the default.
+- Magnitude-matched controls are refused for curves (random rankings have no per-point stratum).
+
+**Alternatives considered:**
+- *Stronger nulls with more structure* (random sets matched on attribution-score percentiles): circular, because they condition on the method under test.
+- *Spatially contiguous random masks* (RISE-like): relevant for pixels only, and not general across A/B/C.
+- *ROAR retraining:* out of scope. It is CPU-heavy and changes the model under test (literature §ROAR).
+- *Distribution-matched replacement* (ROAD noisy linear imputation): addresses a different confound (OOD), handled by the replacement sensitivity (r1–r3), not by controls.
+
+**Consequences:**
+- The magnitude null is available wherever count controls are, at the cost of one extra traced pass for internal sites.
+- Magnitudes depend on the replacement. With a zero replacement at a standardised input they equal |x_u|.
+- A selection that beats count-matched controls but not magnitude-matched ones is reported as such; neither result is hidden.

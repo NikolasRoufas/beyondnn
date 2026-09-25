@@ -259,6 +259,14 @@ It migrates old record versions and remaps every reference to ids that migration
 - A `ProvenanceRecord` with `execution.mode = INTERVENTION` must name an `InterventionRecord` in the same trace.
 - Intervention tensors are retained tensors of the trace: persisted in `tensors.pt` and digest-checked on load.
 
+### A.18 Declared unit axes (Phase 5.5, ADR-034/035)
+
+- `intervention` is record version 3. It adds `unit_axes: tuple[int, ...] | None` (requires `units`; non-negative, sorted, unique). A unit is a row-major index into the sub-grid of the declared axes, and all other axes are perturbed together. `None` keeps the version-2 last-axis meaning. v2 payloads migrate with `unit_axes=None`.
+- `Subject` gains `unit_axes` with the same rule, so `claim` is record version 2. v1 claims migrate with `subject.unit_axes=None`. Their ids change on migration, and the golden claim id changed.
+- `evidence_selection` is record version 2. It adds `unit_axes` and `unit_reduction` (`sum`/`abs_sum`/`l2`, attribution sources only; required whenever a unit spans more than one element). v1 payloads migrate with both `None`.
+- Diagnostic `protocol_result.params` carry `unit_axes`/`unit_reduction` only when declared.
+- Magnitude-matched controls record `strategy = perturbation_magnitude_stratified_same_site_same_size`, `strata`, and the per-unit `magnitudes` in the spec's `controls` params. Composition re-derives them from the retained clean site tensor and the recorded replacement.
+
 ### A.17 Faithfulness records (Phase 5, ADR-033)
 
 | Kind | Status | Fields |

@@ -30,7 +30,9 @@ ID_RE = re.compile(r"^[a-z][a-z0-9_]*:[0-9a-f]{32}$")
 # Golden ids pin the identity algorithm. If one of these changes, identity changed:
 # that is a schema-breaking change and needs an ADR, not a test update.
 GOLDEN_ACTIVATION_ID = "activation:bf06f02771845673d43895ed844a18fd"
-GOLDEN_CLAIM_ID = "claim:5924afd11aa7363a3a2780a43b6169a7"
+# Changed deliberately in Phase 5.5: claim record version 2 adds Subject.unit_axes
+# (ADR-034). The Phase 1-5 value was claim:5924afd11aa7363a3a2780a43b6169a7.
+GOLDEN_CLAIM_ID = "claim:3ffd355bdd32a507f3f1035aad8846de"
 
 
 def test_ids_are_well_formed_and_prefixed_by_kind(mk: SimpleNamespace) -> None:

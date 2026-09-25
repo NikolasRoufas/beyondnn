@@ -32,6 +32,8 @@ import beyondnn.interventions as iv
 from beyondnn.attribution import AttributionResult, attribute
 from beyondnn.core.samples import sample_id
 from beyondnn.core.trace import TraceResult
+from beyondnn.core.trace import trace as bnn_trace
+from beyondnn.core.units import UnitError, unit_count, unit_mask, unit_values
 from beyondnn.schema import (
     ActivationRecord,
     AspectOutcome,
@@ -71,6 +73,7 @@ from .stats import (
     control_fractions,
     quantile,
     sign_flip_p,
+    stratified_subsets,
     uniform_permutations,
     uniform_subsets,
 )
@@ -191,11 +194,12 @@ def _input_index(selection: Selection) -> int:
 def _intervention(
     selection: Selection, units: tuple[int, ...] | None, retain: bool, rep: Replacement
 ) -> iv.Intervention:
+    axes = selection.unit_axes if units is not None else None
     if selection.is_input:
         index = _input_index(selection)
         if rep.tensor is None:
-            return iv.zero_input(index, units=units, retain=retain)
-        return iv.constant_input(rep.tensor, index, units=units, retain=retain)
+            return iv.zero_input(index, units=units, retain=retain, unit_axes=axes)
+        return iv.constant_input(rep.tensor, index, units=units, retain=retain, unit_axes=axes)
     site = selection.site
     if rep.tensor is None:
         return iv.zero(
@@ -204,6 +208,7 @@ def _intervention(
             call_index=selection.call_index,
             units=units,
             retain=retain,
+            unit_axes=axes,
         )
     return iv.constant(
         site.module,
@@ -212,11 +217,16 @@ def _intervention(
         call_index=selection.call_index,
         units=units,
         retain=retain,
+        unit_axes=axes,
     )
 
 
 def _expected(
-    original: torch.Tensor, units: tuple[int, ...] | None, retain: bool, rep: Replacement
+    original: torch.Tensor,
+    units: tuple[int, ...] | None,
+    retain: bool,
+    rep: Replacement,
+    unit_axes: tuple[int, ...] | None = None,
 ) -> torch.Tensor:
     """The perturbed tensor, computed independently of the intervention engine."""
     replacement = torch.zeros_like(original) if rep.tensor is None else rep.tensor.to(original)
@@ -227,6 +237,11 @@ def _expected(
         )
     if units is None:
         return replacement.clone()
+    if unit_axes is not None:
+        mask = unit_mask(tuple(original.shape), unit_axes, units)
+        if retain:
+            mask = ~mask
+        return torch.where(mask, replacement, original)
     out = original.clone()
     chosen = set(units)
     for u in range(original.shape[-1]):
@@ -235,10 +250,23 @@ def _expected(
     return out
 
 
-def _check_vector(shape: tuple[int, ...], n_units: int, where: str) -> None:
+def _check_units(shape: tuple[int, ...], selection: Selection, where: str) -> None:
+    n_units = selection.n_units
+    if selection.unit_axes is not None:
+        try:
+            count = unit_count(shape, selection.unit_axes)
+        except UnitError as exc:
+            raise FaithfulnessError(f"{where}: {exc}") from None
+        if count != n_units:
+            raise SelectionMismatchError(
+                f"{where} has {count} units over axes {selection.unit_axes}, the selection "
+                f"{n_units}"
+            )
+        return
     if len(shape) == 0 or any(d != 1 for d in shape[:-1]):
         raise FaithfulnessError(
-            f"{where} has shape {shape}; unit selection needs all non-last dimensions to be 1"
+            f"{where} has shape {shape}; unit selection needs all non-last dimensions to be 1 "
+            "unless unit_axes are declared (ADR-034)"
         )
     if shape[-1] != n_units:
         raise SelectionMismatchError(f"{where} has {shape[-1]} units, the selection {n_units}")
@@ -277,8 +305,10 @@ class _Verifier:
         if self.selection.is_input:
             index = _input_index(self.selection)
             original = self.inputs[index]
-            _check_vector(tuple(original.shape), self.selection.n_units, "the input")
-            perturbed = _expected(original.detach(), record.units, record.retain, self.rep)
+            _check_units(tuple(original.shape), self.selection, "the input")
+            perturbed = _expected(
+                original.detach(), record.units, record.retain, self.rep, record.unit_axes
+            )
             args = list(self.inputs)
             args[index] = perturbed
             expected_id = sample_id(*args, model_kwargs=self.kwargs)
@@ -289,8 +319,8 @@ class _Verifier:
                 )
             return bool(torch.equal(perturbed, original.detach()))
         base = self._activation(base_pass)
-        _check_vector(tuple(base.shape), self.selection.n_units, f"site {self.selection.site}")
-        expected = _expected(base, record.units, record.retain, self.rep)
+        _check_units(tuple(base.shape), self.selection, f"site {self.selection.site}")
+        expected = _expected(base, record.units, record.retain, self.rep, record.unit_axes)
         if not torch.equal(self._activation(int_pass), expected):
             raise PerturbationNotAppliedError(
                 f"the activation recorded in pass {int_pass} is not the requested perturbation"
@@ -331,6 +361,8 @@ def _selection_record(
         source_record=selection.source_record,
         seed=seed,
         target=selection.target,
+        unit_axes=selection.unit_axes,
+        unit_reduction=selection.unit_reduction,
         provenance_id=provenance.id,
     )
 
@@ -373,14 +405,23 @@ def _claim(test: TestTemplate, selection: Selection, sample: str) -> Claim:
     return Claim(
         statement=test.statement,
         relation=test.relation,
-        subject=Subject(site=selection.site, units=selection.selected),
+        subject=Subject(
+            site=selection.site, units=selection.selected, unit_axes=selection.unit_axes
+        ),
         target=test.target.spec.target(),
         estimand=Estimand.instance(sample),
         source=source,
     )
 
 
-def _spec(test: TestTemplate, selection: Selection) -> ClaimTestSpec:
+def _spec(
+    test: TestTemplate, selection: Selection, magnitudes: list[float] | None = None
+) -> ClaimTestSpec:
+    declared_controls: dict[str, Any] | None = None
+    if test.controls is not None:
+        declared_controls = test.controls.identity()
+        if magnitudes is not None:
+            declared_controls["magnitudes"] = magnitudes
     return ClaimTestSpec(
         protocol=test.protocol,
         protocol_version=1,
@@ -394,14 +435,15 @@ def _spec(test: TestTemplate, selection: Selection) -> ClaimTestSpec:
                 "k": selection.k,
                 "n_units": selection.n_units,
                 "replacement": test.replacement.identity(),
-                "controls": None if test.controls is None else test.controls.identity(),
+                "controls": declared_controls,
+                "unit_axes": None if selection.unit_axes is None else list(selection.unit_axes),
             }
         ),
     )
 
 
 def _plan(
-    test: TestTemplate, selection: Selection
+    test: TestTemplate, selection: Selection, magnitudes: list[float] | None = None
 ) -> tuple[list[iv.Intervention], list[tuple[int, ...]]]:
     retain = test.mode == "retain"
     assert selection.k is not None
@@ -413,9 +455,20 @@ def _plan(
             raise FaithfulnessError(
                 "matched random controls are degenerate when the selection covers every unit"
             )
-        control_sets = uniform_subsets(
-            selection.n_units, selection.k, test.controls.n, test.controls.seed
-        )
+        if test.controls.match == "magnitude":
+            if magnitudes is None:
+                raise FaithfulnessError("magnitude-matched controls need the site's magnitudes")
+            control_sets = stratified_subsets(
+                magnitudes,
+                selection.selected,
+                test.controls.n,
+                test.controls.seed,
+                test.controls.strata,
+            )
+        else:
+            control_sets = uniform_subsets(
+                selection.n_units, selection.k, test.controls.n, test.controls.seed
+            )
     specs = [_intervention(selection, selection.selected, retain, test.replacement)]
     specs += [_intervention(selection, s, retain, test.replacement) for s in control_sets]
     return specs, control_sets
@@ -428,6 +481,7 @@ def _record_test(
     test: TestTemplate,
     selection: Selection,
     verifier: _Verifier,
+    magnitudes: list[float] | None = None,
 ) -> ClaimTestResult:
     sample = family.samples[group]
     base_pass = family.baseline_passes[group]
@@ -440,7 +494,7 @@ def _record_test(
     provenance = _provenance(trace, base_pass, test.protocol, {"k": selection.k})
     trace._add(_selection_record(selection, sample, provenance))
     claim = trace._add(_claim(test, selection, sample))
-    spec = trace._add(_spec(test, selection))
+    spec = trace._add(_spec(test, selection, magnitudes))
     assert isinstance(claim, Claim)
     assert isinstance(spec, ClaimTestSpec)
     result = evaluate(
@@ -471,6 +525,53 @@ def _record_test(
     return stored
 
 
+def _site_tensor(
+    model: nn.Module, inputs: tuple[Any, ...], kwargs: dict[str, Any], selection: Selection
+) -> torch.Tensor:
+    """The clean site tensor: the positional input, or the module output captured by one
+    public traced pass (``bnn.trace``, CPU retention)."""
+    if selection.is_input:
+        value = inputs[_input_index(selection)]
+        assert isinstance(value, torch.Tensor)
+        return value.detach()
+    site = selection.site
+    traced = bnn_trace(model, *inputs, model_kwargs=kwargs, sites=[site.module], retention="cpu")
+    record = traced.activation(
+        site.module, output_path=site.output_path, call_index=selection.call_index
+    )
+    return traced.tensor(record)
+
+
+def _prepare(
+    model: nn.Module,
+    inputs: tuple[Any, ...],
+    kwargs: dict[str, Any],
+    selection: Selection,
+    test: TestTemplate,
+) -> list[float] | None:
+    """Check the input site's units before any perturbation runs (internal sites are
+    checked against the recorded activation) and, for magnitude-matched controls,
+    return each unit's perturbation magnitude ||x_u - b_u||_2 (ADR-035)."""
+    if selection.is_input:
+        original = inputs[_input_index(selection)]
+        if not isinstance(original, torch.Tensor):
+            raise FaithfulnessError("the selected positional input is not a tensor")
+        _check_units(tuple(original.shape), selection, "the input")
+    if test.controls is None or test.controls.match != "magnitude":
+        return None
+    original = _site_tensor(model, inputs, kwargs, selection)
+    _check_units(tuple(original.shape), selection, f"site {selection.site}")
+    replacement = (
+        torch.zeros_like(original)
+        if test.replacement.tensor is None
+        else test.replacement.tensor.to(original)
+    )
+    if tuple(replacement.shape) != tuple(original.shape):
+        raise FaithfulnessError("the replacement does not have the site's exact shape")
+    delta = original.double() - replacement.double()
+    return [float(v) for v in unit_values(delta, selection.unit_axes, "l2").tolist()]
+
+
 def _check_test(test: TestTemplate) -> None:
     if not isinstance(test, TestTemplate):
         raise TypeError("test must come from faithfulness.comprehensiveness() / sufficiency()")
@@ -499,11 +600,12 @@ def run(
     inputs = tuple(inputs)
     sample = sample_id(*inputs, model_kwargs=kwargs)
     selection = _validate_selection(selection, test.target.spec, sample)
-    specs, _ = _plan(test, selection)
+    magnitudes = _prepare(model, inputs, kwargs, selection, test)
+    specs, _ = _plan(test, selection, magnitudes)
 
     def extend(trace: TraceResult, family: iv.ComparisonFamily) -> None:
         verifier = _Verifier(trace, selection, test.replacement, inputs, kwargs)
-        _record_test(trace, family, 0, test, selection, verifier)
+        _record_test(trace, family, 0, test, selection, verifier, magnitudes)
 
     family = iv.compare_family(
         model,
@@ -542,7 +644,7 @@ def _select(
         model_kwargs=kwargs,
         declared_model=declared_model,
     )
-    return top_k(result, k=rule.k, by=rule.by), result
+    return top_k(result, k=rule.k, by=rule.by, unit_axes=rule.unit_axes, reduce=rule.reduce), result
 
 
 def run_dataset(
@@ -575,20 +677,23 @@ def run_dataset(
         if attr is not None:
             attributions.append(attr)
         selection = _validate_selection(selection, test.target.spec, sample)
-        specs, _ = _plan(test, selection)
-        plans.append((inputs, selection, specs))
-    sites = sorted({s for _, sel, _ in plans for s in _sites(sel)})
+        magnitudes = _prepare(model, inputs, {}, selection, test)
+        specs, _ = _plan(test, selection, magnitudes)
+        plans.append((inputs, selection, specs, magnitudes))
+    sites = sorted({s for _, sel, _, _ in plans for s in _sites(sel)})
 
     def extend(trace: TraceResult, family: iv.ComparisonFamily) -> None:
         results = []
-        for group, (inputs, selection, _) in enumerate(plans):
+        for group, (inputs, selection, _, magnitudes) in enumerate(plans):
             verifier = _Verifier(trace, selection, test.replacement, inputs, {})
-            results.append(_record_test(trace, family, group, test, selection, verifier))
+            results.append(
+                _record_test(trace, family, group, test, selection, verifier, magnitudes)
+            )
         _dataset_summaries(trace, family, test, results, permutation_draws)
 
     family = iv.compare_family(
         model,
-        [(inputs, {}, specs) for inputs, _, specs in plans],
+        [(inputs, {}, specs) for inputs, _, specs, _ in plans],
         test.target,
         sites=sites,
         retention="cpu",
@@ -741,6 +846,11 @@ def curve(
         return tuple(sorted(order[:k]))
 
     orders = [ranking.order]
+    if controls is not None and controls.match != "count":
+        raise FaithfulnessError(
+            "curve controls are random rankings; magnitude matching is defined for a fixed "
+            "selection size only (claim tests)"
+        )
     if controls is not None:
         orders += uniform_permutations(n, controls.n, controls.seed)
     plan: list[tuple[int, int]] = []  # (order index, k)

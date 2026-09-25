@@ -9,6 +9,7 @@ from typing import Any
 
 import torch
 
+from beyondnn.core.units import check_axes
 from beyondnn.schema import InterventionOperation
 
 __all__ = ["Intervention", "constant", "constant_input", "patch", "zero", "zero_input"]
@@ -35,6 +36,7 @@ class Intervention:
     source_kwargs: dict[str, Any] = field(default_factory=dict)
     units: tuple[int, ...] | None = None
     retain: bool = False
+    unit_axes: tuple[int, ...] | None = None
 
     @property
     def on_input(self) -> bool:
@@ -56,6 +58,10 @@ class Intervention:
             object.__setattr__(self, "units", tuple(sorted(units)))
         if self.retain and self.units is None:
             raise ValueError("retain=True needs units (the units to keep)")
+        if self.unit_axes is not None:
+            if self.units is None:
+                raise ValueError("unit_axes needs units")
+            object.__setattr__(self, "unit_axes", check_axes(self.unit_axes))
         if (
             isinstance(self.call_index, bool)
             or not isinstance(self.call_index, int)
@@ -77,6 +83,7 @@ def zero(
     call_index: int = 0,
     units: tuple[int, ...] | list[int] | None = None,
     retain: bool = False,
+    unit_axes: tuple[int, ...] | None = None,
 ) -> Intervention:
     """Zero ablation: replace the leaf (or its ``units``; ``retain``: all other units) with
     zeros (not a neutral baseline)."""
@@ -87,6 +94,7 @@ def zero(
         call_index,
         units=None if units is None else tuple(units),
         retain=retain,
+        unit_axes=unit_axes,
     )
 
 
@@ -98,11 +106,12 @@ def constant(
     call_index: int = 0,
     units: tuple[int, ...] | list[int] | None = None,
     retain: bool = False,
+    unit_axes: tuple[int, ...] | None = None,
 ) -> Intervention:
     """Replace the leaf (or its ``units``) with a constant: a finite scalar (filled into
     the leaf's shape) or a tensor of exactly the leaf's shape and dtype (no
     broadcasting); with ``units``, only those positions take the constant's values."""
-    return _constant(_module_site(site), value, output_path, call_index, units, retain)
+    return _constant(_module_site(site), value, output_path, call_index, units, retain, unit_axes)
 
 
 def _constant(
@@ -112,6 +121,7 @@ def _constant(
     call_index: int,
     units: tuple[int, ...] | list[int] | None,
     retain: bool,
+    unit_axes: tuple[int, ...] | None = None,
 ) -> Intervention:
     unit_tuple = None if units is None else tuple(units)
     if isinstance(value, torch.Tensor):
@@ -125,6 +135,7 @@ def _constant(
             tensor=value.detach().to("cpu").clone(memory_format=torch.contiguous_format),
             units=unit_tuple,
             retain=retain,
+            unit_axes=unit_axes,
         )
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
         raise ValueError("a scalar constant must be a finite real number")
@@ -136,6 +147,7 @@ def _constant(
         constant=float(value),
         units=unit_tuple,
         retain=retain,
+        unit_axes=unit_axes,
     )
 
 
@@ -146,16 +158,22 @@ def _input_path(index: int) -> str:
 
 
 def zero_input(
-    index: int = 0, *, units: tuple[int, ...] | list[int] | None = None, retain: bool = False
+    index: int = 0,
+    *,
+    units: tuple[int, ...] | list[int] | None = None,
+    retain: bool = False,
+    unit_axes: tuple[int, ...] | None = None,
 ) -> Intervention:
-    """Replace positional model input ``index`` (or its ``units`` along the last
-    dimension; ``retain``: all other units) with zeros: an intervention on the input."""
+    """Replace positional model input ``index`` (or its ``units``: along the last
+    dimension, or over the declared ``unit_axes`` (ADR-034); ``retain``: all other
+    units) with zeros: an intervention on the input."""
     return Intervention(
         "",
         InterventionOperation.ZERO,
         _input_path(index),
         units=None if units is None else tuple(units),
         retain=retain,
+        unit_axes=unit_axes,
     )
 
 
@@ -165,10 +183,11 @@ def constant_input(
     *,
     units: tuple[int, ...] | list[int] | None = None,
     retain: bool = False,
+    unit_axes: tuple[int, ...] | None = None,
 ) -> Intervention:
     """Replace positional model input ``index`` (or its ``units``) with a constant scalar
     or an exact-shape tensor (e.g. caller-computed per-unit means)."""
-    return _constant("", value, _input_path(index), 0, units, retain)
+    return _constant("", value, _input_path(index), 0, units, retain, unit_axes)
 
 
 def patch(
@@ -179,6 +198,7 @@ def patch(
     source_kwargs: dict[str, Any] | None = None,
     units: tuple[int, ...] | list[int] | None = None,
     retain: bool = False,
+    unit_axes: tuple[int, ...] | None = None,
 ) -> Intervention:
     """Activation patching: replace the leaf with the activation the same site/leaf/call
     produced on ``source_inputs``. The source execution runs as its own pass in the same
@@ -194,4 +214,5 @@ def patch(
         source_kwargs=dict(source_kwargs or {}),
         units=None if units is None else tuple(units),
         retain=retain,
+        unit_axes=unit_axes,
     )

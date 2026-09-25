@@ -25,6 +25,8 @@ Each page covers:
 - **Controls** are matched random selections: same site, same size, uniform without replacement (random permutations for curves), drawn from a seeded local generator.
   - The observed statistic is compared with the control distribution as fractions below/tied/above and as `P(a matched random set does at least as well) = (1 + b)/(N + 1)` (Phipson & Smyth 2010).
   - These are descriptive comparisons with a stated null. They are never labelled "significant", and a small p is not a faithfulness verdict.
+- **Magnitude-matched controls** (Phase 5.5, ADR-035), `controls(n, seed=, match="magnitude", strata=4)`: each selected unit is replaced by a random unit from the same stratum of perturbation magnitude ‖x_u − b_u‖₂. The null becomes "a random set perturbed by similar amounts". The magnitudes are recorded and re-derived in composition. Not available for curves.
+- **Units** (Phase 5.5, ADR-034): by default, indices along the last axis, with every other dimension of size 1. With declared `unit_axes`, a unit is a row-major index into the sub-grid of those axes: pixels `(2, 3)`, channels `(1,)`, token positions `(1,)`. Attribution scores per unit need an explicit `reduce` (`sum`, `abs_sum`, `l2`) whenever a unit spans more than one element.
 - **Outcomes** come only from criteria declared before running (claim tests) or per-aspect criteria (diagnostics). Assessments come only from explicit policies.
 - **There is no aggregate faithfulness score** (ADR-007). RQ8 is deferred (see the Phase-5 plan §15).
 

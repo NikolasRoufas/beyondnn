@@ -52,7 +52,7 @@ class InterventionOperation(Enum):
 _INPUT_LEAF_RE = re.compile(r"^args\[(0|[1-9][0-9]*)\]$")
 
 
-@record_kind("intervention", version=2)
+@record_kind("intervention", version=3)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class InterventionRecord(BaseRecord):
     """Replace one tensor leaf of one call of a module's output, or a positional model
@@ -78,6 +78,7 @@ class InterventionRecord(BaseRecord):
     source: RecordRef | None = None
     units: tuple[int, ...] | None = None
     retain: bool = False
+    unit_axes: tuple[int, ...] | None = None
 
     @property
     def on_input(self) -> bool:
@@ -103,6 +104,14 @@ class InterventionRecord(BaseRecord):
             require(all(u >= 0 for u in self.units), "units must be >= 0")
             require(list(self.units) == sorted(set(self.units)), "units must be sorted and unique")
         require(not self.retain or self.units is not None, "retain requires units")
+        if self.unit_axes is not None:
+            require(self.units is not None, "unit_axes requires units")
+            require(
+                len(self.unit_axes) > 0
+                and all(a >= 0 for a in self.unit_axes)
+                and list(self.unit_axes) == sorted(set(self.unit_axes)),
+                "unit_axes must be non-negative, sorted and unique (ADR-034)",
+            )
         op = self.operation
         if op is InterventionOperation.ZERO:
             require(
@@ -275,6 +284,14 @@ def _causal_effect_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(metric, dict) or "declaration" in metric:
         raise ValueError("a causal_effect v1 payload has a metric without declaration")
     return data | {"metric": metric | {"declaration": None}}
+
+
+@register_migration("intervention", 2)
+def _intervention_v2_to_v3(data: dict[str, Any]) -> dict[str, Any]:
+    """v2 units were last-axis indices: ``unit_axes=None`` keeps that meaning (ADR-034)."""
+    if "unit_axes" in data:
+        raise ValueError("an intervention v2 payload cannot contain unit_axes")
+    return data | {"unit_axes": None}
 
 
 @register_migration("intervention", 1)

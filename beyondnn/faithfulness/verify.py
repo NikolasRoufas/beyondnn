@@ -24,6 +24,7 @@ from typing import Any
 import torch
 
 from beyondnn.core.trace import TraceResult
+from beyondnn.core.units import unit_values
 from beyondnn.protocols import COMPREHENSIVENESS, SUFFICIENCY
 from beyondnn.schema import (
     AttributionRecord,
@@ -41,7 +42,13 @@ from beyondnn.schema import (
 )
 
 from .claims import evaluate
-from .stats import jaccard, rank_order, spearman_of_orders, uniform_subsets
+from .stats import (
+    jaccard,
+    rank_order,
+    spearman_of_orders,
+    stratified_subsets,
+    uniform_subsets,
+)
 
 __all__ = ["VerificationError", "verify_claim_result", "verify_protocol_result", "verify_selection"]
 
@@ -118,12 +125,19 @@ def verify_claim_result(result: ClaimTestResult, lookup: Lookup) -> None:
     main = records[primary.interventions[0].record_id]
     declared = spec.params.get("controls")
     if isinstance(declared, Mapping) and controls:
-        expected = uniform_subsets(
-            _int(spec.params["n_units"]),
-            _int(spec.params["k"]),
-            _int(declared["n"]),
-            _int(declared["seed"]),
-        )
+        n_units, k = _int(spec.params["n_units"]), _int(spec.params["k"])
+        n, seed = _int(declared["n"]), _int(declared["seed"])
+        if declared.get("strategy") == "perturbation_magnitude_stratified_same_site_same_size":
+            recorded = declared.get("magnitudes")
+            if not isinstance(recorded, tuple) or len(recorded) != n_units:
+                raise VerificationError(f"{result.id}: magnitude controls without magnitudes")
+            magnitudes = [float(m) for m in recorded if isinstance(m, (int, float))]
+            _check_magnitudes(magnitudes, trace, primary, main)
+            expected = stratified_subsets(
+                magnitudes, main.units or (), n, seed, _int(declared["strata"])
+            )
+        else:
+            expected = uniform_subsets(n_units, k, n, seed)
         got = [records[c.interventions[0].record_id].units for c in controls]
         if got != expected:
             raise VerificationError(f"{result.id}: controls do not match the declared seed")
@@ -143,15 +157,63 @@ def verify_claim_result(result: ClaimTestResult, lookup: Lookup) -> None:
         )
 
 
-def _scores(attribution: AttributionRecord, trace: TraceResult) -> list[float]:
-    return [float(v) for v in trace.tensor(attribution.value).double().flatten().tolist()]
+def _scores(
+    attribution: AttributionRecord,
+    trace: TraceResult,
+    unit_axes: tuple[int, ...] | None = None,
+    reduction: str | None = None,
+) -> list[float]:
+    value = trace.tensor(attribution.value)
+    if unit_axes is None:
+        return [float(v) for v in value.double().flatten().tolist()]
+    return [float(v) for v in unit_values(value, unit_axes, reduction or "sum").tolist()]
+
+
+def _site_values(
+    trace: TraceResult, effect: CausalEffect, record: InterventionRecord
+) -> torch.Tensor:
+    """The retained clean site tensor of the effect's baseline pass (input or activation)."""
+    outputs = [trace.get(r.record_id) for r in effect.derived_from if r.kind == "output"]
+    base = min((o for o in outputs if isinstance(o, OutputRecord)), key=lambda o: o.pass_index or 0)
+    if record.on_input:
+        (inp,) = [i for i in trace.inputs if i.pass_index == base.pass_index]
+        (leaf,) = [t.ref for t in inp.tensors if t.path == record.site.output_path]
+        if leaf.storage_key is None:
+            raise VerificationError("the clean input was not retained")
+        return trace.tensor(leaf)
+    act = trace.activation(
+        record.site.module,
+        output_path=record.site.output_path,
+        pass_index=base.pass_index,
+        call_index=record.call_index,
+    )
+    if act.value.storage_key is None:
+        raise VerificationError("the clean activation was not retained")
+    return trace.tensor(act)
+
+
+def _check_magnitudes(
+    magnitudes: list[float], trace: TraceResult, effect: CausalEffect, record: InterventionRecord
+) -> None:
+    """The declared per-unit magnitudes must re-derive from the retained clean site tensor
+    and the recorded replacement (ADR-035)."""
+    original = _site_values(trace, effect, record)
+    if record.value is not None:
+        replacement = trace.tensor(record.value).to(original)
+    elif record.constant is not None:
+        replacement = torch.full_like(original, record.constant)
+    else:
+        replacement = torch.zeros_like(original)
+    derived = unit_values(original.double() - replacement.double(), record.unit_axes, "l2")
+    if [float(v) for v in derived.tolist()] != magnitudes:
+        raise VerificationError("declared control magnitudes do not re-derive from the trace")
 
 
 def verify_selection(selection: EvidenceSelection, lookup: Lookup) -> None:
     if selection.source is not SelectionSource.ATTRIBUTION:
         return
     record, trace = _get(lookup, selection.source_record, AttributionRecord)
-    scores = _scores(record, trace)
+    scores = _scores(record, trace, selection.unit_axes, selection.unit_reduction)
     by = "abs" if selection.rule == "abs_desc" else "signed"
     if (
         record.sample_id != selection.sample_id
@@ -191,7 +253,12 @@ def verify_protocol_result(result: ProtocolResult, lookup: Lookup) -> None:
         a_id, b_id = pair
         a, ta = _get(lookup, a_id, AttributionRecord)
         b, tb = _get(lookup, b_id, AttributionRecord)
-        sa, sb = _scores(a, ta), _scores(b, tb)
+        axes_param = result.params.get("unit_axes")
+        axes = None if axes_param is None else tuple(_int(u) for u in axes_param)  # type: ignore[union-attr]
+        reduction = result.params.get("unit_reduction")
+        if reduction is not None and not isinstance(reduction, str):
+            raise VerificationError(f"{result.id}: unit_reduction is not a name")
+        sa, sb = _scores(a, ta, axes, reduction), _scores(b, tb, axes, reduction)
         k = _int(result.params["k"])
         order_a = rank_order(sa, by="abs")
         if result.protocol == "stability":

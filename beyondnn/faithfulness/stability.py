@@ -45,7 +45,7 @@ from beyondnn.schema import (
 )
 
 from .runner import FaithfulnessResult, _provenance, run
-from .spec import FaithfulnessError, SelectionMismatchError, TestTemplate, top_k
+from .spec import FaithfulnessError, SelectionMismatchError, TestTemplate, top_k, unit_scores
 from .stats import jaccard, rank_order, spearman_of_orders
 
 __all__ = [
@@ -156,11 +156,20 @@ _ASPECT_NAMES = {
 }
 
 
-def _scores(result: AttributionResult) -> list[float]:
-    value = result.value
-    if value.dim() == 0 or any(d != 1 for d in value.shape[:-1]):
-        raise FaithfulnessError("rankings need attributions whose non-last dimensions are 1")
-    return [float(v) for v in value.double().flatten().tolist()]
+def _scores(
+    result: AttributionResult,
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
+) -> list[float]:
+    return list(unit_scores(result.value, unit_axes, reduce))
+
+
+def _unit_params(unit_axes: tuple[int, ...] | None, reduce: str | None) -> dict[str, Any]:
+    """Declared unit fields (ADR-034); absent for the Phase-5 vector rule, so legacy
+    diagnostic records keep their identity."""
+    if unit_axes is None:
+        return {}
+    return {"unit_axes": list(unit_axes), "unit_reduction": reduce}
 
 
 def _anchor(
@@ -191,8 +200,11 @@ def stability(
     min_topk_jaccard: float | None = None,
     test: TestTemplate | None = None,
     declared_model: ModelDeclaration | None = None,
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
 ) -> DiagnosticResult:
-    """``stability/v1`` (see module docstring). Every aspect is reported separately."""
+    """``stability/v1`` (see module docstring). Every aspect is reported separately.
+    ``unit_axes``/``reduce`` declare units as in :func:`faithfulness.ranking` (ADR-034)."""
     if not isinstance(transformation, Transformation):
         raise TypeError("transformation must come from faithfulness.transformation()")
     before = sample_id(x)
@@ -214,7 +226,7 @@ def stability(
     a_g = attribute(
         model, transformed, target=target, method=method, at=at, declared_model=declared_model
     )
-    scores_x, scores_g = _scores(a_x), _scores(a_g)
+    scores_x, scores_g = _scores(a_x, unit_axes, reduce), _scores(a_g, unit_axes, reduce)
     n = len(scores_x)
     unit_map = transformation.unit_map if transformation.unit_map is not None else tuple(range(n))
     if len(unit_map) != n:
@@ -233,7 +245,7 @@ def stability(
             model,
             x,
             test=test,
-            selection=top_k(a_x, k=k),
+            selection=top_k(a_x, k=k, unit_axes=unit_axes, reduce=reduce),
             attributions=[a_x],
             declared_model=declared_model,
         )
@@ -241,7 +253,7 @@ def stability(
             model,
             transformed,
             test=test,
-            selection=top_k(a_g, k=k),
+            selection=top_k(a_g, k=k, unit_axes=unit_axes, reduce=reduce),
             attributions=[a_g],
             declared_model=declared_model,
         )
@@ -301,6 +313,7 @@ def stability(
                         "method": a_x.record.method.name,
                         "ranking": "abs_desc, ties by lower index",
                     }
+                    | _unit_params(unit_axes, reduce)
                 ),
                 criteria=JsonMap(criteria),
                 measurements=JsonMap(measurements),
@@ -345,11 +358,13 @@ def _compare(
     criteria: dict[str, float | None],
     extra: dict[str, Any],
     declared_model: ModelDeclaration | None,
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
 ) -> DiagnosticResult:
     _same_context(a, b)
     if a.record.sample_id != sample_id(x):
         raise SelectionMismatchError("the attributions are not about this input")
-    sa, sb = _scores(a), _scores(b)
+    sa, sb = _scores(a, unit_axes, reduce), _scores(b, unit_axes, reduce)
     order_a, order_b = rank_order(sa, by="abs"), rank_order(sb, by="abs")
     n = len(sa)
     if not 1 <= k <= n:
@@ -392,7 +407,7 @@ def _compare(
             ProtocolResult(
                 protocol=protocol,
                 protocol_version=1,
-                params=JsonMap(params | {"k": k}),
+                params=JsonMap(params | {"k": k} | _unit_params(unit_axes, reduce)),
                 criteria=JsonMap(declared),
                 measurements=JsonMap(measurements),
                 outcomes=tuple(outcomes),
@@ -418,6 +433,8 @@ def method_agreement(
     min_rank_correlation: float | None = None,
     min_topk_jaccard: float | None = None,
     declared_model: ModelDeclaration | None = None,
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
 ) -> DiagnosticResult:
     """How two methods' rankings of the same units agree. Agreement is not correctness:
     two methods can agree and both miss the causal structure."""
@@ -433,6 +450,8 @@ def method_agreement(
         {"min_rank_correlation": min_rank_correlation, "min_topk_jaccard": min_topk_jaccard},
         {},
         declared_model,
+        unit_axes,
+        reduce,
     )
 
 
@@ -447,6 +466,8 @@ def baseline_sensitivity(
     min_rank_correlation: float | None = None,
     min_topk_jaccard: float | None = None,
     declared_model: ModelDeclaration | None = None,
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
 ) -> DiagnosticResult:
     """IG rankings under two declared baselines (all other settings equal)."""
     ma, mb = a.record.method, b.record.method
@@ -468,6 +489,8 @@ def baseline_sensitivity(
         {"min_rank_correlation": min_rank_correlation, "min_topk_jaccard": min_topk_jaccard},
         {},
         declared_model,
+        unit_axes,
+        reduce,
     )
 
 
@@ -481,6 +504,8 @@ def ig_step_sensitivity(
     k: int,
     max_abs_difference: float | None = None,
     declared_model: ModelDeclaration | None = None,
+    unit_axes: tuple[int, ...] | None = None,
+    reduce: str | None = None,
 ) -> DiagnosticResult:
     """IG at two step counts (all other settings equal): max |difference| and the two
     completeness deltas. A numerical diagnostic, not a faithfulness test."""
@@ -512,4 +537,6 @@ def ig_step_sensitivity(
         {"max_abs_difference": max_abs_difference},
         extra,
         declared_model,
+        unit_axes,
+        reduce,
     )

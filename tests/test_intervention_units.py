@@ -143,6 +143,7 @@ def test_v1_intervention_payloads_migrate_without_invented_units(tmp_path: Path)
             env["record_version"] = 1
             env["data"].pop("units")
             env["data"].pop("retain")
+            env["data"].pop("unit_axes")  # added in v3 (ADR-034)
         new_id = env["id"]
         env["id"] = _expected_id(env["kind"], env["record_version"], env["data"])
         renamed[new_id] = env["id"]
