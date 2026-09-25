@@ -100,7 +100,7 @@ A unit test lints the renderer templates against this table.
 
 **Rules:**
 - Dependencies point downward only.
-- `schema` imports only the stdlib, plus `torch` for `TensorRef` construction helpers.
+- `schema` imports only the stdlib. Building a `TensorRef` from a live tensor belongs to a torch-dependent layer (planned for M1.6 tracing), never to `schema`. A subprocess test asserts that `import beyondnn.schema` does not load torch.
 - `core` imports only `torch` + stdlib + `schema`.
 - Every analysis layer produces records into a `TraceResult` and never returns bare tensors as its primary output. Tensors remain accessible through records.
 - No architecture-specific code in `schema` or `core` (ADR-010).

@@ -200,7 +200,7 @@ Types (torch-free, in `beyondnn/schema/provenance.py`):
 
 | Type | Fields | Notes |
 |---|---|---|
-| `ModelIdentity` | `model_class`, `method` (`FULL`), `algorithm_version` (1), `structure_digest`, `state_digest`, `parameter_tensors`, `parameter_elements`, `buffer_tensors`, `buffer_elements` | Counts are over distinct tensors (tied counted once) and persistent buffers only |
+| `ModelIdentity` | `model_class`, `method` (`FULL`), `algorithm_version` (1), `structure_digest`, `state_digest`, `parameter_tensors`, `parameter_elements`, `buffer_tensors`, `buffer_elements` | Counts are over distinct tensors (tied counted once), including all non-`None` buffers |
 | `EnvironmentIdentity` | `python_implementation`, `python_version`, `torch_version`, `beyondnn_version`, `platform_system`, `platform_machine` | No hostname, username, paths, or hardware ids |
 | `Randomness` | `declared_seed`, `rng_generator`, `rng_state_digest` | A seed and a captured state are distinct facts; at least one is required, and the generator is named iff a digest is given |
 | `ExecutionMode` | `CLEAN`, `INTERVENTION` | |
@@ -212,8 +212,8 @@ Types (torch-free, in `beyondnn/schema/provenance.py`):
 - **What `provenance_id` means:** the reproducible conditions of an execution. It is the ADR-016 hash of exactly `{model, environment, execution, method}`. Different timestamps never change it. Any change in model state or structure, environment, execution conditions (mode, intervention, device, train/eval, grad mode, randomness), or method name, version or params does change it.
 - **What a model fingerprint means:** the FULL v1 algorithm in ADR-020 and the `beyondnn/provenance/fingerprint.py` docstring.
   - Tied parameters and shared modules are represented as sorted name groups.
-  - Parameters and persistent buffers are hashed bitwise, with dtype, shape, name and role.
-  - Device, `requires_grad`, and non-persistent buffer values are excluded.
+  - Parameters and **all** registered buffers (persistent and non-persistent) are hashed bitwise, with dtype, shape, name, role, and buffer persistence.
+  - Device, `requires_grad`, `None` slots, and Python source code are excluded. FULL means full *supported topology and registered tensor state*, not the identity of arbitrary Python behaviour (ADR-020 correction).
   - Unsupported tensor types raise instead of being skipped.
 
 **Collection** (torch-dependent, in `beyondnn/provenance/`, never imported by `beyondnn.schema`):

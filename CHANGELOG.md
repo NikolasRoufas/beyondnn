@@ -23,6 +23,11 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+### Fixed (M1.2 review)
+- The FULL fingerprint now hashes the values of **all** registered buffers, including non-persistent ones, which can affect `forward`. Buffer persistence is recorded as metadata. The v1 golden digests were updated before any release (ADR-020 correction).
+- Access to PyTorch's private buffer-persistence field is isolated in one helper, with a compatibility test.
+- Docs: the definition of FULL (Python code is not hashed); `schema` is stdlib-only; an implementation-revision roadmap item.
+
 ### Changed (M1.1 review fixes)
 - `ActivationRecord` / `MEASURED` semantics: directly observed state, including during intervened executions.
 - `derived_from` and `ClaimTestResult.evidence` are sorted at construction, and `-0.0` is normalised, so ids no longer depend on order or on the sign of zero.

@@ -137,18 +137,6 @@ def test_persistent_buffer_change_changes_state() -> None:
     assert fp(m).state_digest != before
 
 
-def test_non_persistent_buffer_values_are_excluded_but_named() -> None:
-    m = Net()
-    m.register_buffer("cache", torch.zeros(3), persistent=False)
-    before = fp(m)
-    m.get_buffer("cache").add_(7.0)
-    assert fp(m) == before  # values excluded
-    other = Net()
-    other.register_buffer("cache", torch.zeros(3), persistent=True)
-    assert fp(other).structure_digest != before.structure_digest  # persistence is structural
-    assert fp(Net()).structure_digest != before.structure_digest  # existence is structural
-
-
 def test_requires_grad_and_mode_are_not_model_identity() -> None:
     m = Net()
     before = fp(m)
@@ -355,12 +343,6 @@ def test_tensor_subclass_fails_clearly() -> None:
         fingerprint_model(m)
 
 
-def test_non_persistent_unsupported_tensors_are_not_read() -> None:
-    m = nn.Linear(2, 2)
-    m.register_buffer("scratch", torch.empty(2, device="meta"), persistent=False)
-    fingerprint_model(m)
-
-
 def test_rejects_non_modules() -> None:
     with pytest.raises(TypeError):
         fingerprint_model(torch.ones(2))  # type: ignore[arg-type]
@@ -419,18 +401,18 @@ def test_fast_byte_path_equals_reference_storage_bytes(dtype: torch.dtype) -> No
 
 
 def test_golden_state_digest() -> None:
-    # Pins algorithm v1 end to end. A change here is a fingerprint-breaking change
-    # that needs an ADR and an algorithm_version bump, not a test update.
+    # Pins algorithm v1 end to end (as corrected before release to hash all buffers,
+    # ADR-020). Any further change needs an ADR and an algorithm_version bump.
     m = nn.Module()
     m.register_buffer("x", torch.tensor([1.0, -2.5, 0.0], dtype=torch.float32))
     m.register_parameter("w", nn.Parameter(torch.tensor([[1, 2], [3, 4]], dtype=torch.float64)))
+    m.register_buffer("n", torch.tensor([7], dtype=torch.int64), persistent=False)
     i = fingerprint_model(m)
-    assert (
-        i.state_digest == "sha256:623bc3fef60ad5d15ac401ba691da8ab127f754343cc69d45e7f2555150ad715"
+    assert i.state_digest == (
+        "sha256:490358f91867e94c8c1051528c820e4746ec876c4f9d39b386ead5a41a2135c6"
     )
-    assert (
-        i.structure_digest
-        == "sha256:d923da366827e77aafb31899cdb61149ce34b39234c116dff49e5d57745e846b"
+    assert i.structure_digest == (
+        "sha256:acdb1dcec4282dec661fe05052c21348ac135beb93ef6bce6cd3dcb5e84bb1e1"
     )
 
 
@@ -442,15 +424,19 @@ def test_state_digest_matches_the_documented_algorithm() -> None:
     torch.manual_seed(1)
     m = nn.Sequential(nn.Linear(2, 3), nn.BatchNorm1d(3))
     h = hashlib.sha256(b"beyondnn.model_state/v1\n")
+    m.register_buffer("scratch", torch.tensor([3.0, 4.0]), persistent=False)
+    persistent_names = set(m.state_dict())
     entries = [(n, "parameter", t) for n, t in m.named_parameters()] + [
         (n, "buffer", t) for n, t in m.named_buffers()
     ]
     for name, role, t in sorted(entries, key=lambda e: e[0]):
         data = bytes(t.detach().clone().untyped_storage())
+        entry: dict[str, object] = {"name": name, "role": role}
+        if role == "buffer":
+            entry["persistent"] = name in persistent_names
         header = json.dumps(
-            {
-                "name": name,
-                "role": role,
+            entry
+            | {
                 "dtype": str(t.dtype).removeprefix("torch."),
                 "shape": list(t.shape),
                 "nbytes": len(data),
@@ -479,3 +465,100 @@ def test_shared_parameterless_module_is_structural() -> None:
     separate.load_state_dict(shared.state_dict())
     assert fp(shared).structure_digest != fp(separate).structure_digest
     assert fp(shared).state_digest == fp(separate).state_digest
+
+
+# ----------------------------------------------------------------- non-persistent buffers
+
+
+class UsesNonPersistent(nn.Module):
+    """Test-local: a non-persistent buffer that takes part in forward()."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.linear = nn.Linear(3, 3)
+        self.register_buffer("offset", torch.tensor([0.5, -1.0, 2.0]), persistent=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        out: torch.Tensor = self.linear(x) + self.get_buffer("offset")
+        return out
+
+
+def _nonpersistent_model() -> UsesNonPersistent:
+    torch.manual_seed(0)
+    return UsesNonPersistent()
+
+
+def test_same_non_persistent_buffer_gives_same_fingerprint() -> None:
+    assert fp(_nonpersistent_model()) == fp(_nonpersistent_model())
+
+
+def test_non_persistent_buffer_change_changes_state_and_restore_returns_it() -> None:
+    m = _nonpersistent_model()
+    offset = m.get_buffer("offset")
+    assert "offset" not in m.state_dict()  # really non-persistent
+    before = fp(m)
+    original = offset.clone()
+    offset[1] = 7.0
+    changed = fp(m)
+    assert changed.state_digest != before.state_digest
+    assert changed.structure_digest == before.structure_digest
+    offset.copy_(original)
+    assert fp(m) == before
+
+
+def test_behaviour_change_through_non_persistent_buffer_changes_identity() -> None:
+    # Regression guard: output changes, so identity must change too.
+    m = _nonpersistent_model()
+    x = torch.ones(2, 3)
+    out_before, id_before = m(x), fp(m)
+    m.get_buffer("offset").add_(1.0)
+    assert not torch.equal(m(x), out_before)
+    assert fp(m).state_digest != id_before.state_digest
+
+
+def test_buffer_persistence_is_structural() -> None:
+    a, b = nn.Module(), nn.Module()
+    a.register_buffer("x", torch.ones(2), persistent=True)
+    b.register_buffer("x", torch.ones(2), persistent=False)
+    ia, ib = fp(a), fp(b)
+    assert ia.structure_digest != ib.structure_digest
+    assert ia.state_digest != ib.state_digest  # persistence is in the state header too
+
+
+def test_non_persistent_buffers_are_counted_and_checked() -> None:
+    m = _nonpersistent_model()
+    i = fp(m)
+    assert (i.buffer_tensors, i.buffer_elements) == (1, 3)
+    m.register_buffer("scratch", torch.empty(2, device="meta"), persistent=False)
+    with pytest.raises(FingerprintError, match="meta"):
+        fingerprint_model(m)
+
+
+def test_none_buffer_slots_are_excluded() -> None:
+    a, b = nn.Linear(2, 2), nn.Linear(2, 2)
+    b.load_state_dict(a.state_dict())
+    b.register_buffer("unset", None)
+    assert fp(a) == fp(b)
+
+
+def test_persistence_helper_agrees_with_state_dict() -> None:
+    # Compatibility check for the private torch field on the tested torch versions.
+    from beyondnn.provenance.fingerprint import _non_persistent_buffer_names
+
+    m = nn.Sequential(nn.BatchNorm1d(2), _nonpersistent_model())
+    m.register_buffer("p", torch.zeros(1))
+    m.register_buffer("q", torch.zeros(1), persistent=False)
+    reported = set()
+    for path, module in m.named_modules():
+        for name in _non_persistent_buffer_names(module):
+            reported.add(f"{path}.{name}" if path else name)
+    all_buffers = {n for n, _ in m.named_buffers()}
+    assert reported == all_buffers - set(m.state_dict())
+    assert reported == {"q", "1.offset"}
+
+
+def test_missing_persistence_field_fails_clearly(monkeypatch: pytest.MonkeyPatch) -> None:
+    m = nn.Linear(2, 2)
+    monkeypatch.delattr(m, "_non_persistent_buffers_set")
+    with pytest.raises(FingerprintError, match="buffer persistence cannot be determined"):
+        fingerprint_model(m)

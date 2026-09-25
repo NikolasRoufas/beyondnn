@@ -1,28 +1,39 @@
 """FULL model fingerprint (algorithm version 1).
 
-The fingerprint answers "which model state produced this evidence?". It is two
-SHA-256 digests over canonical, device-independent descriptions of the model:
+"FULL" means: the full *supported* PyTorch module topology and registered tensor
+state under BeyondNN's v1 fingerprint specification. It is NOT a cryptographic
+identity of every behaviour the Python object could exhibit: Python code is not
+hashed, so changing ``forward`` (e.g. ``x + 1`` to ``x + 2``) while keeping the
+qualified class name, module tree, parameters and buffers leaves the fingerprint
+unchanged. It is artifact identity, not semantic equivalence.
+
+The fingerprint is two SHA-256 digests over canonical, device-independent
+descriptions of the model:
 
 Structure digest
     canonical JSON of: every module path (``named_modules(remove_duplicate=False)``,
     so shared modules appear under each path) with its fully qualified class;
-    groups of paths that are the same module object; every parameter and
-    persistent buffer with name, role, dtype and shape; the names of
-    non-persistent buffers; and groups of tensor names that are the same tensor
-    object (tied parameters). Groups are expressed by sorted names, never by
-    object ids or addresses.
+    groups of paths that are the same module object; every parameter (name, role,
+    dtype, shape) and every registered non-``None`` buffer (name, role,
+    ``persistent`` flag, dtype, shape); and groups of tensor names that are the
+    same tensor object (tied parameters). Groups are expressed by sorted names,
+    never by object ids or addresses.
 
 State digest
-    for each distinct parameter/persistent buffer, ordered by its representative
-    name (the smallest name in its alias group): a length-prefixed canonical JSON
-    header (name, role, dtype, shape, nbytes) followed by the tensor's raw bytes,
-    read from a contiguous CPU copy with lazy conjugate/negative bits resolved.
-    Values are hashed bitwise and never converted between dtypes.
+    for each distinct parameter or buffer (persistent AND non-persistent: a
+    non-persistent buffer is only excluded from ``state_dict``, it can still take
+    part in ``forward``), ordered by its representative name (the smallest name in
+    its alias group): a length-prefixed canonical JSON header (name, role, dtype,
+    shape, nbytes, and ``persistent`` for buffers) followed by the tensor's raw
+    bytes, read from a contiguous CPU copy with lazy conjugate/negative bits
+    resolved. Values are hashed bitwise and never converted between dtypes.
 
-Excluded by design: device placement, ``requires_grad``, non-persistent buffer
-values, Python object ids, and arbitrary module attributes. The algorithm is
-read-only: it does not modify the model or any RNG. No result is cached, because
-in-place mutation could not be detected reliably.
+Excluded by design: device placement, ``requires_grad``, ``None`` parameter or
+buffer slots, Python source code, Python object ids, and arbitrary module
+attributes. Class paths are included, so moving a class to another module changes
+the structure digest even if behaviour is unchanged. The algorithm is read-only:
+it does not modify the model or any RNG. No result is cached, because in-place
+mutation could not be detected reliably.
 
 Unsupported (raises :class:`FingerprintError` instead of hashing partially):
 tensor subclasses other than ``Parameter`` (including lazy/uninitialised
@@ -70,6 +81,23 @@ def _dtype(t: torch.Tensor) -> str:
 
 def _join(path: str, name: str) -> str:
     return f"{path}.{name}" if path else name
+
+
+def _non_persistent_buffer_names(module: nn.Module) -> frozenset[str]:
+    """Names of ``module``'s own buffers registered with ``persistent=False``.
+
+    The single place that reads PyTorch's private ``_non_persistent_buffers_set``:
+    torch has no public per-buffer persistence API, and deriving it from
+    ``state_dict()`` would be subject to user state-dict hooks. Compatibility with
+    the tested torch versions is checked against ``state_dict()`` keys in the tests.
+    """
+    names = getattr(module, "_non_persistent_buffers_set", None)
+    if not isinstance(names, set):
+        raise FingerprintError(
+            "unsupported torch version: nn.Module._non_persistent_buffers_set is unavailable, "
+            "so buffer persistence cannot be determined"
+        )
+    return frozenset(names)
 
 
 def _check_supported(slot: _Slot) -> None:
@@ -120,15 +148,22 @@ def _collect(model: nn.Module) -> tuple[list[dict[str, str]], list[list[str]], l
         modules.append({"path": path, "class": _qualified(type(module))})
         # id() only groups objects within this call; it never enters a digest.
         module_objects.setdefault(id(module), []).append(path)
-        non_persistent = getattr(module, "_non_persistent_buffers_set", None)
-        if non_persistent is None:
-            raise FingerprintError("unsupported torch version: buffer persistence unavailable")
+        non_persistent = _non_persistent_buffer_names(module)
         for name, param in module.named_parameters(recurse=False, remove_duplicate=False):
             slots.append(_Slot(_join(path, name), "parameter", True, param))
         for name, buf in module.named_buffers(recurse=False, remove_duplicate=False):
             slots.append(_Slot(_join(path, name), "buffer", name not in non_persistent, buf))
     module_groups = [sorted(g) for g in module_objects.values() if len(g) > 1]
     return modules, sorted(module_groups), slots
+
+
+def _describe(name: str, slot: _Slot) -> dict[str, object]:
+    entry: dict[str, object] = {"name": name, "role": slot.role}
+    if slot.role == "buffer":
+        entry["persistent"] = slot.persistent
+    entry["dtype"] = _dtype(slot.tensor)
+    entry["shape"] = list(slot.tensor.shape)
+    return entry
 
 
 def fingerprint_model(model: nn.Module) -> ModelIdentity:
@@ -154,18 +189,8 @@ def fingerprint_model(model: nn.Module) -> ModelIdentity:
 
     tensors: list[dict[str, object]] = []
     for slot in slots:
-        if slot.persistent:
-            _check_supported(slot)
-            tensors.append(
-                {
-                    "name": slot.name,
-                    "role": slot.role,
-                    "dtype": _dtype(slot.tensor),
-                    "shape": list(slot.tensor.shape),
-                }
-            )
-        else:
-            tensors.append({"name": slot.name, "role": "buffer_non_persistent"})
+        _check_supported(slot)
+        tensors.append(_describe(slot.name, slot))
     tensors.sort(key=lambda entry: str(entry["name"]))
     tensor_groups = sorted(
         sorted(s.name for s in members) for members in groups.values() if len(members) > 1
@@ -186,18 +211,10 @@ def fingerprint_model(model: nn.Module) -> ModelIdentity:
     state = hashlib.sha256(b"beyondnn.model_state/v%d\n" % ALGORITHM_VERSION)
     counts = {"parameter": [0, 0], "buffer": [0, 0]}
     for representative, slot in unique:
-        if not slot.persistent:
-            continue
         data = tensor_bytes(slot.tensor)
-        header = canonical_json(
-            {
-                "name": representative,
-                "role": slot.role,
-                "dtype": _dtype(slot.tensor),
-                "shape": list(slot.tensor.shape),
-                "nbytes": len(data),
-            }
-        ).encode("utf-8")
+        header = canonical_json(_describe(representative, slot) | {"nbytes": len(data)}).encode(
+            "utf-8"
+        )
         state.update(len(header).to_bytes(8, "little"))
         state.update(header)
         state.update(data)

@@ -76,6 +76,10 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 - Capability and correctness vs nnsight, Captum, TransformerLens, and pyvene on the tiny models, plus runtime and memory.
 - Ease of use is assessed through task scripts and reported qualitatively.
 
+## Open investigation items
+
+- **Implementation revision in provenance** (from the M1.2 review). The FULL fingerprint does not hash Python code (ADR-020). Investigate an optional, caller-supplied `implementation_revision` / code revision / repository commit / model revision for reproducibility. Automatic source hashing is out of scope. There is no schema change until implementation evidence shows it is needed.
+
 ## Release blockers (`BLOCKS_PUBLIC_RELEASE`)
 
 These don't block local development. BeyondNN must not be published (public repo, PyPI) until every item is resolved.

@@ -79,7 +79,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Designing claim types before any runner exists may need revision in Phase 2. That is accepted, and handled by bumping `schema_version` to 0.2 if needed.
 - **Scope:** about 600 LOC library, about 500 LOC tests.
 
-## M1.2: Provenance and model identity: **implemented, awaiting review**
+## M1.2: Provenance and model identity: **done (approved 2026-09-25 after the buffer-coverage correction)**
 
 - **As implemented:**
   - schema types in `beyondnn/schema/provenance.py`;

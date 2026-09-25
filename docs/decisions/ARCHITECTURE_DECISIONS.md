@@ -476,7 +476,7 @@ Revision note (2026-09-25, review, before acceptance):
 ## ADR-019: Provenance identity is reproducible conditions; occurrence is separate
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for M1.2 implementation. Awaiting M1.2 review.
+- **Status:** Accepted (M1.2 review of 2026-09-25). `ExecutionOccurrence` stays a separate type for now.
 
 **Decision:**
 - A `ProvenanceRecord` answers **how** evidence was produced, never what it means. It holds exactly four immutable values:
@@ -508,7 +508,7 @@ Revision note (2026-09-25, review, before acceptance):
 ## ADR-020: FULL model fingerprint, algorithm v1
 
 - **Date:** 2026-09-25
-- **Status:** Accepted for M1.2 implementation. Awaiting M1.2 review.
+- **Status:** Accepted with a required correction (M1.2 review of 2026-09-25). See the correction note at the end of this ADR: all buffers are hashed.
 
 **Decision:** `ModelIdentity` carries two SHA-256 digests plus counts, computed by `beyondnn.provenance.fingerprint_model` with method `FULL`, `algorithm_version = 1`.
 
@@ -547,3 +547,24 @@ Revision note (2026-09-25, review, before acceptance):
 - Uses the private-but-stable `nn.Module._non_persistent_buffers_set`. Its absence raises.
 - The measured cost is about 1.8 ms per ~1M float32 parameters on Apple arm64 CPU (see the experiment log). The earlier `bytes(untyped_storage())` path took about 3 s and was replaced by a byte-identical `ctypes.string_at` read.
 - Any algorithm change requires `algorithm_version` 2. Golden digests in `tests/test_fingerprint.py` pin v1.
+
+**Correction (2026-09-25, M1.2 review, before any release):**
+- **Buffers.** v1 as first implemented hashed only the names of non-persistent buffers. That was wrong for a FULL fingerprint: `persistent=False` only removes a buffer from `state_dict`, and the buffer can still take part in `forward`. v1 now:
+  - hashes the values of **all** registered non-`None` buffers;
+  - records `persistent` as buffer metadata in both the structure and the state headers;
+  - applies the unsupported-tensor checks to non-persistent buffers too.
+
+  Buffer counts cover all buffers. The golden digests were updated. Because no fingerprint had been persisted or released, the fix keeps `algorithm_version = 1`; any later change requires version 2.
+- **What FULL means.** The full *supported* PyTorch module topology and registered tensor state, under BeyondNN's v1 fingerprint specification. It is **not** a cryptographic identity of every behaviour the Python object can exhibit. Python code is not hashed: changing `forward` from `x + 1` to `x + 2` while keeping the qualified class name, module tree, parameters and buffers leaves the fingerprint unchanged. Automatic source hashing is rejected as fragile (dynamic classes, monkeypatching, compiled extensions, interactive definitions, decorators, generated functions, unavailable source). A caller-supplied implementation/code/model revision is a roadmap item.
+- **Class paths.** The qualified class names stay in the structure. A class-path change can change structure identity even when numerical behaviour is unchanged. This is acceptable because fingerprint identity is artifact identity, not semantic equivalence.
+- **The private persistence field** is read only in `_non_persistent_buffer_names`. It fails clearly if unavailable, and is checked against `state_dict()` keys on the tested torch versions (2.12, 2.14).
+- **Approved for Phase 1:**
+  - `ExecutionOccurrence` stays separate;
+  - train/eval, grad mode and device belong to `ExecutionContext`;
+  - `requires_grad` is excluded;
+  - CPU RNG capture is opt-in;
+  - the six-field environment;
+  - FULL is the only fingerprint mode;
+  - unsupported tensors fail explicitly;
+  - the privacy boundary is unchanged.
+
