@@ -50,6 +50,7 @@ from beyondnn.schema import (
     to_json,
 )
 from beyondnn.schema.base import register_migration, registered_kinds
+from beyondnn.schema.codec import _expected_id
 
 
 def _samples(mk: SimpleNamespace) -> list[BaseRecord]:
@@ -218,7 +219,7 @@ def test_older_versions_need_a_migration(
         "schema_version": SCHEMA_VERSION,
         "kind": "widget",
         "record_version": 1,
-        "id": "widget:" + "0" * 32,
+        "id": _expected_id("widget", 1, {"provenance_id": None, "derived_from": [], "size": 3}),
         "status": None,
         "data": {"provenance_id": None, "derived_from": [], "size": 3},
     }
@@ -290,6 +291,7 @@ def test_payload_violating_an_invariant_is_rejected_with_cause(mk: SimpleNamespa
     rec = next(r for r in _samples(mk) if r.KIND == "claim_test_result")
     env = to_dict(rec)
     env["data"]["evidence"] = []
+    mk.reseal(env)
     with pytest.raises(DecodeError) as info:
         from_dict(env)
     assert isinstance(info.value.__cause__, EvidenceRuleError)
@@ -299,6 +301,7 @@ def test_forged_assessment_verdict_is_rejected(mk: SimpleNamespace) -> None:
     rec = next(r for r in _samples(mk) if r.KIND == "assessment")
     env = to_dict(rec)
     env["data"]["verdict"] = "contradicted"
+    mk.reseal(env)
     with pytest.raises(DecodeError) as info:
         from_dict(env)
     assert isinstance(info.value.__cause__, EvidenceRuleError)
@@ -307,6 +310,7 @@ def test_forged_assessment_verdict_is_rejected(mk: SimpleNamespace) -> None:
 def test_unknown_limitation_code_in_payload(mk: SimpleNamespace) -> None:
     env = to_dict(TraceLimitation(code="NO_ATTRIBUTION"))
     env["data"]["code"] = "FUTURE_CODE"
+    mk.reseal(env)
     with pytest.raises(DecodeError) as info:
         from_dict(env)
     assert isinstance(info.value.__cause__, UnknownLimitationCodeError)
@@ -328,6 +332,7 @@ def test_invalid_json_text(text: str) -> None:
 def test_invalid_float_strings(mk: SimpleNamespace) -> None:
     env = _env(mk)
     env["data"]["value"]["stats"]["mean"] = "nan"
+    mk.reseal(env)
     with pytest.raises(DecodeError, match="invalid float string"):
         from_dict(env)
 
@@ -336,6 +341,7 @@ def test_generated_evidence_in_payload_is_rejected(mk: SimpleNamespace) -> None:
     rec = next(r for r in _samples(mk) if r.KIND == "claim_test_result")
     env = to_dict(rec)
     env["data"]["evidence"][0]["status"] = "generated"
+    mk.reseal(env)
     with pytest.raises(DecodeError) as info:
         from_dict(env)
     assert isinstance(info.value.__cause__, EvidenceRuleError)

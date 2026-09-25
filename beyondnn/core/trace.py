@@ -340,6 +340,13 @@ class TraceResult:
             raise KeyError("tensor values were not retained (use retention='cpu')")
         return self._tensors[ref.storage_key].clone()
 
+    def save(self, path: Any) -> None:
+        """Save to the new directory ``path``: ``trace.json`` (+ ``tensors.pt`` if
+        tensors were retained). Atomic; never overwrites. See ``load_trace``."""
+        from .persistence import save_trace
+
+        save_trace(self, path)
+
     def __repr__(self) -> str:
         return (
             f"TraceResult(passes={self.passes}, activations={len(self.activations)}, "

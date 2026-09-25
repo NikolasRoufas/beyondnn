@@ -191,7 +191,7 @@ Consequently, nothing except GENERATED can derive from GENERATED.
 - Every field must be present, and no unknown field is allowed.
 - Values must have the right JSON types.
 - Construction invariants are re-run, wrapped in `DecodeError` with the original error as `__cause__`.
-- The stored `id` and `status` must match the recomputed ones (`IntegrityError`).
+- The stored `id` must match the hash of the payload's own kind, version, and data, checked before any migration (M1.7). After construction, the stored `id` (if not migrated) and `status` must match (`IntegrityError`).
 - `NaN`/`Infinity` JSON literals are rejected.
 
 `to_json` output is canonical. Tensor sidecars are M1.7.
@@ -237,6 +237,15 @@ A `TraceResult` holds one recording context's records in execution order, retain
 - **Strict lookup:** zero or several matches raise `ActivationLookupError`.
 - **Every record entering is validated** (ids, references, provenance, dedup by canonical content). See ADR-023.
 - **Tensor-leaf paths:** `""`, `[i]`, `["key"]`, `[k]`; root and input leaves are prefixed `args`/`kwargs`/`output`.
+
+### A.12 Trace persistence (M1.7, ADR-024)
+
+`TraceResult.save(dir)` writes `dir/trace.json` and, for `retention="cpu"`, `dir/tensors.pt`. `bnn.load_trace(dir)` re-validates everything:
+- record ids, including before migration;
+- references and provenance;
+- tensor dtype, shape, and content digest.
+
+It migrates old record versions and remaps every reference to ids that migration changed. The sidecar is only ever read with `torch.load(weights_only=True)`.
 
 ---
 

@@ -254,7 +254,13 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Stats on huge tensors cost time. Summary-mode overhead is measured in M1.9.
 - **Scope:** about 500 LOC, about 500 LOC tests.
 
-## M1.7: Serialisation
+## M1.7: Serialisation: **implemented, awaiting review**
+
+- **As implemented:** `beyondnn/core/persistence.py` and `tests/test_persistence.py` (ADR-024). Public: `TraceResult.save`, `bnn.load_trace`.
+- **Carried requirement met:** migration id changes are remapped in every referring record. Tested with provenance v1 alone, and with a cascade of provenance, input, and output v1.
+- **Also:** codec verification of the stored id before migration.
+
+**Original plan:**
 
 - **Goal:** lossless semantic round-trip. Tensor round-trip when retained.
 - **Files:** `beyondnn/schema/codec.py`, `beyondnn/core/io.py` (save/load, sidecar).

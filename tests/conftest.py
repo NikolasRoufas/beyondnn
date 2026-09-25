@@ -34,6 +34,7 @@ from beyondnn.schema import (
 from beyondnn.schema import base as schema_base
 from beyondnn.schema.base import BaseRecord, record_kind
 from beyondnn.schema.claims import Claim, ClaimTestSpec
+from beyondnn.schema.codec import _expected_id
 
 PROV = "prov:run-1"
 
@@ -121,6 +122,12 @@ def _causal_ref(
     )
 
 
+def _reseal(env: dict[str, Any]) -> dict[str, Any]:
+    """Recompute a (possibly tampered) envelope's id, as an attacker could."""
+    env["id"] = _expected_id(env["kind"], env["record_version"], env["data"])
+    return env
+
+
 @pytest.fixture
 def mk() -> SimpleNamespace:
     return SimpleNamespace(
@@ -131,6 +138,7 @@ def mk() -> SimpleNamespace:
         claim=_claim,
         spec=_spec,
         causal_ref=_causal_ref,
+        reseal=_reseal,
         PROV=PROV,
         FAKE_EFFECT_ID=FAKE_EFFECT_ID,
     )

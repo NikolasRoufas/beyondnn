@@ -228,6 +228,7 @@ def test_forbidden_lineage_is_rejected_when_decoding(mk: SimpleNamespace) -> Non
 
     env = to_dict(mk.activation(parents=(RecordRef.to(mk.input()),)))
     env["data"]["derived_from"][0]["status"] = "generated"
+    mk.reseal(env)
     with pytest.raises(DecodeError) as info:
         from_dict(env)
     assert isinstance(info.value.__cause__, EvidenceRuleError)

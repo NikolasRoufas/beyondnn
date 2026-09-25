@@ -14,8 +14,9 @@ Envelope (every key required, no others allowed)::
 Decoding rejects unknown kinds, unknown or missing fields, a newer
 ``record_version``, an incompatible ``schema_version``, and payloads whose stored
 ``id`` or ``status`` do not match their content. Older record versions are read
-only through registered migrations. Tensor data is never part of the envelope;
-sidecar storage arrives in M1.7.
+only through registered migrations; the stored id is verified against the
+payload's original kind/version/data before any migration (a migrated record then
+gets a new id). Tensor data is never part of the envelope (see trace persistence).
 """
 
 from __future__ import annotations
@@ -24,7 +25,7 @@ import json
 import re
 from typing import Any
 
-from ._canonical import canonical_json
+from ._canonical import canonical_json, digest
 from ._types import decode_fields, encode_fields
 from .base import BaseRecord, migration_for, registered_kinds
 from .errors import (
@@ -80,6 +81,35 @@ def _check_schema_version(version: Any) -> None:
 
 def from_dict(payload: Any) -> BaseRecord:
     """Decode an envelope produced by :func:`to_dict`. Strict; see module docstring."""
+    return _decode(payload)
+
+
+def _expected_id(kind: str, version: int, data: Any) -> str:
+    """The id a record of ``kind``/``version`` with (plain JSON) ``data`` must have."""
+    payload = {"kind": kind, "record_version": version, "data": data}
+    try:
+        return f"{kind}:{digest(payload)[:32]}"
+    except (TypeError, ValueError) as exc:
+        raise DecodeError(f"record data is not canonical JSON: {exc}") from exc
+
+
+def verify_stored_id(payload: dict[str, Any]) -> None:
+    """Check the stored id against the payload's own kind, version and data.
+
+    Works for any registered record_version, including ones that still need
+    migration, so a tampered id is detected before a migration changes the id.
+    """
+    expected = _expected_id(payload["kind"], payload["record_version"], payload["data"])
+    if payload["id"] != expected:
+        raise IntegrityError(
+            f"stored id {payload['id']!r} does not match content (expected {expected!r})"
+        )
+
+
+def _decode(payload: Any, *, check_stored_id: bool = True) -> BaseRecord:
+    """Decode an envelope. ``check_stored_id=False`` is only for callers that have
+    already verified the original payload and then rewrote references in it
+    (trace loading with migration remapping)."""
     if not isinstance(payload, dict):
         raise DecodeError(f"record envelope must be a JSON object, got {type(payload).__name__}")
     keys = payload.keys()
@@ -104,6 +134,8 @@ def from_dict(payload: Any) -> BaseRecord:
         raise UnsupportedVersionError(
             f"{kind} record_version {version} is newer than supported ({cls.RECORD_VERSION})"
         )
+    if check_stored_id:
+        verify_stored_id(payload)
     data = payload["data"]
     while version < cls.RECORD_VERSION:
         migrate = migration_for(kind, version)
@@ -129,7 +161,7 @@ def from_dict(payload: Any) -> BaseRecord:
         raise DecodeError(f"invalid {kind} record: {exc}") from exc
 
     migrated = payload["record_version"] != cls.RECORD_VERSION
-    if not migrated and payload["id"] != record.id:
+    if check_stored_id and not migrated and payload["id"] != record.id:
         raise IntegrityError(
             f"stored id {payload['id']!r} does not match content (computed {record.id!r})"
         )

@@ -23,6 +23,12 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **M1.7: trace persistence:** `TraceResult.save(dir)` and `bnn.load_trace(dir)`.
+  - Deterministic `trace.json` with an optional `tensors.pt`, read only with `weights_only=True`. No paths are taken from JSON, and symlinks are refused.
+  - Atomic save; the target is never overwritten.
+  - Full re-validation on load: ids, references, provenance, and tensor dtype/shape/digest.
+  - Migrations with deterministic reference remapping.
+  - The codec now verifies stored ids before migrating. ADR-024.
 - **M1.6: trace pipeline:** public `bnn.trace`, `bnn.recording`, `bnn.TraceResult`.
   - Per-pass provenance, with the model fingerprinted at the start of each root call.
   - OBSERVED root input/output and MEASURED activations, one per tensor leaf, with deterministic paths.

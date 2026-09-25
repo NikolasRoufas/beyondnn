@@ -712,3 +712,39 @@ Revision note (2026-09-25, review, before acceptance):
 - An `ExecutionOccurrence` id includes a microsecond timestamp, so two passes starting in the same microsecond share one occurrence record. Occurrences are operational metadata and are not linked to passes.
 - Fingerprinting once per pass costs about 2 ms per ~1M float32 parameters.
 
+---
+
+## ADR-024: Trace persistence, sidecar security, migration with reference remapping
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for M1.7 implementation. Awaiting review.
+
+**Decision** (`beyondnn/core/persistence.py`; public `TraceResult.save(path)`, `bnn.load_trace(path)`):
+
+- **Format.** A directory containing `trace.json` and, only if tensors were retained, `tensors.pt`. The file names are fixed constants, and **no path is ever read from the JSON**.
+- **`trace.json`** has exactly the keys `format` (`"beyondnn.trace"`), `format_version` (1), `schema_version`, `config`, `records` (envelopes in execution order), and `tensors` (sorted storage keys).
+  - It is deterministic: sorted keys, 2-space indent, UTF-8, no NaN literals.
+  - It contains no absolute or home paths.
+- **Sidecar.**
+  - It is a plain `{storage_key: Tensor}` dict. Keys are content digests (`sha256:<hex>`), so identical contents are stored once.
+  - It is loaded **only** with `torch.load(weights_only=True, map_location="cpu")`.
+  - Keys must equal the declared keys, and every value must be exactly `torch.Tensor`.
+  - Symlinked `trace.json`/`tensors.pt` are refused.
+- **Save atomicity.** Everything is written into a sibling temporary directory (tensors, then `trace.json` last, both fsynced), then renamed to the target in one `os.rename`. An existing target is never overwritten. On any failure, the temporary directory is removed. **Guarantee:** the target either does not exist or is complete.
+- **Load validation.**
+  - The document's keys and versions are checked.
+  - Every record goes through the strict codec. The stored id is now verified against the payload's **own** kind, version, and data *before* migration; previously, migrated payloads skipped the id check.
+  - Every record also goes through `TraceResult._add` (references, provenance, dedup).
+  - Every retained tensor must match its `TensorRef` dtype, shape, and `content_digest`.
+  - Any unknown key, kind, or version fails the load. Nothing is dropped, weakened, or invented.
+- **Migration and remapping.**
+  - Records are processed in order. When a migration changes an id (old → new), the new id is recorded in a map.
+  - Every later record has all string occurrences of mapped ids rewritten before decoding (`derived_from`, evidence/claim/spec/result refs, `applies_to`, `provenance_id`). Its *original* stored id is verified first, and it gets its new id, so the rewriting cascades.
+  - A missing migration fails the load.
+
+**Reason:** loading must not trust a file because it parses. Arbitrary pickle execution, path traversal, and silently dropping or relabelling data are unacceptable for evidence.
+
+**Consequences:**
+- The file format is versioned separately from the schema. Old traces load only through registered migrations.
+- `torch.save` output is not byte-deterministic; `trace.json` is.
+

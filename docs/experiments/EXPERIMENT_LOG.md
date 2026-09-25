@@ -200,3 +200,29 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
 - **Negative finding (kept):** the first retention mutation survived. The weakref tests only used `trace()`, whose internal recording object is discarded on return. A test that keeps a live `recording()` context and its result now catches it.
 - **Conclusion:** all required guards are caught.
 
+---
+
+## 2026-09-25: M1.7 persistence mutation checks and corruption matrix
+- **Commit:** "Add trace persistence and migration (M1.7)" (parent `4aae85d`)
+- **Corruption matrix (all rejected with `TracePersistenceError`):**
+  - missing, malformed, or NaN-literal `trace.json`;
+  - unknown kind; unsupported schema version (document- and record-level);
+  - tampered id; dangling input or provenance; reordered records;
+  - unknown document key (e.g. `tensor_file: ../../etc/passwd`); a `storage_key` rewritten to a path (the id no longer matches);
+  - wrong format or format_version; unsorted keys; invalid config;
+  - missing sidecar or key; wrong shape, dtype, or content;
+  - pickled object (never executed); non-tensor value; unexpected sidecar; symlinked sidecar.
+- **Mutations (tests/test_persistence.py; failing tests per broken implementation):**
+
+  | Broken implementation | Failing tests |
+  |---|---|
+  | `weights_only=False` | 1 |
+  | remapping removed | 2 |
+  | shape validation removed | 1 |
+  | dtype validation removed | 1 |
+  | extra document keys accepted, with the sidecar name read from JSON | 1 |
+  | record-id integrity skipped | 3 |
+
+  With `weights_only=False`, the pickled payload (a harmless `echo`) really executed in the scratch copy, so the guard matters. With shape or dtype validation removed, the content-digest check still rejects the file, but with a different error; the tests pin the specific check.
+- **Conclusion:** all required guards are caught.
+

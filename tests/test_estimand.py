@@ -185,6 +185,7 @@ def test_population_mismatch_is_rejected_when_decoding(mk: SimpleNamespace) -> N
     pop_ref = mk.causal_ref(estimand=POP, status=EvidenceStatus.ESTIMATED_CAUSAL)
     env = to_dict(_decide(mk, POP, pop_ref))
     env["data"]["evidence"][0]["estimand"]["population"] = "some_other_distribution"
+    mk.reseal(env)
     with pytest.raises(DecodeError) as info:
         from_dict(env)
     assert isinstance(info.value.__cause__, EvidenceRuleError)

@@ -14,6 +14,7 @@ from beyondnn.schema import (
     DecodeError,
     ExecutionContext,
     ExecutionMode,
+    IntegrityError,
     JsonMap,
     MethodIdentity,
     ModelDeclaration,
@@ -26,6 +27,7 @@ from beyondnn.schema import (
     to_dict,
     to_json,
 )
+from beyondnn.schema.codec import _expected_id
 
 HOOK = MethodIdentity(name="forward_hook", version="1")
 CLEAN = ExecutionContext(mode=ExecutionMode.CLEAN, device="cpu", training=False, grad_enabled=True)
@@ -157,8 +159,9 @@ def test_version_1_payload_migrates_to_version_2() -> None:
     v1 = to_dict(current)
     v1["record_version"] = 1
     del v1["data"]["declared_model"]
-    v1["id"] = "provenance:" + "0" * 32  # a v1 id; ids change on migration (ADR-016)
+    v1["id"] = _expected_id("provenance", 1, v1["data"])  # a valid v1 id
     migrated = from_dict(v1)
+    assert migrated.id != v1["id"]  # ids change on migration (ADR-016)
     assert isinstance(migrated, ProvenanceRecord)
     assert migrated.declared_model is None
     assert migrated == current
@@ -168,6 +171,7 @@ def test_version_1_payload_migrates_to_version_2() -> None:
 def test_version_1_payload_with_declaration_is_rejected() -> None:
     v1 = to_dict(_prov(TinyTransformer()))
     v1["record_version"] = 1
+    v1["id"] = _expected_id("provenance", 1, v1["data"])
     with pytest.raises(DecodeError, match="migrating provenance from record_version 1"):
         from_dict(v1)
 
@@ -177,3 +181,12 @@ def test_future_provenance_version_is_rejected() -> None:
     v3["record_version"] = 3
     with pytest.raises(UnsupportedVersionError):
         from_dict(v3)
+
+
+def test_tampered_id_on_an_old_version_payload_is_detected() -> None:
+    v1 = to_dict(_prov(TinyTransformer()))
+    v1["record_version"] = 1
+    del v1["data"]["declared_model"]
+    v1["id"] = "provenance:" + "0" * 32  # not the v1 id of this content
+    with pytest.raises(IntegrityError):
+        from_dict(v1)

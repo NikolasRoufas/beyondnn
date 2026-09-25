@@ -1,8 +1,9 @@
 """BeyondNN: an interpretability evidence framework for PyTorch.
 
 Implemented: the trace schema (:mod:`beyondnn.schema`), provenance
-(:mod:`beyondnn.provenance`), and trace recording: :func:`trace`,
-:func:`recording`, :class:`TraceResult`.
+(:mod:`beyondnn.provenance`), trace recording (:func:`trace`,
+:func:`recording`, :class:`TraceResult`) and persistence (``TraceResult.save``,
+:func:`load_trace`).
 
 ``import beyondnn`` does not import torch; the tracing names are loaded lazily on
 first use, so :mod:`beyondnn.schema` stays usable without torch.
@@ -16,6 +17,7 @@ from . import schema
 from .schema import EstimandScope, EvidenceStatus, Outcome, Relation, Verdict
 
 if TYPE_CHECKING:
+    from .core.persistence import load_trace
     from .core.trace import TraceResult, recording, trace
 
 __version__ = "0.0.0.dev0"
@@ -28,6 +30,7 @@ __all__ = [
     "TraceResult",
     "Verdict",
     "__version__",
+    "load_trace",
     "recording",
     "schema",
     "trace",
@@ -37,6 +40,7 @@ _LAZY = {
     "trace": "beyondnn.core.trace",
     "recording": "beyondnn.core.trace",
     "TraceResult": "beyondnn.core.trace",
+    "load_trace": "beyondnn.core.persistence",
 }
 
 

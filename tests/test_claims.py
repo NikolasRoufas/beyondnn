@@ -422,6 +422,7 @@ def test_assessment_payload_without_policy_requirements_is_rejected(mk: SimpleNa
 
     env = to_dict(Assessment.derive(mk.claim(), [], POLICY))
     env["data"]["policy"]["requirements"] = []
+    mk.reseal(env)
     with pytest.raises(DecodeError) as info:
         from_dict(env)
     assert isinstance(info.value.__cause__, EvidenceRuleError)

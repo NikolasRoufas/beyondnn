@@ -53,6 +53,7 @@ print(trace.limitations)                  # what the trace does NOT cover
 - `bnn.recording(model, sites=[...])` records several forward passes in a `with` block. `ctx.result` is only available after a clean exit.
 - Retention is `summary` (default: metadata and summary statistics), `cpu` (detached CPU copies), or `none`.
 - Every trace states its limits. For example, `FUNCTIONAL_OPS_UNOBSERVED`: module hooks cannot see functional operations.
+- `trace.save("run1/")` and `bnn.load_trace("run1/")` persist traces as `trace.json` plus an optional `tensors.pt`. The sidecar is only ever read with `weights_only=True`, and everything is re-validated on load.
 
 ## Still proposed (not implemented)
 
