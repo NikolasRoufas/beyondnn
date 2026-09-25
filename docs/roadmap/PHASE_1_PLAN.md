@@ -137,7 +137,7 @@ Status: **planned, not started.** Implementation begins only after the architect
 - **Known risk:** these are *engine* test models, not the Phase 2 ground-truth models. Do not conflate the two.
 - **Scope:** about 250 LOC, about 150 LOC tests.
 
-## M1.4: Site resolution: **implemented, awaiting review**
+## M1.4: Site resolution: **done (approved 2026-09-25)**
 
 - **As implemented:** `beyondnn/core/sites.py` and `tests/test_sites.py`.
   - Public within `beyondnn.core.sites` only: `resolve_sites`, `parse_pattern`, `ResolvedSite`, `SiteResolutionError`, `InvalidPatternError`, `UnmatchedPatternError`.
@@ -166,7 +166,11 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Models that construct submodules lazily at first forward are unsupported in v0. They raise a clear error.
 - **Scope:** about 250 LOC, about 250 LOC tests.
 
-## M1.5: HookSession
+## M1.5: HookSession: **implemented, awaiting review**
+
+- **As implemented:** `beyondnn/core/hooks.py` (`HookSession`, `HookEvent`, `AliasPolicy`, `AliasSiteAmbiguityError`, `HookSessionError`; internal, not exported) and `tests/test_hooks.py`. Semantics are in ADR-021.
+
+**Original plan:**
 
 - **Goal:** the only place hooks are registered. Leak-proof by construction.
 - **Files:** `beyondnn/core/hooks.py`, `tests/conftest.py` (leak fixture, model fixtures parameterised over the 3 tiny models).
@@ -221,6 +225,12 @@ Status: **planned, not started.** Implementation begins only after the architect
   - cross-record invariants enforced by `TraceResult.add`.
 - **Review item from M1.1:** re-evaluate the five typed reference types (`RecordRef`, `EvidenceRef`, `ClaimRef`, `SpecRef`, `ResultRef`) once real traces exercise them. Keep them unless there are substantial API or maintenance problems.
 - **HARD BLOCKER (M1.2/M1.3 review):** before M1.6 may create provenance-bearing `TraceResult`s, BeyondNN must decide and implement a **caller-declared model configuration / implementation revision** mechanism. Behaviourally different models with the same FULL v1 automatic fingerprint (e.g. `TinyTransformer(n_heads=2)` vs `n_heads=4`) must not silently share provenance identity when the experimenter knows the distinction. Candidate inputs: model/constructor config, repository commit, checkpoint revision, implementation or model revision (e.g. `declared_model_config=…`, `implementation_revision=…`). The design is decided after M1.5 and before trace containers; it is **not** implemented in M1.4.
+- **Requirements carried from M1.5:**
+  - Convert `HookEvent`s to `ActivationRecord`s in the sink. The sink owns retention; the session must not.
+  - Decide how to handle `pass_index = -1` (out-of-pass) events. The schema requires `>= 0`: either refuse them or record them with a limitation, but never invent a pass number.
+  - Alias-group events (`path_specific=False`) have no `Site`: refuse them or represent them explicitly.
+  - Record a limitation for selected sites that never executed.
+  - Keep `FUNCTIONAL_OPS_UNOBSERVED`.
 - **Requirements carried from M1.1/M1.2 review:**
   - **Reference integrity (exit criterion):** `TraceResult` must call `verify_ref` for **every** reference entering it (`derived_from`, evidence, claim/spec/result refs). It must also check that every `provenance_id` names a `ProvenanceRecord` it holds. Required tests: a forged `RecordRef` status, a forged `EvidenceRef`, and a dangling `provenance_id` are each rejected.
   - **Identity, not `==`:** containers compare records by id and verify content and reference integrity explicitly. They must not rely on dataclass equality, because NaN-bearing values (e.g. `TensorStats`) are not reflexively equal. Required test: a record with NaN stats is found, deduplicated, and verified by id.

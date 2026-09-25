@@ -568,3 +568,44 @@ Revision note (2026-09-25, review, before acceptance):
   - unsupported tensors fail explicitly;
   - the privacy boundary is unchanged.
 
+---
+
+## ADR-021: HookSession semantics: physical hooks, indices, aliases, no retention
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for M1.5 implementation. Awaiting M1.5 review.
+
+**Decision** (`beyondnn/core/hooks.py`, internal):
+- **Scope.** `HookSession(model, sink=…, outputs=[…], inputs=[…], alias_policy=REFUSE)` is a single-use context manager.
+  - Patterns are resolved against the live model on `__enter__`. Changing the module tree while the session is active is unsupported.
+  - Hooks exist only between `__enter__` and `__exit__`. Only BeyondNN's own handles are removed. Removal happens on normal exit, on any exception (including `BaseException`), and after a partially failed installation. A second exit is harmless.
+- **Physical hooks.** Per observed module *object*:
+  - one pre-hook, which claims the call index and emits INPUT if selected;
+  - one `always_call` cleanup forward hook, which releases the invocation and never raises or emits;
+  - one ordinary forward hook iff OUTPUT is selected, which runs only on success and emits OUTPUT.
+
+  The root additionally gets a prepended pass-start pre-hook and an `always_call` pass-end hook. Overlapping patterns, alias paths, and INPUT+OUTPUT never duplicate hooks.
+- **Indices.**
+  - **`pass_index`** is the n-th root invocation in the session. A root invocation that raises consumes its index. Re-entrant root calls don't start a pass. Executions outside a root invocation get `-1`.
+  - **`call_index`** is the n-th invocation of that physical module in the pass, reset per pass. It is claimed by the pre-hook, so a failed invocation consumes its index, and INPUT and OUTPUT share it. A per-module stack pairs recursive calls. Out-of-pass calls are counted separately and never reset.
+- **Aliases.** Hooks attach to objects, so a module registered under several paths cannot be attributed to one path.
+  - **`REFUSE`** (default) raises `AliasSiteAmbiguityError` when such a module is selected.
+  - **`GROUP`** (internal) observes it once per execution, with `paths` holding all aliases and `path_specific=False`. `event.site` raises for such events.
+- **Values.** Hooks return `None`, so arguments and outputs are never replaced. Values are not detached, cloned, or moved. `kwargs` is exposed as a read-only view. Events are ephemeral (`HookEvent`, no id, not a record), and the session keeps no reference to them or their values. The sink decides retention (M1.6).
+- **User hooks.** User hooks registered earlier run before BeyondNN's, except the prepended pass-start hook. BeyondNN therefore observes the values the module actually receives and returns.
+
+**Reason:**
+- What a hook proves is narrow: this object executed and this value crossed its boundary. The design must never overstate it. Attributing an aliased execution to one path would be fabricated evidence.
+- Using ordinary hooks for emission and `always_call` hooks for bookkeeping keeps indices consistent when `forward`, a user hook, or the sink raises. PyTorch passes `output=None` *or* a real output on failure paths, so `always_call` hooks cannot tell success from failure.
+
+**Alternatives considered:**
+- One hook per role, counting in the output hook: failed calls would not consume indices, and recursion would mispair.
+- Prepending BeyondNN pre-hooks: this would guard the recursion edge case below, but observe arguments *before* user pre-hooks modify them.
+- Deduplicating by path: this double-hooks aliased objects.
+
+**Consequences / limits:**
+- Not thread-safe, and not for `torch.compile`d modules. Functional ops (`F.gelu`, residual `+`) remain unobserved (`FUNCTIONAL_OPS_UNOBSERVED`).
+- Edge case: if a user or global pre-hook that runs *before* BeyondNN's raises during a *recursive* call of the same module, the cleanup hook can release the enclosing call's index.
+- A selected module that never executes (e.g. an iterated `ModuleList`) yields no events.
+- `pass_index = -1` events cannot become `ActivationRecord`s under schema 0.1 (`pass_index >= 0`). M1.6 must decide how to represent them, or refuse them, with a limitation.
+

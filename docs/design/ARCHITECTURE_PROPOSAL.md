@@ -96,7 +96,7 @@ A unit test lints the renderer templates against this table.
 - `beyondnn/schema/` holds pure data and imports no torch.
 - `beyondnn/provenance/` (M1.2) holds torch-dependent collection: model fingerprints, environment, RNG, provenance records. It depends on `schema`, never the reverse.
 - `beyondnn/_testing/` (M1.3) holds **internal, unstable** reference models for BeyondNN's own tests. It is not exported from `beyondnn`, and not BeyondNN model architectures. The `beyondnn.models` namespace is reserved for possible real architectures later.
-- `beyondnn/core/` (M1.4) is the torch-dependent execution layer. So far it holds only site resolution. It depends on `schema` (and later `provenance`), never the reverse.
+- `beyondnn/core/` (M1.4, M1.5) is the torch-dependent execution layer: site resolution (`sites.py`) and hook sessions (`hooks.py`). It depends on `schema` (and later `provenance`), never the reverse.
 - Future tracing (`core/`) depends on both.
 - The top-level `beyondnn` package imports only `schema`, so `import beyondnn` stays torch-free until tracing exists.
 
@@ -218,6 +218,17 @@ Semantics:
 - **Not filtered** by leaf status, parameter count, or buffer count. Containers and parameterless modules (`pool`, `gap`) are ordinary sites.
 - **Alias paths vs repeated calls.** Aliases are several paths to one object, and M1.4 handles them. Repeated calls are one path invoked several times per forward (e.g. `TinyMLP.shared`); they are call indices, handled in M1.5/M1.6.
 - **Structured outputs.** `Site.output_path` is not inferred here. It needs produced tensors (M1.5/M1.6).
+
+### Hook sessions (M1.5, `beyondnn/core/hooks.py`)
+
+`HookSession` is the internal execution primitive under the future `trace()`/`recording()`. It emits ephemeral `HookEvent`s to a sink, and never stores or modifies values. The semantics are in ADR-021:
+- physical-module hook dedup;
+- `pass_index` and `call_index` rules, including failure consumption and `-1` for out-of-pass calls;
+- stack pairing of INPUT and OUTPUT;
+- default refusal of aliased modules, with an internal `GROUP` mode;
+- guaranteed removal of only BeyondNN's hooks on every exit path.
+
+A hook event proves only that *this module object executed and this value crossed its boundary*.
 
 ## Mode A vs Mode B
 

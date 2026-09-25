@@ -128,3 +128,31 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
 - **Torch versions:** traversal order and alias preservation from `named_modules(remove_duplicate=False)` behaved identically on torch 2.12 (Python 3.14) and torch 2.14 (Python 3.10, 3.12).
 - **Next action:** M1.5 hook lifecycle.
 
+---
+
+## 2026-09-25: M1.5 hook-session compatibility probes and mutation checks
+- **Commit:** the M1.5 commit (parent `daa2a46`)
+- **Probe (torch 2.12 source and behaviour; the tests also pass on torch 2.14):**
+  - `always_call=True` forward hooks run once per invocation, both when `forward` raises and when a later pre-hook raises.
+  - On failure they receive the current `result` variable: `None`, or a real output if a later hook failed. So `output is None` cannot detect failure.
+  - Ordinary forward hooks do not run on failure.
+  - An `always_call` hook that raises during a failure produces a `UserWarning` (an error under `-W error`), so BeyondNN's cleanup hooks never raise.
+- **Mutation results (`tests/test_hooks.py`, 50 tests; failing tests per broken implementation):**
+
+  | Broken implementation | Failing tests |
+  |---|---|
+  | hooks not removed on normal exit | 8 |
+  | not removed on any exception | 4 |
+  | not removed only for forward errors | 1 (a targeted variant) |
+  | not removed only for sink errors | 1 (a targeted variant) |
+  | call index never reset | 5 |
+  | INPUT and OUTPUT claim separate indices | 10 |
+  | user hooks removed | 2 |
+  | hook returns a modified output | 22 |
+  | output values retained by the session | 2 |
+  | alias treated as path-specific | 6 |
+  | alias module hooked twice | 2 |
+  | no cleanup after partial install | 1 |
+- **Conclusion:** all required guards are caught.
+- **Next action:** caller-declared model provenance (M1.6 gate), then M1.5 review.
+

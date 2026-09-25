@@ -23,6 +23,13 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **M1.5: safe hook session** (`beyondnn.core.hooks`, internal):
+  - scoped hooks, removed on every exit path (normal exit, exceptions, sink errors, partial install);
+  - physical-module dedup;
+  - pass/call indices with failure consumption, out-of-pass `-1`, and stack-paired INPUT/OUTPUT;
+  - aliased modules refused by default (internal `GROUP` mode);
+  - values neither modified nor retained;
+  - autograd, outputs, and BatchNorm state identical to baseline. ADR-021.
 - **M1.4: deterministic module site resolution** in `beyondnn.core.sites` (not exported):
   - segment-based `*` / `**` pattern language; the root is selected only by `""`;
   - strict (unmatched or invalid patterns raise);
