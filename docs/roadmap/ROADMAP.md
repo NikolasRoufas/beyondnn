@@ -73,7 +73,22 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 - `EvidenceSpan` derivation. `ATTRIBUTED_TO` claims and the `method_agreement/v1` test.
 - **Experiment:** do top-attributed units pass `ablation_necessity` more often than random units on the Phase 2 suite? Logged, not assumed.
 
-## Phase 4: WHY
+## Phase 4: WHY: **IMPLEMENTED, gate GO WITH EXPLICIT LIMITATIONS** (2026-09-25; `docs/PHASE_4_REPORT.md`, ADR-031)
+
+- **As built:**
+  - `bnn.compose` over an immutable, validated `EvidenceBundle` (one model, declaration, exact input sample, target; instance scope);
+  - `Why` sections by epistemic status, over the original records;
+  - declared claims with re-derived test results and policy-based assessments;
+  - the limitations union;
+  - `Coverage` (faithfulness and concepts never evaluated);
+  - a deterministic renderer and `to_dict`;
+  - `InputRecord.sample_id`.
+- **Not built from the original list below:**
+  - status-bound template summaries (`summary()`) and the optional LLM summariser: deliberately not built, since no generated text is allowed;
+  - `explain(x, target, plan)` that runs tests: methods run explicitly, and composition only reads;
+  - candidate-claim proposal: claims are only declared.
+
+**Original plan:**
 - `Why` as a view and `render()` with status-bound vocabulary, including a lint test on templates.
 - A template `summary()` with `supporting_records`. An optional LLM summariser goes behind an extra and is always `GENERATED`.
 - `explain(x, target, plan)`: proposes candidate claims (`ClaimSource.method`), runs the plan's tests, and assesses.

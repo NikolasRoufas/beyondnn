@@ -8,6 +8,16 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 4: structured WHY / evidence synthesis** (`bnn.compose`, ADR-031, ADR-026 amended):
+  - `EvidenceBundle` validates one explanation context (model, declaration, exact input sample, instance scope, one target) and refuses anything incompatible;
+  - recorded claim-test results are re-derived from their evidence;
+  - `Why` sections by epistemic status over the original records, with claims, tests, and policy assessments (MIXED preserved), the limitations union, `Coverage` (faithfulness and concepts never evaluated), `by_status`, and `origin`;
+  - deterministic `render()` and `to_dict()`;
+  - README walk-through, `examples/phase4_redundant_path.py`, a synthesis benchmark, and the Phase 4 report (gate: GO WITH EXPLICIT LIMITATIONS).
+- `InputRecord.sample_id` (record version 3): the exact input identity, with a migration from v2.
+
+### Fixed
+- `intervention_threshold` can decide only NECESSARY_FOR/DECREASES/INCREASES, independent of the protocol registry. Composition refuses decisive results from protocols that do not justify the claim's relation (found by the Phase 4 mutation audit).
 - **Phase 3: attribution** (`bnn.attribute`, `bnn.attribution`, ADR-030):
   - ATTRIBUTED `AttributionRecord` and `AttributionReduction` records, with container checks for site/call/pass and shape;
   - native gradient, input × gradient, and Integrated Gradients (explicit baseline, declared rule, completeness diagnostic) on float inputs or one call of a module output;

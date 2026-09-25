@@ -379,3 +379,32 @@ Environment: Python 3.14.3, torch 2.12.0, Captum 0.9.0, Darwin arm64, 4 threads;
 
 - **Gate:** GO WITH EXPLICIT LIMITATIONS.
 
+---
+
+## 2026-09-25: Phase 4 evidence synthesis: scenarios, mutations, benchmark
+
+- **Pre-registration:** `docs/PHASE_4_PLAN.md` (`e4f2d9e`), with scenarios A–H and their expected structured outputs.
+- **Design finding before code:** summary statistics cannot identify an input ((3, 5) and (5, 3) have equal statistics). This led to `InputRecord.sample_id` (ADR-031); scenario F now also refuses exactly that case.
+- **Scenarios:** all expectations were met.
+  - E (flagship): IG at `p` = 3.0 → ATTRIBUTED_TO SUPPORTED; zeroing `p` 6 → 3 → NECESSARY_FOR CONTRADICTED; shown side by side.
+  - B: NECESSARY_FOR with attribution evidence only → UNTESTED.
+  - H: MIXED.
+- **Backward compatibility:** the measured-only render equals the output of the Phase-3 renderer (`3bc3f41`) on three traces, plus the NOT EVALUATED block.
+- **Mutations:** 20 on scratch copies, all caught.
+  - The first run had one survivor: a widened registry letting `intervention_threshold` justify ATTRIBUTED_TO. It was fixed with two independent defences.
+  - Single-catch guards got second tests (report §11).
+- **Language audit:** repository-wide; no unlicensed statements remain. Two wordings were changed.
+- **Validation:** 808 passed + 1 reported skip without Captum, and 829 with Captum, on Python 3.10, 3.12, and 3.14. The clean wheel works with and without Captum.
+- **Benchmark** (`benchmarks/bench_synthesis.py`):
+
+Environment: Python 3.14.3, torch 2.12.0, Darwin arm64; warm-up 3, 30 iterations; median / p90 ms. Evidence computed beforehand (not timed).
+
+| composition | source records | compose | render | rendered chars |
+|---|---|---|---|---|
+| measured only | 7 | 0.173 / 0.177 | 0.046 / 0.048 | 1559 |
+| trace + attribution | 19 | 0.447 / 0.452 | 0.074 / 0.075 | 3793 |
+| trace + intervention | 23 | 0.553 / 0.559 | 0.062 / 0.064 | 2890 |
+| trace + attribution + intervention + claims | 41 | 1.146 / 1.154 | 0.092 / 0.093 | 4609 |
+
+- **Gate:** GO WITH EXPLICIT LIMITATIONS.
+

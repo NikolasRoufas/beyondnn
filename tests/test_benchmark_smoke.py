@@ -17,6 +17,13 @@ def _load(name: str) -> Any:
     return module
 
 
+def test_synthesis_benchmark_runs() -> None:
+    module = _load("bench_synthesis")
+    report = module.run(warmup=0, iterations=1)
+    assert len(report["results"]) == 4
+    assert "|" in module.markdown(report)
+
+
 def test_attribution_benchmark_runs() -> None:
     module = _load("bench_attribution")
     report = module.run(warmup=0, iterations=1)
