@@ -15,8 +15,9 @@ All passes run under ``torch.no_grad()``. The comparison is refused, never
 reported, if it cannot be paired:
 
 * any module is in training mode (``StatefulComparisonError``);
-* the model state fingerprint differs between baseline and intervention start
-  (``StatefulComparisonError``: e.g. buffers updated during forward);
+* the model state fingerprint, the recorded execution conditions, or the inputs
+  (modified in place) differ between the baseline and intervention passes
+  (``StatefulComparisonError``);
 * the CPU RNG state changes during the baseline or intervention pass
   (``StochasticComparisonError``: randomness was consumed, so the two passes may
   differ for reasons other than the intervention);
@@ -388,7 +389,13 @@ class _Experiment:
     ) -> tuple[int, float, int, float]:
         assert self.record is not None
         rng = torch.get_rng_state()
+        before = sample_id(*inputs, model_kwargs=kwargs)
         base_pass, base_out = self._pass(inputs, kwargs)
+        if sample_id(*inputs, model_kwargs=kwargs) != before:
+            raise StatefulComparisonError(
+                "the baseline pass modified its inputs in place; the intervention pass would "
+                "not see the same input"
+            )
         base_value = self.metric(base_out)
         del base_out
         if not torch.equal(rng, torch.get_rng_state()):
@@ -405,6 +412,8 @@ class _Experiment:
             self.recording._next_intervention = None
         int_value = self.metric(int_out)
         del int_out
+        if sample_id(*inputs, model_kwargs=kwargs) != before:
+            raise StatefulComparisonError("the intervention pass modified its inputs in place")
         if not torch.equal(rng, torch.get_rng_state()):
             raise StochasticComparisonError("the intervention pass consumed random numbers")
         if replacer.applied != 1:
@@ -412,11 +421,23 @@ class _Experiment:
                 f"call {self.spec.call_index} of {self.spec.site!r} ran {replacer.applied} times "
                 "in the intervention pass (expected exactly once)"
             )
-        base_model = self.trace.origin(self._input(base_pass)).model
-        if self.trace.origin(self._input(int_pass)).model != base_model:
+        base_prov = self.trace.origin(self._input(base_pass))
+        int_prov = self.trace.origin(self._input(int_pass))
+        if int_prov.model != base_prov.model:
             raise StatefulComparisonError(
                 "the model state changed between the baseline and intervention passes "
                 "(e.g. buffers updated during forward); the passes are not paired"
+            )
+        b, i = base_prov.execution, int_prov.execution
+        if (b.training, b.grad_enabled, b.device, b.randomness) != (
+            i.training,
+            i.grad_enabled,
+            i.device,
+            i.randomness,
+        ):
+            raise StatefulComparisonError(
+                "execution conditions (training/grad/device/randomness) differ between the "
+                "baseline and intervention passes"
             )
         return base_pass, base_value, int_pass, int_value
 

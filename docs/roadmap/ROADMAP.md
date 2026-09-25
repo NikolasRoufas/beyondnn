@@ -35,7 +35,16 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 
 **Out of scope:** interventions, attribution, test runners, concepts logic, adapters, GPU-specific code, visualisation, `torch.compile`, and Mode B.
 
-## Phase 2: Interventions, causal effects, first claim tests
+## Phase 2: Interventions, causal effects, first claim tests: **IMPLEMENTED, gate GO WITH EXPLICIT LIMITATIONS** (2026-09-25; `docs/PHASE_2_REPORT.md`, ADR-028)
+
+- **As built:**
+  - one comparison is one recording, so there is no `Study` yet;
+  - output interventions: zero, constant, and patch from a source pass;
+  - INSTANCE and FINITE_SAMPLE INTERVENTIONAL effects;
+  - the `intervention_threshold` protocol with a registry.
+- **Not built from the original list below:** mean/resample ablation, feature-delta interventions, bootstrap CIs, `Study`, and the synthetic A/B/C correlated-feature suite. Replaced for now by analytic ground-truth models.
+
+**Original plan:**
 - **`Study` container (ADR-015):** multiple `TraceResult`s, multi-input claim test results, dataset-level assessments, population estimates, and cross-input statistics.
 - The `CausalEffect` record, designed around `Estimand` (ADR-013). Finite-sample aggregates reference their individual per-input effects. Population estimates are a separate `ESTIMATED_CAUSAL` step.
 - `InterventionSpec` operations: zero, mean (explicit reference set), constant, patch-from-trace, scale, and neuron-basis feature delta.

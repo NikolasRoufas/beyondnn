@@ -328,3 +328,24 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 torch threads; warm-up
 
   All are caught.
 
+---
+
+## 2026-09-25: Phase 2 intervention overhead, review findings, gate
+- **Commit:** "Add Phase 2 benchmark, review fixes and report" (parent `1fd495b`)
+- **Benchmark** (`benchmarks/bench_interventions.py`: eval mode, 3 warm-up, 30 iterations, median/p90):
+
+Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 threads; warm-up 3, 30 iterations; median / p90 ms.
+
+| model | site | forward | baseline trace | zero-ablation comparison | patch comparison |
+|---|---|---|---|---|---|
+| TinyMLP | shared | 0.023 / 0.023 | 0.669 / 0.752 | 1.460 / 1.502 | 2.034 / 2.092 |
+| TinyTransformer | blocks.0.attn | 0.251 / 0.261 | 1.311 / 1.352 | 2.661 / 2.698 | 3.810 / 3.843 |
+
+  A comparison costs about two traced passes (three for patching) plus effect records; there was no optimisation.
+- **Review findings (fixed before the gate):**
+  - A model that modifies its input in place would have given the intervention pass a different input, silently. The input fingerprint is now checked after each pass.
+  - Execution conditions (training/grad/device/randomness) were not compared between the paired passes; they now are.
+  - Both mutations are caught.
+- **Validation:** 699 tests on Python 3.10, 3.12, and 3.14. The clean-venv wheel smoke tests and README examples pass.
+- **Gate:** GO WITH EXPLICIT LIMITATIONS.
+

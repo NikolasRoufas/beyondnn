@@ -21,11 +21,13 @@ def test_readme_has_a_runnable_example() -> None:
 
 
 def test_readme_examples_execute() -> None:
+    out = io.StringIO()
     for block in _runnable_blocks():
-        out = io.StringIO()
         with contextlib.redirect_stdout(out):
             exec(compile(block, str(README), "exec"), {"__name__": "readme_example"})
-        text = out.getvalue()
-        assert "InputRecord" in text
-        assert "NO_CAUSAL_EVIDENCE" in text
-        assert "not a causal or attributed explanation" in text
+    text = out.getvalue()
+    assert "InputRecord" in text
+    assert "NO_CAUSAL_EVIDENCE" in text
+    assert "not a causal or attributed explanation" in text
+    assert "EvidenceStatus.INTERVENTIONAL" in text
+    assert "ZERO_ABLATION_MAY_BE_OOD" in text

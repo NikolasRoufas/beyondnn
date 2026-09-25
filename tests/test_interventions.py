@@ -581,3 +581,42 @@ class Caching(nn.Module):
 def test_state_changes_that_do_not_affect_the_output_still_break_pairing() -> None:
     with pytest.raises(iv.StatefulComparisonError):
         iv.intervene(Caching().eval(), x(1, 2), intervention=iv.zero("a"), metric=SEL)
+
+
+class InPlaceInput(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.a = nn.Linear(2, 1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x.add_(1.0)  # mutates the caller's input
+        out: torch.Tensor = self.a(x)
+        return out
+
+
+def test_models_that_mutate_their_inputs_are_refused() -> None:
+    model = InPlaceInput().eval()
+    with pytest.raises(iv.StatefulComparisonError, match="inputs in place"):
+        iv.intervene(model, x(1, 2), intervention=iv.zero("a"), metric=SEL)
+    assert hook_count(model) == 0
+
+
+class TogglesMode(nn.Module):
+    """Switches itself to training mode after the first call (execution conditions drift)."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.a = nn.Linear(2, 1)
+        self.calls = 0
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        self.calls += 1
+        if self.calls == 1:
+            self.training = True
+        out: torch.Tensor = self.a(x)
+        return out
+
+
+def test_execution_condition_drift_is_refused() -> None:
+    with pytest.raises(iv.StatefulComparisonError, match="execution conditions"):
+        iv.intervene(TogglesMode().eval(), x(1, 2), intervention=iv.zero("a"), metric=SEL)

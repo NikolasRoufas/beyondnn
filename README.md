@@ -1,39 +1,33 @@
 # BeyondNN
 
-> **Status: pre-alpha, Phase 1 complete (local only, not released).** Implemented:
-> - the trace schema, provenance, and trace recording and persistence;
-> - a minimal INPUT → WHY → OUTPUT view whose WHY is *measured evidence only*.
+> **Status: pre-alpha, Phase 2 (causal interventions) implemented (local only, not released).**
 >
-> Interventions, attribution, causal tests, concepts, and claim testing are **not implemented**. See
-> [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md).
+> Implemented:
+> - the trace schema, provenance, trace recording and persistence;
+> - a minimal INPUT → WHY → OUTPUT view (WHY = measured evidence);
+> - controlled activation interventions with INTERVENTIONAL effect records.
+>
+> Attribution, concepts, and sufficiency testing are **not implemented**. See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md) and [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md).
 
 BeyondNN is an interpretability evidence framework for PyTorch.
 
-Its goal is to turn claims about neural-network computation into structured, provenance-aware, testable
-objects. Today it provides:
+It turns claims about neural-network computation into structured, provenance-aware, testable objects. Today it provides:
 - structured traces;
 - provenance;
-- explicit epistemic status.
+- explicit epistemic status;
+- controlled interventions whose effects are recorded as INTERVENTIONAL evidence;
+- threshold claim tests that must be declared before they run.
 
-Interventions and claim testing are planned for Phase 2+.
-
-BeyondNN does not assume that an attribution, a probe, a generated explanation, or a readable feature is
-automatically a faithful explanation of model computation. The schema labels every result with how it was
-obtained:
+BeyondNN does not assume that an attribution, a probe, a generated explanation, or a readable feature is automatically a faithful explanation of model computation. The schema labels every result with how it was obtained:
 - observed or measured;
 - attributed;
 - interventional or estimated causal;
 - validated concept;
 - generated.
 
-**Phase 1 produces only *observed* and *measured* evidence.** The other statuses exist in the schema for
-later phases.
+**Today BeyondNN produces observed, measured, and (from controlled interventions) interventional evidence only.** The other statuses exist in the schema for later phases.
 
-The schema already models claims as explicit records that must pass declared tests before they are
-reported as supported. No test runners exist yet.
-
-BeyondNN builds on PyTorch and is meant to work *alongside* Captum, nnsight, TransformerLens, and SAELens,
-not to replace them.
+BeyondNN builds on PyTorch and is meant to work *alongside* Captum, nnsight, TransformerLens, and SAELens, not to replace them.
 
 ## What works today (pre-alpha, local only)
 
@@ -85,10 +79,47 @@ print(trace.activation("head"), trace.origin(trace.activation("head")).model)
 - **Persistence:** `trace.save("run1/")` and `bnn.load_trace("run1/")` persist traces as `trace.json` plus an optional `tensors.pt`. The sidecar is only ever read with `weights_only=True`, and everything is re-validated on load.
 - **Refusals:** public tracing refuses models that carry forward hooks not installed by BeyondNN, and models whose tensors span several devices. Only CPU is verified in Phase 1.
 
+## Controlled interventions (Phase 2)
+
+```python
+# runnable example (executed by tests/test_readme.py)
+import torch
+from torch import nn
+
+import beyondnn as bnn
+
+iv = bnn.interventions
+
+
+class TwoPaths(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.a = nn.Linear(2, 1)
+        self.b = nn.Linear(2, 1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.a(x) + self.b(x)
+
+
+torch.manual_seed(0)
+model = TwoPaths().eval()                  # comparisons are refused in training mode
+x = torch.tensor([[1.0, 2.0]])
+
+result = bnn.intervene(model, x, intervention=iv.zero("a"), metric=iv.metrics.select([0, 0]))
+print(result.baseline_value, result.intervention_value, result.value)   # value = intervention - baseline
+print(result.effect.status, result.effect.estimand.scope)               # INTERVENTIONAL, INSTANCE
+print([lim.code for lim in result.limitations])                         # e.g. ZERO_ABLATION_MAY_BE_OOD
+```
+
+- **What it runs:** `bnn.intervene` records a CLEAN baseline pass and an INTERVENTION pass of the same input in one trace. Activations in the intervened pass stay **MEASURED**; only the metric difference is **INTERVENTIONAL**.
+- **Scope of the effect:** it is scoped to exactly the input(s) compared. It is not a claim that `a` is necessary in general: a redundant path can make ablation look small, and other inputs can behave differently.
+- **Claims:** they are decided only by a threshold test declared in advance (`iv.threshold_spec`, `iv.make_claim`, `claims=[...]`). Sufficiency cannot be assessed yet.
+- **Refusals:** comparisons are refused if randomness is consumed, the model state changes between passes, or the intervention does not apply.
+
 ## Still proposed (not implemented)
 
 ```python
-result = bnn.test_claim(model, claim, inputs=..., tests=[...])   # Phase 2+: interventions, causal tests
+bnn.attribute(model, x, method=...)   # Phase 3+: attribution (not implemented)
 ```
 
 There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.

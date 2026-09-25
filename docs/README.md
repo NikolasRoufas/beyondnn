@@ -10,6 +10,7 @@
 
 ## Where to start
 
+0. [`PHASE_2_REPORT.md`](PHASE_2_REPORT.md) and [`PHASE_2_PLAN.md`](PHASE_2_PLAN.md): causal interventions, with their guarantees and limits.
 0. [`PHASE_1_REPORT.md`](PHASE_1_REPORT.md): what exists now, its guarantees and limits, and the Phase 1 gate decision.
 
 1. [`research/DIFFERENTIATION.md`](research/DIFFERENTIATION.md): why the project exists, and its limits.

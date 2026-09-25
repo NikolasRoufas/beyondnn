@@ -17,6 +17,8 @@ All notable changes to this project are documented here. The format follows
   - the `intervention_threshold` claim protocol with a protocol registry;
   - ground-truth causal models;
   - four intervention limitations.
+- Phase 2 benchmark (`benchmarks/bench_interventions.py`), a README intervention example executed by tests, and the Phase 2 report (gate: GO WITH EXPLICIT LIMITATIONS).
+- Comparisons also refuse input modification in place and drift in execution conditions between the paired passes.
 - **M1.1: trace schema 0.1** (`beyondnn.schema`):
   - immutable records with content-derived ids;
   - evidence status bound to record kind, with explicit derivation rules;
