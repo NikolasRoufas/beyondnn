@@ -220,3 +220,13 @@ Hardware and all package versions are recorded.
   - neither hit the tolerance refusal.
 - The model-C diagnostics started at `2e4e662`, before `a5768ec`, which does not affect C for the same reason. Each result file records its commit.
 
+
+**Appended 2026-09-26, after the runs (provenance only; no hypothesis or rule changed):**
+
+- **Model B:**
+  - The model-B main run was repeated once more at `39bdd75`, after ADR-038 (a magnitude-verification tolerance: composition had refused the correct magnitude-matched results at the conv-channel site).
+  - It reproduced all 14,700 rows of the previous run exactly, and every first-sample result composed.
+- **Model C:**
+  - The model-C diagnostics were re-run at `3c7650b`, after ADR-037: the diagnostics had refused every BERT sample for lack of `model_kwargs`.
+  - The model-C main run (at `622150d`) was checked by re-running its first 3 sentences at HEAD (`8a2a536`): 315 of 315 rows are identical (`faithfulness_C_limit3.json.gz`).
+- **§2 H3/H9 wording:** H3 and H9 are evaluated per site and, for H3, pooled, as clarified above.

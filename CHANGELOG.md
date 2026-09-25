@@ -8,6 +8,14 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 5.5: realistic faithfulness validation.** Pre-registered experiments (`docs/PHASE_5_5_PLAN.md`) on a trained MLP, a trained CNN and BERT-tiny/SST-2 (`experiments/phase5_5/`, with its own pinned requirements; nothing added to the core install). Also `docs/PHASE_5_5_API_REVIEW.md` and `docs/PHASE_5_5_REPORT.md`.
+- **Declared unit axes (ADR-034):**
+  - `unit_axes` on interventions, selections (`ranking`, `top_k`, `units`, `selector`) and claim subjects, for pixels, channels and token positions;
+  - an explicit `reduce` (`sum`/`abs_sum`/`l2`) for per-unit attribution scores;
+  - diagnostics accept the same.
+  - Record versions: `InterventionRecord` v3, `Claim` v2, `EvidenceSelection` v2, with migrations. The golden claim id changes.
+- **Perturbation-magnitude-matched controls (ADR-035):** `faithfulness.controls(n, seed=, match="magnitude", strata=4)`. The magnitudes are recorded and re-derived in composition.
+- **Keyword model inputs** in `stability`, `method_agreement`, `baseline_sensitivity` and `ig_step_sensitivity` (ADR-037).
 - **Phase 5: faithfulness tests** (`bnn.faithfulness`, ADR-032, ADR-033):
   - unit-level and model-input interventions and comparison families (`InterventionRecord` v2);
   - `comprehensiveness`/`sufficiency` claim tests with matched random controls;
@@ -31,6 +39,8 @@ All notable changes to this project are documented here. The format follows
 - `InputRecord.sample_id` (record version 3): the exact input identity, with a migration from v2.
 
 ### Fixed
+- Attribution no longer refuses deterministic models whose grad-enabled and no-grad forwards differ by rounding: the tolerance is scaled to the output precision (ADR-036; found on a trained CNN).
+- Curves over declared units keep `unit_axes`/`unit_reduction` in their selection record, and a declared reduction is recorded even when each unit is one element. Both were found by composition on realistic models.
 - `intervention_threshold` can decide only NECESSARY_FOR/DECREASES/INCREASES, independent of the protocol registry. Composition refuses decisive results from protocols that do not justify the claim's relation (found by the Phase 4 mutation audit).
 - **Phase 3: attribution** (`bnn.attribute`, `bnn.attribution`, ADR-030):
   - ATTRIBUTED `AttributionRecord` and `AttributionReduction` records, with container checks for site/call/pass and shape;

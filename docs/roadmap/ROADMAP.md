@@ -115,6 +115,22 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 - Every test gets a documentation page covering its formal definition, implementation, interpretation, and limitations.
 - Also Research Question 8: can any aggregate predict held-out outcomes on ground-truth models?
 
+## Phase 5.5: Realistic faithfulness validation: see `docs/PHASE_5_5_REPORT.md` for the gate (2026-09-26; ADR-034 to ADR-037)
+
+- Pre-registered validation on a trained MLP (breast_cancer), a trained CNN (digits) and BERT-tiny (SST-2), with 60/60/40 held-out samples.
+- **Framework changes forced by the realistic runs:**
+  - declared unit axes (pixels, channels, tokens);
+  - magnitude-matched controls;
+  - an output-precision reproducibility tolerance;
+  - keyword inputs in diagnostics;
+  - two fixes to the unit-axes change itself.
+- **Open, bounded** (API review):
+  - `run_dataset` supports only one target and one criterion, and takes no kwargs;
+  - there is no selection source for intervention-derived rankings;
+  - curves refuse declared rankings;
+  - a diagnostic takes one reduction for both methods;
+  - `faithfulness.stats` is not exported.
+
 ## Phase 6: Concepts
 - `FeatureBasis` (neuron, direction; SAE via adapter).
 - The `SemanticStatus` lifecycle, and `concepts.validate()` implemented as testing an `ENCODES` claim plus a causal claim, with counterexamples and random-direction controls.
