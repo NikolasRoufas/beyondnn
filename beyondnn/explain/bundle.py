@@ -38,12 +38,21 @@ from typing import Any
 from beyondnn.attribution import AttributionResult
 from beyondnn.attribution import evaluate_claim as evaluate_attribution_claim
 from beyondnn.core.trace import _REF_TARGET, TraceResult, _refs
+from beyondnn.faithfulness.verify import (
+    VerificationError,
+    verify_claim_result,
+    verify_protocol_result,
+    verify_selection,
+)
 from beyondnn.interventions import InterventionResult
 from beyondnn.interventions import evaluate_claim as evaluate_intervention_claim
 from beyondnn.protocols import (
     ATTRIBUTION_THRESHOLD,
+    COMPREHENSIVENESS,
+    DIAGNOSTIC_PROTOCOLS,
     INTERVENTION_THRESHOLD,
     PROTOCOLS,
+    SUFFICIENCY,
     check_policy,
 )
 from beyondnn.schema import (
@@ -56,9 +65,11 @@ from beyondnn.schema import (
     ClaimTestResult,
     ClaimTestSpec,
     EstimandScope,
+    EvidenceSelection,
     InterventionRecord,
     MetricSpec,
     Outcome,
+    ProtocolResult,
     ProvenanceRecord,
     TargetSpec,
     TraceLimitation,
@@ -135,8 +146,10 @@ class EvidenceBundle:
         "attributions",
         "claim_target",
         "claims",
+        "faithfulness",
         "interventions",
         "policies",
+        "primary_sources",
         "reference",
         "results",
         "sample_id",
@@ -155,6 +168,8 @@ class EvidenceBundle:
     claim_target: TargetSpec | None
     sample_id: str | None
     sources: tuple[TraceResult, ...]
+    primary_sources: tuple[TraceResult, ...]
+    faithfulness: tuple[Any, ...]
     _index: Mapping[str, tuple[BaseRecord, TraceResult]]
 
     def __init__(self, token: object, **fields: Any) -> None:
@@ -194,7 +209,7 @@ class EvidenceBundle:
 
     @property
     def has_target_evidence(self) -> bool:
-        return bool(self.attribution_records or self.effects)
+        return bool(self.attribution_records or self.effects or self.faithfulness)
 
     @property
     def attribution_records(self) -> tuple[AttributionRecord, ...]:
@@ -210,7 +225,7 @@ class EvidenceBundle:
     def limitations(self) -> tuple[TraceLimitation, ...]:
         """Every limitation of every source trace, deduplicated by record identity, in
         source order (reference first) and each trace's own order."""
-        return tuple(_unique(lim for src in self.sources for lim in src.limitations))
+        return tuple(_unique(lim for src in self.primary_sources for lim in src.limitations))
 
     @property
     def provenance(self) -> tuple[ProvenanceRecord, ...]:
@@ -227,8 +242,24 @@ class EvidenceBundle:
         interventions: Sequence[InterventionResult] = (),
         claims: Sequence[Claim] = (),
         policies: Sequence[AssessmentPolicy] = (),
+        faithfulness: Sequence[Any] = (),
     ) -> EvidenceBundle:
-        """Validate and compose (see module docstring). Runs no model and no method."""
+        """Validate and compose (see module docstring). Runs no model and no method.
+
+        ``faithfulness`` takes Phase-5 results about the reference input
+        (``FaithfulnessResult``, ``CurveResult``, ``DiagnosticResult``). Their own traces
+        are primary sources; the attribution traces they rest on (and a stability
+        test's transformed-input evidence) are context sources: integrity- and
+        model-checked and used to re-derive results, never presented as evidence about
+        the reference input. Dataset-level results are refused here (ADR-033).
+        """
+        from beyondnn.faithfulness import (
+            CurveResult,
+            DatasetResult,
+            DiagnosticResult,
+            FaithfulnessResult,
+        )
+
         if not isinstance(trace, TraceResult):
             raise TypeError("the reference must be a TraceResult")
         if trace.passes != 1:
@@ -245,12 +276,30 @@ class EvidenceBundle:
             if isinstance(items, (str, bytes)) or not all(isinstance(i, kind) for i in items):
                 raise TypeError(f"{name} must be a sequence of {kind.__name__}")
         attributions, interventions = tuple(attributions), tuple(interventions)
+        faithfulness = tuple(faithfulness)
+        for f in faithfulness:
+            if isinstance(f, DatasetResult):
+                raise UnsupportedScopeError(
+                    "a dataset-level faithfulness result is not part of an instance-level "
+                    "explanation; present it with its own summaries"
+                )
+            if not isinstance(f, (FaithfulnessResult, CurveResult, DiagnosticResult)):
+                raise TypeError("faithfulness must be a sequence of Phase-5 result objects")
+        context: list[TraceResult] = []
+        for f in faithfulness:
+            context += [a.trace for a in f.attributions]
+            for t in getattr(f, "tests", ()):
+                context += [t.trace, *(a.trace for a in t.attributions)]
 
-        sources = tuple(
-            _unique_objects(
-                [trace, *(a.trace for a in attributions), *(i.trace for i in interventions)]
-            )
+        primary = _unique_objects(
+            [
+                trace,
+                *(a.trace for a in attributions),
+                *(i.trace for i in interventions),
+                *(f.trace for f in faithfulness),
+            ]
         )
+        sources = tuple(_unique_objects([*primary, *context]))
         index: dict[str, tuple[BaseRecord, TraceResult]] = {}
         canonical: dict[str, str] = {}
         for src in sources:
@@ -289,7 +338,7 @@ class EvidenceBundle:
 
         sample = reference_input.sample_id
         bundle_claims = list(_unique(claims))
-        for src in sources:
+        for src in primary:
             bundle_claims += [c for c in src.records if isinstance(c, Claim)]
         bundle_claims = list(_unique(bundle_claims))
         attribution_records = _unique(
@@ -297,7 +346,15 @@ class EvidenceBundle:
             + [r for r in trace.records if isinstance(r, AttributionRecord)]
         )
         effects = list(_unique(i.effect for i in interventions))
-        target_specific = bool(attribution_records or effects or bundle_claims)
+        f_traces = [f.trace for f in faithfulness]
+        f_effects = _unique(r for t in f_traces for r in t.records if isinstance(r, CausalEffect))
+        f_protocols = _unique(
+            r for t in f_traces for r in t.records if isinstance(r, ProtocolResult)
+        )
+        f_selections = _unique(
+            r for t in f_traces for r in t.records if isinstance(r, EvidenceSelection)
+        )
+        target_specific = bool(attribution_records or effects or bundle_claims or faithfulness)
         if target_specific and sample is None:
             raise SampleMismatchError(
                 "the reference input has no exact sample identity (a trace recorded before "
@@ -328,6 +385,14 @@ class EvidenceBundle:
             baseline = i.baseline_output
             (baseline_input,) = [r for r in i.trace.inputs if r.pass_index == baseline.pass_index]
             same_sample(baseline_input.sample_id, "the intervention's baseline pass")
+        for effect in f_effects:
+            if effect.estimand.scope is not EstimandScope.INSTANCE:
+                raise UnsupportedScopeError("faithfulness effects must be instance effects")
+            same_sample(effect.estimand.sample_id, f"faithfulness effect {effect.id}")
+        for selection in f_selections:
+            same_sample(selection.sample_id, f"evidence selection {selection.id}")
+        for protocol_result in f_protocols:
+            same_sample(protocol_result.samples[0], f"protocol result {protocol_result.id}")
         for claim in bundle_claims:
             if claim.estimand.scope is not EstimandScope.INSTANCE:
                 raise UnsupportedScopeError(
@@ -336,7 +401,12 @@ class EvidenceBundle:
                 )
             same_sample(claim.estimand.sample_id, f"claim {claim.id}")
 
-        metrics = _unique([r.target for r in attribution_records] + [e.metric for e in effects])
+        metrics = _unique(
+            [r.target for r in attribution_records]
+            + [e.metric for e in effects]
+            + [e.metric for e in f_effects]
+            + [r.target for r in f_protocols if r.target is not None]
+        )
         if len(metrics) > 1:
             raise TargetMismatchError(
                 "target-specific evidence uses different targets "
@@ -352,10 +422,23 @@ class EvidenceBundle:
         claim_target = claim_targets[0] if claim_targets else None
 
         claim_ids = {c.id for c in bundle_claims}
-        results = [r for src in sources for r in src.records if isinstance(r, ClaimTestResult)]
+        results = [r for src in primary for r in src.records if isinstance(r, ClaimTestResult)]
         results = list(_unique(results))
         for result in results:
             _revalidate(result, index, claim_ids)
+
+        def lookup(record_id: str) -> tuple[BaseRecord, TraceResult]:
+            return index[record_id]
+
+        try:
+            for selection in f_selections:
+                verify_selection(selection, lookup)
+            for protocol_result in f_protocols:
+                if protocol_result.protocol not in DIAGNOSTIC_PROTOCOLS:
+                    raise VerificationError(f"unregistered protocol {protocol_result.protocol}")
+                verify_protocol_result(protocol_result, lookup)
+        except VerificationError as exc:
+            raise EvidenceIntegrityError(str(exc)) from None
 
         policy_list = tuple(_unique(policies))
         for policy in policy_list:
@@ -380,6 +463,8 @@ class EvidenceBundle:
             claim_target=claim_target,
             sample_id=sample,
             sources=sources,
+            primary_sources=tuple(primary),
+            faithfulness=faithfulness,
             _index=MappingProxyType(index),
         )
 
@@ -455,6 +540,12 @@ def _revalidate(
         record, source = records[0]
         assert isinstance(record, AttributionRecord)
         expected = evaluate_attribution_claim(claim, spec, record, source.tensor(record.value))
+    elif spec.protocol in (COMPREHENSIVENESS, SUFFICIENCY):
+        try:
+            verify_claim_result(result, lambda rid: index[rid])
+        except (VerificationError, KeyError) as exc:
+            raise EvidenceIntegrityError(str(exc)) from None
+        return
     else:  # a registered protocol without a revalidator
         raise EvidenceIntegrityError(f"no revalidator for protocol {spec.protocol!r}")
     if expected.id != result.id:

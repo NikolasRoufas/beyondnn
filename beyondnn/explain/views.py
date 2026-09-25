@@ -22,6 +22,7 @@ from beyondnn.schema import (
     Claim,
     ClaimTestResult,
     ClaimTestSpec,
+    EvidenceSelection,
     InputRecord,
     InterventionRecord,
     Outcome,
@@ -29,7 +30,26 @@ from beyondnn.schema import (
     TraceLimitation,
 )
 
-__all__ = ["AttributionView", "ClaimView", "Coverage", "InterventionView"]
+__all__ = [
+    "FAITHFULNESS_PROTOCOLS",
+    "AttributionView",
+    "ClaimView",
+    "Coverage",
+    "FaithfulnessView",
+    "InterventionView",
+]
+
+#: Every Phase-5 faithfulness protocol (claim tests and diagnostics), in display order.
+FAITHFULNESS_PROTOCOLS = (
+    "comprehensiveness",
+    "sufficiency",
+    "removal_curve",
+    "retention_curve",
+    "stability",
+    "method_agreement",
+    "baseline_sensitivity",
+    "ig_step_sensitivity",
+)
 
 _DECISIVE = frozenset({Outcome.SUPPORTS, Outcome.CONTRADICTS})
 
@@ -90,13 +110,30 @@ class ClaimView:
         return self.is_causal and bool(self.decisive_tests)
 
 
+@dataclass(frozen=True, slots=True, eq=False)
+class FaithfulnessView:
+    """One faithfulness claim test: the declared claim and spec, the ClaimTestResult,
+    the evidence selection, the primary INTERVENTIONAL effect, its matched controls,
+    and the limitations scoped to the result. Nothing is summarised further."""
+
+    claim: Claim
+    spec: ClaimTestSpec
+    result: ClaimTestResult
+    selection: EvidenceSelection | None
+    effect: CausalEffect | None
+    controls: tuple[CausalEffect, ...]
+    limitations: tuple[TraceLimitation, ...]
+
+
 @dataclass(frozen=True, slots=True)
 class Coverage:
     """Which kinds of evidence exist and which evaluations never happened.
 
     Coverage, not confidence: absence of a method is not "low confidence", and there
-    is no score. ``faithfulness_evaluated`` and ``concepts_validated`` are always
-    ``False`` in Phase 4 (no faithfulness protocol and no concept validation exist).
+    is no score. ``faithfulness_evaluated`` is true only when at least one Phase-5
+    protocol result is composed, and ``faithfulness_protocols`` names exactly which;
+    it never means "the explanation is faithful". ``concepts_validated`` is always
+    ``False`` (no concept validation exists).
     """
 
     NOT_EVALUATED: ClassVar[tuple[str, ...]] = (
@@ -113,12 +150,26 @@ class Coverage:
     claims_declared: bool
     claims_tested: bool
     causal_claim_tested: bool
-    faithfulness_evaluated: Literal[False] = False
+    faithfulness_evaluated: bool = False
     concepts_validated: Literal[False] = False
+    faithfulness_protocols: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
-        if self.faithfulness_evaluated is not False or self.concepts_validated is not False:
+        if self.faithfulness_evaluated != bool(self.faithfulness_protocols):
             raise ValueError(
-                "faithfulness and concept validation are not evaluated by any Phase-4 "
-                "protocol; they cannot be marked as evaluated"
+                "faithfulness is evaluated only by recorded faithfulness protocol results; "
+                "faithfulness_evaluated must be true exactly when protocols are named"
             )
+        unknown = [p for p in self.faithfulness_protocols if p not in FAITHFULNESS_PROTOCOLS]
+        if unknown:
+            raise ValueError(f"unknown faithfulness protocols {unknown}")
+        if self.concepts_validated is not False:
+            raise ValueError("no concept validation exists; concepts cannot be marked validated")
+
+    @property
+    def not_evaluated(self) -> tuple[str, ...]:
+        """What was not evaluated (Phase-4 wording when no faithfulness protocol ran)."""
+        if not self.faithfulness_protocols:
+            return self.NOT_EVALUATED
+        missing = tuple(p for p in FAITHFULNESS_PROTOCOLS if p not in self.faithfulness_protocols)
+        return (*missing, "concept validation")

@@ -39,12 +39,16 @@ from beyondnn.schema import (
     BaseRecord,
     CausalEffect,
     Claim,
+    ClaimTestResult,
     ClaimTestSpec,
+    EvidenceSelection,
     EvidenceStatus,
     InputRecord,
+    JsonMap,
     MetricSpec,
     NamedTensor,
     OutputRecord,
+    ProtocolResult,
     ProvenanceRecord,
     TargetSpec,
     TensorRef,
@@ -52,7 +56,14 @@ from beyondnn.schema import (
 )
 
 from .bundle import EvidenceBundle
-from .views import AttributionView, ClaimView, Coverage, InterventionView
+from .views import (
+    FAITHFULNESS_PROTOCOLS,
+    AttributionView,
+    ClaimView,
+    Coverage,
+    FaithfulnessView,
+    InterventionView,
+)
 
 __all__ = ["EXPLANATION_LIMITATIONS", "ExplainResponse", "Why", "compose"]
 
@@ -115,7 +126,17 @@ class Why:
 
     @property
     def not_answered(self) -> str:
-        return self.TARGET_NOT_ANSWERED if self._target_view else self.NOT_ANSWERED
+        if not self._target_view:
+            return self.NOT_ANSWERED
+        ran = self.faithfulness_protocols
+        if not ran:
+            return self.TARGET_NOT_ANSWERED
+        return (
+            "Whether this evidence reconstructs the model's computation (only "
+            f"{', '.join(ran)} were run, each for its own declared claim or diagnostic), what "
+            "any activation means (no concept validation), and anything beyond the declared, "
+            "tested claims"
+        )
 
     @property
     def _target_view(self) -> bool:
@@ -235,7 +256,70 @@ class Why:
             *self.attributions,
             *reductions,
             *self._b.effects,
+            *self.faithfulness_effects,
         )
+
+    # ------------------------------------------------------------ faithfulness (Phase 5)
+
+    def _faithfulness_records(self, kind: type) -> list[Any]:
+        found: list[Any] = []
+        seen: set[str] = set()
+        for f in self._b.faithfulness:
+            records: tuple[BaseRecord, ...] = f.trace.records
+            for r in records:
+                if isinstance(r, kind) and r.id not in seen:
+                    seen.add(r.id)
+                    found.append(r)
+        return found
+
+    @property
+    def faithfulness_effects(self) -> tuple[CausalEffect, ...]:
+        """The INTERVENTIONAL effects of the faithfulness perturbations (tested selections
+        and their controls): the raw measurements behind the faithfulness results."""
+        return tuple(self._faithfulness_records(CausalEffect))
+
+    @property
+    def faithfulness_tests(self) -> tuple[FaithfulnessView, ...]:
+        """Faithfulness claim tests (comprehensiveness/sufficiency), in composition order."""
+        views = []
+        for result in self._faithfulness_records(ClaimTestResult):
+            spec = self._b.get(result.spec.spec_id)
+            claim = self._b.get(result.claim.claim_id)
+            assert isinstance(spec, ClaimTestSpec)
+            assert isinstance(claim, Claim)
+            if spec.protocol not in ("comprehensiveness", "sufficiency"):
+                continue
+            src = self._b.source_of(result)
+            stats = result.statistics
+            effect = None
+            selected = stats.get("selected_effect")
+            if isinstance(selected, str):
+                found = self._b.get(selected)
+                effect = found if isinstance(found, CausalEffect) else None
+            ids = stats.get("control_effects")
+            controls = tuple(
+                c
+                for c in (self._b.get(str(i)) for i in (ids if isinstance(ids, tuple) else ()))
+                if isinstance(c, CausalEffect)
+            )
+            selections = [r for r in src.records if isinstance(r, EvidenceSelection)]
+            views.append(
+                FaithfulnessView(
+                    claim=claim,
+                    spec=spec,
+                    result=result,
+                    selection=selections[0] if len(selections) == 1 else None,
+                    effect=effect,
+                    controls=controls,
+                    limitations=_scoped(src, result.id),
+                )
+            )
+        return tuple(views)
+
+    @property
+    def protocol_results(self) -> tuple[ProtocolResult, ...]:
+        """Diagnostic protocol results (curves, stability, method diagnostics)."""
+        return tuple(self._faithfulness_records(ProtocolResult))
 
     @property
     def evidence_statuses(self) -> frozenset[EvidenceStatus]:
@@ -311,7 +395,16 @@ class Why:
             claims_declared=bool(claims),
             claims_tested=any(c.decisive_tests for c in claims),
             causal_claim_tested=any(c.causal_test_performed for c in claims),
+            faithfulness_evaluated=bool(self.faithfulness_protocols),
+            faithfulness_protocols=self.faithfulness_protocols,
         )
+
+    @property
+    def faithfulness_protocols(self) -> tuple[str, ...]:
+        """The faithfulness protocols with composed results (in a fixed order)."""
+        ran = {v.spec.protocol for v in self.faithfulness_tests}
+        ran |= {r.protocol for r in self.protocol_results}
+        return tuple(p for p in FAITHFULNESS_PROTOCOLS if p in ran)
 
     @property
     def unanswered(self) -> tuple[str, ...]:
@@ -329,7 +422,14 @@ class Why:
                 out.append(
                     f"Does the claim {view.claim.statement!r} hold? (no decisive causal test)"
                 )
-        out.append("Is this evidence faithful, comprehensive, or sufficient? (not evaluated)")
+        if cov.faithfulness_protocols:
+            out.append(
+                "Does this evidence reconstruct the model's computation? (not established: "
+                f"only {', '.join(cov.faithfulness_protocols)} were run, each for its own "
+                "declared claim or diagnostic)"
+            )
+        else:
+            out.append("Is this evidence faithful, comprehensive, or sufficient? (not evaluated)")
         out.append("Does any activation correspond to a concept? (no concept validation)")
         return tuple(out)
 
@@ -367,6 +467,40 @@ def _site(module: str, io: str, path: str) -> str:
 
 
 _MAX_VALUES = 16
+
+
+def _float(value: object) -> float:
+    return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else 0.0
+
+
+def _num(value: object) -> str:
+    return f"{_float(value):.6g}"
+
+
+def _grouped_limitation_lines(lims: Sequence[TraceLimitation], indent: str) -> list[str]:
+    """Identical limitations (same code and detail) on several records are shown once,
+    with the number of records they apply to; the structured list keeps every record."""
+    order: list[tuple[str, str | None]] = []
+    counts: dict[tuple[str, str | None], int] = {}
+    first: dict[tuple[str, str | None], TraceLimitation] = {}
+    for lim in lims:
+        key = (lim.code, lim.detail)
+        if key not in counts:
+            order.append(key)
+            counts[key] = 0
+            first[key] = lim
+        counts[key] += 1
+    lines = []
+    for key in order:
+        (line,) = _limitation_lines([first[key]], indent)
+        if counts[key] > 1:
+            line += f" (on {counts[key]} records)"
+        lines.append(line)
+    return lines
+
+
+def _scoped(trace: TraceResult, record_id: str) -> tuple[TraceLimitation, ...]:
+    return tuple(lim for lim in trace.limitations if record_id in lim.applies_to)
 
 
 def _codes(lims: Sequence[TraceLimitation]) -> str:
@@ -423,6 +557,7 @@ class ExplainResponse:
         interventions: Sequence[InterventionResult] = (),
         claims: Sequence[Claim] = (),
         policies: Sequence[AssessmentPolicy] = (),
+        faithfulness: Sequence[Any] = (),
     ) -> ExplainResponse:
         """Compose already-computed evidence (see :class:`EvidenceBundle`). Runs no model."""
         bundle = EvidenceBundle.compose(
@@ -431,6 +566,7 @@ class ExplainResponse:
             interventions=interventions,
             claims=claims,
             policies=policies,
+            faithfulness=faithfulness,
         )
         return cls(trace, bundle)
 
@@ -473,10 +609,12 @@ class ExplainResponse:
         lines += self._render_measurements(why)
         lines += self._render_attributions(why)
         lines += self._render_interventions(why)
+        if why.faithfulness_tests or why.protocol_results:
+            lines += self._render_faithfulness(why)
         lines += ["", "  ESTIMATED_CAUSAL", "    (none)"]
         lines += self._render_claims(why)
         lines += self._render_coverage(why)
-        lines += ["", "  LIMITATIONS", *_limitation_lines(why.limitations, "    ")]
+        lines += ["", "  LIMITATIONS", *_grouped_limitation_lines(why.limitations, "    ")]
         lines += ["", *self._render_not_evaluated(why)]
         lines += ["", "OUTPUT  [observed]", *_tensors(self.output.tensors)]
         return "\n".join(lines)
@@ -590,6 +728,77 @@ class ExplainResponse:
         return lines
 
     @staticmethod
+    def _render_faithfulness(why: Why) -> list[str]:
+        lines = [
+            "",
+            "  FAITHFULNESS  [declared protocol tests; each bears only on its own claim, "
+            "under its declared perturbation]",
+        ]
+        for n, v in enumerate(why.faithfulness_tests, 1):
+            p = v.spec.params
+            site = v.claim.subject.site
+            replacement = p.get("replacement")
+            shown = _json(replacement.to_plain()) if isinstance(replacement, JsonMap) else "?"
+            lines.append(
+                f"    test {n}: {v.spec.protocol} v{v.spec.protocol_version} "
+                f"({p.get('mode')}, {p.get('level')}, replacement {shown}) on units "
+                f"{list(v.claim.subject.units or ())} of "
+                f"{_site(site.module, site.io.value, site.output_path)}"
+            )
+            if v.selection is not None:
+                sel = v.selection
+                origin = sel.source_record or "declared by the caller"
+                lines.append(
+                    f"      selection: {sel.source.value} ({sel.rule}), k={sel.k}, from {origin}"
+                )
+            stats = v.result.statistics
+            if "drop" in stats:
+                lines.append(
+                    f"      drop F(x) - F(x') = {_num(stats['drop'])} (baseline "
+                    f"{_num(stats['baseline_value'])} -> perturbed "
+                    f"{_num(stats['perturbed_value'])})"
+                )
+            if stats.get("no_op"):
+                lines.append("      the perturbation changed nothing at the replaced units")
+            if "n_controls" in stats:
+                lines.append(
+                    f"      controls: {stats['n_controls']} matched random sets; smaller drop "
+                    f"{_num(stats['fraction_below'])}, tied {_num(stats['fraction_tied'])}, "
+                    f"larger drop {_num(stats['fraction_above'])}; P(a matched random set does "
+                    f"at least as well) = {_num(stats['mc_p_value'])}"
+                )
+            lines.append(
+                f"      result: {v.result.outcome.value} under criteria "
+                f"{_json(v.spec.criteria.to_plain())}"
+            )
+            lines.append(f"      limitations: {_codes(v.limitations)}")
+        for r in why.protocol_results:
+            outcomes = ", ".join(f"{o.aspect}: {o.outcome.value}" for o in r.outcomes) or "none"
+            lines.append(f"    {r.protocol} v{r.protocol_version}: outcomes [{outcomes}]")
+            m = r.measurements
+            if "drops" in m and "points" in m:
+                drops = m["drops"]
+                points = m["points"]
+                assert isinstance(drops, tuple)
+                assert isinstance(points, tuple)
+                lines.append(
+                    f"      points {list(points)}: drops {_values([_float(d) for d in drops])}"
+                )
+                lines.append(
+                    f"      aopc_mean_drop {_num(m['aopc_mean_drop'])} (mean drop over the "
+                    "declared points; the full curve is listed)"
+                )
+            for key in (
+                "prediction_change",
+                "rank_correlation",
+                "topk_jaccard",
+                "max_abs_difference",
+            ):
+                if m.get(key) is not None:
+                    lines.append(f"      {key}: {_num(m[key])}")
+        return lines
+
+    @staticmethod
     def _render_claims(why: Why) -> list[str]:
         lines = ["", "  CLAIMS  [declared; tested only by registered protocols]"]
         views = why.claims
@@ -608,8 +817,9 @@ class ExplainResponse:
             if not view.tests:
                 lines.append("      tests: (none recorded)")
             for spec, result in view.tests:
-                evidence = ", ".join(
-                    f"{ev.record_id} [{ev.status.value}]" for ev in result.evidence
+                cited = [f"{ev.record_id} [{ev.status.value}]" for ev in result.evidence]
+                evidence = ", ".join(cited[:3]) + (
+                    f", and {len(cited) - 3} more" if len(cited) > 3 else ""
                 )
                 lines.append(
                     f"      test {spec.protocol} v{spec.protocol_version} "
@@ -654,7 +864,7 @@ class ExplainResponse:
     def _render_not_evaluated(why: Why) -> list[str]:
         return [
             "NOT EVALUATED",
-            *[f"  - {item}" for item in Coverage.NOT_EVALUATED],
+            *[f"  - {item}" for item in why.coverage.not_evaluated],
             *[f"  unanswered: {q}" for q in why.unanswered],
         ]
 
@@ -733,9 +943,30 @@ class ExplainResponse:
                 "claims_tested": cov.claims_tested,
                 "causal_claim_tested": cov.causal_claim_tested,
                 "faithfulness_evaluated": cov.faithfulness_evaluated,
+                "faithfulness_protocols": list(cov.faithfulness_protocols),
                 "concepts_validated": cov.concepts_validated,
             },
-            "not_evaluated": list(Coverage.NOT_EVALUATED),
+            "faithfulness": [
+                {
+                    "record": v.result.id,
+                    "protocol": v.spec.protocol,
+                    "claim": v.claim.id,
+                    "units": list(v.claim.subject.units or ()),
+                    "outcome": v.result.outcome.value,
+                    "drop": v.result.statistics.get("drop"),
+                    "limitations": [lim.code for lim in v.limitations],
+                }
+                for v in why.faithfulness_tests
+            ]
+            + [
+                {
+                    "record": r.id,
+                    "protocol": r.protocol,
+                    "outcomes": {o.aspect: o.outcome.value for o in r.outcomes},
+                }
+                for r in why.protocol_results
+            ],
+            "not_evaluated": list(cov.not_evaluated),
             "unanswered": list(why.unanswered),
         }
 
@@ -747,6 +978,7 @@ def compose(
     interventions: Sequence[InterventionResult] = (),
     claims: Sequence[Claim] = (),
     policies: Sequence[AssessmentPolicy] = (),
+    faithfulness: Sequence[Any] = (),
 ) -> ExplainResponse:
     """Compose already-computed evidence into one INPUT -> TARGET -> WHY -> OUTPUT view.
 
@@ -763,4 +995,5 @@ def compose(
         interventions=interventions,
         claims=claims,
         policies=policies,
+        faithfulness=faithfulness,
     )

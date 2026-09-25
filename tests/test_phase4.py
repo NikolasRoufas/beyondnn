@@ -472,7 +472,7 @@ def test_composition_mutates_nothing_and_is_itself_immutable() -> None:
             claims_declared=True,
             claims_tested=True,
             causal_claim_tested=True,
-            faithfulness_evaluated=True,  # type: ignore[arg-type]
+            faithfulness_evaluated=True,
         )
 
 
