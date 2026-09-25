@@ -71,6 +71,7 @@ def test_top_level_names_are_exactly_the_audited_surface() -> None:
             "attribute",
             "attribution",
             "compose",
+            "faithfulness",
             "instrument",
             "intervene",
             "interventions",

@@ -42,6 +42,13 @@ from .errors import (
     UnknownRecordKindError,
     UnsupportedVersionError,
 )
+from .faithfulness import (
+    AspectOutcome,
+    CheckOutcome,
+    EvidenceSelection,
+    ProtocolResult,
+    SelectionSource,
+)
 from .interventions import (
     CausalEffect,
     InterventionOperation,
@@ -93,6 +100,7 @@ __all__ = [
     "LIMITATIONS",
     "SCHEMA_VERSION",
     "ActivationRecord",
+    "AspectOutcome",
     "Assessment",
     "AssessmentPolicy",
     "AttributionBaseline",
@@ -102,6 +110,7 @@ __all__ = [
     "BaseRecord",
     "BaselineKind",
     "CausalEffect",
+    "CheckOutcome",
     "Claim",
     "ClaimRef",
     "ClaimSource",
@@ -114,6 +123,7 @@ __all__ = [
     "EstimandScope",
     "EvidenceRef",
     "EvidenceRuleError",
+    "EvidenceSelection",
     "EvidenceStatus",
     "ExecutionContext",
     "ExecutionMode",
@@ -134,6 +144,7 @@ __all__ = [
     "Outcome",
     "OutputRecord",
     "PolicyRequirement",
+    "ProtocolResult",
     "ProvenanceRecord",
     "Randomness",
     "RecordRef",
@@ -141,6 +152,7 @@ __all__ = [
     "ResultRef",
     "SchemaError",
     "SchemaTypeError",
+    "SelectionSource",
     "Severity",
     "Site",
     "SiteIO",

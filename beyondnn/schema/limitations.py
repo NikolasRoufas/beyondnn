@@ -133,6 +133,30 @@ LIMITATIONS: Mapping[str, LimitationDef] = _defs(
         Severity.INFO,
     ),
     LimitationDef(
+        "SITE_RELATIVE_SUFFICIENCY",
+        "Retention was applied within one site only: units of that site outside the "
+        "selection were replaced, but computation that bypasses the site (other modules, "
+        "residual paths, other calls) was left intact. The result is sufficiency at this "
+        "site, not sufficiency for the model's computation.",
+        "By faithfulness sufficiency tests and retention curves at internal (module) sites.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "SELECTION_TIE_AT_BOUNDARY",
+        "The k-th and (k+1)-th ranked units have equal scores; which of them was selected "
+        "is decided only by the declared tie-break (lower unit index), not by the method.",
+        "By faithfulness runs whose attribution selection has a tie across the k boundary.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "DECLARED_TRANSFORMATION_UNVERIFIED",
+        "The invariance transformation is caller code, declared by name and revision; "
+        "BeyondNN cannot verify that it preserves what matters for the task or that the "
+        "code matches its declaration.",
+        "By stability tests.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
         "NO_ATTRIBUTION",
         "No attribution method was run; no input or unit importance scores exist.",
         "By explain() when its plan contains no attribution method.",

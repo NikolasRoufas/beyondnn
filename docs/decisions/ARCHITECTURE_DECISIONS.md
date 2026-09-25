@@ -1006,3 +1006,57 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 - A unit is a last-dimension index. Leaves with non-singleton leading dimensions are perturbed at those units across all leading positions; faithfulness selection refuses such tensors (see ADR-033).
 - The existing OOD limitations (`ZERO_ABLATION_MAY_BE_OOD`, `CONSTANT_REPLACEMENT_MAY_BE_OOD`) apply unchanged to input-level perturbations.
 
+---
+
+## ADR-033: Phase-5 faithfulness tests: claim protocols, diagnostic results, controls, and no new status
+
+- **Date:** 2026-09-25
+- **Status:** Accepted for Phase 5 implementation. Awaiting Phase 5 review.
+
+**Decision:**
+- **No new `EvidenceStatus`.**
+  - The raw measurements of every faithfulness test are INTERVENTIONAL `CausalEffect`s of perturbations (ADR-032), resting on OBSERVED inputs/outputs and, for selections, ATTRIBUTED records.
+  - A test result is not evidence of a new kind; it is a test result.
+- **Layering: raw effect → protocol → result → assessment.**
+  - `comprehensiveness` v1 decides NECESSARY_FOR/DECREASES claims.
+  - `sufficiency` v1 decides SUFFICIENT_FOR claims. It is the first protocol that can, and only in its declared sense: retention within one site, with a declared replacement.
+  - Both produce ordinary `ClaimTestResult`s. Their statistics are derived from the cited effects; criteria are declared in the spec before running; assessments need explicit policies (`COMPREHENSIVENESS_POLICY`, `SUFFICIENCY_POLICY`).
+  - Each evaluator hard-codes its decidable relations, independent of the registry (defence in depth, as in ADR-031).
+  - A perturbation that changed nothing gives INCONCLUSIVE, never CONTRADICTS.
+- **New non-evidence records:**
+  - `EvidenceSelection` records which units were tested: source, rule, full ranking, the scores used, k, seed, and the source attribution id.
+  - `ProtocolResult` records diagnostic protocols that never decide claims: removal/retention curves, stability, counterexample and paired-control summaries, method agreement, baseline and IG-step sensitivity. It holds declared params and criteria, derived measurements, and per-aspect outcomes (PASS/FAIL/NOT_APPLICABLE/INDETERMINATE). PASS/FAIL requires a declared criterion for that aspect, and there is never a single score.
+  - Diagnostic protocols are a separate registry (`DIAGNOSTIC_PROTOCOLS`).
+- **Units** are last-dimension indices. Selection is refused unless every other dimension has size 1; per-position selection needs an explicit reduction and is out of scope. Ties are broken by lower index, and a tie across the k boundary is flagged (`SELECTION_TIE_AT_BOUNDARY`).
+- **Controls:**
+  - matched random selections: same site, same size, uniform without replacement; random permutations for curves;
+  - drawn from a seeded **local** `torch.Generator` (never the global RNG), so they are reproducible and re-derivable;
+  - statistics: control fractions below/tied/above, and a one-sided Monte-Carlo p `(1 + b)/(N + 1)` described as "a matched random set does at least as well", never as "significant";
+  - dataset level: per-sample paired differences with a seeded sign-flip test.
+  - There is no numpy/scipy dependency.
+- **Curves:** "deletion" and "progressive ablation" are both `removal_curve`; "insertion" and "progressive retention" are both `retention_curve`.
+  - The level is carried by the site. The full curve is always stored.
+  - `aopc_mean_drop` is optional and its normalisation is recorded: the mean drop over the declared points, anchors included.
+- **Stability:** the caller declares the transformation (name, revision, config, unit map; the function is never serialised, and `DECLARED_TRANSFORMATION_UNVERIFIED` applies).
+  - Four aspects are reported separately: prediction, ranking (Spearman on ordinal rankings), top-k Jaccard, and claim outcome.
+- **Samples vs datasets:**
+  - An instance run is one sample.
+  - `run_dataset` runs a declared sample set in **one** trace, with per-sample claims and results. It adds a `counterexample` summary (every CONTRADICTS kept; "held on a of n") and, with controls, a `paired_control` summary. Both link to the per-sample results.
+  - Universally quantified claims are not first-class claims; the counterexample summary is how "holds on the declared set" is represented.
+  - Dataset results are refused in an instance-level WHY.
+- **Verification:**
+  - every perturbation is checked against the recorded execution: the perturbed input's `sample_id`, or the retained site activation;
+  - composition re-derives claim results, including the no-op status and the seed-reproduced controls, as well as selections and diagnostic results from the raw records (`faithfulness.verify`).
+- **Coverage:** `faithfulness_evaluated` becomes true only with composed faithfulness results, and `faithfulness_protocols` names exactly which. It never means "faithful"; `NOT_EVALUATED` then lists the protocols not run. `concepts_validated` stays false.
+- **Not built:**
+  - global faithfulness/aggregate scores (ADR-007; RQ8 deferred, too few ground-truth tasks for a held-out evaluation);
+  - ROAR retraining;
+  - Quantus/Captum-metric adapters;
+  - probes;
+  - universally quantified claims.
+
+**Consequences:**
+- A passed protocol supports only its claim, under its declared replacement and scope.
+- Removal/retention inputs are off-distribution (recorded via the Phase-2 OOD limitations); BeyondNN documents this confound but cannot remove it.
+- With few units, matched controls often coincide with the selection, so a perfect selection can have a Monte-Carlo p above 0.05. This is reported, not hidden.
+

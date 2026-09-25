@@ -259,6 +259,15 @@ It migrates old record versions and remaps every reference to ids that migration
 - A `ProvenanceRecord` with `execution.mode = INTERVENTION` must name an `InterventionRecord` in the same trace.
 - Intervention tensors are retained tensors of the trace: persisted in `tensors.pt` and digest-checked on load.
 
+### A.17 Faithfulness records (Phase 5, ADR-033)
+
+| Kind | Status | Fields |
+|---|---|---|
+| `evidence_selection` | none | `site`, `call_index`, `sample_id`, `source` (attribution/declared/random), `rule`, `order` (full ranking or declared units), `n_units`, `k`, `scores` and `source_record` (attribution), `seed` (random), `target` |
+| `protocol_result` | none | `protocol`, `protocol_version`, declared `params` and `criteria`, derived `measurements`, per-aspect `outcomes` (`CheckOutcome`: pass/fail/not_applicable/indeterminate; pass/fail only with a declared criterion), `samples`, `target` |
+
+- Faithfulness claim tests are ordinary `claim_test_result` records (protocols `comprehensiveness`, `sufficiency`), whose evidence is the INTERVENTIONAL perturbation effects.
+
 ### A.16 Intervention v2 (Phase 5, ADR-032)
 
 - `intervention` is record version 2. It adds `units` (last-dimension indices, sorted and unique, or `None` for the whole leaf) and `retain` (replace the complement of `units`).
