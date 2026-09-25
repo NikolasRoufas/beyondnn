@@ -108,7 +108,20 @@ Status: **planned, not started.** Implementation begins only after the architect
 - **Known risk:** full-byte hashing does not scale to billions of parameters. Mitigation (not built now): a `fingerprint="full" | "shapes" | "sampled"` option, with the choice recorded in ModelIdentity.
 - **Scope:** about 200 LOC, about 150 LOC tests.
 
-## M1.3: Tiny models
+## M1.3: Tiny models: **implemented, awaiting review**
+
+- **As implemented:** `beyondnn/_testing/models.py` (internal namespace, not `beyondnn.models`, not exported) and `tests/test_reference_models.py`. All three models are built inside `seeded_init(seed)`, which forks and restores the CPU generator, so the caller's RNG is unchanged.
+
+| Model | Params | Exists to test |
+|---|---|---|
+| `TinyMLP` | 139 | `shared` (a `_SharedBlock` with nested `shared.linear`) is called twice per forward, so there are repeated calls at one path; a functional `F.gelu` invisible to hooks; keyword-only `scale` |
+| `TinyCNN` | 396 | Conv2d, BatchNorm buffers (train ≠ eval), functional ReLU, `pool`/`gap` modules, nested `stem`/`block`; `return_features=True` gives a `(logits, features)` tuple |
+| `TinyTransformer` | 5,120 | embeddings; attention module returning `(out, weights)`; LayerNorm, MLP, residuals; `lm_head.weight is token_embedding.weight`; non-persistent `position_ids` and `causal_mask` used in forward; int token inputs; `return_dict=True` gives `{"logits", "hidden_states"}` |
+
+- **Pinned paths** are listed in the module docstring. They are only paths these models own.
+- **Known limitation found:** plain hyperparameters (e.g. `n_heads`) are not fingerprinted. It is pinned by a test (see experiment log and roadmap).
+
+**Original plan:**
 
 - **Goal:** deterministic, CPU-fast test subjects that exercise the edge cases the hook engine must handle.
 - **Files:** `beyondnn/models/__init__.py`, `tiny_mlp.py`, `tiny_cnn.py`, `tiny_transformer.py`.

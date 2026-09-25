@@ -87,3 +87,23 @@ Append-only. Negative results stay. Each entry records: date, git commit, experi
   - torch 2.14 deprecates quantized tensor creation (UserWarning). The test setup now silences that one warning.
   - A torch install without numpy warns at import, which `-W error` turns into collection errors. BeyondNN itself does not use numpy.
 
+---
+
+## 2026-09-25: M1.3 reference models × M1.2 fingerprint cross-check
+- **Commit:** the M1.3 commit (parent `628630a`)
+- **Experiment:** use the new reference models to cross-check fingerprint behaviour and model contracts.
+- **Models:** `TinyMLP` (139 params), `TinyCNN` (396), `TinyTransformer` (5,120; tied `lm_head` counted once).
+- **Hardware:** Apple arm64 CPU. Python 3.14.3 / torch 2.12.0; also Python 3.10 and 3.12 with torch 2.14.0.
+- **Seeds:** 0, 1, 2, 7, 123.
+- **Results:**
+  - For all three models, the same seed gives identical `state_dict`, outputs and fingerprint.
+  - A different seed gives the same structure digest, a different state digest, and different outputs.
+  - Construction leaves `torch.get_rng_state()` unchanged, including when construction raises.
+  - A `state_dict` round trip reproduces outputs and fingerprint, and the tie survives `load_state_dict` and `.to(float64)`.
+  - Tie vs equal copy: identical outputs, different structure digest, one fewer parameter tensor.
+  - Changing the non-persistent `causal_mask` changes both the outputs and the state digest.
+  - Running `TinyCNN` in train mode updates its BatchNorm running stats, which changes the state digest.
+- **Negative finding (kept):** `TinyTransformer(n_heads=2)` and `n_heads=4` with the same seed have **identical** FULL fingerprints but different outputs. Plain Python hyperparameters are outside v1 identity (consistent with ADR-020's "code and attributes are not hashed", but a more everyday case than editing `forward`). It is pinned by `test_known_limitation_plain_hyperparameters_are_not_fingerprinted`.
+- **Mutation check:** removing RNG isolation, the tie, the causal mask, or the second shared call is caught by 5, 4, 1, and 1 tests respectively.
+- **Next action:** decide on caller-declared config/revision in provenance (roadmap investigation item) before comparing differently configured models. M1.4 site resolution next.
+

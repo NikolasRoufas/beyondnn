@@ -95,6 +95,7 @@ A unit test lints the renderer templates against this table.
 **Package layout as implemented:**
 - `beyondnn/schema/` holds pure data and imports no torch.
 - `beyondnn/provenance/` (M1.2) holds torch-dependent collection: model fingerprints, environment, RNG, provenance records. It depends on `schema`, never the reverse.
+- `beyondnn/_testing/` (M1.3) holds **internal, unstable** reference models for BeyondNN's own tests. It is not exported from `beyondnn`, and not BeyondNN model architectures. The `beyondnn.models` namespace is reserved for possible real architectures later.
 - Future tracing (`core/`) depends on both.
 - The top-level `beyondnn` package imports only `schema`, so `import beyondnn` stays torch-free until tracing exists.
 
@@ -205,9 +206,9 @@ Everything below is **proposed, not implemented.**
 ```python
 import torch
 import beyondnn as bnn
-from beyondnn.models import TinyMLP
+from beyondnn._testing.models import TinyMLP  # internal reference model (M1.3), not public API
 
-model = TinyMLP(d_in=4, d_hidden=16, n_classes=2, seed=0).eval()
+model = TinyMLP(d_in=4, d_hidden=8, d_out=3, seed=0).eval()
 x = torch.randn(8, 4)
 
 # 1. Eager one-shot trace (ADR-003). No hooks remain afterwards.
@@ -303,7 +304,7 @@ beyondnn/                         (repo root)
     schema/      status.py records.py provenance.py limitations.py claims.py tensors.py codec.py   M1.1–M1.2, M1.7
     core/        sites.py hooks.py trace.py instrument.py targets.py                              M1.4–M1.8
     explain/     why.py render.py                                                                 M1.8
-    models/      tiny_mlp.py tiny_cnn.py tiny_transformer.py                                      M1.3
+    _testing/    models.py (TinyMLP, TinyCNN, TinyTransformer; internal, unstable)                  M1.3 ✓
     (interventions/ causal/ attribution/ claims/ concepts/ audit/ adapters/ — later phases)
   tests/†        test_package.py† + Phase 1 suites
   benchmarks/    bench_trace_overhead.py                                                          M1.9

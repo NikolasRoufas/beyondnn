@@ -23,6 +23,13 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **M1.3: deterministic tiny reference models** in the internal, unstable `beyondnn._testing.models`:
+  - `TinyMLP` (139 params; shared module called twice; functional op; keyword-only `scale`);
+  - `TinyCNN` (396; BatchNorm buffers; tuple output);
+  - `TinyTransformer` (5,120; tied `lm_head`/`token_embedding`; non-persistent `position_ids`/`causal_mask` used in forward; dict output).
+
+  Construction is seeded without changing the caller's global RNG. The models are not exported from `beyondnn`.
+
 ### Fixed (M1.2 review)
 - The FULL fingerprint now hashes the values of **all** registered buffers, including non-persistent ones, which can affect `forward`. Buffer persistence is recorded as metadata. The v1 golden digests were updated before any release (ADR-020 correction).
 - Access to PyTorch's private buffer-persistence field is isolated in one helper, with a compatibility test.

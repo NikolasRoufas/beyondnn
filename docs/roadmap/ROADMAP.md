@@ -79,6 +79,7 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 ## Open investigation items
 
 - **Implementation revision in provenance** (from the M1.2 review). The FULL fingerprint does not hash Python code (ADR-020). Investigate an optional, caller-supplied `implementation_revision` / code revision / repository commit / model revision for reproducibility. Automatic source hashing is out of scope. There is no schema change until implementation evidence shows it is needed.
+  - **Evidence from M1.3:** `TinyTransformer(n_heads=2)` and `n_heads=4` with the same seed have identical FULL fingerprints but compute different functions, because `n_heads` is a plain Python attribute and parameter shapes are unchanged. Plain constructor hyperparameters are therefore also outside v1 identity. Candidate remedies: a caller-declared model config or revision in provenance, or an opt-in declared-hyperparameter hook. This needs a decision before evidence from differently configured models is compared.
 
 ## Release blockers (`BLOCKS_PUBLIC_RELEASE`)
 
