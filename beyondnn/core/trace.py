@@ -62,6 +62,7 @@ from beyondnn.schema._types import Value
 from beyondnn.schema.base import _compute_id, registered_kinds
 
 from .hooks import HookEvent, HookSession
+from .samples import SampleIdentityError, sample_id
 from .sites import resolve_sites
 from .tensors import RETENTIONS, tensor_ref, walk
 
@@ -707,9 +708,16 @@ class Recording:
         )
         self._trace._add(provenance)
         self._trace._add(_record_occurrence(provenance, pass_index=event.pass_index))
+        try:  # exact input identity (ADR-031); None when it has no deterministic identity
+            sample: str | None = sample_id(
+                *(event.args or ()), model_kwargs=dict(event.kwargs or {})
+            )
+        except SampleIdentityError:
+            sample = None
         record = InputRecord(
             tensors=tuple(NamedTensor(path=p, ref=r) for p, r in self._input_refs(event)),
             pass_index=event.pass_index,
+            sample_id=sample,
             provenance_id=provenance.id,
         )
         self._trace._add(record)

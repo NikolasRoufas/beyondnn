@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
@@ -11,6 +12,8 @@ from .status import EvidenceStatus
 from .values import NamedTensor, Site, TensorRef
 
 __all__ = ["ActivationRecord", "InputRecord", "OutputRecord"]
+
+_SAMPLE_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 def _unique_paths(tensors: tuple[NamedTensor, ...], where: str) -> None:
@@ -22,7 +25,7 @@ def _check_pass(pass_index: int | None, where: str) -> None:
     require(pass_index is None or pass_index >= 0, f"{where}.pass_index must be >= 0 or None")
 
 
-@record_kind("input", version=2)
+@record_kind("input", version=3)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class InputRecord(BaseRecord):
     """The root model's input for one root invocation (pass). Status: OBSERVED.
@@ -31,6 +34,8 @@ class InputRecord(BaseRecord):
     order; ``display`` is an optional human rendering (e.g. decoded text).
     ``pass_index`` identifies the root invocation; ``None`` only for records
     migrated from record_version 1, which had no pass concept (never invented).
+    ``sample_id`` is the exact input identity (``beyondnn.core.samples``; ADR-031):
+    ``None`` if the input could not be identified or the record predates version 3.
     """
 
     STATUS: ClassVar[EvidenceStatus | None] = EvidenceStatus.OBSERVED
@@ -38,10 +43,16 @@ class InputRecord(BaseRecord):
     tensors: tuple[NamedTensor, ...] = ()
     display: str | None = None
     pass_index: int | None = None
+    sample_id: str | None = None
 
     def _validate(self) -> None:
         _unique_paths(self.tensors, "InputRecord")
         _check_pass(self.pass_index, "InputRecord")
+        if self.sample_id is not None:
+            require(
+                bool(_SAMPLE_RE.match(self.sample_id)),
+                "InputRecord.sample_id must be 'sha256:<64 hex>'",
+            )
 
 
 @record_kind("output", version=2)
@@ -93,3 +104,11 @@ def _add_unknown_pass(data: dict[str, Any]) -> dict[str, Any]:
 
 register_migration("input", 1)(_add_unknown_pass)
 register_migration("output", 1)(_add_unknown_pass)
+
+
+@register_migration("input", 2)
+def _input_v2_to_v3(data: dict[str, Any]) -> dict[str, Any]:
+    """v2 inputs had no exact identity: migrate as ``sample_id = None`` (never invented)."""
+    if "sample_id" in data:
+        raise ValueError("an input v2 payload cannot contain sample_id")
+    return data | {"sample_id": None}

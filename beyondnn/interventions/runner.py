@@ -39,6 +39,8 @@ from typing import Any
 import torch
 from torch import nn
 
+from beyondnn.core.samples import SampleIdentityError
+from beyondnn.core.samples import sample_id as _sample_id
 from beyondnn.core.trace import Recording, TraceError, TraceResult
 from beyondnn.provenance.fingerprint import tensor_bytes
 from beyondnn.schema import (
@@ -123,34 +125,13 @@ def _replace_leaf(value: Any, path: str, new: torch.Tensor) -> Any:
     raise InterventionError(f"cannot descend into {type(value).__name__} at {path!r}")
 
 
-def _digest_update(h: Any, value: Any) -> None:
-    if isinstance(value, torch.Tensor):
-        header = json.dumps({"dtype": str(value.dtype), "shape": list(value.shape)})
-        h.update(b"T" + header.encode() + tensor_bytes(value))
-    elif value is None or isinstance(value, (bool, int, float, str)):
-        h.update(b"J" + json.dumps(value, allow_nan=False).encode())
-    elif isinstance(value, (tuple, list)):
-        h.update(b"[%d" % len(value))
-        for item in value:
-            _digest_update(h, item)
-    elif isinstance(value, dict) and all(isinstance(k, str) for k in value):
-        h.update(b"{%d" % len(value))
-        for key in sorted(value):
-            h.update(json.dumps(key).encode())
-            _digest_update(h, value[key])
-    else:
-        raise InterventionError(
-            f"cannot identify an input sample containing {type(value).__name__}"
-        )
-
-
 def sample_id(*inputs: Any, model_kwargs: dict[str, Any] | None = None) -> str:
     """Deterministic identity of one input sample: SHA-256 over tensor dtypes, shapes, and
-    bytes plus JSON scalars, in positional/keyword order."""
-    h = hashlib.sha256(b"beyondnn.sample/v1")
-    _digest_update(h, list(inputs))
-    _digest_update(h, dict(model_kwargs or {}))
-    return "sha256:" + h.hexdigest()
+    bytes plus JSON scalars, in positional/keyword order (``beyondnn.core.samples``)."""
+    try:
+        return _sample_id(*inputs, model_kwargs=model_kwargs)
+    except SampleIdentityError as exc:
+        raise InterventionError(str(exc)) from None
 
 
 def make_claim(

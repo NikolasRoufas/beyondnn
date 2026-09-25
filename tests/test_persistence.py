@@ -160,6 +160,8 @@ def _downgrade(document: dict[str, Any], kinds: set[str]) -> dict[str, Any]:
         if env["kind"] in kinds:
             env["record_version"] = 1
             env["data"].pop("declared_model" if env["kind"] == "provenance" else "pass_index")
+            if env["kind"] == "input":
+                env["data"].pop("sample_id")  # added in input v3 (ADR-031)
         new_id = env["id"]
         env["id"] = _expected_id(env["kind"], env["record_version"], env["data"])
         if env["id"] != new_id:
@@ -213,6 +215,31 @@ def test_cascading_id_changes_are_remapped(tmp_path: Path) -> None:
     (occurrence,) = loaded.occurrences
     assert occurrence.pass_index is None
     assert occurrence.provenance_id == loaded.provenance[0].id
+
+
+def test_v2_inputs_migrate_without_an_invented_sample_identity(tmp_path: Path) -> None:
+    t = bnn.trace(TinyMLP(), torch.ones(2, 4), sites=["shared"])
+    assert t.input.sample_id is not None
+    t.save(tmp_path / "trace")
+    document = json.loads((tmp_path / "trace" / "trace.json").read_text())
+    old_ids: dict[str, str] = {}
+    for env in document["records"]:
+        text = json.dumps(env["data"])
+        for new_id, old_id in old_ids.items():
+            text = text.replace(new_id, old_id)
+        env["data"] = json.loads(text)
+        if env["kind"] == "input":
+            env["record_version"] = 2
+            env["data"].pop("sample_id")
+        new_id = env["id"]
+        env["id"] = _expected_id(env["kind"], env["record_version"], env["data"])
+        if env["id"] != new_id:
+            old_ids[new_id] = env["id"]
+    _write(tmp_path / "trace", document)
+    loaded = bnn.load_trace(tmp_path / "trace")
+    assert loaded.input.sample_id is None
+    assert loaded.input.RECORD_VERSION == 3
+    assert {a.derived_from[0].record_id for a in loaded.activations} == {loaded.input.id}
 
 
 def test_tampered_old_record_fails_before_migration(tmp_path: Path) -> None:
