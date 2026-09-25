@@ -42,6 +42,7 @@ __all__ = [
 ]
 
 _DECREASING = frozenset({Relation.NECESSARY_FOR, Relation.DECREASES})
+_DECIDABLE = _DECREASING | {Relation.INCREASES}
 
 #: The Phase-2 assessment policy: the causal relations above need a SUPPORTS result
 #: from ``intervention_threshold``. SUFFICIENT_FOR is deliberately absent.
@@ -99,6 +100,7 @@ def evaluate_claim(
     applicable = (
         claim.relation in spec.applicable_relations
         and claim.relation in PROTOCOLS[INTERVENTION_THRESHOLD]
+        and claim.relation in _DECIDABLE  # independent of the registry (defence in depth)
         and spec.params.get("operation") == intervention.operation.value
         and claim.subject.site == intervention.site
         and claim.subject.units is None

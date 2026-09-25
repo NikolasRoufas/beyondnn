@@ -35,6 +35,7 @@ from beyondnn.explain import (
 from beyondnn.schema import (
     EvidenceStatus,
     InterventionOperation,
+    JsonMap,
     ModelDeclaration,
     Outcome,
     Relation,
@@ -579,3 +580,202 @@ def test_the_phase_4_example_script_runs() -> None:
     response = module.build()
     verdicts = [a.verdict for v in response.why.claims for a in v.assessments]
     assert verdicts == [Verdict.SUPPORTED, Verdict.CONTRADICTED]
+
+
+# ------------------------------------------------------------------ independent guard tests
+
+
+def test_the_intervention_protocol_never_decides_attributed_to() -> None:
+    from beyondnn.protocols import INTERVENTION_THRESHOLD, PROTOCOLS, check_policy
+    from beyondnn.schema import (
+        AssessmentPolicy,
+        ClaimTestSpec,
+        EvidenceRuleError,
+        JsonMap,
+        PolicyRequirement,
+    )
+
+    assert PROTOCOLS[INTERVENTION_THRESHOLD] == frozenset(
+        {Relation.NECESSARY_FOR, Relation.DECREASES, Relation.INCREASES}
+    )
+    with pytest.raises(EvidenceRuleError):
+        iv.threshold_spec(
+            operation=InterventionOperation.ZERO,
+            min_effect=1.0,
+            relations=(Relation.ATTRIBUTED_TO,),
+        )
+    with pytest.raises(EvidenceRuleError, match="does not justify"):
+        check_policy(
+            AssessmentPolicy(
+                name="bad",
+                version=1,
+                requirements=(
+                    PolicyRequirement(
+                        relation=Relation.ATTRIBUTED_TO, protocols=(INTERVENTION_THRESHOLD,)
+                    ),
+                ),
+            )
+        )
+    h = bnn.instrument(Additive().eval())
+    inputs = x(3, 5)
+    claim = A.make_claim(A.layer("a"), SEL, inputs, statement="a attributed")
+    crafted = ClaimTestSpec(
+        protocol=INTERVENTION_THRESHOLD,
+        protocol_version=1,
+        applicable_relations=(Relation.ATTRIBUTED_TO,),
+        criteria=JsonMap({"min_effect": 1.0}),
+        params=JsonMap({"operation": "zero"}),
+    )
+    effect = h.intervene(inputs, intervention=iv.zero("a"), metric=SEL, claims=[(claim, crafted)])
+    assert [r.outcome for r in effect.claim_results] == [Outcome.NOT_APPLICABLE]
+    response = bnn.compose(h.trace(inputs), interventions=[effect], policies=POLICIES)
+    (view,) = response.why.claims
+    assert [a.verdict for a in view.assessments] == [Verdict.UNTESTED]
+
+
+def test_statuses_stay_separate_in_every_section() -> None:
+    why = scenario_e()["response"].why
+    attributed = why.by_status(EvidenceStatus.ATTRIBUTED)
+    interventional = why.by_status(EvidenceStatus.INTERVENTIONAL)
+    assert {r.status for r in attributed} == {EvidenceStatus.ATTRIBUTED}
+    assert {r.status for r in interventional} == {EvidenceStatus.INTERVENTIONAL}
+    assert not set(map(id, attributed)) & set(map(id, interventional))
+    assert all(e.status is EvidenceStatus.INTERVENTIONAL for e in why.effects)
+    assert all(a.status is EvidenceStatus.ATTRIBUTED for a in why.attributions)
+    assert why.estimated_causal == ()
+
+
+def test_intervention_from_another_model_is_refused() -> None:
+    inputs = x(3, 5)
+    other = Additive().eval()
+    with torch.no_grad():
+        other.b.weight.mul_(3)
+    effect = bnn.intervene(other, inputs, intervention=iv.zero("a"), metric=SEL)
+    with pytest.raises(ModelMismatchError, match="model identity"):
+        bnn.compose(bnn.trace(Additive().eval(), inputs), interventions=[effect])
+
+
+def test_intervention_under_another_declaration_is_refused() -> None:
+    model = Additive().eval()
+    inputs = x(3, 5)
+    effect = bnn.intervene(
+        model,
+        inputs,
+        intervention=iv.zero("a"),
+        metric=SEL,
+        declared_model=ModelDeclaration(config=JsonMap({"variant": "b"})),
+    )
+    with pytest.raises(ModelMismatchError, match="ModelDeclaration"):
+        bnn.compose(
+            bnn.trace(
+                model, inputs, declared_model=ModelDeclaration(config=JsonMap({"variant": "a"}))
+            ),
+            interventions=[effect],
+        )
+
+
+def test_two_attributions_with_different_targets_are_refused() -> None:
+    model = TinyMLP().eval()
+    inputs = torch.ones(1, 4)
+    a0 = bnn.attribute(model, inputs, target=iv.metrics.select([0, 0]), method=A.gradient())
+    a1 = bnn.attribute(model, inputs, target=iv.metrics.select([0, 2]), method=A.gradient())
+    with pytest.raises(TargetMismatchError):
+        bnn.compose(bnn.trace(model, inputs), attributions=[a0, a1])
+
+
+def test_attribution_and_intervention_records_are_the_originals() -> None:
+    s = scenario_e()
+    why = s["response"].why
+    assert all(v.record is s["attr"].record for v in why.attribution_views)
+    assert why.by_status(EvidenceStatus.ATTRIBUTED)[0] is s["attr"].record
+    assert why.by_status(EvidenceStatus.INTERVENTIONAL)[0] is s["effect"].effect
+
+
+def test_an_untested_causal_claim_is_shown_as_untested() -> None:
+    model = Additive().eval()
+    inputs = x(3, 5)
+    claim = iv.make_claim(
+        iv.zero("a"), SEL, Relation.NECESSARY_FOR, inputs, statement="a is necessary for y"
+    )
+    response = bnn.compose(
+        bnn.trace(model, inputs), claims=[claim], policies=[iv.INTERVENTION_POLICY]
+    )
+    (view,) = response.why.claims
+    assert view.tests == ()
+    assert not view.causal_test_performed
+    assert [a.verdict for a in view.assessments] == [Verdict.UNTESTED]
+    assert not response.why.coverage.causal_claim_tested
+    text = response.render()
+    assert "no decisive causal test was performed" in text
+    assert "tests: (none recorded)" in text
+
+
+def test_the_attribution_section_never_describes_causes() -> None:
+    text = scenario_e()["response"].render()
+    section = text[text.index("  ATTRIBUTED  [") : text.index("  INTERVENTIONAL  [")]
+    assert "caus" not in section.lower()
+    assert "not intervention effects" in section
+
+
+def test_a_forged_attribution_claim_result_is_refused(tmp_path: Path) -> None:
+    s = scenario_e()
+    s["attr"].trace.save(tmp_path / "t")
+    document = json.loads((tmp_path / "t" / "trace.json").read_text())
+    for env in document["records"]:
+        if env["kind"] == "claim_test_result":
+            assert env["data"]["outcome"] == "supports"
+            env["data"]["outcome"] = "contradicts"
+            env["id"] = _expected_id(env["kind"], env["record_version"], env["data"])
+    (tmp_path / "t" / "trace.json").write_text(json.dumps(document))
+    forged = A.AttributionResult.from_trace(bnn.load_trace(tmp_path / "t"))
+    with pytest.raises(EvidenceIntegrityError, match="does not follow"):
+        bnn.compose(s["trace"], attributions=[forged])
+
+
+def test_a_mutated_attribution_record_is_refused() -> None:
+    s = scenario_e()
+    object.__setattr__(s["attr"].record, "target_value", 99.0)
+    with pytest.raises(EvidenceIntegrityError, match="does not match its content"):
+        bnn.compose(s["trace"], attributions=[s["attr"]])
+
+
+def test_intervention_only_composition_uses_no_autograd_or_rng(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    h = bnn.instrument(Additive().eval())
+    inputs = x(3, 5)
+    trace = h.trace(inputs)
+    effect = h.intervene(inputs, intervention=iv.zero("a"), metric=SEL)
+
+    def forbidden(*args: Any, **kwargs: Any) -> Any:
+        raise AssertionError("autograd was used during composition")
+
+    monkeypatch.setattr(torch.autograd, "grad", forbidden)
+    rng = torch.get_rng_state()
+    bnn.compose(trace, interventions=[effect]).render()
+    assert torch.equal(rng, torch.get_rng_state())
+
+
+def test_the_intervention_evaluator_rejects_attributed_to_whatever_the_registry_says(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import beyondnn.interventions.claims as ic
+    from beyondnn.schema import ClaimTestSpec
+
+    widened = dict(ic.PROTOCOLS)
+    widened[ic.INTERVENTION_THRESHOLD] = widened[ic.INTERVENTION_THRESHOLD] | {
+        Relation.ATTRIBUTED_TO
+    }
+    monkeypatch.setattr(ic, "PROTOCOLS", widened)
+    h = bnn.instrument(Additive().eval())
+    inputs = x(3, 5)
+    claim = A.make_claim(A.layer("a"), SEL, inputs, statement="a attributed")
+    crafted = ClaimTestSpec(
+        protocol=ic.INTERVENTION_THRESHOLD,
+        protocol_version=1,
+        applicable_relations=(Relation.ATTRIBUTED_TO,),
+        criteria=JsonMap({"min_effect": 1.0}),
+        params=JsonMap({"operation": "zero"}),
+    )
+    effect = h.intervene(inputs, intervention=iv.zero("a"), metric=SEL, claims=[(claim, crafted)])
+    assert [r.outcome for r in effect.claim_results] == [Outcome.NOT_APPLICABLE]

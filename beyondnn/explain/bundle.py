@@ -429,6 +429,13 @@ def _revalidate(
             )
     if result.outcome is Outcome.NOT_APPLICABLE and not result.evidence:
         return  # cites nothing and can support nothing
+    if result.outcome in (Outcome.SUPPORTS, Outcome.CONTRADICTS) and (
+        claim.relation not in PROTOCOLS[spec.protocol]
+    ):
+        raise EvidenceIntegrityError(
+            f"{result.id}: protocol {spec.protocol!r} does not justify "
+            f"{claim.relation.value}; its outcome cannot decide this claim"
+        )
     cited_records = [index[ev.record_id] for ev in result.evidence]
     if spec.protocol == INTERVENTION_THRESHOLD:
         effects = [(r, t) for r, t in cited_records if isinstance(r, CausalEffect)]
