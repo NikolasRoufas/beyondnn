@@ -354,7 +354,12 @@ def attribute(
     snapshot = _snapshot(model, inputs, kwargs)
     try:
         space = make_space(model, inputs, kwargs, target, at)
-        outcome = native.run(method, space)
+        if method.is_captum:
+            from . import captum as captum_adapter  # optional dependency, imported on use
+
+            outcome = captum_adapter.run(method, space)
+        else:
+            outcome = native.run(method, space)
     except BaseException:
         # restore parameter gradients; the original error is the one reported
         with contextlib.suppress(AttributionError):
