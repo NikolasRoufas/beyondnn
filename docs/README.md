@@ -10,6 +10,8 @@
 
 ## Where to start
 
+0. [`PHASE_1_REPORT.md`](PHASE_1_REPORT.md): what exists now, its guarantees and limits, and the Phase 1 gate decision.
+
 1. [`research/DIFFERENTIATION.md`](research/DIFFERENTIATION.md): why the project exists, and its limits.
 2. [`design/INTERPRETABILITY_DEFINITION.md`](design/INTERPRETABILITY_DEFINITION.md): the vocabulary (observed, measured, attributed, interventional, …).
 3. [`design/ARCHITECTURE_PROPOSAL.md`](design/ARCHITECTURE_PROPOSAL.md): the Measurement → Claim → Test → Evidence → Assessment → WHY pipeline, and the API.

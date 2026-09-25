@@ -720,3 +720,42 @@ def test_multiple_devices_are_refused() -> None:
 
     with pytest.raises(UnsupportedExecutionError, match="several devices"):
         bnn.trace(Split(), torch.ones(1, 2))
+
+
+def test_structural_change_during_recording_is_refused() -> None:
+    model = TinyMLP()
+    ctx = bnn.recording(model, sites=["head"])
+
+    def run() -> None:
+        with ctx:
+            model(_x())
+            model.head = nn.Linear(8, 3)  # the hooked module is replaced
+            model(_x())
+
+    with pytest.raises(UnsupportedExecutionError, match="replaced or removed"):
+        run()
+    assert hook_count(model) == 0
+
+
+def test_added_module_during_recording_is_refused() -> None:
+    model = TinyMLP()
+    ctx = bnn.recording(model, sites=["head"])
+
+    def run() -> None:
+        with ctx:
+            model(_x())
+            model.extra = nn.Identity()  # structure changes, selected site untouched
+            model(_x())
+
+    with pytest.raises(UnsupportedExecutionError, match="structure changed"):
+        run()
+
+
+def test_parameter_changes_between_passes_are_allowed() -> None:
+    model = TinyMLP()
+    with bnn.recording(model, sites=["head"]) as ctx:
+        model(_x())
+        with torch.no_grad():
+            model.get_parameter("head.bias").add_(1.0)
+        model(_x())
+    assert len(ctx.result.provenance) == 2  # same structure, new state

@@ -1,20 +1,24 @@
 # BeyondNN
 
-> **Status: pre-alpha.** Phase 1 is in progress: the trace schema, provenance, and trace recording work.
-> Explanations, interventions, and claim testing are not implemented yet. See [`docs/roadmap/PHASE_1_PLAN.md`](docs/roadmap/PHASE_1_PLAN.md).
+> **Status: pre-alpha, Phase 1 complete (local only, not released).** Implemented:
+> - the trace schema, provenance, and trace recording and persistence;
+> - a minimal INPUT → WHY → OUTPUT view whose WHY is *measured evidence only*.
+>
+> Interventions, attribution, causal tests, concepts, and claim testing are **not implemented**. See
+> [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md).
 
 BeyondNN is an interpretability evidence framework for PyTorch.
 
-It turns claims about neural-network computation into structured, provenance-aware, testable objects.
-It provides:
+Its goal is to turn claims about neural-network computation into structured, provenance-aware, testable
+objects. Today it provides:
 - structured traces;
 - provenance;
-- interventions;
-- claim testing;
-- explicit epistemic status for interpretability results.
+- explicit epistemic status.
+
+Interventions and claim testing are planned for Phase 2+.
 
 BeyondNN does not assume that an attribution, a probe, a generated explanation, or a readable feature is
-automatically a faithful explanation of model computation. Every result is labelled with how it was
+automatically a faithful explanation of model computation. The schema labels every result with how it was
 obtained:
 - observed or measured;
 - attributed;
@@ -22,8 +26,11 @@ obtained:
 - validated concept;
 - generated.
 
-Claims about the model become explicit records that must survive declared tests before they are
-reported as supported. It also records what remains unknown.
+**Phase 1 produces only *observed* and *measured* evidence.** The other statuses exist in the schema for
+later phases.
+
+The schema already models claims as explicit records that must pass declared tests before they are
+reported as supported. No test runners exist yet.
 
 BeyondNN builds on PyTorch and is meant to work *alongside* Captum, nnsight, TransformerLens, and SAELens,
 not to replace them.

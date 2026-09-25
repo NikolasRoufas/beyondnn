@@ -23,7 +23,7 @@ Measurement → Claim → Test → Evidence → Assessment → WHY presentation
 | 7 | Audit (runs claim tests over datasets) |
 | 8 | External comparison |
 
-## Phase 1: Foundations
+## Phase 1: Foundations: **COMPLETE, GO WITH EXPLICIT LIMITATIONS** (2026-09-25; see `docs/PHASE_1_REPORT.md`)
 
 Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 

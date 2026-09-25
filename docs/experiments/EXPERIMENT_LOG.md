@@ -268,3 +268,27 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 torch threads; warm-up
 - **Candidates for later:** skip the redundant id recomputation for records the container itself just built; batch statistics.
 - **Not measured:** GPU, large models, peak process memory.
 
+---
+
+## 2026-09-25: M1.10 final audit
+- **Commit:** "Complete Phase 1 audit and gate report (M1.10)" (parent `d99e026`)
+- **Validation:** 638 tests on Python 3.14/torch 2.12, 3.10/torch 2.14, and 3.12/torch 2.14 (`-W error`, 0 skipped); ruff, mypy `--strict`, and sdist/wheel builds are clean.
+- **Clean environment:** a fresh uv virtualenv (Python 3.12.13, torch 2.14.0) with the built wheel installed, run outside the checkout with `-W error`. The smoke test (trace, recording, save/load, instrument/explain) and the README runnable example both pass. `beyondnn` resolved to site-packages.
+- **Final mutations (all caught; failing tests per broken implementation):**
+
+  | Broken implementation | Failing tests |
+  |---|---|
+  | occurrence `pass_index` removed | 1 |
+  | external hook allowed | 5 |
+  | WHY labelled causal | 2 |
+  | `NO_CAUSAL_EVIDENCE` omitted | 2 |
+  | `instrument` copies the model | 1 |
+  | `handle.trace` diverges | 1 |
+  | WHY copies records | 1 |
+  | multi-device silently accepted | 1 |
+  | binding check removed | 1 |
+  | structure check removed | 1 |
+- **Audit finding (fixed):** a selected module replaced by an identical-shape object between passes silently lost evidence. The first fix attempt, using only the structure digest, **failed its test**: an identical-shape replacement leaves the digest unchanged. Checking object identity closed the gap (ADR-027).
+- **Scientific-language audit:** the README intro implied interventions and claim testing were available, and that all evidence statuses were produced; it was corrected. Package docstrings and render strings contain only disclaimers or schema vocabulary.
+- **Gate:** GO WITH EXPLICIT LIMITATIONS.
+

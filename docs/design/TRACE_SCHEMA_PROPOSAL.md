@@ -237,10 +237,11 @@ A `TraceResult` holds one recording context's records in execution order, retain
 - **Strict lookup:** zero or several matches raise `ActivationLookupError`.
 - **Every record entering is validated** (ids, references, provenance, dedup by canonical content). See ADR-023.
 - **Tensor-leaf paths:** `""`, `[i]`, `["key"]`, `[k]`; root and input leaves are prefixed `args`/`kwargs`/`output`.
+- **Phase-1 walker limit:** only Tensor, tuple, list, and dict are decomposed. Dataclasses, custom output classes, and custom pytree nodes are counted as non-tensor leaves (`NON_TENSOR_LEAVES_IGNORED`). Namedtuples are walked as tuples, so field names are not used.
 
 ### A.12 Trace persistence (M1.7, ADR-024)
 
-`TraceResult.save(dir)` writes `dir/trace.json` and, for `retention="cpu"`, `dir/tensors.pt`. `bnn.load_trace(dir)` re-validates everything:
+`TraceResult.save(dir)` writes `dir/trace.json` and, for `retention="cpu"`, `dir/tensors.pt`. **Tensor sidecars are currently loaded fully into memory;** there is no sharding, mmap, or lazy loading. `bnn.load_trace(dir)` re-validates everything:
 - record ids, including before migration;
 - references and provenance;
 - tensor dtype, shape, and content digest.

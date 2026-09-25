@@ -195,7 +195,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Backward hooks are deliberately not included in Phase 1.
 - **Scope:** about 200 LOC, about 350 LOC tests.
 
-## M1.6: `trace()` and `recording()`: **implemented, awaiting review**
+## M1.6: `trace()` and `recording()`: **done (approved)**
 
 - **As implemented:** `beyondnn/core/trace.py`, `beyondnn/core/tensors.py`, and `tests/test_trace.py`. Decisions are in ADR-023.
 - **Exit criteria from earlier reviews: met.**
@@ -254,7 +254,7 @@ Status: **planned, not started.** Implementation begins only after the architect
   - Stats on huge tensors cost time. Summary-mode overhead is measured in M1.9.
 - **Scope:** about 500 LOC, about 500 LOC tests.
 
-## M1.7: Serialisation: **implemented, awaiting review**
+## M1.7: Serialisation: **done (approved)**
 
 - **As implemented:** `beyondnn/core/persistence.py` and `tests/test_persistence.py` (ADR-024). Public: `TraceResult.save`, `bnn.load_trace`.
 - **Carried requirement met:** migration id changes are remapped in every referring record. Tested with provenance v1 alone, and with a cascade of provenance, input, and output v1.
@@ -279,7 +279,7 @@ Status: **planned, not started.** Implementation begins only after the architect
 - **Known risk:** determinism vs timestamps and uuids. A `normalize_for_diff()` helper that masks volatile fields is used in tests and documented for users.
 - **Scope:** about 350 LOC, about 350 LOC tests.
 
-## M1.8: `instrument()`, minimal `explain()`, examples: **implemented, awaiting review**
+## M1.8: `instrument()`, minimal `explain()`, examples: **done**
 
 - **As implemented** (ADR-026): `beyondnn/explain/` (`instrument`, `Instrumented`, `ExplainResponse`, `Why`) and `tests/test_explain.py`.
   - The runnable README example is executed by `tests/test_readme.py`.
@@ -332,7 +332,12 @@ Status: **planned, not started.** Implementation begins only after the architect
 - **Known risk:** CPU timing noise. Report the spread, not just the median.
 - **Scope:** about 200 LOC.
 
-## M1.10: Phase 1 report and go/no-go
+## M1.10: Phase 1 report and go/no-go: **done: GO WITH EXPLICIT LIMITATIONS**
+
+- **Report:** `docs/PHASE_1_REPORT.md` (located in `docs/`, not `docs/roadmap/`). Audit guards are in `tests/test_phase1_audit.py`.
+- **Audit fix:** refusal of module replacement or structural change during a recording (ADR-027).
+
+**Original plan:**
 
 - **Goal:** an honest assessment before Phase 2.
 - **Files:** `docs/roadmap/PHASE_1_REPORT.md`, `CHANGELOG.md`, `docs/experiments/EXPERIMENT_LOG.md`.

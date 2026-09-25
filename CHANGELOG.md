@@ -23,6 +23,11 @@ All notable changes to this project are documented here. The format follows
   - ADR-019 and ADR-020;
   - ADR-016 amendment: expectation wording and the no-Unicode-normalisation decision.
 
+- **M1.10: Phase 1 audit and gate report** (`docs/PHASE_1_REPORT.md`: GO WITH EXPLICIT LIMITATIONS).
+  - Public recording now refuses module replacement or structural change between passes (ADR-027).
+  - Audit tests (`tests/test_phase1_audit.py`) guard the public surface and the Phase-1 evidence statuses.
+  - README corrected to state that only observed and measured evidence exist today.
+  - Installed-wheel smoke test run in a clean virtualenv.
 - **M1.9: `benchmarks/bench_trace_overhead.py`**: CPU characterisation of baseline, trace none/summary/cpu, fingerprint, save/load, and exact byte sizes. Results are in the experiment log. There is no pass/fail threshold and no optimisation.
 - **M1.8: `bnn.instrument(model)`**: a frozen handle referencing the original model.
   - `handle.trace`/`recording` are exactly the public pipeline.

@@ -478,17 +478,19 @@ class Recording:
         try:
             config = self._config
             self._selected: list[tuple[str, SiteIO]] = []
+            self._bound: dict[str, nn.Module] = {}  # the module objects hooked at entry
             for patterns, io in ((config.input_sites, SiteIO.INPUT), (config.sites, SiteIO.OUTPUT)):
                 if patterns:
-                    self._selected += [
-                        (r.path, io) for r in resolve_sites(self._model, patterns, io=io)
-                    ]
+                    for resolved in resolve_sites(self._model, patterns, io=io):
+                        self._selected.append((resolved.path, io))
+                        self._bound[resolved.path] = resolved.module
             self._named = [p for p, _ in self._model.named_modules(remove_duplicate=False) if p]
             _refuse_foreign_hooks(self._model, frozenset(), "before recording")
             self._environment = collect_environment()
             self._trace = TraceResult(config)
             self._passes: dict[int, _Pass] = {}
             self._executed: set[tuple[str, SiteIO]] = set()
+            self._structure: str | None = None
             self._ignored = 0
             self._session = HookSession(
                 self._model,
@@ -577,8 +579,17 @@ class Recording:
             grad_enabled=torch.is_grad_enabled(),
             randomness=self._randomness,
         )
+        self._check_bindings()
+        identity = fingerprint_model(model)  # model state at the start of this root invocation
+        if self._structure is None:
+            self._structure = identity.structure_digest
+        elif identity.structure_digest != self._structure:
+            raise UnsupportedExecutionError(
+                "the model's module structure changed during recording; hooks were placed on "
+                "the structure at entry, so later passes could silently miss selected sites"
+            )
         provenance = make_provenance(
-            fingerprint_model(model),  # model state at the start of this root invocation
+            identity,
             method=TRACE_METHOD,
             execution=execution,
             environment=self._environment,
@@ -593,6 +604,19 @@ class Recording:
         )
         self._trace._add(record)
         self._passes[event.pass_index] = _Pass(provenance.id, RecordRef.to(record))
+
+    def _check_bindings(self) -> None:
+        for path, module in self._bound.items():
+            try:
+                current: nn.Module | None = self._model.get_submodule(path)
+            except AttributeError:
+                current = None
+            if current is not module:
+                raise UnsupportedExecutionError(
+                    f"the module at selected site {path!r} was replaced or removed during "
+                    "recording; its hooks are on the original object, so evidence would be "
+                    "silently missing"
+                )
 
     def _end_pass(self, event: HookEvent) -> None:
         _refuse_foreign_hooks(

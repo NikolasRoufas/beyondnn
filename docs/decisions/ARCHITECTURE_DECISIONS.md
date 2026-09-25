@@ -801,3 +801,20 @@ Revision note (2026-09-25, review, before acceptance):
 
 **Top-level API:** `trace`, `recording`, `TraceResult`, `load_trace`, `instrument`, plus the status enums and `schema`. `ExplainResponse` and `Why` are importable from `beyondnn.explain`.
 
+---
+
+## ADR-027: Refuse module replacement and structural change during a recording
+
+- **Date:** 2026-09-25
+- **Status:** Accepted (found during the M1.10 audit).
+
+**Problem:** hooks are placed at `recording()` entry. If the user replaced a selected module with an equivalent object (same class and shape, so the same structure digest) between passes, later passes silently produced no evidence for that site. The site had executed in pass 0, so `SELECTED_SITE_NOT_EXECUTED` did not fire.
+
+**Decision:** at the start of every root pass, public recording checks two things, and raises `UnsupportedExecutionError` if either fails:
+1. every selected path still resolves to the *same module object* hooked at entry;
+2. the model's FULL structure digest equals the first pass's.
+
+Parameter and buffer *value* changes remain allowed; they get per-pass provenance.
+
+**Alternative considered:** re-resolving and re-hooking mid-session. Rejected: it adds complexity and makes pass semantics ambiguous.
+
