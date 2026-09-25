@@ -23,7 +23,6 @@ One call produces one :class:`~beyondnn.core.trace.TraceResult`:
 from __future__ import annotations
 
 import contextlib
-import math
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -309,6 +308,27 @@ def _reduce(tensor: torch.Tensor, reduction: Reduce) -> tuple[tuple[int, ...], t
     return dims, out
 
 
+def reproducibility_tolerance(reference: float, output: Any) -> float:
+    """How far the attribution passes' target may differ from the traced pass and still
+    be the same computation (ADR-036): the larger of 1e-6 relative to the target and 16
+    rounding units (``finfo(dtype).eps``) of the largest finite output magnitude.
+
+    Grad-enabled and no-grad forwards may use different kernels, which differ by a few
+    rounding units of the output; a target that is a difference of large logits (a
+    margin) turns that into a large relative error. State drift and randomness change
+    the output by far more and are still refused."""
+    bound = max(1e-6 * abs(reference), 1e-9)
+    for leaf in walk(output)[0]:
+        t = leaf.tensor.detach()
+        if not t.is_floating_point() or t.numel() == 0:
+            continue
+        finite = t[torch.isfinite(t)]
+        if finite.numel():
+            eps = torch.finfo(t.dtype).eps
+            bound = max(bound, 16 * eps * float(finite.abs().max()))
+    return bound
+
+
 def attribute(
     model: nn.Module,
     *inputs: Any,
@@ -384,13 +404,15 @@ def attribute(
     with torch.no_grad(), recording:
         output = model(*inputs, **kwargs)
         reference_value = target(output)
+        tolerance = reproducibility_tolerance(reference_value, output)
         del output
 
         def finalize(trace: TraceResult) -> None:
-            if not math.isclose(reference_value, outcome.value, rel_tol=1e-6, abs_tol=1e-9):
+            if not abs(reference_value - outcome.value) <= tolerance:
                 raise StochasticAttributionError(
                     f"the target is {reference_value!r} in the traced pass but "
-                    f"{outcome.value!r} in the attribution passes; not reproducible"
+                    f"{outcome.value!r} in the attribution passes (tolerance {tolerance:.3g}); "
+                    "not reproducible"
                 )
             (out,) = trace.outputs
             pass_index = out.pass_index

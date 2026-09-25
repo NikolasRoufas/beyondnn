@@ -1129,3 +1129,32 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 - The magnitude null is available wherever count controls are, at the cost of one extra traced pass for internal sites.
 - Magnitudes depend on the replacement. With a zero replacement at a standardised input they equal |x_u|.
 - A selection that beats count-matched controls but not magnitude-matched ones is reported as such; neither result is hidden.
+
+## ADR-036: Attribution reproducibility tolerance scaled to output precision
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 5.5. Awaiting Phase 5.5 review.
+
+**Observed realistic failure** (Phase 5.5, model B, trained CNN on digits, held-out sample 2 of 60):
+- `attribute(..., method=gradient())` raised `StochasticAttributionError`: "the target is 0.8396041989326477 in the traced pass but 0.8396055698394775 in the attribution passes; not reproducible".
+- The model is deterministic. The grad-enabled and no-grad forwards differ by 9.5e-7 on logits of magnitude 11.6, about one float32 rounding unit, because different conv kernels run.
+- The target is the margin (a difference of two logits). Cancellation turns that into a 1.6e-6 *relative* error, above the Phase-3 `rel_tol=1e-6`.
+- A realistic, correctly classified, low-margin sample was therefore refused as "stochastic". This is a BUG (a false refusal).
+
+**Decision:**
+- The traced-pass and attribution-pass targets must agree within the larger of:
+  - 1e-6 relative to the target, as before;
+  - 16 × `finfo(dtype).eps` × the largest finite output magnitude (`attribution.runner.reproducibility_tolerance`).
+- The refusal message states the tolerance.
+
+**Alternatives considered:**
+- *Run the reference pass with grad enabled:* removes this kernel difference only. Other benign differences, such as batch-size-dependent kernels in Captum's internal batching, would remain. It also changes what the OBSERVED reference pass is.
+- *A user-settable tolerance:* invites silencing a real stochasticity signal per call, and adds a parameter every caller has to reason about.
+- *Compare the output tensors instead of the target:* the attribution passes expose only the target value, not the full output. It would need a larger change to the native/Captum engines.
+- *A larger fixed relative tolerance* (e.g. 1e-4): still wrong for small margins, which are exactly the realistic cases, and too loose for large targets.
+
+**Consequences:**
+- Rounding-level kernel differences are accepted.
+- State drift and randomness still change the output by orders of magnitude more than 16 ulps and are still refused (`test_state_and_randomness_are_refused_not_averaged`).
+- A drift of 1000 ulps is refused (`test_rounding_level_kernel_differences_are_not_randomness`).
+- A model whose randomness is below 16 ulps of its largest output would no longer be detected by this check. The RNG-state check is unchanged and still detects the use of the global generator.

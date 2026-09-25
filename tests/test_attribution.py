@@ -779,3 +779,27 @@ def test_top_level_and_handle_entry_points() -> None:
     b = bnn.instrument(model).attribute(x(3, 5), target=SEL, method=A.gradient())
     assert a.record == b.record
     assert bnn.attribution is A
+
+
+class _KernelDrift(nn.Module):
+    """Deterministic, but the grad-enabled forward differs from the no-grad one by
+    ``ulps`` rounding units of logits near 1000: what different kernels do on a trained
+    CNN (Phase 5.5 model B; ADR-036). The margin logit0 - logit1 is 0.5."""
+
+    def __init__(self, ulps: float) -> None:
+        super().__init__()
+        self.ulps = ulps
+
+    def forward(self, t: torch.Tensor) -> torch.Tensor:
+        base = torch.cat([1000.5 + 0 * t[:, :1], 1000.0 + t[:, 1:2]], dim=1)
+        if torch.is_grad_enabled():
+            return base + torch.tensor([[self.ulps * 6.103515625e-05, 0.0]])
+        return base
+
+
+def test_rounding_level_kernel_differences_are_not_randomness() -> None:
+    margin = iv.metrics.difference([0, 0], [0, 1])
+    r = A.attribute(_KernelDrift(1).eval(), x(0, 0), target=margin, method=A.gradient())
+    assert r.target_value == 0.5
+    with pytest.raises(A.StochasticAttributionError, match="tolerance"):
+        A.attribute(_KernelDrift(1000).eval(), x(0, 0), target=margin, method=A.gradient())
