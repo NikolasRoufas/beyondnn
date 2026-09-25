@@ -178,10 +178,15 @@ def _anchor(
     target: iv.metrics.Metric,
     declared_model: ModelDeclaration | None,
     build: Callable[[TraceResult, iv.ComparisonFamily], None],
+    model_kwargs: dict[str, Any] | None = None,
 ) -> TraceResult:
     """One CLEAN pass per sample (OBSERVED outputs, provenance) to anchor a diagnostic."""
     family = iv.compare_family(
-        model, [(s, {}, []) for s in samples], target, declared_model=declared_model, extend=build
+        model,
+        [(s, dict(model_kwargs or {}), []) for s in samples],
+        target,
+        declared_model=declared_model,
+        extend=build,
     )
     return family.trace
 
@@ -202,9 +207,13 @@ def stability(
     declared_model: ModelDeclaration | None = None,
     unit_axes: tuple[int, ...] | None = None,
     reduce: str | None = None,
+    model_kwargs: dict[str, Any] | None = None,
 ) -> DiagnosticResult:
     """``stability/v1`` (see module docstring). Every aspect is reported separately.
-    ``unit_axes``/``reduce`` declare units as in :func:`faithfulness.ranking` (ADR-034)."""
+    ``unit_axes``/``reduce`` declare units as in :func:`faithfulness.ranking` (ADR-034).
+    ``model_kwargs`` are passed unchanged to every pass; the transformation applies to
+    ``x`` only."""
+    kw = dict(model_kwargs or {})
     if not isinstance(transformation, Transformation):
         raise TypeError("transformation must come from faithfulness.transformation()")
     before = sample_id(x)
@@ -222,9 +231,23 @@ def stability(
         )
     if torch.equal(transformed, x):
         raise FaithfulnessError("the transformation returned the identical input (a no-op)")
-    a_x = attribute(model, x, target=target, method=method, at=at, declared_model=declared_model)
+    a_x = attribute(
+        model,
+        x,
+        target=target,
+        method=method,
+        at=at,
+        declared_model=declared_model,
+        model_kwargs=kw,
+    )
     a_g = attribute(
-        model, transformed, target=target, method=method, at=at, declared_model=declared_model
+        model,
+        transformed,
+        target=target,
+        method=method,
+        at=at,
+        declared_model=declared_model,
+        model_kwargs=kw,
     )
     scores_x, scores_g = _scores(a_x, unit_axes, reduce), _scores(a_g, unit_axes, reduce)
     n = len(scores_x)
@@ -248,6 +271,7 @@ def stability(
             selection=top_k(a_x, k=k, unit_axes=unit_axes, reduce=reduce),
             attributions=[a_x],
             declared_model=declared_model,
+            model_kwargs=kw,
         )
         r_g = run(
             model,
@@ -256,6 +280,7 @@ def stability(
             selection=top_k(a_g, k=k, unit_axes=unit_axes, reduce=reduce),
             attributions=[a_g],
             declared_model=declared_model,
+            model_kwargs=kw,
         )
         tests = (r_x, r_g)
         same = 1.0 if r_x.outcome is r_g.outcome else 0.0
@@ -332,7 +357,7 @@ def stability(
             )
         )
 
-    trace = _anchor(model, [(x,), (transformed,)], target, declared_model, build)
+    trace = _anchor(model, [(x,), (transformed,)], target, declared_model, build, kw)
     return DiagnosticResult(trace, (a_x, a_g), tests)
 
 
@@ -360,9 +385,10 @@ def _compare(
     declared_model: ModelDeclaration | None,
     unit_axes: tuple[int, ...] | None = None,
     reduce: str | None = None,
+    model_kwargs: dict[str, Any] | None = None,
 ) -> DiagnosticResult:
     _same_context(a, b)
-    if a.record.sample_id != sample_id(x):
+    if a.record.sample_id != sample_id(x, model_kwargs=model_kwargs):
         raise SelectionMismatchError("the attributions are not about this input")
     sa, sb = _scores(a, unit_axes, reduce), _scores(b, unit_axes, reduce)
     order_a, order_b = rank_order(sa, by="abs"), rank_order(sb, by="abs")
@@ -418,7 +444,7 @@ def _compare(
             )
         )
 
-    trace = _anchor(model, [(x,)], target, declared_model, build)
+    trace = _anchor(model, [(x,)], target, declared_model, build, model_kwargs)
     return DiagnosticResult(trace, (a, b))
 
 
@@ -435,6 +461,7 @@ def method_agreement(
     declared_model: ModelDeclaration | None = None,
     unit_axes: tuple[int, ...] | None = None,
     reduce: str | None = None,
+    model_kwargs: dict[str, Any] | None = None,
 ) -> DiagnosticResult:
     """How two methods' rankings of the same units agree. Agreement is not correctness:
     two methods can agree and both miss the causal structure."""
@@ -452,6 +479,7 @@ def method_agreement(
         declared_model,
         unit_axes,
         reduce,
+        model_kwargs,
     )
 
 
@@ -468,6 +496,7 @@ def baseline_sensitivity(
     declared_model: ModelDeclaration | None = None,
     unit_axes: tuple[int, ...] | None = None,
     reduce: str | None = None,
+    model_kwargs: dict[str, Any] | None = None,
 ) -> DiagnosticResult:
     """IG rankings under two declared baselines (all other settings equal)."""
     ma, mb = a.record.method, b.record.method
@@ -491,6 +520,7 @@ def baseline_sensitivity(
         declared_model,
         unit_axes,
         reduce,
+        model_kwargs,
     )
 
 
@@ -506,6 +536,7 @@ def ig_step_sensitivity(
     declared_model: ModelDeclaration | None = None,
     unit_axes: tuple[int, ...] | None = None,
     reduce: str | None = None,
+    model_kwargs: dict[str, Any] | None = None,
 ) -> DiagnosticResult:
     """IG at two step counts (all other settings equal): max |difference| and the two
     completeness deltas. A numerical diagnostic, not a faithfulness test."""
@@ -539,4 +570,5 @@ def ig_step_sensitivity(
         declared_model,
         unit_axes,
         reduce,
+        model_kwargs,
     )

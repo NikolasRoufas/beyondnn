@@ -1158,3 +1158,25 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 - State drift and randomness still change the output by orders of magnitude more than 16 ulps and are still refused (`test_state_and_randomness_are_refused_not_averaged`).
 - A drift of 1000 ulps is refused (`test_rounding_level_kernel_differences_are_not_randomness`).
 - A model whose randomness is below 16 ulps of its largest output would no longer be detected by this check. The RNG-state check is unchanged and still detects the use of the global generator.
+
+## ADR-037: Keyword model inputs in faithfulness diagnostics
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 5.5. Awaiting Phase 5.5 review.
+
+**Observed realistic failure** (Phase 5.5, model C, BERT-tiny, SST-2):
+- `method_agreement` and `ig_step_sensitivity` were refused on all 40 held-out sentences (160 refusals): "the attributions are not about this input".
+- The attributions were computed with `model_kwargs` (`attention_mask`, `token_type_ids`), and the sample identity includes them (ADR-031). The diagnostics could not be given the kwargs at all, unlike `run` and `curve` (API review F-11).
+
+**Decision:**
+- `stability`, `method_agreement`, `baseline_sensitivity` and `ig_step_sensitivity` take `model_kwargs`.
+- They are passed unchanged to every attribution, claim test and anchoring pass, and to the sample-identity check. A stability transformation applies to `x` only.
+- Diagnostic parameters are unchanged, so existing diagnostic record ids are unchanged.
+
+**Alternatives considered:**
+- *Drop keyword inputs from sample identity:* breaks ADR-031 (exact input identity), because two different masks would look like the same input.
+- *Callers wrap the model to bind the kwargs:* changes the model under test and its fingerprint, and hides an input from the record.
+- *Document as a limitation only:* leaves the transformer setting without any library diagnostic, although the fix is the same parameter `run` and `curve` already take.
+
+**Consequences:**
+- The diagnostics are expressible for models with keyword inputs. Regression tests: `tests/test_diagnostics_kwargs.py`.
