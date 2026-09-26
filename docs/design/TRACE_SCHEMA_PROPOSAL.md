@@ -259,6 +259,33 @@ It migrates old record versions and remaps every reference to ids that migration
 - A `ProvenanceRecord` with `execution.mode = INTERVENTION` must name an `InterventionRecord` in the same trace.
 - Intervention tensors are retained tensors of the trace: persisted in `tensors.pt` and digest-checked on load.
 
+### A.19 Features, concepts and concept validation (Phase 6, ADR-039..043)
+
+**Record kinds:**
+
+| Kind | Status | Fields |
+|---|---|---|
+| `feature` | none (semantic status UNLABELED_FEATURE) | `basis` (neuron/direction/sae), `site`, `call_index`, `axis`, `pooling` (none/mean), `index` (neuron), `direction` (retained 1-D tensor; direction and SAE decoder row), `source` (`FeatureSource`: declared/fit/search/sae, method, params, dataset, split=train), `model_state_digest` (fit/search/sae), `sae` (`SAEIdentity`: checkpoint, latent, d_sae, relu, retained encoder column and decoder bias, b_enc, reconstruction) |
+| `generated_label` | **GENERATED** | `text`, `feature`, `generator`, `revision`, `prompt_digest`; limitation `GENERATED_LABEL_UNVERIFIED` |
+| `concept` | none (always PROPOSED_CONCEPT) | `label`, `definition`, `feature`, `label_source` (user/dataset/generated), `generated_label` |
+| `concept_dataset` | none | `name` (scope), `label_source`, `samples` (exact sample ids), `labels` (0/1), `splits` (train/val/test) |
+| `concept_validation` | none | `concept`, `feature`, `dataset` (refs), `policy` (`ConceptPolicy`), `encoding` and `use` and `additional` (`AssessmentSummary`), `counterexamples`, the false-positive and false-negative rates, `model_state_digest`, `scope`, `semantic_status`, `unmet`. The status must equal `derive_semantic_status(...)` |
+| `concept_activation` | **VALIDATED_CONCEPT** | `validation`, `concept`, `feature`, `sample_id`, `value`; derives from exactly one MEASURED activation |
+
+**Changes to existing kinds:**
+- **`intervention` v4** adds `direction` (a retained 1-D tensor) and `direction_axis`, for the new operation `DIRECTION`:
+  - removal: x − ⟨x − r, v̂⟩ v̂;
+  - retention: r + ⟨x − r, v̂⟩ v̂.
+  - v3 payloads migrate with `None`.
+- **`claim` v3:** `Subject.feature` (a feature record id; it excludes `units`). v2 payloads migrate with `feature = None`. The golden claim id changed.
+
+**Protocols:**
+- `concept_encoding` v1 (ENCODES);
+- `concept_intervention` v1 (DECREASES/INCREASES by removal; SUFFICIENT_FOR by retention);
+- the diagnostic `concept_counterexamples` v1.
+
+`TraceResult` keeps per-kind and per-pass indexes (ADR-043).
+
 ### A.18 Declared unit axes (Phase 5.5, ADR-034/035)
 
 - `intervention` is record version 3. It adds `unit_axes: tuple[int, ...] | None` (requires `units`; non-negative, sorted, unique). A unit is a row-major index into the sub-grid of the declared axes, and all other axes are perturbed together. `None` keeps the version-2 last-axis meaning. v2 payloads migrate with `unit_axes=None`.

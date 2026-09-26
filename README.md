@@ -1,6 +1,6 @@
 # BeyondNN
 
-> **Status: pre-alpha, Phase 5 (faithfulness tests) implemented (local only, not released).**
+> **Status: pre-alpha, Phase 6 (concepts and concept validation) implemented (local only, not released).**
 >
 > Implemented:
 > - the trace schema, provenance, trace recording and persistence;
@@ -8,9 +8,10 @@
 > - controlled activation interventions with INTERVENTIONAL effect records;
 > - gradient, input × gradient, and Integrated Gradients attribution (native, and through Captum) with ATTRIBUTED records;
 > - a structured WHY that composes measured, attributed, and interventional evidence and declared claim tests without merging them;
-> - faithfulness *protocols* (comprehensiveness, sufficiency, removal/retention curves, stability, counterexamples) with matched random controls. There is no faithfulness score.
+> - faithfulness *protocols* (comprehensiveness, sufficiency, removal/retention curves, stability, counterexamples) with matched random controls. There is no faithfulness score;
+> - concepts: features (neurons, directions, SAE latents), proposals, and controlled validation that keeps *decodable* (ENCODES) and *used* (intervention) separate. There is no concept score.
 >
-> Concepts are **not implemented**. See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md), [`docs/PHASE_4_REPORT.md`](docs/PHASE_4_REPORT.md), and [`docs/PHASE_5_REPORT.md`](docs/PHASE_5_REPORT.md).
+> See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md), [`docs/PHASE_4_REPORT.md`](docs/PHASE_4_REPORT.md), and [`docs/PHASE_5_REPORT.md`](docs/PHASE_5_REPORT.md), [`docs/PHASE_5_5_REPORT.md`](docs/PHASE_5_5_REPORT.md), and [`docs/PHASE_6_REPORT.md`](docs/PHASE_6_REPORT.md).
 
 BeyondNN is an interpretability evidence framework for PyTorch.
 
@@ -260,9 +261,39 @@ for name, attribution in (("gradient", gradient), ("integrated gradients", integ
 - **Where the results go:** into the structured WHY (`bnn.compose(..., faithfulness=[...])`), next to the attribution and intervention evidence, with their limitations, controls, and the list of protocols that were **not** run.
 - **Protocol documentation:** [`docs/protocols/`](docs/protocols/README.md).
 
+## Concepts (Phase 6)
+
+```python
+# runnable example (executed by tests/test_readme.py)
+import torch
+
+import beyondnn as bnn
+from beyondnn._testing.concept_models import ConceptToy, concept_inputs
+
+C, iv = bnn.concepts, bnn.interventions
+model, x = ConceptToy().eval(), concept_inputs(200, seed=0)  # output uses h0 = x0; h1 = x1 is unused
+splits = ["train"] * 100 + ["val"] * 40 + ["test"] * 60
+data = C.dataset([x[i : i + 1] for i in range(200)], (x[:, 1] > 0).long().tolist(), splits,
+                 name="toy x1", label_source="x1 > 0")
+concept = C.propose(C.neuron("hidden", 1), label="x1 is positive", definition="x1 > 0")  # PROPOSED
+encoding = C.encoding_test(model, concept, data, criteria=C.encoding_criteria(min_fraction_below=0.95),
+                           controls=[C.random_neurons(50, seed=1), C.label_permutation(50, seed=2)])
+use = C.use_test(model, concept, data, target=iv.metrics.select([0, 0]), relation="decreases",
+                 intervention=C.remove(C.zero()),  # the intervention is always declared
+                 controls=[C.random_neurons(20, seed=3)],
+                 criteria=C.use_criteria(min_change=0.25, min_fraction_beyond_controls=0.9))
+validation = C.validate(concept, encoding=encoding, use=[use])
+print(encoding.outcome.value, use.outcome.value, validation.semantic_status.value)
+# supports contradicts proposed_concept     <- decodable, but not used: never "validated"
+```
+
+- **What VALIDATED_CONCEPT would mean:** encoding *and* use claims supported above declared controls, with counterexamples recorded, *within the recorded scope* (checkpoint, site, dataset split, intervention, target). It never means "the model understands C".
+- **Where the results go:** into the structured WHY (`bnn.compose(trace, concepts=[validation])`), as dataset-scoped context with the encoding and use outcomes on separate lines.
+- **Documentation:** [`docs/concepts/`](docs/concepts/README.md); the flagship example is `examples/phase6_concepts.py`.
+
 ## Still proposed (not implemented)
 
-Concepts (Phase 6).
+Audits (Phase 7).
 
 There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.
 

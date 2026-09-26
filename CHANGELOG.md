@@ -8,6 +8,19 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 6: concepts and concept validation** (`bnn.concepts`, ADR-039 to ADR-043):
+  - features: neurons, directions, SAE latents (a tensor-only adapter);
+  - train-only discovery (`fit_direction`, `search_neurons`);
+  - concept datasets and proposals (always PROPOSED), and GENERATED labels;
+  - `encoding_test` (ENCODES; held-out AUROC against mandatory controls; counterexamples);
+  - `use_test` (DECREASES/INCREASES by removal, SUFFICIENT_FOR by retention; the intervention and reference are required; mandatory random-feature controls);
+  - `validate` (derived semantic status under `POLICY_V1`; no global REJECTED state);
+  - `activation` (VALIDATED_CONCEPT records only for validated concepts);
+  - full re-derivation (`concepts.verify`) and a CONCEPTS section in the structured WHY (`bnn.compose(concepts=[...])`);
+  - `Coverage.concepts_evaluated`.
+- **DIRECTION interventions** (`interventions.direction`; `InterventionRecord` v4): projection removal and retention against a declared reference.
+- **`Subject.feature`** (`Claim` v3; the golden claim id changes).
+- **Documentation:** Phase 6 literature review, plan, report, `docs/concepts/`, and `examples/phase6_concepts.py`.
 - **Phase 5.5: realistic faithfulness validation.** Pre-registered experiments (`docs/PHASE_5_5_PLAN.md`) on a trained MLP, a trained CNN and BERT-tiny/SST-2 (`experiments/phase5_5/`, with its own pinned requirements; nothing added to the core install). Also `docs/PHASE_5_5_API_REVIEW.md` and `docs/PHASE_5_5_REPORT.md`.
 - **Declared unit axes (ADR-034):**
   - `unit_axes` on interventions, selections (`ranking`, `top_k`, `units`, `selector`) and claim subjects, for pixels, channels and token positions;
@@ -39,6 +52,7 @@ All notable changes to this project are documented here. The format follows
 - `InputRecord.sample_id` (record version 3): the exact input identity, with a migration from v2.
 
 ### Fixed
+- `TraceResult` lookups by record kind and pass were linear scans, which made comparison families of thousands of passes quadratic (ADR-043; 8× faster on a concept use test).
 - Attribution no longer refuses deterministic models whose grad-enabled and no-grad forwards differ by rounding: the tolerance is scaled to the output precision (ADR-036; found on a trained CNN).
 - Curves over declared units keep `unit_axes`/`unit_reduction` in their selection record, and a declared reduction is recorded even when each unit is one element. Both were found by composition on realistic models.
 - `intervention_threshold` can decide only NECESSARY_FOR/DECREASES/INCREASES, independent of the protocol registry. Composition refuses decisive results from protocols that do not justify the claim's relation (found by the Phase 4 mutation audit).
