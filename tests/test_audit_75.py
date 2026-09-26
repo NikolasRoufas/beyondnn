@@ -407,3 +407,35 @@ def test_public_evidence_helpers_round_trip(tmp_path: Path) -> None:
         AU.save_evidence(i.evidence, tmp_path / "ev")
     with pytest.raises(FileNotFoundError):
         AU.load_evidence(tmp_path)
+
+
+def test_profile_is_serialised_with_the_report() -> None:
+    e = scenario("E")
+    doc = json.loads(bnn.audit(e.evidence, plan=_e_plan([])).to_json())
+    profile = doc["claims"][0]["groups"][0]["profile"]
+    assert profile["tested"] == 2
+    assert len(profile["configurations"]) == 2
+    assert profile["sensitive_axes"] == ["replacement"]
+
+
+def test_sample_specific_role_rules_apply_only_to_their_sample() -> None:
+    e = scenario("E")
+    elsewhere = _e_plan([AU.role("replacement", "*", "primary", sample="sha256:" + "0" * 64)])
+    group = bnn.audit(e.evidence, plan=elsewhere).claim("e").groups[0]
+    assert {t.role for t in group.tests} == {"undeclared"}
+    assert "primary_untested" in {f.code for f in group.findings}
+    _, x = _one_unit()
+    here = _e_plan(
+        [
+            AU.role("replacement", "zero", "primary", sample=sample_id(x)),
+            AU.role("replacement", "tensor*", "alternative", sample=sample_id(x)),
+        ]
+    )
+    assert bnn.audit(e.evidence, plan=here).claim("e").groups[0].standing is Standing.SUPPORTED
+
+
+def test_each_claim_uses_its_own_requirement() -> None:
+    d = scenario("D")
+    report = bnn.audit(d.evidence, plan=d.plan)
+    assert report.claim("d_necessary").groups[0].verdict == "supported"
+    assert report.claim("d_sufficient").groups[0].verdict == "contradicted"
