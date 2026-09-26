@@ -1,3 +1,4 @@
+# ruff: noqa: E501, E741
 """Phase-7 code mutations (plan §31): each must make tests/test_audit.py fail."""
 
 import json
