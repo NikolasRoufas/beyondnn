@@ -49,11 +49,13 @@ def ig(n: int = 64, baseline: A.Baseline | None = None) -> A.Method:
 
 def comp(min_drop: float = 1.0, **kw: Any) -> F.TestTemplate:
     kw.setdefault("statement", "the selected units are necessary for the target")
+    kw.setdefault("replacement", F.zero())
     return F.comprehensiveness(target=SEL, min_drop=min_drop, **kw)
 
 
 def suff(max_drop: float = 0.5, **kw: Any) -> F.TestTemplate:
     kw.setdefault("statement", "the selected units suffice for the target")
+    kw.setdefault("replacement", F.zero())
     return F.sufficiency(target=SEL, max_drop=max_drop, **kw)
 
 
@@ -364,8 +366,12 @@ def test_scenario_h_random_rankings_do_not_beat_matched_controls() -> None:
 def test_scenario_m_removal_and_retention_curves_are_exact() -> None:
     attr = weighted8_attr()
     model = FM.Weighted8().eval()
-    removal = F.curve(model, ONES, ranking=F.ranking(attr), target=SEL, mode="remove")
-    retention = F.curve(model, ONES, ranking=F.ranking(attr), target=SEL, mode="retain")
+    removal = F.curve(
+        model, ONES, ranking=F.ranking(attr), target=SEL, mode="remove", replacement=F.zero()
+    )
+    retention = F.curve(
+        model, ONES, ranking=F.ranking(attr), target=SEL, mode="retain", replacement=F.zero()
+    )
     assert removal.drops == (0, 8, 12, 14, 15, 15, 15, 15, 15)
     assert retention.drops == (15, 7, 3, 1, 0, 0, 0, 0, 0)
     assert removal.protocol_result.measurements["aopc_mean_drop"] == pytest.approx(109 / 9)
@@ -385,6 +391,7 @@ def test_curves_with_random_ranking_controls() -> None:
         mode="remove",
         points=(0, 1, 2, 4),
         controls=F.controls(25, seed=0),
+        replacement=F.zero(),
     )
     m = c.protocol_result.measurements
     assert len(seq(m["control_drops"])) == 25
@@ -398,6 +405,7 @@ def test_curves_with_random_ranking_controls() -> None:
             target=SEL,
             mode="remove",
             points=(2, 1),
+            replacement=F.zero(),
         )
 
 
@@ -462,7 +470,9 @@ def test_selection_and_test_refusals() -> None:
         F.run(
             model,
             ONES,
-            test=F.comprehensiveness(target=other_target, min_drop=1.0, statement="s"),
+            test=F.comprehensiveness(
+                replacement=F.zero(), target=other_target, min_drop=1.0, statement="s"
+            ),
             selection=F.top_k(attr, k=2),
         )
     with pytest.raises(F.FaithfulnessError, match="vacuous"):
@@ -493,10 +503,16 @@ def test_selection_and_test_refusals() -> None:
         F.run(FM.Weighted8().train(), ONES, test=comp(), selection=declared(0, n=8))
     with pytest.raises(ValueError, match="NECESSARY_FOR or DECREASES"):
         F.comprehensiveness(
-            target=SEL, min_drop=1.0, statement="s", relation=Relation.SUFFICIENT_FOR
+            replacement=F.zero(),
+            target=SEL,
+            min_drop=1.0,
+            statement="s",
+            relation=Relation.SUFFICIENT_FOR,
         )
     with pytest.raises(ValueError, match="needs controls"):
-        F.comprehensiveness(target=SEL, min_drop=1.0, statement="s", min_fraction_below=0.9)
+        F.comprehensiveness(
+            replacement=F.zero(), target=SEL, min_drop=1.0, statement="s", min_fraction_below=0.9
+        )
 
 
 def test_selections_over_non_vector_sites_are_refused() -> None:
@@ -652,7 +668,14 @@ def test_paired_differences_pair_each_sample_with_its_own_controls() -> None:
 def test_a_curve_ranked_on_another_input_is_refused() -> None:
     attr = A.attribute(FM.Weighted8().eval(), torch.full((1, 8), 2.0), target=SEL, method=ig(8))
     with pytest.raises(F.SelectionMismatchError, match="another input"):
-        F.curve(FM.Weighted8().eval(), ONES, ranking=F.ranking(attr), target=SEL, mode="remove")
+        F.curve(
+            FM.Weighted8().eval(),
+            ONES,
+            ranking=F.ranking(attr),
+            target=SEL,
+            mode="remove",
+            replacement=F.zero(),
+        )
 
 
 def test_a_faithfulness_run_leaves_the_global_rng_untouched() -> None:
@@ -660,7 +683,15 @@ def test_a_faithfulness_run_leaves_the_global_rng_untouched() -> None:
     ranking = F.ranking(weighted8_attr())
     rng = torch.get_rng_state()
     F.run(model, ONES, test=comp(controls=F.controls(20, seed=5)), selection=declared(0, 1, n=8))
-    F.curve(other, ONES, ranking=ranking, target=SEL, mode="retain", controls=F.controls(5, seed=2))
+    F.curve(
+        other,
+        ONES,
+        ranking=ranking,
+        target=SEL,
+        mode="retain",
+        controls=F.controls(5, seed=2),
+        replacement=F.zero(),
+    )
     assert torch.equal(rng, torch.get_rng_state())
 
 
@@ -669,10 +700,14 @@ def test_internal_retention_curves_carry_the_site_relative_limitation() -> None:
     attr = A.attribute(
         model, x(3, 5), target=SEL, method=A.input_x_gradient(), at=A.layer("hidden")
     )
-    c = F.curve(model, x(3, 5), ranking=F.ranking(attr), target=SEL, mode="retain")
+    c = F.curve(
+        model, x(3, 5), ranking=F.ranking(attr), target=SEL, mode="retain", replacement=F.zero()
+    )
     assert "SITE_RELATIVE_SUFFICIENCY" in {lim.code for lim in c.trace.limitations}
     assert c.drops == (6.0, 0.0, 0.0)
-    removal = F.curve(model, x(3, 5), ranking=F.ranking(attr), target=SEL, mode="remove")
+    removal = F.curve(
+        model, x(3, 5), ranking=F.ranking(attr), target=SEL, mode="remove", replacement=F.zero()
+    )
     assert "SITE_RELATIVE_SUFFICIENCY" not in {lim.code for lim in removal.trace.limitations}
 
 
@@ -747,7 +782,14 @@ def test_an_internal_no_op_perturbation_is_inconclusive() -> None:
 def test_default_curve_points_include_both_anchors() -> None:
     attr = weighted8_attr()
     for mode in ("remove", "retain"):
-        c = F.curve(FM.Weighted8().eval(), ONES, ranking=F.ranking(attr), target=SEL, mode=mode)
+        c = F.curve(
+            FM.Weighted8().eval(),
+            ONES,
+            ranking=F.ranking(attr),
+            target=SEL,
+            mode=mode,
+            replacement=F.zero(),
+        )
         assert c.points == tuple(range(9))
         anchor = 0 if mode == "remove" else 8
         assert c.drops[anchor] == 0.0
@@ -785,3 +827,13 @@ def test_a_poor_retained_selection_has_negative_paired_differences() -> None:
     )
     diffs = list(seq(result.summary("paired_control").measurements["paired_differences"]))
     assert all(d < 0 for d in diffs)  # retaining two unused units is worse than random pairs
+
+
+def test_the_replacement_is_always_declared() -> None:
+    """ADR-052: zero is not neutral, so no faithfulness test or curve defaults to it."""
+    with pytest.raises(TypeError):
+        F.comprehensiveness(target=SEL, min_drop=1.0, statement="s")  # type: ignore[call-arg]
+    with pytest.raises(TypeError):
+        F.sufficiency(target=SEL, max_drop=1.0, statement="s")  # type: ignore[call-arg]
+    with pytest.raises(TypeError, match="declare the replacement"):
+        F.comprehensiveness(target=SEL, min_drop=1.0, statement="s", replacement=None)  # type: ignore[arg-type]

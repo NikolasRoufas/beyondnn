@@ -50,12 +50,12 @@ def ig(n: int = 64, baseline: A.Baseline | None = None) -> A.Method:
 
 def comp(min_drop: float = 1.0, **kw: Any) -> F.TestTemplate:
     kw.setdefault("statement", "the selected units are necessary for the target")
-    return F.comprehensiveness(target=SEL, min_drop=min_drop, **kw)
+    return F.comprehensiveness(replacement=F.zero(), target=SEL, min_drop=min_drop, **kw)
 
 
 def suff(max_drop: float = 0.5, **kw: Any) -> F.TestTemplate:
     kw.setdefault("statement", "the selected units suffice for the target")
-    return F.sufficiency(target=SEL, max_drop=max_drop, **kw)
+    return F.sufficiency(replacement=F.zero(), target=SEL, max_drop=max_drop, **kw)
 
 
 def declared(*units: int, n: int, site: Any = None) -> F.Selection:
@@ -110,7 +110,13 @@ def test_results_round_trip_and_recompose_identically(tmp_path: Path) -> None:
         attributions=[attr],
     )
     c = F.curve(
-        model, ONES, ranking=F.ranking(attr), target=SEL, mode="remove", attributions=[attr]
+        model,
+        ONES,
+        ranking=F.ranking(attr),
+        target=SEL,
+        mode="remove",
+        attributions=[attr],
+        replacement=F.zero(),
     )
     trace = bnn.trace(model, ONES)
     before = bnn.compose(trace, attributions=[attr], faithfulness=[r, c])
@@ -167,7 +173,13 @@ def test_forged_curves_and_selections_are_refused(tmp_path: Path) -> None:
     attr = weighted8_attr()
     model = FM.Weighted8().eval()
     c = F.curve(
-        model, ONES, ranking=F.ranking(attr), target=SEL, mode="remove", attributions=[attr]
+        model,
+        ONES,
+        ranking=F.ranking(attr),
+        target=SEL,
+        mode="remove",
+        attributions=[attr],
+        replacement=F.zero(),
     )
 
     def inflate(data: dict[str, Any]) -> None:
@@ -259,7 +271,13 @@ def test_a_curve_with_another_target_is_refused_in_composition() -> None:
     attr = A.attribute(model, ONES, target=iv.metrics.mean(), method=A.gradient())
     base = A.attribute(model, ONES, target=SEL, method=ig(8))
     c = F.curve(
-        model, ONES, ranking=F.ranking(base), target=SEL, mode="remove", attributions=[base]
+        model,
+        ONES,
+        ranking=F.ranking(base),
+        target=SEL,
+        mode="remove",
+        attributions=[base],
+        replacement=F.zero(),
     )
     with pytest.raises(TargetMismatchError):
         bnn.compose(bnn.trace(model, ONES), attributions=[attr], faithfulness=[c])

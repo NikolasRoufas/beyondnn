@@ -86,6 +86,7 @@ def measure(kind: str) -> dict[str, Any]:
         site["intervention_records"] = records(r)
         for match in ("count", "magnitude"):
             test = F.comprehensiveness(
+                replacement=F.zero(),
                 target=metric,
                 min_drop=0.5 * margin,
                 statement="perf",
@@ -100,6 +101,7 @@ def measure(kind: str) -> dict[str, Any]:
             site[f"faithfulness_N50_{match}_records"] = records(res)
         for n_controls in (10, 50, 200):
             scaling = F.comprehensiveness(
+                replacement=F.zero(),
                 target=metric,
                 min_drop=0.5 * margin,
                 statement="perf",

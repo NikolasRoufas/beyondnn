@@ -67,7 +67,6 @@ from .spec import (
     SelectionMismatchError,
     SelectionRule,
     TestTemplate,
-    zero,
 )
 from .stats import (
     control_fractions,
@@ -810,7 +809,7 @@ def curve(
     ranking: Selection,
     target: iv.metrics.Metric,
     mode: str,
-    replacement: Replacement | None = None,
+    replacement: Replacement,
     points: Sequence[int] | None = None,
     controls: Controls | None = None,
     model_kwargs: dict[str, Any] | None = None,
@@ -828,7 +827,11 @@ def curve(
         raise ValueError("mode must be 'remove' or 'retain'")
     if not isinstance(ranking, Selection) or ranking.source is SelectionSource.DECLARED:
         raise TypeError("ranking must come from faithfulness.ranking(...)")
-    rep = replacement if replacement is not None else zero()
+    if not isinstance(replacement, Replacement):
+        raise TypeError(
+            "declare the curve's replacement explicitly (faithfulness.zero() or replacement())"
+        )
+    rep = replacement
     kwargs = dict(model_kwargs or {})
     inputs = tuple(inputs)
     sample = sample_id(*inputs, model_kwargs=kwargs)

@@ -46,7 +46,7 @@ def after_adr034(
     ae: Any,
 ) -> None:
     """The same B/C steps with declared unit axes (ADR-034), after the change."""
-    test_b = F.comprehensiveness(target=metric_b, min_drop=0.1, statement="s")
+    test_b = F.comprehensiveness(replacement=F.zero(), target=metric_b, min_drop=0.1, statement="s")
     attempt(
         "AFTER B pixels top_k(unit_axes=(2,3), reduce='sum')",
         lambda: F.top_k(ab, k=4, unit_axes=(2, 3), reduce="sum"),
@@ -92,7 +92,9 @@ def after_adr034(
         lambda: F.run(
             mC,
             ids,
-            test=F.comprehensiveness(target=metric_c, min_drop=0.1, statement="s"),
+            test=F.comprehensiveness(
+                replacement=F.zero(), target=metric_c, min_drop=0.1, statement="s"
+            ),
             selection=F.units(
                 "bert.embeddings.word_embeddings", (1,), n_units=ids.shape[1], unit_axes=(1,)
             ),
@@ -128,7 +130,9 @@ def main() -> None:
         lambda: F.run(
             mA,
             x,
-            test=F.comprehensiveness(target=metric, min_drop=0.1, statement="s"),
+            test=F.comprehensiveness(
+                replacement=F.zero(), target=metric, min_drop=0.1, statement="s"
+            ),
             selection=F.top_k(attr, k=3),
         ),
         log,
@@ -143,7 +147,9 @@ def main() -> None:
         lambda: F.run(
             mA,
             x,
-            test=F.comprehensiveness(target=metric, min_drop=0.1, statement="s"),
+            test=F.comprehensiveness(
+                replacement=F.zero(), target=metric, min_drop=0.1, statement="s"
+            ),
             selection=F.top_k(hid, k=3),
         ),
         log,
@@ -168,7 +174,9 @@ def main() -> None:
         lambda: F.run(
             mB,
             xb,
-            test=F.comprehensiveness(target=metric_b, min_drop=0.1, statement="s"),
+            test=F.comprehensiveness(
+                replacement=F.zero(), target=metric_b, min_drop=0.1, statement="s"
+            ),
             selection=F.units(A.input(), (0, 1), n_units=64),
         ),
         log,
@@ -184,7 +192,9 @@ def main() -> None:
         lambda: F.run(
             mB,
             xb,
-            test=F.comprehensiveness(target=metric_b, min_drop=0.1, statement="s"),
+            test=F.comprehensiveness(
+                replacement=F.zero(), target=metric_b, min_drop=0.1, statement="s"
+            ),
             selection=F.units("relu2", (0,), n_units=16),
         ),
         log,
@@ -235,7 +245,9 @@ def main() -> None:
         lambda: F.run(
             mC,
             ids,
-            test=F.comprehensiveness(target=metric_c, min_drop=0.1, statement="s"),
+            test=F.comprehensiveness(
+                replacement=F.zero(), target=metric_c, min_drop=0.1, statement="s"
+            ),
             selection=F.units("bert.embeddings.word_embeddings", (1,), n_units=ids.shape[1]),
             model_kwargs=kwargs,
         ),

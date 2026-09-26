@@ -61,7 +61,9 @@ def test_stability_takes_model_kwargs() -> None:
         method=A.gradient(),
         target=SEL,
         k=1,
-        test=F.comprehensiveness(target=SEL, min_drop=1.0, statement="top unit necessary"),
+        test=F.comprehensiveness(
+            replacement=F.zero(), target=SEL, min_drop=1.0, statement="top unit necessary"
+        ),
         model_kwargs=KW,
     )
     assert s.measurements["prediction_x"] == 7.0

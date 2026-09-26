@@ -337,15 +337,20 @@ def comprehensiveness(
     target: Metric,
     min_drop: float,
     statement: str,
+    replacement: Replacement,
     relation: Relation = Relation.NECESSARY_FOR,
-    replacement: Replacement | None = None,
     controls: Controls | None = None,
     min_fraction_below: float | None = None,
 ) -> TestTemplate:
     """``comprehensiveness/v1``: SUPPORTS iff removing the selection drops the target by
     at least ``min_drop`` (and, if declared, the drop exceeds that of at least
     ``min_fraction_below`` of the matched random controls)."""
-    rep = replacement if replacement is not None else zero()
+    if not isinstance(replacement, Replacement):
+        raise TypeError(
+            "declare the replacement explicitly: faithfulness.zero() or "
+            "faithfulness.replacement(...) (zero is not neutral; ADR-052)"
+        )
+    rep = replacement
     _check_common(target, statement, rep, controls)
     if relation not in (Relation.NECESSARY_FOR, Relation.DECREASES):
         raise ValueError("comprehensiveness/v1 tests NECESSARY_FOR or DECREASES claims only")
@@ -361,14 +366,19 @@ def sufficiency(
     target: Metric,
     max_drop: float,
     statement: str,
-    replacement: Replacement | None = None,
+    replacement: Replacement,
     controls: Controls | None = None,
     min_fraction_above: float | None = None,
 ) -> TestTemplate:
     """``sufficiency/v1``: SUPPORTS iff retaining only the selection (the rest of the
     site replaced) drops the target by at most ``max_drop`` (and, if declared, at least
     ``min_fraction_above`` of matched random retained sets drop it by more)."""
-    rep = replacement if replacement is not None else zero()
+    if not isinstance(replacement, Replacement):
+        raise TypeError(
+            "declare the replacement explicitly: faithfulness.zero() or "
+            "faithfulness.replacement(...) (zero is not neutral; ADR-052)"
+        )
+    rep = replacement
     _check_common(target, statement, rep, controls)
     if min_fraction_above is not None and controls is None:
         raise ValueError("min_fraction_above needs controls")

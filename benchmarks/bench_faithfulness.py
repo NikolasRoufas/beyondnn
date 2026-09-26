@@ -68,6 +68,7 @@ class Hidden(nn.Module):
 
 def comp(controls: int) -> F.TestTemplate:
     return F.comprehensiveness(
+        replacement=F.zero(),
         target=SEL,
         min_drop=1.0,
         statement="selected units necessary",
@@ -127,6 +128,7 @@ def run(warmup: int, iterations: int) -> dict[str, Any]:
                 mode="remove",
                 points=p,
                 controls=F.controls(10, seed=0),
+                replacement=F.zero(),
             ),
         )
     for n_samples in (1, 4, 16):

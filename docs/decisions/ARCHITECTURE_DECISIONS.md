@@ -1517,3 +1517,18 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 **Consequences:**
 - New Phase-7.5 experiments use `margin`.
 - The Phase-7 re-runs keep `difference` for comparability. On the 10-class model B this can under-detect prediction changes, and it is reported as a limitation.
+
+## ADR-052: Faithfulness replacements are always declared (no implicit zero)
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7.5 (API freeze review). Awaiting Phase 7.5 review.
+
+**Context:**
+- Phase-5.5 API review F-22: `comprehensiveness`, `sufficiency` and `curve` defaulted to the zero replacement when none was given.
+- Phase-7.5 development evidence (InterpBench cases 7 and 13) shows why that default is dangerous. Under zero ablation, non-circuit nodes appeared necessary on 63 of 381 (case 7) and 31 of 370 (case 13) ground-truth-not-necessary instances, against 0 under the benchmark's resample ablation.
+
+**Decision:** `replacement` is a required keyword of `faithfulness.comprehensiveness`, `faithfulness.sufficiency` and `faithfulness.curve`. Passing `None` raises `TypeError` with guidance.
+
+**Consequences:**
+- A breaking change before v0.1. 22 test, benchmark and Phase-5.5 script call sites now pass `F.zero()` explicitly.
+- Recorded identities and results are unchanged (zero was the default).

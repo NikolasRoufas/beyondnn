@@ -82,7 +82,7 @@ class Pixels(nn.Module):
 
 def comp(min_drop: float, **kw: Any) -> F.TestTemplate:
     kw.setdefault("statement", "the selected units are necessary for the target")
-    return F.comprehensiveness(target=SEL, min_drop=min_drop, **kw)
+    return F.comprehensiveness(replacement=F.zero(), target=SEL, min_drop=min_drop, **kw)
 
 
 def grad_attr(model: nn.Module, x: torch.Tensor = IMG) -> A.AttributionResult:
@@ -228,7 +228,9 @@ def test_internal_channel_sufficiency_is_exact() -> None:
     r = F.run(
         model,
         IMG,
-        test=F.sufficiency(target=SEL, max_drop=50.0, statement="channel 1 suffices"),
+        test=F.sufficiency(
+            replacement=F.zero(), target=SEL, max_drop=50.0, statement="channel 1 suffices"
+        ),
         selection=F.units("scale", (1,), n_units=2, unit_axes=CHANNELS),
     )
     assert r.drop == 45.0
@@ -260,7 +262,9 @@ def test_token_positions_of_a_transformer_are_units() -> None:
     r = F.run(
         model,
         ids,
-        test=F.comprehensiveness(target=target, min_drop=1e-9, statement="tokens"),
+        test=F.comprehensiveness(
+            replacement=F.zero(), target=target, min_drop=1e-9, statement="tokens"
+        ),
         selection=sel,
         attributions=[attr],
     )
@@ -298,6 +302,7 @@ def test_curves_over_declared_units_record_and_verify_their_units() -> None:
         points=[0, 1, 2],
         controls=F.controls(5, seed=0),
         attributions=[attr],
+        replacement=F.zero(),
     )
     assert c.drops == (0.0, 99.0, 187.0)
     (selection,) = [r for r in c.trace.records if isinstance(r, EvidenceSelection)]
@@ -366,6 +371,7 @@ def test_magnitude_controls_are_refused_where_undefined() -> None:
             mode="remove",
             controls=F.controls(5, seed=0, match="magnitude"),
             attributions=[attr],
+            replacement=F.zero(),
         )
 
 

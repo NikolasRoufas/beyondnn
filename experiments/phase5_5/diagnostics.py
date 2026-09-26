@@ -108,6 +108,7 @@ def run(
                 controls=F.controls(CURVE_CONTROLS, seed=10000 + sample.index),
                 model_kwargs=kw,
                 attributions=[attrs[name]],
+                replacement=F.zero(),
             )
             m = c.protocol_result.measurements
             rec["curves"][f"{mode}/{name}"] = {
@@ -209,7 +210,10 @@ def run(
             target=metric,
             k=k,
             test=F.comprehensiveness(
-                target=metric, min_drop=rf.PRIMARY_T * margin, statement="IG top-10% necessary"
+                replacement=F.zero(),
+                target=metric,
+                min_drop=rf.PRIMARY_T * margin,
+                statement="IG top-10% necessary",
             ),
             unit_axes=ax,
             reduce="sum",
