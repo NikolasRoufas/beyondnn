@@ -772,8 +772,8 @@ def test_unexplained_disagreement_sets_mixed() -> None:
     from beyondnn.audits.engine import _standing
     from beyondnn.schema import Verdict
 
-    one = [({}, Outcome.SUPPORTS, "a")]
-    two = [({}, Outcome.CONTRADICTS, "b")]
+    one: list[tuple[dict[str, str], Outcome, str]] = [({}, Outcome.SUPPORTS, "a")]
+    two: list[tuple[dict[str, str], Outcome, str]] = [({}, Outcome.CONTRADICTS, "b")]
     assert _standing(Verdict.MIXED, one, two, True, ()) is Standing.MIXED
     assert _standing(Verdict.MIXED, one, two, False, ()) is Standing.ASSUMPTION_SENSITIVE
 
