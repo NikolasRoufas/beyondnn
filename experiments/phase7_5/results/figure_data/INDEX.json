@@ -1,0 +1,37 @@
+{
+ "fd1_e1_per_configuration.csv": {
+  "rows": "12",
+  "shows": "each single configuration as if it were the only one: SUPPORTS on necessary / not-necessary node instances (held-out reliable cases, clear instances)",
+  "source": "results/hypotheses75.json -> E1.per_configuration"
+ },
+ "fd2_e1_confusion_by_case.csv": {
+  "rows": "18",
+  "shows": "PRIMARY-standing confusion per held-out case (nodes and IG top-1 selections)",
+  "source": "results/external_interpbench_heldout.json (+ _case124_dv1.json) -> cases.<c>.rows"
+ },
+ "fd3_e1_rq3_reversals.csv": {
+  "rows": "6",
+  "shows": "share of node instances with a reversal finding, clear vs ambiguous (descriptive)",
+  "source": "results/hypotheses75.json -> E1.RQ3"
+ },
+ "fd4_central_primary_supported.csv": {
+  "rows": "20",
+  "shows": "PRIMARY-supported samples (IG vs R), alternative reversals and configuration-level disagreement per held-out site, with 95% Wilson intervals",
+  "source": "results/hypotheses75.json -> C1.sites"
+ },
+ "fd5_central_profiles_per_sample.csv": {
+  "rows": "786",
+  "shows": "per-sample sensitivity profiles by role (supporting / tested configurations); descriptive, not a score",
+  "source": "results/central75_<M>_heldout.json -> settings.<site>.audit.<claim>.per_sample"
+ },
+ "fd6_e2_concepts.csv": {
+  "rows": "10",
+  "shows": "known-positive / known-negative concepts under the frozen concept policy",
+  "source": "results/external_tracr_concepts_{dev,heldout}.json -> cases.<c>.models"
+ },
+ "fd9_performance.csv": {
+  "rows": "2",
+  "shows": "end-to-end cost per stage (single runs, one machine)",
+  "source": "results/performance75.json"
+ }
+}

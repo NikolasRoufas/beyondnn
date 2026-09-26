@@ -1,0 +1,11 @@
+split,case,model,concept,known,auroc,encoding_cov,encoding_iso,use,use_effect,validation_cov (PRIMARY),validation_iso (ALTERNATIVE),audit_strict,audit_lenient
+dev,3,tracr_hl,K+,positive,1.0,contradicts,supports,supports,-0.5441,proposed_concept,validated_concept,unsupported,unsupported
+dev,3,tracr_hl,K-,decodable_unused,0.3956,contradicts,contradicts,contradicts,0.0,proposed_concept,proposed_concept,unsupported,unsupported
+dev,3,tracr_hl,K0,negative,0.3691,contradicts,contradicts,supports,-0.1389,proposed_concept,proposed_concept,unsupported,unsupported
+dev,3,siit_ll,K+,positive,1.0,contradicts,contradicts,contradicts,-0.3262,proposed_concept,proposed_concept,unsupported,unsupported
+dev,3,siit_ll,K0,negative,0.4209,contradicts,contradicts,contradicts,0.0808,proposed_concept,proposed_concept,unsupported,unsupported
+heldout,39,tracr_hl,K+,positive,1.0,supports,supports,contradicts,-0.0623,proposed_concept,proposed_concept,unsupported,unsupported
+heldout,39,tracr_hl,K-,decodable_unused,0.5071,contradicts,contradicts,contradicts,0.0,proposed_concept,proposed_concept,unsupported,unsupported
+heldout,39,tracr_hl,K0,negative,0.5287,contradicts,contradicts,contradicts,-0.0405,proposed_concept,proposed_concept,unsupported,unsupported
+heldout,39,siit_ll,K+,positive,0.9907,supports,supports,contradicts,-0.0638,proposed_concept,proposed_concept,unsupported,unsupported
+heldout,39,siit_ll,K0,negative,0.4817,contradicts,contradicts,contradicts,-0.0011,proposed_concept,proposed_concept,unsupported,unsupported

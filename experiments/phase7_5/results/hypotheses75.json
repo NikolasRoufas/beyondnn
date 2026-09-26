@@ -1,0 +1,1379 @@
+{
+ "C1": {
+  "CH7": {
+   "holds": true,
+   "passing_sites": [
+    "A/input",
+    "B/pixels",
+    "C/tokens"
+   ],
+   "qualifying_sites": [
+    "A/input",
+    "B/pixels",
+    "C/tokens"
+   ]
+  },
+  "CH8": {
+   "D_included": false,
+   "holds": true
+  },
+  "CH9": {
+   "D_included": false,
+   "holds": true
+  },
+  "sites": {
+   "A/input": {
+    "all_claims": {
+     "g_necessary": {
+      "contradicted": 50,
+      "supported": 1
+     },
+     "g_sufficient": {
+      "contradicted": 49,
+      "supported": 2
+     },
+     "ig_necessary": {
+      "contradicted": 43,
+      "supported": 8
+     },
+     "ig_sufficient": {
+      "contradicted": 39,
+      "supported": 12
+     },
+     "r_necessary": {
+      "contradicted": 50,
+      "supported": 1
+     },
+     "r_sufficient": {
+      "contradicted": 50,
+      "supported": 1
+     }
+    },
+    "ig_configuration_level_disagreement": {
+     "estimate": 0.9411764705882353,
+     "high": 0.9797933605775353,
+     "k": 48,
+     "level": 0.95,
+     "low": 0.8407537395119957,
+     "n": 51,
+     "text": "48/51 = 0.9412 (95.00% Wilson [0.8408, 0.9798])"
+    },
+    "ig_necessary_distribution": {
+     "contradicted": 43,
+     "supported": 8
+    },
+    "ig_supported": {
+     "estimate": 0.1568627450980392,
+     "high": 0.2801044677298776,
+     "k": 8,
+     "level": 0.95,
+     "low": 0.08169223220048707,
+     "n": 51,
+     "text": "8/51 = 0.1569 (95.00% Wilson [0.0817, 0.2801])"
+    },
+    "ig_supported_with_alternative_reverses": {
+     "estimate": 1.0,
+     "high": 1.0,
+     "k": 8,
+     "level": 0.95,
+     "low": 0.67559243511612,
+     "n": 8,
+     "text": "8/8 = 1.0000 (95.00% Wilson [0.6756, 1.0000])"
+    },
+    "n": 51,
+    "r_necessary_distribution": {
+     "contradicted": 50,
+     "supported": 1
+    },
+    "r_supported": {
+     "estimate": 0.0196078431372549,
+     "high": 0.10304568726144969,
+     "k": 1,
+     "level": 0.95,
+     "low": 0.0034696926410608467,
+     "n": 51,
+     "text": "1/51 = 0.0196 (95.00% Wilson [0.0035, 0.1030])"
+    }
+   },
+   "A/net.1": {
+    "all_claims": {
+     "g_necessary": {
+      "contradicted": 51
+     },
+     "g_sufficient": {
+      "contradicted": 48,
+      "supported": 3
+     },
+     "ig_necessary": {
+      "contradicted": 47,
+      "supported": 4
+     },
+     "ig_sufficient": {
+      "contradicted": 38,
+      "supported": 13
+     },
+     "r_necessary": {
+      "contradicted": 51
+     },
+     "r_sufficient": {
+      "contradicted": 51
+     }
+    },
+    "ig_configuration_level_disagreement": {
+     "estimate": 0.803921568627451,
+     "high": 0.889846574875333,
+     "k": 41,
+     "level": 0.95,
+     "low": 0.6754192051863439,
+     "n": 51,
+     "text": "41/51 = 0.8039 (95.00% Wilson [0.6754, 0.8898])"
+    },
+    "ig_necessary_distribution": {
+     "contradicted": 47,
+     "supported": 4
+    },
+    "ig_supported": {
+     "estimate": 0.0784313725490196,
+     "high": 0.18499946312595883,
+     "k": 4,
+     "level": 0.95,
+     "low": 0.03092219678848919,
+     "n": 51,
+     "text": "4/51 = 0.0784 (95.00% Wilson [0.0309, 0.1850])"
+    },
+    "ig_supported_with_alternative_reverses": {
+     "estimate": 0.5,
+     "high": 0.8499610108478504,
+     "k": 2,
+     "level": 0.95,
+     "low": 0.15003898915214958,
+     "n": 4,
+     "text": "2/4 = 0.5000 (95.00% Wilson [0.1500, 0.8500])"
+    },
+    "n": 51,
+    "r_necessary_distribution": {
+     "contradicted": 51
+    },
+    "r_supported": {
+     "estimate": 0.0,
+     "high": 0.07004661989853138,
+     "k": 0,
+     "level": 0.95,
+     "low": 0.0,
+     "n": 51,
+     "text": "0/51 = 0.0000 (95.00% Wilson [0.0000, 0.0700])"
+    }
+   },
+   "B/pixels": {
+    "all_claims": {
+     "g_necessary": {
+      "contradicted": 23,
+      "supported": 37
+     },
+     "g_sufficient": {
+      "contradicted": 37,
+      "supported": 23
+     },
+     "ig_necessary": {
+      "contradicted": 46,
+      "supported": 14
+     },
+     "ig_sufficient": {
+      "contradicted": 52,
+      "supported": 8
+     },
+     "r_necessary": {
+      "contradicted": 59,
+      "supported": 1
+     },
+     "r_sufficient": {
+      "contradicted": 60
+     }
+    },
+    "ig_configuration_level_disagreement": {
+     "estimate": 0.9,
+     "high": 0.9533571655261158,
+     "k": 54,
+     "level": 0.95,
+     "low": 0.7985053527602123,
+     "n": 60,
+     "text": "54/60 = 0.9000 (95.00% Wilson [0.7985, 0.9534])"
+    },
+    "ig_necessary_distribution": {
+     "contradicted": 46,
+     "supported": 14
+    },
+    "ig_supported": {
+     "estimate": 0.23333333333333334,
+     "high": 0.3543627037760195,
+     "k": 14,
+     "level": 0.95,
+     "low": 0.1443956173664283,
+     "n": 60,
+     "text": "14/60 = 0.2333 (95.00% Wilson [0.1444, 0.3544])"
+    },
+    "ig_supported_with_alternative_reverses": {
+     "estimate": 0.9285714285714286,
+     "high": 0.987277784752109,
+     "k": 13,
+     "level": 0.95,
+     "low": 0.6853129557584889,
+     "n": 14,
+     "text": "13/14 = 0.9286 (95.00% Wilson [0.6853, 0.9873])"
+    },
+    "n": 60,
+    "r_necessary_distribution": {
+     "contradicted": 59,
+     "supported": 1
+    },
+    "r_supported": {
+     "estimate": 0.016666666666666666,
+     "high": 0.08855129727590058,
+     "k": 1,
+     "level": 0.95,
+     "low": 0.0029481597947862495,
+     "n": 60,
+     "text": "1/60 = 0.0167 (95.00% Wilson [0.0029, 0.0886])"
+    }
+   },
+   "B/relu2": {
+    "all_claims": {
+     "g_necessary": {
+      "contradicted": 59,
+      "supported": 1
+     },
+     "g_sufficient": {
+      "contradicted": 59,
+      "supported": 1
+     },
+     "ig_necessary": {
+      "contradicted": 59,
+      "supported": 1
+     },
+     "ig_sufficient": {
+      "contradicted": 58,
+      "supported": 2
+     },
+     "r_necessary": {
+      "contradicted": 60
+     },
+     "r_sufficient": {
+      "contradicted": 59,
+      "supported": 1
+     }
+    },
+    "ig_configuration_level_disagreement": {
+     "estimate": 0.5666666666666667,
+     "high": 0.6842760319531322,
+     "k": 34,
+     "level": 0.95,
+     "low": 0.4410343877612557,
+     "n": 60,
+     "text": "34/60 = 0.5667 (95.00% Wilson [0.4410, 0.6843])"
+    },
+    "ig_necessary_distribution": {
+     "contradicted": 59,
+     "supported": 1
+    },
+    "ig_supported": {
+     "estimate": 0.016666666666666666,
+     "high": 0.08855129727590058,
+     "k": 1,
+     "level": 0.95,
+     "low": 0.0029481597947862495,
+     "n": 60,
+     "text": "1/60 = 0.0167 (95.00% Wilson [0.0029, 0.0886])"
+    },
+    "ig_supported_with_alternative_reverses": {
+     "estimate": 1.0,
+     "high": 1.0,
+     "k": 1,
+     "level": 0.95,
+     "low": 0.2065493143772375,
+     "n": 1,
+     "text": "1/1 = 1.0000 (95.00% Wilson [0.2065, 1.0000])"
+    },
+    "n": 60,
+    "r_necessary_distribution": {
+     "contradicted": 60
+    },
+    "r_supported": {
+     "estimate": 0.0,
+     "high": 0.06017185214208982,
+     "k": 0,
+     "level": 0.95,
+     "low": 0.0,
+     "n": 60,
+     "text": "0/60 = 0.0000 (95.00% Wilson [0.0000, 0.0602])"
+    }
+   },
+   "C/tokens": {
+    "all_claims": {
+     "g_necessary": {
+      "contradicted": 30,
+      "supported": 10
+     },
+     "g_sufficient": {
+      "contradicted": 33,
+      "supported": 7
+     },
+     "ig_necessary": {
+      "contradicted": 26,
+      "supported": 14
+     },
+     "ig_sufficient": {
+      "contradicted": 25,
+      "supported": 15
+     },
+     "r_necessary": {
+      "contradicted": 40
+     },
+     "r_sufficient": {
+      "contradicted": 39,
+      "supported": 1
+     }
+    },
+    "ig_configuration_level_disagreement": {
+     "estimate": 0.925,
+     "high": 0.9741639742254118,
+     "k": 37,
+     "level": 0.95,
+     "low": 0.8013576647568947,
+     "n": 40,
+     "text": "37/40 = 0.9250 (95.00% Wilson [0.8014, 0.9742])"
+    },
+    "ig_necessary_distribution": {
+     "contradicted": 26,
+     "supported": 14
+    },
+    "ig_supported": {
+     "estimate": 0.35,
+     "high": 0.504941191627423,
+     "k": 14,
+     "level": 0.95,
+     "low": 0.22134528873176296,
+     "n": 40,
+     "text": "14/40 = 0.3500 (95.00% Wilson [0.2213, 0.5049])"
+    },
+    "ig_supported_with_alternative_reverses": {
+     "estimate": 1.0,
+     "high": 1.0,
+     "k": 14,
+     "level": 0.95,
+     "low": 0.7846891972623643,
+     "n": 14,
+     "text": "14/14 = 1.0000 (95.00% Wilson [0.7847, 1.0000])"
+    },
+    "n": 40,
+    "r_necessary_distribution": {
+     "contradicted": 40
+    },
+    "r_supported": {
+     "estimate": 0.0,
+     "high": 0.0876216011972866,
+     "k": 0,
+     "level": 0.95,
+     "low": 0.0,
+     "n": 40,
+     "text": "0/40 = 0.0000 (95.00% Wilson [0.0000, 0.0876])"
+    }
+   }
+  }
+ },
+ "E1": {
+  "EH1": {
+   "estimate": 1.0,
+   "high": 1.0,
+   "holds": true,
+   "k": 942,
+   "level": 0.95,
+   "low": 0.9959385806311729,
+   "n": 942,
+   "text": "942/942 = 1.0000 (95.00% Wilson [0.9959, 1.0000])",
+   "threshold": ">= 0.90"
+  },
+  "EH2": {
+   "estimate": 0.0,
+   "high": 0.00043436540993876797,
+   "holds": true,
+   "k": 0,
+   "level": 0.95,
+   "low": 0.0,
+   "n": 8840,
+   "text": "0/8840 = 0.0000 (95.00% Wilson [0.0000, 0.0004])",
+   "threshold": "<= 0.05"
+  },
+  "EH3": {
+   "estimate": 1.0,
+   "high": 1.0,
+   "holds": true,
+   "k": 1571,
+   "level": 0.95,
+   "low": 0.9975607329873251,
+   "n": 1571,
+   "text": "1571/1571 = 1.0000 (95.00% Wilson [0.9976, 1.0000])",
+   "threshold": ">= 0.90"
+  },
+  "EH4": {
+   "configuration": "tensor/resample|count|recorded",
+   "estimate": 0.9860788863109049,
+   "high": 0.9936046264329828,
+   "holds": true,
+   "k": 425,
+   "level": 0.95,
+   "low": 0.9699649493299707,
+   "n": 431,
+   "text": "425/431 = 0.9861 (95.00% Wilson [0.9700, 0.9936])",
+   "threshold": ">= 0.50"
+  },
+  "EH5": {
+   "holds": true,
+   "primary_fp_rate": 0.0,
+   "stress_zero": {
+    "estimate": 0.13009049773755657,
+    "high": 0.13726413518525601,
+    "k": 1150,
+    "level": 0.95,
+    "low": 0.12323821207503807,
+    "n": 8840,
+    "text": "1150/8840 = 0.1301 (95.00% Wilson [0.1232, 0.1373])"
+   },
+   "threshold": "zero FP rate >= PRIMARY + 0.05"
+  },
+  "EH6": {
+   "holds": true,
+   "selection_claims_attribution_only": {
+    "unsupported": 1960
+   }
+  },
+  "RQ3": {
+   "ambiguous (reliable)": {
+    "estimate": 0.8888888888888888,
+    "high": 0.9689804773543875,
+    "k": 16,
+    "level": 0.95,
+    "low": 0.6720023486982121,
+    "n": 18,
+    "text": "16/18 = 0.8889 (95.00% Wilson [0.6720, 0.9690])"
+   },
+   "clear (reliable)": {
+    "estimate": 0.2875690042936005,
+    "high": 0.2966206965382387,
+    "k": 2813,
+    "level": 0.95,
+    "low": 0.2786840927853312,
+    "n": 9782,
+    "text": "2813/9782 = 0.2876 (95.00% Wilson [0.2787, 0.2966])"
+   },
+   "development: reliable case 7": {
+    "estimate": 0.3025,
+    "high": 0.3492179921781514,
+    "k": 121,
+    "level": 0.95,
+    "low": 0.25953936408389566,
+    "n": 400,
+    "text": "121/400 = 0.3025 (95.00% Wilson [0.2595, 0.3492])"
+   },
+   "development: unreliable case 13": {
+    "estimate": 0.3925,
+    "high": 0.44115861665869904,
+    "k": 157,
+    "level": 0.95,
+    "low": 0.34588652662317476,
+    "n": 400,
+    "text": "157/400 = 0.3925 (95.00% Wilson [0.3459, 0.4412])"
+   },
+   "reliable cases": {
+    "estimate": 0.2886734693877551,
+    "high": 0.2977265620512529,
+    "k": 2829,
+    "level": 0.95,
+    "low": 0.27978598571915525,
+    "n": 9800,
+    "text": "2829/9800 = 0.2887 (95.00% Wilson [0.2798, 0.2977])"
+   },
+   "unreliable cases (held-out)": {
+    "k": 0,
+    "n": 0,
+    "text": "n = 0"
+   }
+  },
+  "alternative_mean_fp_by_node": [
+   {
+    "case": "129",
+    "claim": "l1_h0_necessary",
+    "samples": 8
+   },
+   {
+    "case": "25",
+    "claim": "l0_h0_necessary",
+    "samples": 7
+   },
+   {
+    "case": "25",
+    "claim": "l0_mlp_necessary",
+    "samples": 7
+   },
+   {
+    "case": "44",
+    "claim": "l0_h0_necessary",
+    "samples": 6
+   },
+   {
+    "case": "44",
+    "claim": "l0_mlp_necessary",
+    "samples": 6
+   },
+   {
+    "case": "129",
+    "claim": "l0_mlp_necessary",
+    "samples": 6
+   },
+   {
+    "case": "129",
+    "claim": "l1_mlp_necessary",
+    "samples": 6
+   },
+   {
+    "case": "129",
+    "claim": "l2_mlp_necessary",
+    "samples": 6
+   },
+   {
+    "case": "21",
+    "claim": "l3_h0_necessary",
+    "samples": 5
+   },
+   {
+    "case": "14",
+    "claim": "l0_h0_necessary",
+    "samples": 4
+   },
+   {
+    "case": "14",
+    "claim": "l0_mlp_necessary",
+    "samples": 4
+   },
+   {
+    "case": "63",
+    "claim": "l0_h0_necessary",
+    "samples": 4
+   },
+   {
+    "case": "63",
+    "claim": "l0_mlp_necessary",
+    "samples": 4
+   },
+   {
+    "case": "82",
+    "claim": "l3_mlp_necessary",
+    "samples": 4
+   },
+   {
+    "case": "103",
+    "claim": "l2_h0_necessary",
+    "samples": 4
+   },
+   {
+    "case": "45",
+    "claim": "l2_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "71",
+    "claim": "l1_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "110",
+    "claim": "l0_h0_necessary",
+    "samples": 3
+   },
+   {
+    "case": "110",
+    "claim": "l0_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "124",
+    "claim": "l0_h0_necessary",
+    "samples": 3
+   },
+   {
+    "case": "124",
+    "claim": "l0_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "124",
+    "claim": "l1_h0_necessary",
+    "samples": 3
+   },
+   {
+    "case": "124",
+    "claim": "l1_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "124",
+    "claim": "l2_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "25",
+    "claim": "l1_mlp_necessary",
+    "samples": 2
+   },
+   {
+    "case": "67",
+    "claim": "l1_mlp_necessary",
+    "samples": 2
+   },
+   {
+    "case": "93",
+    "claim": "l2_h0_necessary",
+    "samples": 2
+   },
+   {
+    "case": "2",
+    "claim": "l3_h0_necessary",
+    "samples": 1
+   },
+   {
+    "case": "58",
+    "claim": "l2_h0_necessary",
+    "samples": 1
+   }
+  ],
+  "attribution_only_any_supported": false,
+  "case_124": "re-run after DV-1",
+  "node_confusion": {
+   "ambiguous": 18,
+   "fn": 0,
+   "fp": 0,
+   "neg_other": 9,
+   "pos_other": 0,
+   "tn": 8831,
+   "tp": 942
+  },
+  "other_on_clear": [
+   {
+    "case": "110",
+    "claim": "l0_h1_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 22,
+    "standing": "inconclusive"
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 0,
+    "standing": "inconclusive"
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 1,
+    "standing": "inconclusive"
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 2,
+    "standing": "inconclusive"
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 7,
+    "standing": "inconclusive"
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 8,
+    "standing": "inconclusive"
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 22,
+    "standing": "inconclusive"
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 29,
+    "standing": "inconclusive"
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "codes": [
+     "inconclusive_results"
+    ],
+    "gt": "not_necessary",
+    "sample": 35,
+    "standing": "inconclusive"
+   }
+  ],
+  "per_configuration": {
+   "tensor/mean|none|min_dropx0.5": {
+    "fp": 216,
+    "fp_rate": 0.024434389140271493,
+    "neg": 8840,
+    "pos": 942,
+    "tp": 841,
+    "tp_rate": 0.8927813163481954
+   },
+   "tensor/mean|none|min_dropx1.5": {
+    "fp": 72,
+    "fp_rate": 0.008144796380090498,
+    "neg": 8840,
+    "pos": 942,
+    "tp": 408,
+    "tp_rate": 0.43312101910828027
+   },
+   "tensor/mean|none|recorded": {
+    "fp": 116,
+    "fp_rate": 0.013122171945701358,
+    "neg": 8840,
+    "pos": 942,
+    "tp": 645,
+    "tp_rate": 0.6847133757961783
+   },
+   "tensor/resample|count|min_dropx0.5": {
+    "fp": 2,
+    "fp_rate": 0.00027063599458728013,
+    "neg": 7390,
+    "pos": 431,
+    "tp": 6,
+    "tp_rate": 0.013921113689095127
+   },
+   "tensor/resample|count|min_dropx1.5": {
+    "fp": 0,
+    "fp_rate": 0.0,
+    "neg": 7390,
+    "pos": 431,
+    "tp": 4,
+    "tp_rate": 0.009280742459396751
+   },
+   "tensor/resample|count|recorded": {
+    "fp": 0,
+    "fp_rate": 0.0,
+    "neg": 7399,
+    "pos": 431,
+    "tp": 6,
+    "tp_rate": 0.013921113689095127
+   },
+   "tensor/resample|none|min_dropx0.5": {
+    "fp": 266,
+    "fp_rate": 0.03012116408107802,
+    "neg": 8831,
+    "pos": 942,
+    "tp": 942,
+    "tp_rate": 1.0
+   },
+   "tensor/resample|none|min_dropx1.5": {
+    "fp": 0,
+    "fp_rate": 0.0,
+    "neg": 8831,
+    "pos": 942,
+    "tp": 898,
+    "tp_rate": 0.9532908704883227
+   },
+   "tensor/resample|none|recorded": {
+    "fp": 0,
+    "fp_rate": 0.0,
+    "neg": 8840,
+    "pos": 942,
+    "tp": 942,
+    "tp_rate": 1.0
+   },
+   "zero|none|min_dropx0.5": {
+    "fp": 1799,
+    "fp_rate": 0.20350678733031674,
+    "neg": 8840,
+    "pos": 942,
+    "tp": 922,
+    "tp_rate": 0.9787685774946921
+   },
+   "zero|none|min_dropx1.5": {
+    "fp": 847,
+    "fp_rate": 0.09581447963800906,
+    "neg": 8840,
+    "pos": 942,
+    "tp": 340,
+    "tp_rate": 0.3609341825902335
+   },
+   "zero|none|recorded": {
+    "fp": 1150,
+    "fp_rate": 0.13009049773755657,
+    "neg": 8840,
+    "pos": 942,
+    "tp": 659,
+    "tp_rate": 0.6995753715498938
+   }
+  },
+  "primary_errors": [],
+  "reliable_cases": [
+   "2",
+   "11",
+   "14",
+   "21",
+   "25",
+   "44",
+   "45",
+   "58",
+   "63",
+   "67",
+   "71",
+   "82",
+   "93",
+   "103",
+   "110",
+   "111",
+   "124",
+   "129"
+  ],
+  "selection_confusion": {
+   "ambiguous": 3,
+   "fn": 0,
+   "fp": 0,
+   "neg_other": 0,
+   "pos_other": 0,
+   "tn": 1571,
+   "tp": 386
+  },
+  "stress_zero_fp_by_node": [
+   {
+    "case": "14",
+    "claim": "l1_h3_necessary",
+    "samples": 40
+   },
+   {
+    "case": "25",
+    "claim": "l0_h1_necessary",
+    "samples": 40
+   },
+   {
+    "case": "25",
+    "claim": "l0_h2_necessary",
+    "samples": 40
+   },
+   {
+    "case": "14",
+    "claim": "l1_mlp_necessary",
+    "samples": 39
+   },
+   {
+    "case": "103",
+    "claim": "l0_mlp_necessary",
+    "samples": 38
+   },
+   {
+    "case": "63",
+    "claim": "l1_h0_necessary",
+    "samples": 37
+   },
+   {
+    "case": "63",
+    "claim": "l1_h1_necessary",
+    "samples": 37
+   },
+   {
+    "case": "44",
+    "claim": "l0_h2_necessary",
+    "samples": 35
+   },
+   {
+    "case": "44",
+    "claim": "l1_mlp_necessary",
+    "samples": 35
+   },
+   {
+    "case": "110",
+    "claim": "l1_h2_necessary",
+    "samples": 35
+   },
+   {
+    "case": "93",
+    "claim": "l0_mlp_necessary",
+    "samples": 34
+   },
+   {
+    "case": "25",
+    "claim": "l0_h3_necessary",
+    "samples": 33
+   },
+   {
+    "case": "110",
+    "claim": "l1_h1_necessary",
+    "samples": 33
+   },
+   {
+    "case": "93",
+    "claim": "l1_mlp_necessary",
+    "samples": 32
+   },
+   {
+    "case": "110",
+    "claim": "l1_mlp_necessary",
+    "samples": 32
+   },
+   {
+    "case": "44",
+    "claim": "l0_h1_necessary",
+    "samples": 31
+   },
+   {
+    "case": "44",
+    "claim": "l1_h3_necessary",
+    "samples": 31
+   },
+   {
+    "case": "63",
+    "claim": "l0_h2_necessary",
+    "samples": 31
+   },
+   {
+    "case": "63",
+    "claim": "l1_mlp_necessary",
+    "samples": 30
+   },
+   {
+    "case": "110",
+    "claim": "l1_h3_necessary",
+    "samples": 30
+   },
+   {
+    "case": "103",
+    "claim": "l1_mlp_necessary",
+    "samples": 28
+   },
+   {
+    "case": "44",
+    "claim": "l1_h0_necessary",
+    "samples": 24
+   },
+   {
+    "case": "25",
+    "claim": "l1_h3_necessary",
+    "samples": 21
+   },
+   {
+    "case": "124",
+    "claim": "l0_h0_necessary",
+    "samples": 21
+   },
+   {
+    "case": "124",
+    "claim": "l0_mlp_necessary",
+    "samples": 21
+   },
+   {
+    "case": "44",
+    "claim": "l1_h2_necessary",
+    "samples": 20
+   },
+   {
+    "case": "63",
+    "claim": "l0_h1_necessary",
+    "samples": 20
+   },
+   {
+    "case": "124",
+    "claim": "l1_h0_necessary",
+    "samples": 20
+   },
+   {
+    "case": "25",
+    "claim": "l1_h2_necessary",
+    "samples": 19
+   },
+   {
+    "case": "44",
+    "claim": "l0_h3_necessary",
+    "samples": 18
+   },
+   {
+    "case": "58",
+    "claim": "l1_mlp_necessary",
+    "samples": 17
+   },
+   {
+    "case": "44",
+    "claim": "l1_h1_necessary",
+    "samples": 14
+   },
+   {
+    "case": "58",
+    "claim": "l0_mlp_necessary",
+    "samples": 14
+   },
+   {
+    "case": "2",
+    "claim": "l0_mlp_necessary",
+    "samples": 12
+   },
+   {
+    "case": "11",
+    "claim": "l1_mlp_necessary",
+    "samples": 10
+   },
+   {
+    "case": "14",
+    "claim": "l0_h0_necessary",
+    "samples": 9
+   },
+   {
+    "case": "14",
+    "claim": "l0_mlp_necessary",
+    "samples": 9
+   },
+   {
+    "case": "71",
+    "claim": "l0_mlp_necessary",
+    "samples": 9
+   },
+   {
+    "case": "111",
+    "claim": "l0_mlp_necessary",
+    "samples": 9
+   },
+   {
+    "case": "21",
+    "claim": "l3_h0_necessary",
+    "samples": 8
+   },
+   {
+    "case": "25",
+    "claim": "l0_h0_necessary",
+    "samples": 8
+   },
+   {
+    "case": "25",
+    "claim": "l0_mlp_necessary",
+    "samples": 8
+   },
+   {
+    "case": "25",
+    "claim": "l1_mlp_necessary",
+    "samples": 8
+   },
+   {
+    "case": "111",
+    "claim": "l0_h2_necessary",
+    "samples": 8
+   },
+   {
+    "case": "44",
+    "claim": "l0_h0_necessary",
+    "samples": 6
+   },
+   {
+    "case": "44",
+    "claim": "l0_mlp_necessary",
+    "samples": 6
+   },
+   {
+    "case": "67",
+    "claim": "l0_mlp_necessary",
+    "samples": 6
+   },
+   {
+    "case": "110",
+    "claim": "l0_h1_necessary",
+    "samples": 6
+   },
+   {
+    "case": "111",
+    "claim": "l1_mlp_necessary",
+    "samples": 6
+   },
+   {
+    "case": "129",
+    "claim": "l2_mlp_necessary",
+    "samples": 6
+   },
+   {
+    "case": "11",
+    "claim": "l0_mlp_necessary",
+    "samples": 4
+   },
+   {
+    "case": "11",
+    "claim": "l1_h0_necessary",
+    "samples": 4
+   },
+   {
+    "case": "63",
+    "claim": "l0_h0_necessary",
+    "samples": 4
+   },
+   {
+    "case": "63",
+    "claim": "l0_mlp_necessary",
+    "samples": 4
+   },
+   {
+    "case": "67",
+    "claim": "l1_mlp_necessary",
+    "samples": 4
+   },
+   {
+    "case": "110",
+    "claim": "l0_h2_necessary",
+    "samples": 4
+   },
+   {
+    "case": "111",
+    "claim": "l1_h0_necessary",
+    "samples": 4
+   },
+   {
+    "case": "45",
+    "claim": "l2_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "58",
+    "claim": "l2_h0_necessary",
+    "samples": 3
+   },
+   {
+    "case": "93",
+    "claim": "l2_h0_necessary",
+    "samples": 3
+   },
+   {
+    "case": "103",
+    "claim": "l2_h0_necessary",
+    "samples": 3
+   },
+   {
+    "case": "110",
+    "claim": "l0_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "124",
+    "claim": "l1_mlp_necessary",
+    "samples": 3
+   },
+   {
+    "case": "2",
+    "claim": "l1_mlp_necessary",
+    "samples": 2
+   },
+   {
+    "case": "2",
+    "claim": "l3_h0_necessary",
+    "samples": 2
+   },
+   {
+    "case": "45",
+    "claim": "l1_mlp_necessary",
+    "samples": 2
+   },
+   {
+    "case": "63",
+    "claim": "l1_h2_necessary",
+    "samples": 2
+   },
+   {
+    "case": "82",
+    "claim": "l3_mlp_necessary",
+    "samples": 2
+   },
+   {
+    "case": "110",
+    "claim": "l0_h0_necessary",
+    "samples": 2
+   },
+   {
+    "case": "111",
+    "claim": "l2_mlp_necessary",
+    "samples": 2
+   },
+   {
+    "case": "21",
+    "claim": "l0_h1_necessary",
+    "samples": 1
+   },
+   {
+    "case": "21",
+    "claim": "l0_h3_necessary",
+    "samples": 1
+   },
+   {
+    "case": "63",
+    "claim": "l0_h3_necessary",
+    "samples": 1
+   },
+   {
+    "case": "67",
+    "claim": "l0_h3_necessary",
+    "samples": 1
+   },
+   {
+    "case": "71",
+    "claim": "l1_mlp_necessary",
+    "samples": 1
+   },
+   {
+    "case": "124",
+    "claim": "l2_mlp_necessary",
+    "samples": 1
+   }
+  ],
+  "unreliable_cases": []
+ },
+ "E2": {
+  "KE1": {
+   "holds": true
+  },
+  "KE2": {
+   "holds": true,
+   "tracr_K+_covariance": "proposed_concept"
+  },
+  "KE3": {
+   "encoding": {
+    "covariance": "supports",
+    "isotropic": "supports"
+   },
+   "siit_K+": {
+    "covariance": "proposed_concept",
+    "isotropic": "proposed_concept"
+   },
+   "use": "contradicts",
+   "use_effect": -0.06383278041791457
+  },
+  "outcomes": {
+   "siit_ll/K+": {
+    "audit": {
+     "lenient": "unsupported",
+     "strict": "unsupported"
+    },
+    "encoding": {
+     "covariance": "supports",
+     "isotropic": "supports"
+    },
+    "known": "positive",
+    "use": "contradicts",
+    "validation": {
+     "covariance": "proposed_concept",
+     "isotropic": "proposed_concept"
+    }
+   },
+   "siit_ll/K0": {
+    "audit": {
+     "lenient": "unsupported",
+     "strict": "unsupported"
+    },
+    "encoding": {
+     "covariance": "contradicts",
+     "isotropic": "contradicts"
+    },
+    "known": "negative",
+    "use": "contradicts",
+    "validation": {
+     "covariance": "proposed_concept",
+     "isotropic": "proposed_concept"
+    }
+   },
+   "tracr_hl/K+": {
+    "audit": {
+     "lenient": "unsupported",
+     "strict": "unsupported"
+    },
+    "encoding": {
+     "covariance": "supports",
+     "isotropic": "supports"
+    },
+    "known": "positive",
+    "use": "contradicts",
+    "validation": {
+     "covariance": "proposed_concept",
+     "isotropic": "proposed_concept"
+    }
+   },
+   "tracr_hl/K-": {
+    "audit": {
+     "lenient": "unsupported",
+     "strict": "unsupported"
+    },
+    "encoding": {
+     "covariance": "contradicts",
+     "isotropic": "contradicts"
+    },
+    "known": "decodable_unused",
+    "use": "contradicts",
+    "validation": {
+     "covariance": "proposed_concept",
+     "isotropic": "proposed_concept"
+    }
+   },
+   "tracr_hl/K0": {
+    "audit": {
+     "lenient": "unsupported",
+     "strict": "unsupported"
+    },
+    "encoding": {
+     "covariance": "contradicts",
+     "isotropic": "contradicts"
+    },
+    "known": "negative",
+    "use": "contradicts",
+    "validation": {
+     "covariance": "proposed_concept",
+     "isotropic": "proposed_concept"
+    }
+   }
+  }
+ },
+ "NLP": {
+  "N1": "not_available",
+  "N2": "not_available",
+  "N3": "not_available",
+  "N4": "not_available"
+ },
+ "gate_criteria_\u00a710": {
+  "EH1_below_80pct": false,
+  "EH2_primary_fp_rate_above_10pct": false,
+  "KE1_fails": false,
+  "attribution_only_claim_supported": false
+ },
+ "policy": "docs/PHASE_7_5_FROZEN_POLICY.md \u00a79 (frozen at ee3f91e; DV-1)"
+}
