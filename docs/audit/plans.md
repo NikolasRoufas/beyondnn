@@ -66,3 +66,56 @@ A plan is refused if:
 - `sample_targets` do not cover exactly the plan samples;
 - a policy uses unregistered or unjustified protocols;
 - alternatives are declared for `concept_encoding`.
+
+## Configuration roles (ADR-048)
+
+Not every configuration a claim is tested under is equally central. Declare the role of each assumption value **before** the audit:
+
+```python
+roles = [
+    AU.role("replacement", "tensor/mask:*", "primary"),      # the pre-registered analysis
+    AU.role("replacement", "tensor/pad:*", "alternative"),   # a reasonable alternative
+    AU.role("replacement", "zero", "stress_test"),           # deliberately out of distribution
+    AU.role("k", "3", "primary", sample=sid),                # per-sample values (e.g. k of p = 10%)
+    AU.role("threshold", "{*}", "primary"),                  # the recorded criteria
+    AU.role("threshold", "*|alt:*x0.5", "alternative"),      # declared alternative criteria
+]
+AU.claim(..., roles=roles)
+```
+
+- **Standings** use PRIMARY configurations only.
+- **Reversals** by ALTERNATIVE configurations are `alternative_reverses` (QUALIFYING). By STRESS_TEST configurations they are `stress_test_reverses` (INFORMATIONAL).
+- **Unmatched values:** a value on a declared axis that no rule matches is UNDECLARED. It is listed, and it takes no part in the standing.
+- **Role resolution:** a configuration's role is the worst over the declared axes; on a single axis, the best matching rule counts.
+
+**Axis-key grammar** (for `pattern`, matched with `fnmatch`):
+
+| axis | keys |
+|---|---|
+| replacement | `zero`; `tensor/<name>:<16 hex>` for a named faithfulness replacement (`F.replacement(t, name=...)`); `tensor:<16 hex>` if unnamed; concept use tests: `remove:zero`, `remove:tensor/<name>:<hex>`; interventions: `<operation>[:<value>][:source=<record>]` |
+| k | the selection size, e.g. `3` |
+| null | `none`; faithfulness `count@min_fraction_below=0.95` / `magnitude@...` (`@not_decisive` without a control criterion); concepts `label_permutation+random_directions/covariance@min_fraction_below=0.95` |
+| threshold | the recorded criteria as compact JSON without control fractions, e.g. `{"min_drop":2.3}`; re-evaluations append `|alt:<key>x<factor>` or `|alt:<key>=<value>` |
+| method | `integrated_gradients`, `gradient`, …; `declared`, `random` |
+| dataset | a `concept_dataset:` id |
+
+## Sensitivity profiles and uncertainty
+
+- **Every group has a `SensitivityProfile`:**
+  - the tested configurations, with their roles and outcomes;
+  - the supporting and contradicting configuration ids;
+  - the sensitive and stable axes;
+  - the minimal reversals.
+
+  `profile.describe()` reads, for example, "20 of 21 tested configurations SUPPORT (primary 1 of 1, …)". It is descriptive, not a score.
+- **Per-sample claims** carry Wilson intervals (`claim.intervals`) for each standing's share of the declared samples.
+- **`audits.bootstrap` and `audits.paired_bootstrap`** give percentile intervals over per-sample values, with the seed, draws and unit recorded (ADR-049).
+
+## Persisting evidence
+
+```python
+AU.save_evidence(evidence, "evidence/")        # exactly the traces an audit ingests
+report = bnn.audit(AU.load_evidence("evidence/"), plan=plan)
+validation = bnn.concepts.load_validation(AU.load_evidence("evidence/"))  # for the WHY
+sid = AU.sample_id(x)                          # the recorded identity of an input
+```

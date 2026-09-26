@@ -25,6 +25,6 @@
   - site-relative sufficiency can be trivial when the site is not on the main path.
 - **Distribution shift:** stronger than for removal, because most of the site is replaced.
 - **Baselines:** declared replacement and matched random retained sets.
-- **Example:** `F.run(model, x, test=F.sufficiency(target=m, max_drop=0.5, statement="..."), selection=F.units("hidden", (0,), n_units=2))`
+- **Example:** `F.run(model, x, test=F.sufficiency(target=m, max_drop=0.5, statement="...", replacement=F.zero()), selection=F.units("hidden", (0,), n_units=2))`
 - **Limitations:** as for comprehensiveness. Sufficiency under internal interventions is only defined relative to one site: BeyondNN refuses the vacuous case and flags the site-relative one.
 - **References:** DeYoung et al. 2020; Wang et al. 2022; Miller et al. 2024.

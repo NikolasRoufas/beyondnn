@@ -37,7 +37,7 @@
   - small unit counts limit what controls can show (scenario A: a perfect top-2 of 8 units has P ≈ 0.06 because 1/28 of random pairs coincide with it).
 - **Distribution shift:** replaced inputs or activations may never occur naturally (`ZERO_ABLATION_MAY_BE_OOD`, `CONSTANT_REPLACEMENT_MAY_BE_OOD`). The effect then mixes "S mattered" with "the model reacts to an unusual value".
 - **Baselines:** declared replacement values and matched random controls. Mean or resample replacement is the caller's explicit tensor.
-- **Example:** `F.run(model, x, test=F.comprehensiveness(target=m, min_drop=1.0, statement="...", controls=F.controls(200, seed=0)), selection=F.top_k(attr, k=2))`
+- **Example:** `F.run(model, x, test=F.comprehensiveness(target=m, min_drop=1.0, statement="...", replacement=F.zero(), controls=F.controls(200, seed=0)), selection=F.top_k(attr, k=2))`
 - **Limitations:**
   - instance level (use `run_dataset` for declared sets);
   - vector-shaped sites only;

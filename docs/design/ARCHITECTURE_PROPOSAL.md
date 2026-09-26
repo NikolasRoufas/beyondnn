@@ -248,9 +248,9 @@ result.trace            # one trace: CLEAN baseline pass, INTERVENTION pass (act
 ### Faithfulness tests (Phase 5, `beyondnn/faithfulness/`, ADR-032, ADR-033)
 
 ```python
-test = F.comprehensiveness(target=m, min_drop=1.0, statement="...", controls=F.controls(200, seed=0))
+test = F.comprehensiveness(target=m, min_drop=1.0, statement="...", replacement=F.zero(), controls=F.controls(200, seed=0))
 result = F.run(model, x, test=test, selection=F.top_k(attr, k=2))   # a ClaimTestResult + raw effects
-curve = F.curve(model, x, ranking=F.ranking(attr), target=m, mode="remove")
+curve = F.curve(model, x, ranking=F.ranking(attr), target=m, mode="remove", replacement=F.zero())
 bnn.compose(trace, attributions=[attr], faithfulness=[result, curve])
 ```
 
