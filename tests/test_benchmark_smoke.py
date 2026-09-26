@@ -65,3 +65,10 @@ def test_benchmark_runs() -> None:
         "Dense~1M",
     }
     assert "|" in module.markdown(report)
+
+
+def test_audit_benchmark_runs() -> None:
+    module = _load("bench_audit")
+    report = module.run(warmup=0, iterations=1)
+    assert len(report["results"]) == 4
+    assert "|" in module.markdown(report)

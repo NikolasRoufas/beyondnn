@@ -21,3 +21,5 @@ Results are logged, with methodology, in `docs/experiments/EXPERIMENT_LOG.md`. T
 `bench_synthesis.py` characterises Phase-4 composition and rendering (no model runs in the timed region; the evidence is computed beforehand): measured-only, plus attribution, plus intervention, and everything plus claims. It uses the same flags.
 
 `bench_faithfulness.py` characterises Phase-5 faithfulness tests: time, passes, and records as the number of units, random controls, curve points, and dataset samples grows (input level, plus one internal-site case). It uses the same flags.
+
+`bench_audit.py` characterises Phase-7 audits: `bnn.audit` (integrity, re-derivation, classification), `to_json`, and `verify_report` (a full re-audit), for comprehensiveness evidence on 1, 4 and 16 samples plus one concept body. It uses the same flags. The evidence is computed beforehand and not timed. The realistic-scale audit measurements (MLP, CNN, BERT-tiny) are in `experiments/phase7/results/performance.json`.

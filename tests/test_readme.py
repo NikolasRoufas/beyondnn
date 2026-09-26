@@ -38,3 +38,8 @@ def test_readme_examples_execute() -> None:
     assert "NOT EVALUATED" in text
     assert "gradient (1,) contradicts 0.2" in text
     assert "integrated gradients (0,) supports 1.0" in text
+    assert "{'unsupported': 1} ['attribution_is_not_intervention']" in text
+    assert (
+        "{'contradicted': 1} ['attribution_intervention_disagree', 'counterexamples_present']"
+        in text
+    )

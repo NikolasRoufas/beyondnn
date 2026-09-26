@@ -724,3 +724,23 @@ def test_per_sample_targets_match_each_samples_own_target() -> None:
         _plan(model, samples[:1], [per_sample], [_comp_req(False)])
     with pytest.raises(SchemaError, match="exactly one of target"):
         AU.claim("x", target=targets[0], sample_targets={samples[0]: targets[0]}, **common)
+
+
+def test_flagship_example() -> None:
+    import importlib.util
+
+    path = Path(__file__).resolve().parents[1] / "examples" / "phase7_audit.py"
+    spec = importlib.util.spec_from_file_location("phase7_audit", path)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    report, attribution_only, why = module.build()
+    assert report.claim("gradient_top1_necessary").distribution == (("contradicted", 1),)
+    ig = report.claim("integrated_gradients_top1_necessary")
+    assert ig.distribution == (("assumption_sensitive", 1),)
+    assert {f.axis for f in ig.findings if f.kind is FindingKind.ASSUMPTION_SENSITIVE} == {
+        "replacement"
+    }
+    assert {c.distribution for c in attribution_only.claims} == {(("unsupported", 1),)}
+    assert "AUDIT  [plan saturated_top1" in why

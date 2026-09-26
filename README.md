@@ -291,9 +291,57 @@ print(encoding.outcome.value, use.outcome.value, validation.semantic_status.valu
 - **Where the results go:** into the structured WHY (`bnn.compose(trace, concepts=[validation])`), as dataset-scoped context with the encoding and use outcomes on separate lines.
 - **Documentation:** [`docs/concepts/`](docs/concepts/README.md); the flagship example is `examples/phase6_concepts.py`.
 
-## Still proposed (not implemented)
+## Audits (Phase 7)
 
-Audits (Phase 7).
+```python
+# runnable example (executed by tests/test_readme.py)
+import torch
+
+import beyondnn as bnn
+from beyondnn._testing.causal_models import Redundant
+from beyondnn.core.samples import sample_id
+from beyondnn.schema import InterventionOperation, Relation, Site, Subject
+
+A, iv, AU = bnn.attribution, bnn.interventions, bnn.audits
+model, x = Redundant().eval(), torch.tensor([[3.0, 5.0]])  # y = p(x) + q(x), with p = q = x0
+target = iv.metrics.select([0, 0])
+ig = A.integrated_gradients(baseline=A.zero_baseline(), n_steps=16)
+credit = A.make_claim(A.layer("p"), target, x, statement="p receives attribution for y")
+attribution = A.attribute(model, x, target=target, method=ig, at=A.layer("p"),
+                          claims=[(credit, A.threshold_spec(ig, at=A.layer("p"), min_abs_attribution=2.0))])
+necessary = iv.make_claim(iv.zero("p"), target, Relation.NECESSARY_FOR, x, statement="p is necessary for y")
+effect = bnn.intervene(model, x, intervention=iv.zero("p"), metric=target,
+                       claims=[(necessary, iv.threshold_spec(operation=InterventionOperation.ZERO,
+                                                             min_effect=6.0))])
+
+plan = AU.plan(  # declared before auditing; every field is explicit
+    name="redundant_path", checkpoint=AU.checkpoint_of(model), declared_model=None,
+    samples=[sample_id(x)], datasets=[], concepts=[], naive_auroc=None,
+    claims=[AU.claim("p_necessary", statement="p is necessary for y", relation="necessary_for",
+                     target=target, scope="instance", requirement="intervention",
+                     subject=Subject(site=Site(module="p")))],
+    requirements=[AU.requirement("intervention", policy=iv.INTERVENTION_POLICY, controls=False)],
+    counterexamples=AU.counterexample_rule(max_counterexample_fraction=None,
+                                           max_false_positive_rate=None, max_false_negative_rate=None))
+for evidence in ([attribution], [attribution, effect]):
+    audited = bnn.audit(evidence, plan=plan).claim("p_necessary")
+    print(dict(audited.distribution), sorted(f.code for f in audited.findings))
+# {'unsupported': 1} ['attribution_is_not_intervention']       <- attribution only
+# {'contradicted': 1} ['attribution_intervention_disagree', 'counterexamples_present']
+```
+
+- **What an audit is:** a deterministic, model-free classification of the declared claims from recorded, **re-derived**, in-scope evidence. The standings are SUPPORTED, CONTRADICTED, MIXED, ASSUMPTION_SENSITIVE, INCONCLUSIVE, UNSUPPORTED and NOT_EVALUATED, each with the findings behind it.
+- **What an audit never does:** compute a score, resolve a contradiction, or say that an explanation is trustworthy. Missing evidence is NOT_EVALUATED.
+- **What it reports:**
+  - structural overclaims (attribution → causal, decodable → used, generated → validated, instance → population, one replacement / k / threshold / null → universal);
+  - sensitivity to each assumption;
+  - per-sample distributions with counterexample identities;
+  - evidence that is excluded for provenance or scope.
+- **Persistence:** audits run on saved traces too (`bnn.audit([path, ...], plan=plan)`), and `bnn.audits.verify_report` re-derives a stored report.
+- **WHY integration:** `bnn.compose(trace, audit=report)` adds an AUDIT section.
+- **Documentation:** [`docs/audit/`](docs/audit/README.md).
+
+## Still proposed (not implemented)
 
 There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.
 
