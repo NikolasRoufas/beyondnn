@@ -14,7 +14,9 @@ Build plans with :func:`plan`, :func:`claim`, :func:`selection`, :func:`requirem
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import Iterable
+from pathlib import Path
 from typing import Any
 
 from beyondnn.schema import AuditPlan
@@ -69,15 +71,63 @@ __all__ = [
     "concept",
     "counterexample_rule",
     "invariance",
+    "load_evidence",
     "load_report",
     "paired_bootstrap",
     "plan",
     "requirement",
     "role",
+    "sample_id",
+    "save_evidence",
     "selection",
+    "traces_of",
     "verify_report",
     "wilson",
 ]
+
+
+def sample_id(*inputs: Any, model_kwargs: dict[str, Any] | None = None) -> str:
+    """The exact sample identity BeyondNN records for these inputs (``plan(samples=...)``,
+    ``claim(sample_targets=...)``); the same function the recorders use."""
+    from beyondnn.core.samples import sample_id as _sample_id
+
+    return _sample_id(*inputs, model_kwargs=model_kwargs)
+
+
+def traces_of(evidence: Iterable[Any]) -> list[Any]:
+    """Exactly the traces :func:`audit` ingests from ``evidence`` (traces, saved trace paths,
+    or result objects with their nested traces), deduplicated, in a deterministic order."""
+    from .evidence import collect_traces
+
+    return collect_traces(evidence)
+
+
+def save_evidence(evidence: Iterable[Any], directory: str | os.PathLike[str]) -> list[Path]:
+    """Save :func:`traces_of` ``evidence`` into the new directory ``directory`` (one trace
+    directory each, ``trace0000``...), so ``audit(load_evidence(directory), plan=...)`` in
+    another process sees exactly the same evidence. Never overwrites."""
+    target = Path(directory)
+    if target.exists():
+        raise FileExistsError(f"{target} already exists")
+    target.mkdir(parents=True)
+    paths = []
+    for i, trace in enumerate(traces_of(evidence)):
+        path = target / f"trace{i:04d}"
+        trace.save(path)
+        paths.append(path)
+    return paths
+
+
+def load_evidence(directory: str | os.PathLike[str]) -> list[Path]:
+    """The trace directories written by :func:`save_evidence`, in their saved order (pass
+    them to :func:`audit` or ``concepts.load_validation``; each is fully re-validated when
+    loaded)."""
+    paths = sorted(
+        p for p in Path(directory).iterdir() if p.is_dir() and p.name.startswith("trace")
+    )
+    if not paths:
+        raise FileNotFoundError(f"no saved traces in {directory}")
+    return paths
 
 
 class AuditMismatchError(ValueError):

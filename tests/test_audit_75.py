@@ -390,3 +390,20 @@ def test_reconstructed_validation_cannot_run_new_tests(tmp_path: Path) -> None:
 
     with pytest.raises(ConceptVerificationError, match="not supplied"):
         C.load_validation(paths[:1])
+
+
+def test_public_evidence_helpers_round_trip(tmp_path: Path) -> None:
+    """API review F-1/F-2: public sample ids and saving exactly the audited evidence."""
+    i = scenario("I")
+    _, x = _one_unit()
+    assert AU.sample_id(x) == sample_id(x)
+    traces = AU.traces_of(i.evidence)
+    assert traces == collect_traces(i.evidence)
+    paths = AU.save_evidence(i.evidence, tmp_path / "ev")
+    assert AU.load_evidence(tmp_path / "ev") == paths
+    live = bnn.audit(i.evidence, plan=i.plan)
+    AU.verify_report(live.to_dict(), paths, i.plan)  # identical evidence after reload
+    with pytest.raises(FileExistsError):
+        AU.save_evidence(i.evidence, tmp_path / "ev")
+    with pytest.raises(FileNotFoundError):
+        AU.load_evidence(tmp_path)
