@@ -551,3 +551,91 @@ def test_trace_indexes_agree_with_a_scan() -> None:
         assert inp.pass_index is not None
         assert t.input_of_pass(inp.pass_index) is inp
     assert ConceptValidation.RECORD_VERSION == 1
+
+
+# ------------------------------------------------------------------ guards (plan §23)
+
+
+def test_features_keep_their_exact_vectors() -> None:
+    v = torch.tensor([3.0, -4.0] + [0.0] * 10)
+    feature = C.direction("hidden", v)
+    assert torch.equal(feature.vector(), v)
+    assert C.direction("hidden", 2 * v).id != feature.id  # a changed norm is another feature
+
+
+def test_status_requires_every_component() -> None:
+    from beyondnn.schema import AssessmentSummary, derive_semantic_status
+
+    def s(i: str, relation: Relation, protocol: str, verdict: Verdict) -> AssessmentSummary:
+        return AssessmentSummary(
+            assessment_id="assessment:" + i * 32,
+            claim_id="claim:" + i * 32,
+            relation=relation,
+            protocol=protocol,
+            verdict=verdict,
+            controls_declared=True,
+        )
+
+    enc_bad = s("1", Relation.ENCODES, "concept_encoding", Verdict.CONTRADICTED)
+    enc_ok = s("2", Relation.ENCODES, "concept_encoding", Verdict.SUPPORTED)
+    use_ok = s("3", Relation.DECREASES, "concept_intervention", Verdict.SUPPORTED)
+    status, unmet = derive_semantic_status(C.POLICY_V1, enc_bad, (use_ok,), 0.0, 0.0)
+    assert status is SemanticStatus.PROPOSED_CONCEPT
+    assert unmet == ("encoding claim contradicted",)
+    status, unmet = derive_semantic_status(C.POLICY_V1, enc_ok, (), 0.0, 0.0)
+    assert status is SemanticStatus.PROPOSED_CONCEPT
+    assert "requires 1" in unmet[0]
+    no_controls = dataclasses.replace(use_ok, controls_declared=False)
+    assert derive_semantic_status(C.POLICY_V1, enc_ok, (no_controls,), 0.0, 0.0)[0] is (
+        SemanticStatus.PROPOSED_CONCEPT
+    )
+    assert derive_semantic_status(C.POLICY_V1, enc_ok, (use_ok,), 0.0, 0.0)[0] is (
+        SemanticStatus.VALIDATED_CONCEPT
+    )
+
+
+def test_validation_without_use_claims_is_not_validated() -> None:
+    concept, enc, _, _ = full(C.neuron("hidden", 0), data(0), 0)
+    val = C.validate(concept, encoding=enc, use=[])
+    assert val.semantic_status is SemanticStatus.PROPOSED_CONCEPT
+
+
+def test_a_declared_reference_is_what_ran_and_is_verified() -> None:
+    mean = torch.full((1, 12), 0.25)
+    concept, enc, use, val = full(
+        C.direction("hidden", unit(0)), data(0), 0, reference=C.reference(mean, name="quarter")
+    )
+    assert use.intervention.reference.name == "quarter"
+    positives = X[200:][X[200:, 0] > 0, 0]
+    assert use.mean_effect == pytest.approx(-3 * float((positives - 0.25).mean()), rel=1e-5)
+    verify_validation(val)
+    x = X[:1]
+    ref = bnn.trace(MODEL, x, sites=["hidden"], retention="cpu")
+    swapped = C.ConceptValidationResult(
+        val.trace, concept, enc, (full(C.direction("hidden", unit(0)), data(0), 0)[2],)
+    )
+    with pytest.raises(EvidenceIntegrityError):
+        bnn.compose(ref, concepts=[swapped])
+
+
+def test_a_small_effect_beating_controls_is_not_enough() -> None:
+    from beyondnn.concepts.use import evaluate_use
+
+    outcome, stats = evaluate_use(Relation.DECREASES, -0.1, [0.0] * 10, USE)
+    assert stats["superiority"] == 1.0
+    assert outcome is Outcome.CONTRADICTS  # |effect| < min_change
+
+
+def test_recorded_control_directions_must_match_their_declaration(tmp_path: Path) -> None:
+    from beyondnn.concepts.verify import verify_use
+
+    concept, _, use, _ = full(C.direction("hidden", unit(0)), data(0), 0)
+    verify_use(use)
+
+    def reseed(payload: dict[str, Any]) -> None:
+        for control in payload["params"]["controls"]:
+            control["seed"] += 1
+
+    forged = _forge(tmp_path, use.trace, "claim_test_spec", reseed, 1)
+    with pytest.raises(ConceptVerificationError, match="not the declared intervention"):
+        verify_use(C.UseResult(forged, concept, use.data, use.intervention))
