@@ -1,0 +1,257 @@
+{
+ "environment": {
+  "python": "3.11.15",
+  "torch": "2.3.1",
+  "interpbench_revision": "a1242a84f8a4d07d1be9a8f5ec710415198016b2",
+  "beyondnn_commit": "20d4ebc961f959f2ccc452c4d0ba07c9eeb5dbe8"
+ },
+ "split": "dev",
+ "cases": {
+  "3": {
+   "case": "3",
+   "task": "Returns the fraction of 'x' in the input up to the i-th position for all i.",
+   "n": 256,
+   "train_median_fraction": 0.25,
+   "label_balance": 0.26171875,
+   "residual_labels": [
+    "frac_prevs_1",
+    "indices:0",
+    "indices:1",
+    "indices:2",
+    "indices:3",
+    "is_x_3",
+    "one",
+    "tokens:BOS",
+    "tokens:PAD",
+    "tokens:a",
+    "tokens:b",
+    "tokens:c",
+    "tokens:x"
+   ],
+   "models": {
+    "tracr_hl": {
+     "params": 923,
+     "concepts": {
+      "K+": {
+       "known": "positive",
+       "auroc": 1.0,
+       "encoding": {
+        "covariance": "contradicts",
+        "isotropic": "supports"
+       },
+       "control_superiority": {
+        "covariance": [
+         0.925,
+         1.0
+        ],
+        "isotropic": [
+         0.96,
+         1.0
+        ]
+       },
+       "use": "supports",
+       "use_effect": -0.5441176470588235,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "validated_concept"
+       },
+       "fp": 0.0,
+       "fn": 0.0
+      },
+      "K-": {
+       "known": "decodable_unused",
+       "auroc": 0.39558823529411763,
+       "encoding": {
+        "covariance": "contradicts",
+        "isotropic": "contradicts"
+       },
+       "control_superiority": {
+        "covariance": [
+         0.0,
+         0.095
+        ],
+        "isotropic": [
+         0.0,
+         0.095
+        ]
+       },
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 1.0,
+       "fn": 0.0
+      },
+      "K0": {
+       "known": "negative",
+       "auroc": 0.3691148775894539,
+       "encoding": {
+        "covariance": "contradicts",
+        "isotropic": "contradicts"
+       },
+       "control_superiority": {
+        "covariance": [
+         0.0,
+         0.055
+        ],
+        "isotropic": [
+         0.0,
+         0.055
+        ]
+       },
+       "use": "supports",
+       "use_effect": -0.1388888888888889,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 0.6610169491525424,
+       "fn": 0.5555555555555556
+      }
+     },
+     "audits": {
+      "strict": {
+       "K0": {
+        "standing": "unsupported",
+        "findings": [
+         "controls_defeat_encoding",
+         "counterexample_heavy",
+         "feature_encodes_several_concepts"
+        ]
+       },
+       "K+": {
+        "standing": "unsupported",
+        "findings": [
+         "alternative_reverses",
+         "controls_defeat_encoding"
+        ]
+       },
+       "K-": {
+        "standing": "unsupported",
+        "findings": [
+         "controls_defeat_encoding",
+         "counterexample_heavy"
+        ]
+       }
+      },
+      "lenient": {
+       "K0": {
+        "standing": "unsupported",
+        "findings": [
+         "controls_defeat_encoding",
+         "counterexample_heavy",
+         "feature_encodes_several_concepts"
+        ]
+       },
+       "K+": {
+        "standing": "unsupported",
+        "findings": [
+         "alternative_reverses",
+         "controls_defeat_encoding"
+        ]
+       },
+       "K-": {
+        "standing": "unsupported",
+        "findings": [
+         "controls_defeat_encoding",
+         "counterexample_heavy"
+        ]
+       }
+      }
+     },
+     "seconds": 10.468339374987409
+    },
+    "siit_ll": {
+     "params": 3817,
+     "concepts": {
+      "K+": {
+       "known": "positive",
+       "auroc": 1.0,
+       "encoding": {
+        "covariance": "contradicts",
+        "isotropic": "contradicts"
+       },
+       "control_superiority": {
+        "covariance": [
+         0.515,
+         1.0
+        ],
+        "isotropic": [
+         0.605,
+         1.0
+        ]
+       },
+       "use": "contradicts",
+       "use_effect": -0.3262437976458493,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 0.0,
+       "fn": 0.0
+      },
+      "K0": {
+       "known": "negative",
+       "auroc": 0.4209039548022599,
+       "encoding": {
+        "covariance": "contradicts",
+        "isotropic": "contradicts"
+       },
+       "control_superiority": {
+        "covariance": [
+         0.0,
+         0.16
+        ],
+        "isotropic": [
+         0.0,
+         0.16
+        ]
+       },
+       "use": "contradicts",
+       "use_effect": 0.08079375616378254,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 0.6271186440677966,
+       "fn": 0.5555555555555556
+      }
+     },
+     "audits": {
+      "strict": {
+       "K+": {
+        "standing": "unsupported",
+        "findings": [
+         "controls_defeat_encoding"
+        ]
+       },
+       "K0": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexample_heavy"
+        ]
+       }
+      },
+      "lenient": {
+       "K+": {
+        "standing": "unsupported",
+        "findings": [
+         "controls_defeat_encoding"
+        ]
+       },
+       "K0": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexample_heavy"
+        ]
+       }
+      }
+     },
+     "seconds": 7.633728000102565
+    }
+   }
+  }
+ }
+}

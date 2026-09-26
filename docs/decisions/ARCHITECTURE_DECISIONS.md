@@ -1501,3 +1501,19 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 **Consequences:**
 - The loop "run → save → new process → load → audit → compose WHY" works with no live objects. P6-4 is closed for concept validations.
 - Other Phase 3–5 results were already composable from traces through their own result classes' `trace` attribute.
+
+## ADR-051: A builtin `margin` metric (predicted class vs best other class)
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7.5. Awaiting Phase 7.5 review.
+
+**Context:** on the InterpBench development cases, claims of the form "node n is necessary for the prediction" were operationalised with `difference(pred, runner-up)`.
+- When an intervention moved the argmax to a *third* class, the margin to the clean runner-up stayed positive, and the test read CONTRADICTS: 14 of 32 ground-truth-necessary head instances in case 7.
+- Caller metrics cannot be attribution targets (no differentiable form), and selections must share their test's target.
+
+**Decision:** `interventions.metrics.margin(index, path="")` is the element at `index` minus the largest other element on the same last axis. It is builtin and differentiable, and "drop ≥ clean margin" means exactly "the declared class is no longer the argmax".
+- `difference` is unchanged and remains the right metric for a declared pair.
+
+**Consequences:**
+- New Phase-7.5 experiments use `margin`.
+- The Phase-7 re-runs keep `difference` for comparability. On the 10-class model B this can under-detect prediction changes, and it is reported as a limitation.
