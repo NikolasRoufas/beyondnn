@@ -1,0 +1,1779 @@
+{
+ "rows": [
+  {
+   "case": "A",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.5846185064935064,
+     "q95": 0.7610998376623375
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.5013189935064934,
+     "q95": 0.5646053165584415
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.0,
+   "use_outcome": "supports",
+   "mean_effect": -2.6241113850846887,
+   "use_superiority": 1.0,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 3.632233749842271
+  },
+  {
+   "case": "A",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.5846185064935064,
+     "q95": 0.7610998376623375
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.5013189935064934,
+     "q95": 0.5646053165584415
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.0,
+   "use_outcome": "supports",
+   "mean_effect": -2.6241113850846887,
+   "use_superiority": 1.0,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 3.716429416788742
+  },
+  {
+   "case": "B",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.6032,
+     "q95": 0.7887099999999998
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.50345,
+     "q95": 0.57505
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.0,
+   "use_outcome": "contradicts",
+   "mean_effect": 0.0,
+   "use_superiority": 0.54,
+   "status": "proposed_concept",
+   "unmet": [
+    "use claim claim:460896843d7fb58f815b58563da4a2bb contradicted"
+   ],
+   "verified": true,
+   "seconds": 4.057107334025204
+  },
+  {
+   "case": "B",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.6032,
+     "q95": 0.7887099999999998
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.50345,
+     "q95": 0.57505
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.0,
+   "use_outcome": "contradicts",
+   "mean_effect": 0.0,
+   "use_superiority": 0.44,
+   "status": "proposed_concept",
+   "unmet": [
+    "use claim claim:63fee23f615cbef7dff65c423b6bee16 contradicted"
+   ],
+   "verified": true,
+   "seconds": 4.206910582957789
+  },
+  {
+   "case": "C",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 0.8339,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.955,
+     "median": 0.6369,
+     "q95": 0.8323050000000001
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.506,
+     "q95": 0.5678899999999999
+    }
+   ],
+   "false_positive_rate": 0.33,
+   "false_negative_rate": 0.24,
+   "use_outcome": "supports",
+   "mean_effect": -0.8224223967827856,
+   "use_superiority": 0.94,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 4.118120500119403
+  },
+  {
+   "case": "C",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.6369,
+     "q95": 0.8323050000000001
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.50335,
+     "q95": 0.5647249999999999
+    }
+   ],
+   "false_positive_rate": 0.04,
+   "false_negative_rate": 0.0,
+   "use_outcome": "supports",
+   "mean_effect": -1.7061864551529289,
+   "use_superiority": 1.0,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 4.243154957890511
+  },
+  {
+   "case": "D",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.6355881172219991,
+     "q95": 0.8170714572460859
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.5043155359293456,
+     "q95": 0.5671818546768367
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.0,
+   "use_outcome": "contradicts",
+   "mean_effect": 0.0,
+   "use_superiority": 0.5,
+   "status": "proposed_concept",
+   "unmet": [
+    "use claim claim:ab7efe7e055522bac213d6c66e40b404 contradicted"
+   ],
+   "verified": true,
+   "seconds": 4.301421749871224
+  },
+  {
+   "case": "D",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.6355881172219991,
+     "q95": 0.8170714572460859
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.5043155359293456,
+     "q95": 0.5671818546768367
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.0,
+   "use_outcome": "supports",
+   "mean_effect": -0.8177054002002444,
+   "use_superiority": 1.0,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 4.539007083978504
+  },
+  {
+   "case": "E1",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 0.9704423524648244,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.5869015082498228,
+     "q95": 0.7458902722947667
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.4992408138475555,
+     "q95": 0.5774825387184938
+    }
+   ],
+   "false_positive_rate": 0.21348314606741572,
+   "false_negative_rate": 0.04504504504504504,
+   "use_outcome": "supports",
+   "mean_effect": -0.8045714902649591,
+   "use_superiority": 1.0,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 4.470978041179478
+  },
+  {
+   "case": "E2",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.528989898989899,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.505,
+     "median": 0.5286868686868686,
+     "q95": 0.5742222222222222
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.76,
+     "median": 0.4985858585858586,
+     "q95": 0.5638181818181818
+    }
+   ],
+   "false_positive_rate": 0.9333333333333333,
+   "false_negative_rate": 0.03636363636363636,
+   "use_outcome": "contradicts",
+   "mean_effect": -0.1755992061458528,
+   "use_superiority": 1.0,
+   "status": "proposed_concept",
+   "unmet": [
+    "encoding claim contradicted",
+    "use claim claim:5a1b1ade587d5131e585ebee3693d420 contradicted"
+   ],
+   "verified": true,
+   "seconds": 4.598030250053853
+  },
+  {
+   "case": "F",
+   "naive_auroc_ge_0.7": 5,
+   "controls_supports": 2,
+   "n": 50
+  },
+  {
+   "case": "G",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.48932676518883417,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.5288895730706076,
+     "q95": 0.5823429802955665
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.44,
+     "median": 0.4975882594417077,
+     "q95": 0.5627206486042692
+    }
+   ],
+   "false_positive_rate": 0.7327586206896551,
+   "false_negative_rate": 0.23809523809523808,
+   "use_outcome": "contradicts",
+   "mean_effect": 0.04298779044655107,
+   "use_superiority": 0.0,
+   "status": "proposed_concept",
+   "unmet": [
+    "encoding claim contradicted",
+    "use claim claim:31e074198402d53bf65f908850ac8406 contradicted"
+   ],
+   "verified": true,
+   "seconds": 3.5123194579500705
+  },
+  {
+   "case": "H",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 0.8487878787878788,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.5972222222222222,
+     "q95": 0.728
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.49803030303030305,
+     "q95": 0.5684040404040404
+    }
+   ],
+   "false_positive_rate": 0.25555555555555554,
+   "false_negative_rate": 0.21818181818181817,
+   "use_outcome": "supports",
+   "mean_effect": -0.7943580211563543,
+   "use_superiority": 1.0,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 4.5090415419545025
+  },
+  {
+   "case": "I",
+   "feature": "neuron",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 0.7115384615384616,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.5342548076923077,
+     "q95": 0.6125901442307692
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.4981971153846154,
+     "q95": 0.5473507612179488
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.5769230769230769,
+   "use_outcome": "contradicts",
+   "mean_effect": -0.33364557424703467,
+   "use_superiority": 0.88,
+   "status": "proposed_concept",
+   "unmet": [
+    "use claim claim:6e8bb41feaf58b73068404f48d3bd5c2 contradicted"
+   ],
+   "verified": true,
+   "seconds": 4.314673833083361
+  },
+  {
+   "case": "I",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.5342548076923077,
+     "q95": 0.6125901442307692
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.5020532852564102,
+     "q95": 0.5603014823717949
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.0,
+   "use_outcome": "supports",
+   "mean_effect": -0.8601760572682207,
+   "use_superiority": 1.0,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 4.280378166120499
+  },
+  {
+   "case": "J-wrong",
+   "feature": "neuron",
+   "label_source": "generated",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.45556006493506496,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.5846185064935064,
+     "q95": 0.7610998376623375
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.08,
+     "median": 0.5062398538961039,
+     "q95": 0.5696631493506493
+    }
+   ],
+   "false_positive_rate": 0.03571428571428571,
+   "false_negative_rate": 0.9772727272727273,
+   "use_outcome": "contradicts",
+   "mean_effect": 0.0,
+   "use_superiority": 0.46,
+   "status": "proposed_concept",
+   "unmet": [
+    "encoding claim contradicted",
+    "use claim claim:e02f93ff81e8f5adb413270aa67ca539 contradicted"
+   ],
+   "verified": true,
+   "seconds": 3.7667017090134323,
+   "generated_status": "generated"
+  },
+  {
+   "case": "J-right",
+   "feature": "neuron",
+   "label_source": "generated",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 1.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 1.0,
+     "median": 0.5846185064935064,
+     "q95": 0.7610998376623375
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.5013189935064934,
+     "q95": 0.5646053165584415
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.0,
+   "use_outcome": "supports",
+   "mean_effect": -2.6241113850846887,
+   "use_superiority": 1.0,
+   "status": "validated_concept",
+   "unmet": [],
+   "verified": true,
+   "seconds": 3.7234487920068204,
+   "generated_status": "generated"
+  }
+ ],
+ "f_detail": [
+  {
+   "case": "F0",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.36666666666666664,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.19,
+     "median": 0.5,
+     "q95": 0.7341666666666663
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.21962541691027582
+  },
+  {
+   "case": "F1",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.55,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.2325,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.62,
+     "median": 0.5,
+     "q95": 0.7674999999999997
+    }
+   ],
+   "false_positive_rate": 0.6,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.21962324995547533
+  },
+  {
+   "case": "F2",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.65,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.69,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.805,
+     "median": 0.525,
+     "q95": 0.7833333333333333
+    }
+   ],
+   "false_positive_rate": 0.3,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.22026400011964142
+  },
+  {
+   "case": "F3",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.4,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.2825,
+     "median": 0.4916666666666667,
+     "q95": 0.7666666666666667
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.21608745795674622
+  },
+  {
+   "case": "F4",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5333333333333333,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.16,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.5575,
+     "median": 0.5166666666666667,
+     "q95": 0.7174999999999997
+    }
+   ],
+   "false_positive_rate": 0.1,
+   "false_negative_rate": 0.8333333333333334,
+   "seconds": 0.2150697079487145
+  },
+  {
+   "case": "F5",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.2833333333333333,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.09,
+     "median": 0.5,
+     "q95": 0.750833333333333
+    }
+   ],
+   "false_positive_rate": 0.2,
+   "false_negative_rate": 0.8333333333333334,
+   "seconds": 0.21404120908118784
+  },
+  {
+   "case": "F6",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 0.8333333333333334,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.9775,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 1.0,
+     "median": 0.5166666666666667,
+     "q95": 0.7174999999999997
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.21535070799291134
+  },
+  {
+   "case": "F7",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6166666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.5925,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.72,
+     "median": 0.5333333333333333,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 0.4,
+   "false_negative_rate": 0.5,
+   "seconds": 0.21619654214009643
+  },
+  {
+   "case": "F8",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.36666666666666664,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.1825,
+     "median": 0.48333333333333334,
+     "q95": 0.7516666666666662
+    }
+   ],
+   "false_positive_rate": 0.3,
+   "false_negative_rate": 0.8333333333333334,
+   "seconds": 0.25672199996188283
+  },
+  {
+   "case": "F9",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.4166666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.255,
+     "median": 0.5166666666666667,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 1.0,
+   "seconds": 0.21646666713058949
+  },
+  {
+   "case": "F10",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.43333333333333335,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.38,
+     "median": 0.5,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 0.8333333333333334,
+   "seconds": 0.21717395796440542
+  },
+  {
+   "case": "F11",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.65,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.69,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.82,
+     "median": 0.4916666666666667,
+     "q95": 0.7341666666666663
+    }
+   ],
+   "false_positive_rate": 0.4,
+   "false_negative_rate": 0.5,
+   "seconds": 0.2320348338689655
+  },
+  {
+   "case": "F12",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5833333333333334,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.44,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.7125,
+     "median": 0.5,
+     "q95": 0.7174999999999997
+    }
+   ],
+   "false_positive_rate": 0.3,
+   "false_negative_rate": 0.6666666666666666,
+   "seconds": 0.22499945806339383
+  },
+  {
+   "case": "F13",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.48333333333333334,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.4275,
+     "median": 0.5166666666666667,
+     "q95": 0.7666666666666667
+    }
+   ],
+   "false_positive_rate": 0.1,
+   "false_negative_rate": 0.6666666666666666,
+   "seconds": 0.22881154110655189
+  },
+  {
+   "case": "F14",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5333333333333333,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.16,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.5325,
+     "median": 0.5166666666666667,
+     "q95": 0.7674999999999997
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 1.0,
+   "seconds": 0.21833083289675415
+  },
+  {
+   "case": "F15",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6666666666666666,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.725,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.8875,
+     "median": 0.5,
+     "q95": 0.7166666666666667
+    }
+   ],
+   "false_positive_rate": 0.4,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.21886520902626216
+  },
+  {
+   "case": "F16",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5333333333333333,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.16,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.5975,
+     "median": 0.5,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.21880341693758965
+  },
+  {
+   "case": "F17",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.38333333333333336,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.26,
+     "median": 0.5083333333333333,
+     "q95": 0.7841666666666663
+    }
+   ],
+   "false_positive_rate": 0.4,
+   "false_negative_rate": 0.8333333333333334,
+   "seconds": 0.2372089580167085
+  },
+  {
+   "case": "F18",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.55,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.2325,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.605,
+     "median": 0.5083333333333333,
+     "q95": 0.750833333333333
+    }
+   ],
+   "false_positive_rate": 0.7,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.22227649996057153
+  },
+  {
+   "case": "F19",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.25,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.0475,
+     "median": 0.5,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 1.0,
+   "seconds": 0.29005495901219547
+  },
+  {
+   "case": "F20",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.26666666666666666,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.065,
+     "median": 0.48333333333333334,
+     "q95": 0.7674999999999997
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 1.0,
+   "seconds": 0.21890816697850823
+  },
+  {
+   "case": "F21",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0225,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.4475,
+     "median": 0.5333333333333333,
+     "q95": 0.7341666666666663
+    }
+   ],
+   "false_positive_rate": 0.5,
+   "false_negative_rate": 0.5,
+   "seconds": 0.21899487497285008
+  },
+  {
+   "case": "F22",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.5075,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.7475,
+     "median": 0.48333333333333334,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 0.1,
+   "false_negative_rate": 0.6666666666666666,
+   "seconds": 0.23226262512616813
+  },
+  {
+   "case": "F23",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.5075,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.7325,
+     "median": 0.5083333333333333,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.5,
+   "false_negative_rate": 0.5,
+   "seconds": 0.22376583400182426
+  },
+  {
+   "case": "F24",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.2,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.01,
+     "median": 0.48333333333333334,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.22904133307747543
+  },
+  {
+   "case": "F25",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.31666666666666665,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.1225,
+     "median": 0.5,
+     "q95": 0.7666666666666667
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.23836879199370742
+  },
+  {
+   "case": "F26",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.7666666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.9275,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.9675,
+     "median": 0.5,
+     "q95": 0.7341666666666663
+    }
+   ],
+   "false_positive_rate": 0.4,
+   "false_negative_rate": 0.16666666666666666,
+   "seconds": 0.22641300014220178
+  },
+  {
+   "case": "F27",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.26666666666666666,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.0775,
+     "median": 0.48333333333333334,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 0.3,
+   "false_negative_rate": 0.8333333333333334,
+   "seconds": 0.21940633305348456
+  },
+  {
+   "case": "F28",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "supports",
+   "auroc": 0.8166666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.9675,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.9925,
+     "median": 0.48333333333333334,
+     "q95": 0.7166666666666667
+    }
+   ],
+   "false_positive_rate": 0.6,
+   "false_negative_rate": 0.16666666666666666,
+   "seconds": 0.2184564578346908
+  },
+  {
+   "case": "F29",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.7,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.8275,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.8675,
+     "median": 0.5166666666666667,
+     "q95": 0.7666666666666667
+    }
+   ],
+   "false_positive_rate": 0.6,
+   "false_negative_rate": 0.0,
+   "seconds": 0.21909854118712246
+  },
+  {
+   "case": "F30",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6166666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.5925,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.77,
+     "median": 0.5,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 0.3,
+   "false_negative_rate": 0.5,
+   "seconds": 0.24030216713435948
+  },
+  {
+   "case": "F31",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6666666666666666,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.725,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.85,
+     "median": 0.5166666666666667,
+     "q95": 0.7833333333333333
+    }
+   ],
+   "false_positive_rate": 0.1,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.21932804211974144
+  },
+  {
+   "case": "F32",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5166666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.105,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.54,
+     "median": 0.5,
+     "q95": 0.7833333333333333
+    }
+   ],
+   "false_positive_rate": 0.1,
+   "false_negative_rate": 0.6666666666666666,
+   "seconds": 0.22178908321075141
+  },
+  {
+   "case": "F33",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.5075,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.765,
+     "median": 0.5166666666666667,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.5,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.22251325007528067
+  },
+  {
+   "case": "F34",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.0,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.0,
+     "median": 0.4916666666666667,
+     "q95": 0.700833333333333
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.22539412486366928
+  },
+  {
+   "case": "F35",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6166666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.5925,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.7825,
+     "median": 0.48333333333333334,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.5,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.225068791070953
+  },
+  {
+   "case": "F36",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5166666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.105,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.54,
+     "median": 0.5,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.5,
+   "false_negative_rate": 0.6666666666666666,
+   "seconds": 0.2273529591038823
+  },
+  {
+   "case": "F37",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0225,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.5275,
+     "median": 0.48333333333333334,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.2150483748409897
+  },
+  {
+   "case": "F38",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.3333333333333333,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.1375,
+     "median": 0.4916666666666667,
+     "q95": 0.7833333333333333
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.21544891688972712
+  },
+  {
+   "case": "F39",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5166666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.105,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.545,
+     "median": 0.5,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.4,
+   "false_negative_rate": 0.6666666666666666,
+   "seconds": 0.21512449998408556
+  },
+  {
+   "case": "F40",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.4,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.2975,
+     "median": 0.5,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 0.9,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.21513400017283857
+  },
+  {
+   "case": "F41",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.11666666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.0,
+     "median": 0.48333333333333334,
+     "q95": 0.7
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.2336405001115054
+  },
+  {
+   "case": "F42",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.48333333333333334,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.44,
+     "median": 0.5166666666666667,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.7,
+   "false_negative_rate": 0.3333333333333333,
+   "seconds": 0.21441283309832215
+  },
+  {
+   "case": "F43",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.5666666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.3275,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.6375,
+     "median": 0.5166666666666667,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 0.5,
+   "false_negative_rate": 0.16666666666666666,
+   "seconds": 0.22142283315770328
+  },
+  {
+   "case": "F44",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.7333333333333333,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.85,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.9175,
+     "median": 0.5166666666666667,
+     "q95": 0.7841666666666663
+    }
+   ],
+   "false_positive_rate": 0.4,
+   "false_negative_rate": 0.16666666666666666,
+   "seconds": 0.2226461658719927
+  },
+  {
+   "case": "F45",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.38333333333333336,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.25,
+     "median": 0.5,
+     "q95": 0.75
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.22519508306868374
+  },
+  {
+   "case": "F46",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.25,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.045,
+     "median": 0.4666666666666667,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 0.2,
+   "false_negative_rate": 0.8333333333333334,
+   "seconds": 0.221595416078344
+  },
+  {
+   "case": "F47",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.6833333333333333,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.7925,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.895,
+     "median": 0.5,
+     "q95": 0.7333333333333333
+    }
+   ],
+   "false_positive_rate": 0.1,
+   "false_negative_rate": 0.5,
+   "seconds": 0.22848104196600616
+  },
+  {
+   "case": "F48",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.65,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.69,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.81,
+     "median": 0.5166666666666667,
+     "q95": 0.750833333333333
+    }
+   ],
+   "false_positive_rate": 0.0,
+   "false_negative_rate": 1.0,
+   "seconds": 0.2151673340704292
+  },
+  {
+   "case": "F49",
+   "feature": "direction",
+   "label_source": "user",
+   "proposal_status": "proposed_concept",
+   "encoding_outcome": "contradicts",
+   "auroc": 0.4666666666666667,
+   "controls": [
+    {
+     "kind": "random_directions",
+     "superiority": 0.0,
+     "median": 0.6,
+     "q95": 0.7841666666666663
+    },
+    {
+     "kind": "label_permutation",
+     "superiority": 0.41,
+     "median": 0.5,
+     "q95": 0.7674999999999997
+    }
+   ],
+   "false_positive_rate": 1.0,
+   "false_negative_rate": 0.0,
+   "seconds": 0.21800245810300112
+  }
+ ],
+ "torch": "2.14.0",
+ "cases": "plan \u00a721"
+}
