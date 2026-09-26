@@ -31,7 +31,7 @@ from .runner import (
     make_claim,
     sample_id,
 )
-from .spec import Intervention, constant, constant_input, patch, zero, zero_input
+from .spec import Intervention, constant, constant_input, direction, patch, zero, zero_input
 
 __all__ = [
     "INTERVENTION_POLICY",
@@ -48,6 +48,7 @@ __all__ = [
     "compare_family",
     "constant",
     "constant_input",
+    "direction",
     "evaluate_claim",
     "intervene",
     "intervene_sample",

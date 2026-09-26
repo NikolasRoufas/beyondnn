@@ -64,7 +64,7 @@ def _sorted_relations(relations: Iterable[Relation]) -> tuple[Relation, ...]:
 # --------------------------------------------------------------------------- claim
 
 
-@record_kind("claim", version=2)
+@record_kind("claim", version=3)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class Claim(BaseRecord):
     """A testable proposition about the model's computation.
@@ -419,6 +419,15 @@ class Assessment(BaseRecord):
             provenance_id=provenance_id,
             derived_from=tuple(RecordRef.to(r) for r in results),
         )
+
+
+@register_migration("claim", 2)
+def _claim_v2_to_v3(data: dict[str, Any]) -> dict[str, Any]:
+    """v2 subjects were sites/units only: ``feature=None`` keeps that meaning (ADR-040)."""
+    subject = data.get("subject")
+    if not isinstance(subject, dict) or "feature" in subject:
+        raise ValueError("a claim v2 payload has a subject without feature")
+    return data | {"subject": subject | {"feature": None}}
 
 
 @register_migration("claim", 1)

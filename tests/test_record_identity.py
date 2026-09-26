@@ -32,7 +32,9 @@ ID_RE = re.compile(r"^[a-z][a-z0-9_]*:[0-9a-f]{32}$")
 GOLDEN_ACTIVATION_ID = "activation:bf06f02771845673d43895ed844a18fd"
 # Changed deliberately in Phase 5.5: claim record version 2 adds Subject.unit_axes
 # (ADR-034). The Phase 1-5 value was claim:5924afd11aa7363a3a2780a43b6169a7.
-GOLDEN_CLAIM_ID = "claim:3ffd355bdd32a507f3f1035aad8846de"
+# Changed deliberately again in Phase 6: claim record version 3 adds Subject.feature
+# (ADR-040). The Phase 5.5 value was claim:3ffd355bdd32a507f3f1035aad8846de.
+GOLDEN_CLAIM_ID = "claim:9e7f04817a680a8c20a6be42bf178e8b"
 
 
 def test_ids_are_well_formed_and_prefixed_by_kind(mk: SimpleNamespace) -> None:

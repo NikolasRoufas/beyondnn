@@ -38,6 +38,7 @@ __all__ = [
     "attribute",
     "attribution",
     "compose",
+    "concepts",
     "faithfulness",
     "instrument",
     "intervene",
@@ -61,7 +62,7 @@ _LAZY = {
 
 
 def __getattr__(name: str) -> Any:
-    if name in ("interventions", "attribution", "faithfulness"):
+    if name in ("interventions", "attribution", "faithfulness", "concepts"):
         import importlib
 
         module = importlib.import_module(f"beyondnn.{name}")

@@ -508,6 +508,7 @@ def test_phase5_claims_and_selections_migrate_without_invented_axes(tmp_path: Pa
 
     def v1_claim(data: dict[str, Any]) -> None:
         data["subject"].pop("unit_axes")
+        data["subject"].pop("feature")  # added in claim v3 (ADR-040)
 
     def v1_selection(data: dict[str, Any]) -> None:
         data.pop("unit_axes")

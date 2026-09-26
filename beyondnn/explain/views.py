@@ -7,7 +7,7 @@ into a weaker duplicate, nothing is ranked, scored, or combined across methods.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Literal
+from typing import Any, ClassVar
 
 import torch
 
@@ -132,8 +132,9 @@ class Coverage:
     Coverage, not confidence: absence of a method is not "low confidence", and there
     is no score. ``faithfulness_evaluated`` is true only when at least one Phase-5
     protocol result is composed, and ``faithfulness_protocols`` names exactly which;
-    it never means "the explanation is faithful". ``concepts_validated`` is always
-    ``False`` (no concept validation exists).
+    it never means "the explanation is faithful". ``concepts_evaluated`` is true only
+    when at least one Phase-6 concept validation is composed; ``concepts_validated``
+    only when at least one of them derived VALIDATED_CONCEPT (within its own scope).
     """
 
     NOT_EVALUATED: ClassVar[tuple[str, ...]] = (
@@ -151,8 +152,9 @@ class Coverage:
     claims_tested: bool
     causal_claim_tested: bool
     faithfulness_evaluated: bool = False
-    concepts_validated: Literal[False] = False
+    concepts_validated: bool = False
     faithfulness_protocols: tuple[str, ...] = ()
+    concepts_evaluated: bool = False
 
     def __post_init__(self) -> None:
         if self.faithfulness_evaluated != bool(self.faithfulness_protocols):
@@ -163,13 +165,44 @@ class Coverage:
         unknown = [p for p in self.faithfulness_protocols if p not in FAITHFULNESS_PROTOCOLS]
         if unknown:
             raise ValueError(f"unknown faithfulness protocols {unknown}")
-        if self.concepts_validated is not False:
-            raise ValueError("no concept validation exists; concepts cannot be marked validated")
+        if self.concepts_validated and not self.concepts_evaluated:
+            raise ValueError(
+                "concepts can be marked validated only when a concept validation is composed"
+            )
 
     @property
     def not_evaluated(self) -> tuple[str, ...]:
         """What was not evaluated (Phase-4 wording when no faithfulness protocol ran)."""
+        concept = () if self.concepts_evaluated else ("concept validation",)
         if not self.faithfulness_protocols:
-            return self.NOT_EVALUATED
+            return (*self.NOT_EVALUATED[:-1], *concept)
         missing = tuple(p for p in FAITHFULNESS_PROTOCOLS if p not in self.faithfulness_protocols)
-        return (*missing, "concept validation")
+        return (*missing, *concept)
+
+
+@dataclass(frozen=True, slots=True, eq=False)
+class ConceptView:
+    """A composed concept validation (dataset-scoped context), the feature's value on
+    the reference input (``None`` if its site was not recorded), and the
+    VALIDATED_CONCEPT activation record if one was composed."""
+
+    validation: Any
+    value: float | None
+    activation: Any | None
+
+    @property
+    def validated(self) -> bool:
+        return bool(self.validation.semantic_status.value == "validated_concept")
+
+    @property
+    def limitations(self) -> tuple[Any, ...]:
+        v = self.validation
+        traces = [v.trace, v.encoding.trace, *(u.trace for u in (*v.use, *v.additional))]
+        return tuple(
+            lim
+            for t in traces
+            for lim in t.limitations
+            if not lim.code.startswith(
+                ("FUNCTIONAL_OPS", "PARTIAL_SITE", "SELECTED_SITE", "NON_TENSOR")
+            )
+        )

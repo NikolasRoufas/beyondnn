@@ -12,7 +12,15 @@ import torch
 from beyondnn.core.units import check_axes
 from beyondnn.schema import InterventionOperation
 
-__all__ = ["Intervention", "constant", "constant_input", "patch", "zero", "zero_input"]
+__all__ = [
+    "Intervention",
+    "constant",
+    "constant_input",
+    "direction",
+    "patch",
+    "zero",
+    "zero_input",
+]
 
 _INPUT_LEAF = re.compile(r"^args\[(0|[1-9][0-9]*)\]$")
 
@@ -37,6 +45,8 @@ class Intervention:
     units: tuple[int, ...] | None = None
     retain: bool = False
     unit_axes: tuple[int, ...] | None = None
+    direction: torch.Tensor | None = None
+    direction_axis: int | None = None
 
     @property
     def on_input(self) -> bool:
@@ -56,7 +66,11 @@ class Intervention:
             if len(set(units)) != len(units):
                 raise ValueError("units must be unique")
             object.__setattr__(self, "units", tuple(sorted(units)))
-        if self.retain and self.units is None:
+        if (
+            self.retain
+            and self.units is None
+            and self.operation is not InterventionOperation.DIRECTION
+        ):
             raise ValueError("retain=True needs units (the units to keep)")
         if self.unit_axes is not None:
             if self.units is None:
@@ -68,6 +82,13 @@ class Intervention:
             or self.call_index < 0
         ):
             raise ValueError("call_index must be an int >= 0")
+        if self.operation is InterventionOperation.DIRECTION:
+            if self.on_input or self.units is not None:
+                raise ValueError("direction interventions act on whole module-output leaves")
+            if self.direction is None or self.direction_axis is None:
+                raise ValueError("a direction intervention needs a direction and an axis")
+        elif self.direction is not None or self.direction_axis is not None:
+            raise ValueError("only direction interventions take a direction")
 
 
 def _module_site(site: str) -> str:
@@ -215,4 +236,47 @@ def patch(
         units=None if units is None else tuple(units),
         retain=retain,
         unit_axes=unit_axes,
+    )
+
+
+def direction(
+    site: str,
+    vector: torch.Tensor,
+    *,
+    axis: int,
+    reference: torch.Tensor | None = None,
+    retain: bool = False,
+    output_path: str = "",
+    call_index: int = 0,
+) -> Intervention:
+    """Intervene along one direction v of ``axis`` of a module-output leaf (ADR-040).
+
+    ``retain=False`` (removal): the coordinate along v̂ = v/‖v‖ is replaced by the
+    reference's, x' = x - <x - r, v̂> v̂. ``retain=True`` (retention): only that
+    coordinate is kept and everything else comes from the reference,
+    x' = r + <x - r, v̂> v̂. ``reference`` is a tensor of the leaf's exact shape
+    (e.g. a training-mean activation) or ``None`` for zeros; it is part of the
+    intervention's identity. Applied at every other position of the leaf."""
+    if not isinstance(vector, torch.Tensor) or vector.dim() != 1 or not vector.is_floating_point():
+        raise ValueError("a direction is a 1-D floating-point tensor")
+    if not bool(torch.isfinite(vector).all()) or float(vector.norm()) == 0.0:
+        raise ValueError("a direction must be finite and non-zero")
+    if isinstance(axis, bool) or not isinstance(axis, int) or axis < 1:
+        raise ValueError("axis must be a non-batch axis (int >= 1)")
+    ref = None
+    if reference is not None:
+        if not isinstance(reference, torch.Tensor) or (
+            reference.is_floating_point() and not bool(torch.isfinite(reference).all())
+        ):
+            raise ValueError("the reference must be a finite tensor")
+        ref = reference.detach().to("cpu").clone(memory_format=torch.contiguous_format)
+    return Intervention(
+        _module_site(site),
+        InterventionOperation.DIRECTION,
+        output_path,
+        call_index,
+        tensor=ref,
+        retain=retain,
+        direction=vector.detach().to("cpu").clone(memory_format=torch.contiguous_format),
+        direction_axis=axis,
     )

@@ -60,6 +60,7 @@ from .views import (
     FAITHFULNESS_PROTOCOLS,
     AttributionView,
     ClaimView,
+    ConceptView,
     Coverage,
     FaithfulnessView,
     InterventionView,
@@ -397,7 +398,43 @@ class Why:
             causal_claim_tested=any(c.causal_test_performed for c in claims),
             faithfulness_evaluated=bool(self.faithfulness_protocols),
             faithfulness_protocols=self.faithfulness_protocols,
+            concepts_evaluated=bool(self.concept_views),
+            concepts_validated=any(v.validated for v in self.concept_views),
         )
+
+    @property
+    def concept_views(self) -> tuple[ConceptView, ...]:
+        """Composed Phase-6 concept validations (dataset-scoped context), each with the
+        feature's value on the reference input if its site was recorded (MEASURED)."""
+        from beyondnn.concepts import ConceptActivationResult, ConceptValidationResult
+        from beyondnn.concepts._core import ConceptError, feature_values
+
+        acts = [c for c in self._b.concepts if isinstance(c, ConceptActivationResult)]
+        out = []
+        for v in self._b.concepts:
+            if not isinstance(v, ConceptValidationResult):
+                continue
+            feature = v.concept.feature
+            site = feature.record.site
+            value = None
+            for a in self.trace.activations:
+                if (a.site, a.call_index) == (site, feature.record.call_index) and (
+                    a.value.storage_key is not None
+                ):
+                    try:
+                        value = feature_values(self.trace.tensor(a), feature.record, feature.store)
+                    except ConceptError:
+                        value = None
+            record = next(
+                (
+                    a.record
+                    for a in acts
+                    if a.record is not None and a.record.validation == v.record.id
+                ),
+                None,
+            )
+            out.append(ConceptView(v, value, record))
+        return tuple(out)
 
     @property
     def faithfulness_protocols(self) -> tuple[str, ...]:
@@ -430,7 +467,13 @@ class Why:
             )
         else:
             out.append("Is this evidence faithful, comprehensive, or sufficient? (not evaluated)")
-        out.append("Does any activation correspond to a concept? (no concept validation)")
+        if not cov.concepts_evaluated:
+            out.append("Does any activation correspond to a concept? (no concept validation)")
+        else:
+            out.append(
+                "Does the model use these concepts for this input? (not established: concept "
+                "validations are dataset-scoped; see each concept's scope)"
+            )
         return tuple(out)
 
 
@@ -558,6 +601,7 @@ class ExplainResponse:
         claims: Sequence[Claim] = (),
         policies: Sequence[AssessmentPolicy] = (),
         faithfulness: Sequence[Any] = (),
+        concepts: Sequence[Any] = (),
     ) -> ExplainResponse:
         """Compose already-computed evidence (see :class:`EvidenceBundle`). Runs no model."""
         bundle = EvidenceBundle.compose(
@@ -567,6 +611,7 @@ class ExplainResponse:
             claims=claims,
             policies=policies,
             faithfulness=faithfulness,
+            concepts=concepts,
         )
         return cls(trace, bundle)
 
@@ -592,7 +637,11 @@ class ExplainResponse:
         """
         why = self.why
         if not why._target_view:
-            return "\n".join([*self._render_measured(why), "", *self._render_not_evaluated(why)])
+            lines = self._render_measured(why)
+            if why.concept_views:
+                at = len(lines) - 1 - lines[::-1].index("OUTPUT  [observed]")
+                lines = [*lines[:at], *self._render_concepts(why)[1:], "", *lines[at:]]
+            return "\n".join([*lines, "", *self._render_not_evaluated(why)])
         lines = ["INPUT  [observed]", *_tensors(self.input.tensors)]
         lines.append(f"  sample: {self.input.sample_id}")
         lines += ["", "TARGET"]
@@ -613,6 +662,8 @@ class ExplainResponse:
             lines += self._render_faithfulness(why)
         lines += ["", "  ESTIMATED_CAUSAL", "    (none)"]
         lines += self._render_claims(why)
+        if why.concept_views:
+            lines += self._render_concepts(why)
         lines += self._render_coverage(why)
         lines += ["", "  LIMITATIONS", *_grouped_limitation_lines(why.limitations, "    ")]
         lines += ["", *self._render_not_evaluated(why)]
@@ -861,6 +912,28 @@ class ExplainResponse:
         ]
 
     @staticmethod
+    def _render_concepts(why: Why) -> list[str]:
+        lines = [
+            "",
+            "  CONCEPTS  [dataset-scoped semantic hypotheses; separate from the instance "
+            "evidence; never 'the model understands C']",
+        ]
+        for view in why.concept_views:
+            lines += [f"    {line}" for line in view.validation.describe().splitlines()]
+            if view.value is None:
+                lines.append("    value on this input: (feature site not recorded in this trace)")
+            else:
+                status = (
+                    "VALIDATED_CONCEPT activation"
+                    if view.activation is not None
+                    else "MEASURED feature activation"
+                )
+                lines.append(f"    value on this input: {view.value:.6g} [{status}]")
+            codes = sorted({lim.code for lim in view.limitations})
+            lines.append(f"    limitations: {', '.join(codes)}")
+        return lines
+
+    @staticmethod
     def _render_not_evaluated(why: Why) -> list[str]:
         return [
             "NOT EVALUATED",
@@ -945,7 +1018,28 @@ class ExplainResponse:
                 "faithfulness_evaluated": cov.faithfulness_evaluated,
                 "faithfulness_protocols": list(cov.faithfulness_protocols),
                 "concepts_validated": cov.concepts_validated,
+                "concepts_evaluated": cov.concepts_evaluated,
             },
+            "concepts": [
+                {
+                    "validation": v.validation.record.id,
+                    "concept": v.validation.concept.id,
+                    "label": v.validation.concept.record.label,
+                    "label_source": v.validation.concept.record.label_source.value,
+                    "feature": v.validation.concept.feature.id,
+                    "semantic_status": v.validation.semantic_status.value,
+                    "scope": v.validation.scope,
+                    "encoding": v.validation.record.encoding.verdict.value,
+                    "use": [
+                        {"relation": u.relation.value, "verdict": u.verdict.value}
+                        for u in v.validation.record.use
+                    ],
+                    "unmet": list(v.validation.unmet),
+                    "value_on_input": v.value,
+                    "concept_activation": None if v.activation is None else v.activation.id,
+                }
+                for v in why.concept_views
+            ],
             "faithfulness": [
                 {
                     "record": v.result.id,
@@ -979,6 +1073,7 @@ def compose(
     claims: Sequence[Claim] = (),
     policies: Sequence[AssessmentPolicy] = (),
     faithfulness: Sequence[Any] = (),
+    concepts: Sequence[Any] = (),
 ) -> ExplainResponse:
     """Compose already-computed evidence into one INPUT -> TARGET -> WHY -> OUTPUT view.
 
@@ -996,4 +1091,5 @@ def compose(
         claims=claims,
         policies=policies,
         faithfulness=faithfulness,
+        concepts=concepts,
     )

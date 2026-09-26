@@ -24,6 +24,7 @@ def test_top_level_api_is_the_reviewed_surface() -> None:
             "attribute",
             "attribution",
             "compose",
+            "concepts",
             "faithfulness",
             "instrument",
             "intervene",

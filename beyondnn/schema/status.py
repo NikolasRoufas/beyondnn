@@ -23,6 +23,7 @@ __all__ = [
     "EvidenceStatus",
     "Outcome",
     "Relation",
+    "SemanticStatus",
     "Verdict",
     "check_derivation",
 ]
@@ -60,6 +61,32 @@ class EvidenceStatus(Enum):
     ESTIMATED_CAUSAL = "estimated_causal"
     VALIDATED_CONCEPT = "validated_concept"
     GENERATED = "generated"
+
+
+class SemanticStatus(Enum):
+    """Where a semantic hypothesis about a feature stands (ADR-009, amended by ADR-039).
+
+    Semantic status is *not* an evidence status: it describes a hypothesis's lifecycle,
+    not how a piece of evidence was obtained.
+
+    UNLABELED_FEATURE:
+        A feature (neuron, direction, SAE latent) with no semantic label.
+    PROPOSED_CONCEPT:
+        A label attached to a feature by a user, a dataset, or a generator. Every
+        concept record is a proposal; nothing is ever promoted automatically.
+    VALIDATED_CONCEPT:
+        Derived only by a ``concept_validation`` record whose declared policy passed
+        (encoding and use claims supported above declared controls, counterexamples
+        recorded), and only within that validation's scope (model, site, dataset,
+        split, intervention, target). Never universal.
+
+    There is deliberately no global REJECTED state: rejection, like validation, is
+    scope-relative; negative results remain as CONTRADICTED assessments.
+    """
+
+    UNLABELED_FEATURE = "unlabeled_feature"
+    PROPOSED_CONCEPT = "proposed_concept"
+    VALIDATED_CONCEPT = "validated_concept"
 
 
 class EstimandScope(Enum):

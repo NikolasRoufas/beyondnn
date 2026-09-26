@@ -146,6 +146,7 @@ class EvidenceBundle:
         "attributions",
         "claim_target",
         "claims",
+        "concepts",
         "faithfulness",
         "interventions",
         "policies",
@@ -170,6 +171,7 @@ class EvidenceBundle:
     sources: tuple[TraceResult, ...]
     primary_sources: tuple[TraceResult, ...]
     faithfulness: tuple[Any, ...]
+    concepts: tuple[Any, ...]
     _index: Mapping[str, tuple[BaseRecord, TraceResult]]
 
     def __init__(self, token: object, **fields: Any) -> None:
@@ -243,8 +245,15 @@ class EvidenceBundle:
         claims: Sequence[Claim] = (),
         policies: Sequence[AssessmentPolicy] = (),
         faithfulness: Sequence[Any] = (),
+        concepts: Sequence[Any] = (),
     ) -> EvidenceBundle:
         """Validate and compose (see module docstring). Runs no model and no method.
+
+        ``concepts`` takes Phase-6 ``ConceptValidationResult`` (and
+        ``ConceptActivationResult``) objects. A concept validation is dataset-scoped
+        *context*, never instance evidence: it is integrity-checked, bound to the
+        reference model checkpoint, and fully re-derived (``concepts.verify``); its
+        claims are not merged with the instance claims or target (ADR-042).
 
         ``faithfulness`` takes Phase-5 results about the reference input
         (``FaithfulnessResult``, ``CurveResult``, ``DiagnosticResult``). Their own traces
@@ -465,8 +474,58 @@ class EvidenceBundle:
             sources=sources,
             primary_sources=tuple(primary),
             faithfulness=faithfulness,
+            concepts=_compose_concepts(concepts, reference, sample),
             _index=MappingProxyType(index),
         )
+
+
+def _compose_concepts(
+    concepts: Sequence[Any], reference: ProvenanceRecord, sample: str | None
+) -> tuple[Any, ...]:
+    """Verify Phase-6 concept results against the reference context (ADR-042)."""
+    from beyondnn.concepts import ConceptActivationResult, ConceptValidationResult
+    from beyondnn.concepts.verify import ConceptVerificationError, verify_validation
+
+    items = tuple(concepts)
+    validations = [c for c in items if isinstance(c, ConceptValidationResult)]
+    activations = [c for c in items if isinstance(c, ConceptActivationResult)]
+    if len(validations) + len(activations) != len(items):
+        raise TypeError(
+            "concepts must be ConceptValidationResult / ConceptActivationResult objects"
+        )
+    for v in validations:
+        traces = [v.trace, v.encoding.trace, *(u.trace for u in (*v.use, *v.additional))]
+        for t in traces:
+            _check_source(t)
+        if v.record.model_state_digest != reference.model.state_digest:
+            raise ModelMismatchError(
+                "a concept validated on another model checkpoint "
+                f"({v.record.model_state_digest[:19]}... vs {reference.model.state_digest[:19]}...)"
+                " is never applied to this model"
+            )
+        try:
+            verify_validation(v)
+        except (ConceptVerificationError, ValueError) as exc:
+            raise EvidenceIntegrityError(f"concept validation {v.record.id}: {exc}") from None
+    ids = {v.record.id: v for v in validations}
+    for a in activations:
+        _check_source(a.trace)
+        (inp,) = a.trace.inputs
+        if inp.sample_id != sample:
+            raise SampleMismatchError("a concept activation is about another input")
+        if a.trace.origin(inp).model != reference.model:
+            raise ModelMismatchError("a concept activation from another model identity")
+        if a.record is not None:
+            validation = ids.get(a.record.validation)
+            if validation is None:
+                raise EvidenceIntegrityError(
+                    "a VALIDATED_CONCEPT activation needs its validation composed alongside"
+                )
+            if validation.semantic_status.value != "validated_concept":
+                raise EvidenceIntegrityError("a concept activation cites an unvalidated concept")
+            if a.record.feature != validation.concept.feature.id:
+                raise EvidenceIntegrityError("a concept activation is about another feature")
+    return items
 
 
 def _unique(items: Iterable[Any]) -> list[Any]:

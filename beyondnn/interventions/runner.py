@@ -227,6 +227,37 @@ class InterventionResult:
         return self.trace.limitations
 
 
+def apply_direction(
+    leaf: torch.Tensor,
+    direction: torch.Tensor,
+    axis: int,
+    reference: torch.Tensor | None,
+    retain: bool,
+) -> torch.Tensor:
+    """The DIRECTION operation (ADR-040), shared by the engine and verification.
+
+    removal: x - <x - r, v̂> v̂; retention: r + <x - r, v̂> v̂ (along ``axis``)."""
+    if axis >= leaf.dim() or leaf.shape[axis] != direction.shape[0]:
+        raise InterventionError(
+            f"a direction of length {direction.shape[0]} does not fit axis {axis} of a leaf of "
+            f"shape {tuple(leaf.shape)}"
+        )
+    if reference is not None and (reference.shape != leaf.shape or reference.dtype != leaf.dtype):
+        raise InterventionError(
+            f"reference of shape {tuple(reference.shape)} / {reference.dtype} does not match the "
+            f"activation {tuple(leaf.shape)} / {leaf.dtype}; no broadcasting"
+        )
+    ref = torch.zeros_like(leaf) if reference is None else reference.to(leaf.device)
+    unit = direction.to(device=leaf.device, dtype=leaf.dtype)
+    unit = unit / unit.norm()
+    shape = [1] * leaf.dim()
+    shape[axis] = unit.shape[0]
+    v = unit.reshape(shape)
+    coeff = ((leaf - ref) * v).sum(dim=axis, keepdim=True)
+    out: torch.Tensor = ref + coeff * v if retain else leaf - coeff * v
+    return out
+
+
 class _Replacer:
     """The BeyondNN-owned hook that performs one replacement."""
 
@@ -259,6 +290,8 @@ class _Replacer:
         """The replaced leaf: the operation's values at the replaced units (all units
         when ``units`` is None; the complement of ``units`` when ``retain``)."""
         op = self.spec.operation
+        if op is InterventionOperation.DIRECTION:
+            return self._along_direction(leaf)
         if op is InterventionOperation.ZERO:
             full = torch.zeros_like(leaf)
         elif op is InterventionOperation.CONSTANT and self.value is None:
@@ -292,6 +325,13 @@ class _Replacer:
         if self.spec.retain:
             last = ~last
         return torch.where(last, full, leaf)
+
+    def _along_direction(self, leaf: torch.Tensor) -> torch.Tensor:
+        assert self.spec.direction is not None
+        assert self.spec.direction_axis is not None
+        return apply_direction(
+            leaf, self.spec.direction, self.spec.direction_axis, self.value, self.spec.retain
+        )
 
     def replace_hook(self, module: nn.Module, args: Any, kwargs: Any, output: Any) -> Any:
         leaf = self._leaf(module, output)
@@ -431,6 +471,24 @@ class _Experiment:
                 retain=spec.retain,
                 unit_axes=spec.unit_axes,
             )
+        if spec.operation is InterventionOperation.DIRECTION:
+            assert spec.direction is not None
+            direction_ref = _retained_ref(spec.direction, "cpu")
+            self.trace._add_tensor(direction_ref.storage_key or "", spec.direction)
+            value_ref = None
+            if spec.tensor is not None:
+                self.value = spec.tensor
+                value_ref = _retained_ref(self.value, "cpu")
+                self.trace._add_tensor(value_ref.storage_key or "", self.value)
+            return InterventionRecord(
+                site=site,
+                call_index=spec.call_index,
+                operation=spec.operation,
+                value=value_ref,
+                retain=spec.retain,
+                direction=direction_ref,
+                direction_axis=spec.direction_axis,
+            )
         if spec.tensor is not None:
             self.value = spec.tensor
             ref = _retained_ref(self.value, "cpu")
@@ -514,10 +572,10 @@ class _Experiment:
         return int_pass, int_value
 
     def _input(self, pass_index: int) -> Any:
-        return next(r for r in self.trace.inputs if r.pass_index == pass_index)
+        return self.trace.input_of_pass(pass_index)
 
     def _output(self, pass_index: int) -> OutputRecord:
-        return next(r for r in self.trace.outputs if r.pass_index == pass_index)
+        return self.trace.output_of_pass(pass_index)
 
     def effect_provenance(self, int_pass: int, method: str) -> ProvenanceRecord:
         intervened = self.trace.origin(self._input(int_pass))
@@ -561,6 +619,8 @@ class _Experiment:
             codes.append("ZERO_ABLATION_MAY_BE_OOD")
         elif op is InterventionOperation.CONSTANT:
             codes.append("CONSTANT_REPLACEMENT_MAY_BE_OOD")
+        elif op is InterventionOperation.DIRECTION:
+            codes.append("DIRECTION_REPLACEMENT_MAY_BE_OOD")
         elif self.source_id not in target_samples:
             codes.append("PATCH_SOURCE_CONTEXT_DIFFERS")
         if not self.metric.spec.builtin:

@@ -14,8 +14,13 @@ relation with a protocol that does not justify it.
   INTERVENTIONAL effect of removing a declared/selected unit set (with optional
   matched random controls).
 * ``sufficiency`` v1 (Phase 5): SUFFICIENT_FOR, decided by the INTERVENTIONAL effect
-  of retaining only the unit set within its site. This is the only protocol that can
-  decide SUFFICIENT_FOR, and only in that declared, site-relative sense.
+  of retaining only the unit set within its site (site-relative).
+
+* ``concept_encoding`` v1 (Phase 6): ENCODES only, decided by MEASURED activations
+  on a concept dataset's held-out split against mandatory controls. Never causal.
+* ``concept_intervention`` v1 (Phase 6): DECREASES/INCREASES (removal of a feature) and
+  SUFFICIENT_FOR (retention of a feature, site-relative), decided by FINITE_SAMPLE
+  INTERVENTIONAL effects against mandatory random-feature controls.
 """
 
 from __future__ import annotations
@@ -28,6 +33,8 @@ from beyondnn.schema import AssessmentPolicy, EvidenceRuleError, Relation
 __all__ = [
     "ATTRIBUTION_THRESHOLD",
     "COMPREHENSIVENESS",
+    "CONCEPT_ENCODING",
+    "CONCEPT_INTERVENTION",
     "DIAGNOSTIC_PROTOCOLS",
     "INTERVENTION_THRESHOLD",
     "PROTOCOLS",
@@ -39,8 +46,10 @@ INTERVENTION_THRESHOLD = "intervention_threshold"
 ATTRIBUTION_THRESHOLD = "attribution_threshold"
 COMPREHENSIVENESS = "comprehensiveness"
 SUFFICIENCY = "sufficiency"
+CONCEPT_ENCODING = "concept_encoding"
+CONCEPT_INTERVENTION = "concept_intervention"
 
-#: Which relations each registered protocol can justify. SUFFICIENT_FOR: none.
+#: Which relations each registered protocol can justify.
 PROTOCOLS: Mapping[str, frozenset[Relation]] = MappingProxyType(
     {
         INTERVENTION_THRESHOLD: frozenset(
@@ -49,6 +58,10 @@ PROTOCOLS: Mapping[str, frozenset[Relation]] = MappingProxyType(
         ATTRIBUTION_THRESHOLD: frozenset({Relation.ATTRIBUTED_TO}),
         COMPREHENSIVENESS: frozenset({Relation.NECESSARY_FOR, Relation.DECREASES}),
         SUFFICIENCY: frozenset({Relation.SUFFICIENT_FOR}),
+        CONCEPT_ENCODING: frozenset({Relation.ENCODES}),
+        CONCEPT_INTERVENTION: frozenset(
+            {Relation.DECREASES, Relation.INCREASES, Relation.SUFFICIENT_FOR}
+        ),
     }
 )
 
@@ -64,6 +77,7 @@ DIAGNOSTIC_PROTOCOLS: frozenset[str] = frozenset(
         "method_agreement",
         "baseline_sensitivity",
         "ig_step_sensitivity",
+        "concept_counterexamples",
     }
 )
 

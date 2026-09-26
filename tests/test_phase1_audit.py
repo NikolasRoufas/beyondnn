@@ -18,6 +18,10 @@ def test_only_causal_effects_carry_causal_status_and_nothing_stronger_exists() -
     for kind, cls in registered_kinds().items():
         if kind in attributed:
             assert cls.STATUS is EvidenceStatus.ATTRIBUTED, kind
+        elif kind == "generated_label":  # Phase 6: generated text is GENERATED (ADR-039)
+            assert cls.STATUS is EvidenceStatus.GENERATED
+        elif kind == "concept_activation":  # Phase 6: only validated concepts (ADR-009/042)
+            assert cls.STATUS is EvidenceStatus.VALIDATED_CONCEPT
         else:
             assert cls.STATUS in (EvidenceStatus.OBSERVED, EvidenceStatus.MEASURED, None), kind
         if kind == "causal_effect":
@@ -71,6 +75,7 @@ def test_top_level_names_are_exactly_the_audited_surface() -> None:
             "attribute",
             "attribution",
             "compose",
+            "concepts",
             "faithfulness",
             "instrument",
             "intervene",

@@ -47,12 +47,13 @@ class InterventionOperation(Enum):
     ZERO = "zero"
     CONSTANT = "constant"
     PATCH = "patch"
+    DIRECTION = "direction"
 
 
 _INPUT_LEAF_RE = re.compile(r"^args\[(0|[1-9][0-9]*)\]$")
 
 
-@record_kind("intervention", version=3)
+@record_kind("intervention", version=4)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class InterventionRecord(BaseRecord):
     """Replace one tensor leaf of one call of a module's output, or a positional model
@@ -68,6 +69,15 @@ class InterventionRecord(BaseRecord):
     leaf's shape and dtype). PATCH: ``value`` is the retained source activation and
     ``source`` references the source ``ActivationRecord`` in the same trace.
     Retained values carry a ``content_digest`` and a ``storage_key``.
+
+    DIRECTION (record version 4; ADR-040) acts along one unit direction v̂ = v/‖v‖ of
+    axis ``direction_axis`` at every other position of the leaf, against a reference
+    r (``value``, a tensor of the leaf's exact shape; ``None`` means zeros):
+    ``retain=False`` (removal) replaces the coordinate along v̂ by the reference's,
+    x' = x - <x - r, v̂> v̂; ``retain=True`` (retention) keeps only that coordinate and
+    takes everything else from the reference, x' = r + <x - r, v̂> v̂. ``direction`` is
+    the retained vector (its digest is its identity). Units are not supported with
+    DIRECTION.
     """
 
     site: Site
@@ -79,6 +89,8 @@ class InterventionRecord(BaseRecord):
     units: tuple[int, ...] | None = None
     retain: bool = False
     unit_axes: tuple[int, ...] | None = None
+    direction: TensorRef | None = None
+    direction_axis: int | None = None
 
     @property
     def on_input(self) -> bool:
@@ -103,7 +115,30 @@ class InterventionRecord(BaseRecord):
             require(len(self.units) > 0, "units must be non-empty (None means the whole leaf)")
             require(all(u >= 0 for u in self.units), "units must be >= 0")
             require(list(self.units) == sorted(set(self.units)), "units must be sorted and unique")
-        require(not self.retain or self.units is not None, "retain requires units")
+        if self.operation is InterventionOperation.DIRECTION:
+            require(not self.on_input, "DIRECTION interventions act on module outputs")
+            require(self.units is None, "DIRECTION does not take units (ADR-040)")
+            require(
+                self.direction is not None
+                and len(self.direction.shape) == 1
+                and self.direction.content_digest is not None
+                and self.direction.storage_key is not None,
+                "DIRECTION needs a retained 1-D direction tensor",
+            )
+            require(
+                self.direction_axis is not None and self.direction_axis >= 1,
+                "DIRECTION needs a non-batch direction_axis >= 1",
+            )
+            require(
+                self.constant is None and self.source is None,
+                "DIRECTION takes a reference tensor (value) or zeros, never a constant/source",
+            )
+        else:
+            require(
+                self.direction is None and self.direction_axis is None,
+                "only DIRECTION interventions carry a direction",
+            )
+            require(not self.retain or self.units is not None, "retain requires units")
         if self.unit_axes is not None:
             require(self.units is not None, "unit_axes requires units")
             require(
@@ -118,6 +153,8 @@ class InterventionRecord(BaseRecord):
                 self.constant is None and self.value is None and self.source is None,
                 "ZERO takes no constant, value or source",
             )
+        elif op is InterventionOperation.DIRECTION:
+            pass
         elif op is InterventionOperation.CONSTANT:
             require(
                 (self.constant is None) != (self.value is None),
@@ -284,6 +321,14 @@ def _causal_effect_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(metric, dict) or "declaration" in metric:
         raise ValueError("a causal_effect v1 payload has a metric without declaration")
     return data | {"metric": metric | {"declaration": None}}
+
+
+@register_migration("intervention", 3)
+def _intervention_v3_to_v4(data: dict[str, Any]) -> dict[str, Any]:
+    """v3 had no direction operation: ``direction``/``direction_axis`` are ``None``."""
+    if "direction" in data or "direction_axis" in data:
+        raise ValueError("an intervention v3 payload cannot contain a direction")
+    return data | {"direction": None, "direction_axis": None}
 
 
 @register_migration("intervention", 2)

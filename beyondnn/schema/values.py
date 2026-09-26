@@ -35,6 +35,7 @@ _DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 _MODULE_SEGMENT_RE = re.compile(r"^[^.\s]+$")
 _METRIC_RE = re.compile(r"^[a-z][a-z0-9_]*(:[A-Za-z0-9_.\-]+)?$")
 _TOKEN_RE = re.compile(r"^\S+$")
+_FEATURE_ID_RE = re.compile(r"^feature:[0-9a-f]{32}$")
 
 
 def _nonneg_or_nan(x: float) -> bool:
@@ -255,15 +256,25 @@ class Subject(Value):
     ``units`` index the site's evidence units, stored sorted: indices along the last
     dimension when ``unit_axes`` is ``None`` (the Phase-1..5 meaning), otherwise
     row-major indices of the sub-grid of the declared ``unit_axes`` (ADR-034).
-    ``units=None`` means the whole site. Feature/concept subjects arrive with their
-    record types in later schema versions (ADR-014).
+    ``units=None`` means the whole site.
+
+    ``feature`` (Phase 6, ADR-040) names a ``feature`` record (neuron, direction or SAE
+    latent) of this site: the claim is about that feature, not about raw units, so it
+    excludes ``units``. ``None`` keeps the Phase-1..5.5 meaning.
     """
 
     site: Site
     units: tuple[int, ...] | None = None
     unit_axes: tuple[int, ...] | None = None
+    feature: str | None = None
 
     def _validate(self) -> None:
+        if self.feature is not None:
+            require(
+                bool(_FEATURE_ID_RE.match(self.feature)),
+                f"Subject.feature must be a feature record id: {self.feature!r}",
+            )
+            require(self.units is None, "a feature subject has no units (ADR-040)")
         if self.unit_axes is not None:
             require(self.units is not None, "Subject.unit_axes requires units")
             require(

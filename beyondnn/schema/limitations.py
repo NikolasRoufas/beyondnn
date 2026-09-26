@@ -174,6 +174,102 @@ LIMITATIONS: Mapping[str, LimitationDef] = _defs(
         "By explain() when no claim test result is present.",
         Severity.INFO,
     ),
+    LimitationDef(
+        "DECODABILITY_NOT_USE",
+        "An ENCODES result states that the concept is decodable from the feature on the declared "
+        "held-out data above the declared controls. It does not state that the model uses the "
+        "concept, that the feature is the concept, or that the concept is localised in the "
+        "feature.",
+        "By concept encoding tests, always.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "CONCEPT_SCOPE_LIMITED",
+        "A concept validation holds only for the declared model checkpoint, site, concept dataset"
+        " and split, intervention and target. It says nothing about other data, tasks, "
+        "checkpoints or interventions.",
+        "By concept validations, always.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "FEATURE_MAY_CARRY_OTHER_INFORMATION",
+        "The feature may carry information other than the proposed concept (leakage, "
+        "polysemanticity); decoding the concept does not show exclusivity.",
+        "By concept encoding tests, always.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "SINGLE_FEATURE_TEST_MISSES_REDUNDANCY",
+        "A single-feature intervention can fail when the concept is represented redundantly or "
+        "distributed across features; a failed use test does not show that the concept is unused "
+        "by the model.",
+        "By concept use tests, always.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "DIRECTION_INTERVENTION_MAY_ACTIVATE_DORMANT_PATHWAYS",
+        "A direction (subspace) intervention can change outputs through pathways that are dormant"
+        " in normal operation (Makelov et al. 2024); an effect is evidence about this "
+        "intervention, not about normal use.",
+        "By concept use tests with a DIRECTION intervention.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "DIRECTION_REPLACEMENT_MAY_BE_OOD",
+        "The direction intervention replaced a coordinate (or its complement) with a reference's;"
+        " the result may be an activation the model does not produce.",
+        "By DIRECTION interventions.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "GENERATED_LABEL_UNVERIFIED",
+        "The label was produced by a model or LLM and recorded as GENERATED with the caller's "
+        "declaration of the generator; it is not evidence and was not verified.",
+        "By generated_label(), always.",
+        Severity.WARNING,
+    ),
+    LimitationDef(
+        "SAE_FEATURE_SPLITTING",
+        "SAE latents can split one concept across several latents (feature splitting); one latent"
+        " may capture only part of a concept.",
+        "By SAE features, always.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "SAE_FEATURE_ABSORPTION",
+        "A seemingly monosemantic SAE latent can fail to fire where it should because a more "
+        "specific latent absorbed it (Chanin et al. 2025).",
+        "By SAE features, always.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "SAE_POLYSEMANTICITY_NOT_EXCLUDED",
+        "Sparsity or interpretable top activations do not establish that an SAE latent is "
+        "monosemantic.",
+        "By SAE features, always.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "SAE_RECONSTRUCTION_ERROR",
+        "The SAE does not reconstruct the activation exactly; the reconstruction error (reported "
+        "by the caller, if at all) carries information the latents miss.",
+        "By SAE features, always.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "SAE_MISSING_FEATURES",
+        "The SAE dictionary need not contain every feature the model uses; absence of a latent is"
+        " not absence of a representation.",
+        "By SAE features, always.",
+        Severity.INFO,
+    ),
+    LimitationDef(
+        "SAE_INTERVENTION_IS_PROJECTION",
+        "Interventions on an SAE latent act on the projection onto its normalised decoder "
+        "direction, not on SAE-native clamping or ablation of the latent.",
+        "By concept use tests on SAE features.",
+        Severity.INFO,
+    ),
 )
 
 

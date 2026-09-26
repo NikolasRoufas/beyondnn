@@ -1204,3 +1204,153 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 **Consequences:**
 - A forged magnitude vector is still refused: 1% inflation and reordering are both refused by tests.
 - A forgery smaller than the tolerance, and small enough not to change the magnitude strata, is not detected. Such a forgery cannot change which controls were drawn from the recorded values.
+
+## ADR-039: Three-state semantic lifecycle; concept status is derived, never stored
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 6. Awaiting Phase 6 review.
+- **Supersedes ADR-009 in part:** its four-state enum (REJECTED_CONCEPT) and its `ValidationResult` sketch. The separation of semantic and evidence status, the "no automatic promotion" rule, and the requirement of detection plus causal tests with random controls all stand.
+
+**Decision:**
+- `SemanticStatus` has exactly three values: `UNLABELED_FEATURE`, `PROPOSED_CONCEPT`, `VALIDATED_CONCEPT`.
+- **Where each status comes from:**
+  - A `feature` record is UNLABELED_FEATURE.
+  - A `concept` record (label, definition, feature, label source) is always PROPOSED_CONCEPT and stores no status.
+  - VALIDATED_CONCEPT exists only as the **derived** status of a `concept_validation` record. Construction refuses a status (or list of unmet requirements) that does not follow from the stored assessment summaries under the declared `ConceptPolicy`. The v1 policy cannot be weakened: it requires encoding, at least one use claim, controls, and counterexamples.
+- **No global REJECTED state.** A failed validation is a `concept_validation` with PROPOSED_CONCEPT and its unmet requirements (for example "use claim … contradicted"), plus CONTRADICTED assessments. Rejection, like validation, is relative to a scope (dataset, split, intervention, target, checkpoint). Phase 5.5 showed that such scopes change conclusions.
+- **Generated labels** are `generated_label` records with status **GENERATED**. They are never evidence (the existing `EvidenceRef` rule), carry the limitation `GENERATED_LABEL_UNVERIFIED`, and can only seed a proposal. Their provenance names:
+  - the model the label is *about*, as `model`;
+  - the caller-declared generator, as `method` (`generated_label:<generator>`, version = the declared revision). BeyondNN never calls a generator.
+- **Validation and evidence status:** `EvidenceStatus.VALIDATED_CONCEPT` is used by exactly one kind, `concept_activation`, created only for a VALIDATED validation on the same checkpoint (ADR-009's rule, kept). Composition checks this.
+
+**Alternatives considered:**
+- *Keep REJECTED_CONCEPT:* makes a scoped negative result look global, and invites "rejected forever" readings.
+- *A status field on the concept record:* can go stale, and can be set without evidence (the ADR-012 argument).
+- *A generated label as a plain string with a flag:* loses provenance and lets the text be quoted as if validated.
+
+**Consequences:**
+- Negative results remain visible as data, not as a lifecycle state.
+- A generated label's provenance `model` describes the subject of the label, not the generator. This is documented in the record docstring.
+
+## ADR-040: Feature bases, feature subjects, and direction interventions
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 6. Awaiting Phase 6 review.
+
+**Decision:**
+- **Feature records.** A `feature` record describes a structural coordinate of one module-output leaf:
+  - `basis ∈ {neuron, direction, sae}`, a non-batch feature `axis`, and `pooling ∈ {none, mean}` over the other non-batch axes;
+  - the activation rule: neuron = value at `index`; direction = ⟨x, v/‖v‖⟩; SAE = ADR-041;
+  - the direction is a retained tensor whose digest is part of the identity, so a changed vector or norm is a different feature;
+  - `source ∈ {declared, fit, search, sae}`. Fitted and searched features name the concept dataset, and may only use its **train** split;
+  - fitted, searched and SAE features record the `model_state_digest` they were derived on.
+- **Feature subjects.**
+  - `Subject.feature` (a feature record id) makes a claim about a feature, not about raw units; it excludes `units`.
+  - **`Claim` becomes record version 3.** Migration v2→v3 sets `subject.feature = None`. **The golden claim id changes** (`tests/test_record_identity.py`, documented).
+- **Directions are not units.** A direction is a vector, not an index. Direction interventions are a new operation rather than another `unit_axes` case:
+  - **`InterventionRecord` v4** adds `direction` (a retained 1-D tensor) and `direction_axis`. Migration v3→v4 sets both to `None`.
+  - Operation `DIRECTION`, with a reference r (a `value` tensor of the leaf's exact shape, or zeros):
+    - **removal** (`retain=False`): x′ = x − ⟨x − r, v̂⟩ v̂, i.e. the coordinate is replaced by the reference's;
+    - **retention** (`retain=True`): x′ = r + ⟨x − r, v̂⟩ v̂, i.e. only the coordinate is kept.
+  - Applied at every position of the leaf. No units. Emits `DIRECTION_REPLACEMENT_MAY_BE_OOD`.
+  - Builder: `interventions.direction(site, v, axis=, reference=, retain=)`.
+- **Not implemented:** direction addition and scaling (steering). They are off-distribution by construction and conflate influence with use (literature §3–4).
+
+**Alternatives considered:**
+- *Treat a direction as a rotated unit basis (DAS-style):* needs a learned rotation, which is out of scope, and still needs projection semantics to intervene.
+- *Encode the feature id in `Subject.site` or in the target:* ambiguous, and composition could not refuse a wrong feature.
+- *Arbitrary callable interventions:* not serialisable, and not verifiable.
+- *Only removal:* cannot express the sufficiency side, which is needed to expose "sufficient but redundant" (plan §20).
+
+**Consequences:**
+- Neuron features reuse the Phase-2/5.5 unit interventions (`unit_axes=(axis,)`). Direction and SAE features use DIRECTION.
+- Old traces load. Nothing is invented by the migrations.
+
+## ADR-041: SAE features through a tensor-only adapter
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 6. Awaiting Phase 6 review.
+
+**Decision:**
+- `concepts.sae_feature(model, site, encoder=, decoder=, b_enc=, b_dec=, latent=, checkpoint=, reconstruction=)` takes raw tensors. There is no SAELens or other import, and BeyondNN does not train SAEs.
+- The record (`SAEIdentity`) stores:
+  - the checkpoint token;
+  - the latent index and dictionary size;
+  - the relu activation rule;
+  - the retained encoder column and decoder bias, and the scalar encoder bias;
+  - the caller-reported reconstruction statistics (unverified);
+  - the decoder row, as the feature's direction.
+- **Activation:** relu(⟨x − b_dec, W_enc[:, i]⟩ + b_enc[i]), pooled.
+- **Intervention:** along the **normalised decoder direction** (projection semantics, ADR-040). This is *not* SAE-native clamping or ablation, and is recorded as `SAE_INTERVENTION_IS_PROJECTION`.
+- **Limitations always attached:** splitting, absorption, polysemanticity not excluded, reconstruction error, missing features.
+
+**Alternatives considered:**
+- *A SAELens dependency:* heavy, and the core would track a fast-moving API.
+- *SAE-native ablation* (subtract a_i·d_i, keep the error term): needs the full SAE forward inside the hook. It is a candidate for a later adapter.
+- *Trusting SAE features as monosemantic:* rejected by the literature (Chanin 2025; Kantamneni 2025; Wu 2025).
+
+**Consequences:**
+- An SAE latent is validated exactly like any other feature, with no privileged status.
+
+## ADR-042: Concept claim protocols with mandatory controls, and concept validation
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 6. Awaiting Phase 6 review.
+
+**Decision:**
+- **`concept_encoding` v1** decides ENCODES only:
+  - The observed statistic is the AUROC of the feature's fixed 1-D readout (declared sign) on the concept dataset's held-out **test** split. The evidence is MEASURED activations from one clean recording; nothing is trained at evaluation time.
+  - **At least one control with a declared criterion is required** (`min_fraction_below` on the superiority over each control):
+    - random directions with a declared distribution (`isotropic` or `covariance`), scored sign-free;
+    - random neurons, scored sign-free;
+    - permutations of the held-out labels.
+  - A diagnostic `concept_counterexamples` result lists every held-out false positive and false negative at a threshold fixed on the **val** split.
+  - Limitations `DECODABILITY_NOT_USE` and `FEATURE_MAY_CARRY_OTHER_INFORMATION`.
+- **`concept_intervention` v1** decides:
+  - DECREASES/INCREASES under **removal** of the feature;
+  - SUFFICIENT_FOR under **retention** (site-relative).
+  - The intervention and its reference are **required** (no default).
+  - The statistic is the FINITE_SAMPLE mean effect over a declared evaluation subset (by default the concept-positive test samples), from one Phase-2 comparison family.
+  - **At least one random-feature control with a declared criterion is required** (`min_fraction_beyond_controls`).
+  - Limitations: `SINGLE_FEATURE_TEST_MISSES_REDUNDANCY` and `DIRECTION_INTERVENTION_MAY_ACTIVATE_DORMANT_PATHWAYS`.
+  - It is the second protocol that can decide SUFFICIENT_FOR, and only in its declared, site-relative sense.
+- **Assessments** use explicit policies: `concept_encoding_v1` and `concept_use_v1`.
+- **`concepts.validate(concept, encoding=, use=[...], additional=[...], policy=POLICY_V1)`** runs nothing:
+  - it refuses results about another concept, feature, dataset or checkpoint;
+  - it summarises the assessments and builds the `concept_validation` record (ADR-039);
+  - its scope string names the dataset, split and size, the model digest, the site and axis, and each claim's relation, target and intervention.
+- **Per-sample targets are not needed** (plan §10). Use claims are stated over concept-conditioned subsets with one fixed target.
+- **No concept score** (ADR-007).
+
+**Alternatives considered:**
+- *Trained probes* (logistic, MLP) at evaluation time: add flexibility that must then be controlled (Hewitt & Liang). A fixed readout plus train-only fitting avoids it.
+- *TCAV scores as use evidence:* gradients are not interventions.
+- *Optional controls:* Phase 5.5 F-21 showed random selections passing absolute criteria.
+- *Requiring only encoding for VALIDATED:* contradicts the central rule (decodability is not use).
+
+**Consequences:**
+- A decodable-but-unused feature shows ENCODES SUPPORTED and use CONTRADICTED, and stays PROPOSED_CONCEPT.
+- Validation is scoped; it never generalises.
+
+## ADR-043: Per-kind and per-pass indexes in `TraceResult`
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 6. Awaiting Phase 6 review.
+
+**Observed failure:**
+- A concept use test on the toy model (88 samples × 51 interventions, about 4,600 passes in one comparison family) took 54 s.
+- 85% of the time went to `TraceResult._of` and the engine's pass lookups, which scan every record on every call: O(N²) in the number of passes.
+- Phase 5.5 traces (≤ 52 passes) never exposed it.
+
+**Decision:**
+- `TraceResult` keeps an insertion-ordered list per record type, and a (type, pass) index for input and output records, both maintained in `_add`.
+- `_of` returns the per-type list when exactly one registered type matches (the same result and order as the scan), and falls back to the scan otherwise.
+- New `input_of_pass` / `output_of_pass` replace the engine's linear lookups.
+
+**Alternatives considered:**
+- *Cache invalidated on every add:* the engine interleaves adds and reads, so it stays quadratic.
+- *Smaller concept tests:* hides the problem, and realistic tests need thousands of passes.
+
+**Consequences:**
+- The same use test takes 6.6 s; the cost is now linear, about 1.4 ms per paired pass on the toy model.
+- The results are unchanged: the full suite passes unmodified.

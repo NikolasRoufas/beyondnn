@@ -176,6 +176,10 @@ class TraceResult:
         self._canonical: dict[str, str] = {}
         self._tensors: dict[str, torch.Tensor] = {}
         self._sealed = False
+        # Per-kind and per-pass indexes (Phase 6: traces with thousands of passes made
+        # the linear scans of `_of`/pass lookups quadratic). Order = insertion order.
+        self._by_type: dict[type, list[BaseRecord]] = {}
+        self._pass_records: dict[tuple[type, int], BaseRecord] = {}
 
     # ------------------------------------------------------------ building (internal)
 
@@ -198,6 +202,9 @@ class TraceResult:
         self._check_references(record)
         self._records[record.id] = record
         self._canonical[record.id] = canonical
+        self._by_type.setdefault(type(record), []).append(record)
+        if isinstance(record, (InputRecord, OutputRecord)) and record.pass_index is not None:
+            self._pass_records.setdefault((type(record), record.pass_index), record)
         return record
 
     def _check_references(self, record: BaseRecord) -> None:
@@ -335,14 +342,22 @@ class TraceResult:
                 yield record.value
             elif isinstance(record, (InputRecord, OutputRecord)):
                 yield from (t.ref for t in record.tensors)
-            elif isinstance(record, InterventionRecord) and record.value is not None:
-                yield record.value
+            elif isinstance(record, InterventionRecord):
+                if record.value is not None:
+                    yield record.value
+                if record.direction is not None:
+                    yield record.direction
             elif isinstance(record, AttributionRecord):
                 yield record.value
                 if record.baseline is not None and record.baseline.value is not None:
                     yield record.baseline.value
             elif isinstance(record, AttributionReduction):
                 yield record.value
+            else:
+                # Phase-6 kinds (feature records) declare the tensors they retain.
+                retained = getattr(record, "retained_tensors", None)
+                if retained is not None:
+                    yield from retained()
 
     # ------------------------------------------------------------ reading
 
@@ -362,7 +377,24 @@ class TraceResult:
             raise KeyError(f"no record {record_id!r} in this trace") from None
 
     def _of(self, cls: type[Any]) -> tuple[Any, ...]:
+        kinds = [k for k in self._by_type if issubclass(k, cls)]
+        if len(kinds) == 1:
+            return tuple(self._by_type[kinds[0]])
         return tuple(r for r in self._records.values() if isinstance(r, cls))
+
+    def input_of_pass(self, pass_index: int) -> InputRecord:
+        """The root input record of pass ``pass_index`` (indexed lookup)."""
+        record = self._pass_records.get((InputRecord, pass_index))
+        if not isinstance(record, InputRecord):
+            raise KeyError(f"no input record for pass {pass_index}")
+        return record
+
+    def output_of_pass(self, pass_index: int) -> OutputRecord:
+        """The root output record of pass ``pass_index`` (indexed lookup)."""
+        record = self._pass_records.get((OutputRecord, pass_index))
+        if not isinstance(record, OutputRecord):
+            raise KeyError(f"no output record for pass {pass_index}")
+        return record
 
     @property
     def provenance(self) -> tuple[ProvenanceRecord, ...]:

@@ -322,6 +322,13 @@ def test_registered_kinds_are_exactly_schema_0_1() -> None:
         "attribution_reduction",
         "evidence_selection",
         "protocol_result",
+        # Phase 6 (ADR-039..042)
+        "feature",
+        "generated_label",
+        "concept",
+        "concept_dataset",
+        "concept_validation",
+        "concept_activation",
     }
 
 
