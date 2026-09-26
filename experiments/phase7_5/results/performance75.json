@@ -19,6 +19,26 @@
   "uncertainty_s (wilson + 2 bootstraps x 10k)": 0.1670842501334846,
   "verify_report_s": 1.553418958093971
  },
+ "moderate (BERT-base D)": {
+  "aggregation_and_profiles_s": 0.88828962482512,
+  "audit_build_s (integrity + re-derivation + axes)": 12.479191374965012,
+  "audit_peak_tracemalloc_mb": 6.136234,
+  "configurations_profiled": 432,
+  "evidence_bytes_on_disk": 448881350,
+  "evidence_generation_s": 2312.8494361250196,
+  "full_workflow_s": 2338.6266448739916,
+  "load_s": 8.363792832940817,
+  "process_max_rss_mb": 1167.228928,
+  "records": 27175,
+  "report_bytes": 812209,
+  "results": 144,
+  "samples": 2,
+  "save_evidence_s": 4.012705333065242,
+  "serialize_s": 0.033229583175852895,
+  "traces": 148,
+  "uncertainty_s (wilson + 2 bootstraps x 10k)": 0.21499179117381573,
+  "verify_report_s": 11.354356167139485
+ },
  "small (MLP A/input)": {
   "aggregation_and_profiles_s": 1.1284253329504281,
   "audit_build_s (integrity + re-derivation + axes)": 11.514314541826025,

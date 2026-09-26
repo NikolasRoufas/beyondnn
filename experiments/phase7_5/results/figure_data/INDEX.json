@@ -30,7 +30,7 @@
   "source": "results/external_tracr_concepts_{dev,heldout}.json -> cases.<c>.models"
  },
  "fd9_performance.csv": {
-  "rows": "2",
+  "rows": "3",
   "shows": "end-to-end cost per stage (single runs, one machine)",
   "source": "results/performance75.json"
  }
