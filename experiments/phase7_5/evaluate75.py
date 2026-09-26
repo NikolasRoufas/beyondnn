@@ -38,7 +38,15 @@ def interval(k: int, n: int, quantity: str, unit: str, level: float = 0.95) -> d
     if n == 0:
         return {"k": 0, "n": 0, "text": "n = 0"}
     iv = AU.wilson(k, n, quantity=quantity, unit=unit, level=level)
-    return {"k": k, "n": n, "estimate": iv.estimate, "low": iv.low, "high": iv.high, "level": level, "text": f"{k}/{n} = {iv.estimate:.4f} ({level:.2%} Wilson [{iv.low:.4f}, {iv.high:.4f}])"}
+    return {
+        "k": k,
+        "n": n,
+        "estimate": iv.estimate,
+        "low": iv.low,
+        "high": iv.high,
+        "level": level,
+        "text": f"{k}/{n} = {iv.estimate:.4f} ({level:.2%} Wilson [{iv.low:.4f}, {iv.high:.4f}])",
+    }
 
 
 # --------------------------------------------------------------------------- E1 (InterpBench)
@@ -67,70 +75,141 @@ def e1(cases: dict[str, Any]) -> dict[str, Any]:
         "node_confusion": conf,
         "selection_confusion": sel,
     }
-    out["EH1"] = interval(conf["tp"], pos, "PRIMARY SUPPORTED on necessary", "node instances") | {"threshold": ">= 0.90"}
+    out["EH1"] = interval(conf["tp"], pos, "PRIMARY SUPPORTED on necessary", "node instances") | {
+        "threshold": ">= 0.90"
+    }
     out["EH1"]["holds"] = out["EH1"]["estimate"] >= 0.90
-    out["EH2"] = interval(conf["fp"], neg, "PRIMARY SUPPORTED on not-necessary", "node instances") | {"threshold": "<= 0.05"}
+    out["EH2"] = interval(
+        conf["fp"], neg, "PRIMARY SUPPORTED on not-necessary", "node instances"
+    ) | {"threshold": "<= 0.05"}
     out["EH2"]["holds"] = out["EH2"]["estimate"] <= 0.05
     sel_neg = sel["tn"] + sel["fp"] + sel["neg_other"]
-    out["EH3"] = interval(sel["tn"], sel_neg, "IG top-1 wrong-head selections CONTRADICTED", "selection instances") | {"threshold": ">= 0.90"}
+    out["EH3"] = interval(
+        sel["tn"], sel_neg, "IG top-1 wrong-head selections CONTRADICTED", "selection instances"
+    ) | {"threshold": ">= 0.90"}
     out["EH3"]["holds"] = sel_neg > 0 and out["EH3"]["estimate"] >= 0.90
     count_cfg = [c for c in heads if "|count|recorded" in c and c.startswith("tensor/resample")]
     cell = heads[count_cfg[0]]
     head_pos = cell["pos"]
-    contradicts = sum(1 for r in rows if r["kind"] == "head" and r["gt"] == AN.NECESSARY and r["configs"].get(count_cfg[0]) == "contradicts")
-    out["EH4"] = interval(contradicts, head_pos, f"{count_cfg[0]} CONTRADICTS necessary heads", "head instances") | {"configuration": count_cfg[0], "threshold": ">= 0.50"}
+    contradicts = sum(
+        1
+        for r in rows
+        if r["kind"] == "head"
+        and r["gt"] == AN.NECESSARY
+        and r["configs"].get(count_cfg[0]) == "contradicts"
+    )
+    out["EH4"] = interval(
+        contradicts, head_pos, f"{count_cfg[0]} CONTRADICTS necessary heads", "head instances"
+    ) | {"configuration": count_cfg[0], "threshold": ">= 0.50"}
     out["EH4"]["holds"] = out["EH4"]["estimate"] >= 0.50
     zero = cfg["zero|none|recorded"]
     primary_rate = conf["fp"] / neg
     out["EH5"] = {
-        "stress_zero": interval(zero["fp"], zero["neg"], "zero|none|recorded SUPPORTS not-necessary", "node instances"),
+        "stress_zero": interval(
+            zero["fp"], zero["neg"], "zero|none|recorded SUPPORTS not-necessary", "node instances"
+        ),
         "primary_fp_rate": primary_rate,
         "threshold": "zero FP rate >= PRIMARY + 0.05",
     }
     out["EH5"]["holds"] = zero["fp"] / zero["neg"] >= primary_rate + 0.05
-    out["per_configuration"] = {c: v | {"tp_rate": v["tp"] / v["pos"], "fp_rate": v["fp"] / v["neg"]} for c, v in sorted(cfg.items())}
+    out["per_configuration"] = {
+        c: v | {"tp_rate": v["tp"] / v["pos"], "fp_rate": v["fp"] / v["neg"]}
+        for c, v in sorted(cfg.items())
+    }
     ao = Counter()
     for c in out["reliable_cases"]:
         for claim, dist in cases[c]["attribution_only"].items():
             if "ig_top" in claim:
                 for standing, n in dist.items():
                     ao[standing] += n
-    out["EH6"] = {"selection_claims_attribution_only": dict(ao), "holds": set(ao) == {"unsupported"}}
+    out["EH6"] = {
+        "selection_claims_attribution_only": dict(ao),
+        "holds": set(ao) == {"unsupported"},
+    }
     out["attribution_only_any_supported"] = any(
-        dist.get("supported", 0) for c in cases.values() if "attribution_only" in c for dist in c["attribution_only"].values()
+        dist.get("supported", 0)
+        for c in cases.values()
+        if "attribution_only" in c
+        for dist in c["attribution_only"].values()
     )
     # RQ3 (descriptive): reversal findings on clear vs ambiguous, reliable vs unreliable
-    all_rows = [dict(r, case=c, reliable=v.get("benchmark_reliable", False)) for c, v in cases.items() if "rows" in v for r in v["rows"] if r["kind"] in ("head", "mlp")]
+    all_rows = [
+        dict(r, case=c, reliable=v.get("benchmark_reliable", False))
+        for c, v in cases.items()
+        if "rows" in v
+        for r in v["rows"]
+        if r["kind"] in ("head", "mlp")
+    ]
 
     def rate(sub: list[dict[str, Any]], label: str) -> dict[str, Any]:
         k = sum(1 for r in sub if REVERSAL_CODES & set(r["codes"]))
-        return interval(k, len(sub), f"node instances with a reversal finding ({label})", "node instances")
+        return interval(
+            k, len(sub), f"node instances with a reversal finding ({label})", "node instances"
+        )
 
     out["RQ3"] = {
-        "clear (reliable)": rate([r for r in all_rows if r["reliable"] and r["gt"] != AN.AMBIGUOUS], "clear"),
-        "ambiguous (reliable)": rate([r for r in all_rows if r["reliable"] and r["gt"] == AN.AMBIGUOUS], "ambiguous"),
+        "clear (reliable)": rate(
+            [r for r in all_rows if r["reliable"] and r["gt"] != AN.AMBIGUOUS], "clear"
+        ),
+        "ambiguous (reliable)": rate(
+            [r for r in all_rows if r["reliable"] and r["gt"] == AN.AMBIGUOUS], "ambiguous"
+        ),
         "reliable cases": rate([r for r in all_rows if r["reliable"]], "reliable"),
-        "unreliable cases (held-out)": rate([r for r in all_rows if not r["reliable"]], "unreliable"),
+        "unreliable cases (held-out)": rate(
+            [r for r in all_rows if not r["reliable"]], "unreliable"
+        ),
     }
     dev = load("external_interpbench_dev.json")["cases"]
-    dev_rows = [dict(r, reliable=v.get("benchmark_reliable", False)) for v in dev.values() if "rows" in v for r in v["rows"] if r["kind"] in ("head", "mlp")]
-    out["RQ3"]["development: reliable case 7"] = rate([r for r in dev_rows if r["reliable"]], "dev reliable")
-    out["RQ3"]["development: unreliable case 13"] = rate([r for r in dev_rows if not r["reliable"]], "dev unreliable")
+    dev_rows = [
+        dict(r, reliable=v.get("benchmark_reliable", False))
+        for v in dev.values()
+        if "rows" in v
+        for r in v["rows"]
+        if r["kind"] in ("head", "mlp")
+    ]
+    out["RQ3"]["development: reliable case 7"] = rate(
+        [r for r in dev_rows if r["reliable"]], "dev reliable"
+    )
+    out["RQ3"]["development: unreliable case 13"] = rate(
+        [r for r in dev_rows if not r["reliable"]], "dev unreliable"
+    )
     # every PRIMARY FP / FN (qualitative inspection list) and where the STRESS/ALT FPs sit
     out["primary_errors"] = [
         {k: r[k] for k in ("case", "claim", "sample", "gt", "standing", "codes")}
         for r in rows
-        if r["kind"] in ("head", "mlp") and ((r["gt"] == AN.NECESSARY and r["standing"] == "contradicted") or (r["gt"] == AN.NOT_NECESSARY and r["standing"] == "supported"))
+        if r["kind"] in ("head", "mlp")
+        and (
+            (r["gt"] == AN.NECESSARY and r["standing"] == "contradicted")
+            or (r["gt"] == AN.NOT_NECESSARY and r["standing"] == "supported")
+        )
     ]
     out["other_on_clear"] = [
         {k: r[k] for k in ("case", "claim", "sample", "gt", "standing", "codes")}
         for r in rows
-        if r["kind"] in ("head", "mlp") and r["gt"] != AN.AMBIGUOUS and r["standing"] not in ("supported", "contradicted")
+        if r["kind"] in ("head", "mlp")
+        and r["gt"] != AN.AMBIGUOUS
+        and r["standing"] not in ("supported", "contradicted")
     ]
-    zero_fp = Counter((r["case"], r["claim"]) for r in rows if r["kind"] in ("head", "mlp") and r["gt"] == AN.NOT_NECESSARY and r["configs"].get("zero|none|recorded") == "supports")
-    out["stress_zero_fp_by_node"] = [{"case": c, "claim": cl, "samples": n} for (c, cl), n in zero_fp.most_common()]
-    mean_fp = Counter((r["case"], r["claim"]) for r in rows if r["kind"] in ("head", "mlp") and r["gt"] == AN.NOT_NECESSARY and r["configs"].get("tensor/mean|none|recorded") == "supports")
-    out["alternative_mean_fp_by_node"] = [{"case": c, "claim": cl, "samples": n} for (c, cl), n in mean_fp.most_common()]
+    zero_fp = Counter(
+        (r["case"], r["claim"])
+        for r in rows
+        if r["kind"] in ("head", "mlp")
+        and r["gt"] == AN.NOT_NECESSARY
+        and r["configs"].get("zero|none|recorded") == "supports"
+    )
+    out["stress_zero_fp_by_node"] = [
+        {"case": c, "claim": cl, "samples": n} for (c, cl), n in zero_fp.most_common()
+    ]
+    mean_fp = Counter(
+        (r["case"], r["claim"])
+        for r in rows
+        if r["kind"] in ("head", "mlp")
+        and r["gt"] == AN.NOT_NECESSARY
+        and r["configs"].get("tensor/mean|none|recorded") == "supports"
+    )
+    out["alternative_mean_fp_by_node"] = [
+        {"case": c, "claim": cl, "samples": n} for (c, cl), n in mean_fp.most_common()
+    ]
     return out
 
 
@@ -144,7 +223,10 @@ def e2() -> dict[str, Any]:
     for model, m in case["models"].items():
         for name, c in m["concepts"].items():
             out["outcomes"][f"{model}/{name}"] = {
-                "known": c["known"], "encoding": c["encoding"], "use": c["use"], "validation": c["validation"],
+                "known": c["known"],
+                "encoding": c["encoding"],
+                "use": c["use"],
+                "validation": c["validation"],
                 "audit": {cap: m["audits"][cap][name]["standing"] for cap in m["audits"]},
             }
             if c["known"] != "positive":
@@ -153,8 +235,16 @@ def e2() -> dict[str, Any]:
     hl = case["models"]["tracr_hl"]["concepts"]["K+"]
     ll = case["models"]["siit_ll"]["concepts"]["K+"]
     out["KE1"] = {"holds": ke1}
-    out["KE2"] = {"tracr_K+_covariance": hl["validation"]["covariance"], "holds": hl["validation"]["covariance"] != "validated_concept"}
-    out["KE3"] = {"siit_K+": ll["validation"], "encoding": ll["encoding"], "use": ll["use"], "use_effect": ll["use_effect"]}
+    out["KE2"] = {
+        "tracr_K+_covariance": hl["validation"]["covariance"],
+        "holds": hl["validation"]["covariance"] != "validated_concept",
+    }
+    out["KE3"] = {
+        "siit_K+": ll["validation"],
+        "encoding": ll["encoding"],
+        "use": ll["use"],
+        "use_effect": ll["use_effect"],
+    }
     return out
 
 
@@ -185,16 +275,30 @@ def central() -> dict[str, Any]:
         ig_sup = [s for s in ig["per_sample"] if s["standing"] == "supported"]
         rev = sum(1 for s in ig_sup if "alternative_reverses" in s["codes"])
         r_sup = sum(1 for s in r["per_sample"] if s["standing"] == "supported")
-        disagree = sum(1 for s in ig["per_sample"] if "configuration_level_disagreement" in s["codes"])
+        disagree = sum(
+            1 for s in ig["per_sample"] if "configuration_level_disagreement" in s["codes"]
+        )
         entry = {
             "n": n,
             "ig_necessary_distribution": ig["distribution"],
             "r_necessary_distribution": r["distribution"],
             "ig_supported": interval(len(ig_sup), n, "IG_necessary PRIMARY SUPPORTED", "samples"),
             "r_supported": interval(r_sup, n, "R_necessary PRIMARY SUPPORTED", "samples"),
-            "ig_supported_with_alternative_reverses": interval(rev, len(ig_sup), "PRIMARY-supported IG samples with alternative_reverses", "samples"),
-            "ig_configuration_level_disagreement": interval(disagree, n, "IG samples with configuration-level disagreement", "samples"),
-            "all_claims": {name: c["distribution"] for name, c in load(f"central75_{model}_heldout.json")["settings"][site]["audit"].items()},
+            "ig_supported_with_alternative_reverses": interval(
+                rev,
+                len(ig_sup),
+                "PRIMARY-supported IG samples with alternative_reverses",
+                "samples",
+            ),
+            "ig_configuration_level_disagreement": interval(
+                disagree, n, "IG samples with configuration-level disagreement", "samples"
+            ),
+            "all_claims": {
+                name: c["distribution"]
+                for name, c in load(f"central75_{model}_heldout.json")["settings"][site][
+                    "audit"
+                ].items()
+            },
         }
         out["sites"][f"{model}/{site}"] = entry
         if model != "D" and len(ig_sup) >= 5:
@@ -203,7 +307,11 @@ def central() -> dict[str, Any]:
                 ch7_pass.append(f"{model}/{site}")
         ch8 &= r_sup / n <= 0.05
         ch9 &= len(ig_sup) >= r_sup
-    out["CH7"] = {"qualifying_sites": ch7_qualifying, "passing_sites": ch7_pass, "holds": len(ch7_pass) >= 3}
+    out["CH7"] = {
+        "qualifying_sites": ch7_qualifying,
+        "passing_sites": ch7_pass,
+        "holds": len(ch7_pass) >= 3,
+    }
     out["CH8"] = {"holds": ch8, "D_included": d is not None}
     out["CH9"] = {"holds": ch9, "D_included": d is not None}
     return out
@@ -212,20 +320,94 @@ def central() -> dict[str, Any]:
 # --------------------------------------------------------------------------- NLP
 
 
+def _iv(iv: Any) -> dict[str, Any]:
+    return {
+        "estimate": iv.estimate,
+        "low": iv.low,
+        "high": iv.high,
+        "level": iv.level,
+        "text": iv.describe(),
+    }
+
+
 def nlp() -> dict[str, Any]:
+    """N1-N4 (policy §9). Confirmatory intervals (N2, N3-D, N3-E, N4) at the Bonferroni level
+    0.9875, recomputed here from the per-sample values with the scripts' seeds."""
+    import re
+
     out: dict[str, Any] = {}
     es = load("esnli.json")
-    probes = load("nlp_probes.json")
     if es is None:
         out["N1"] = out["N2"] = "not_available"
     else:
-        out["N1"] = es.get("N1", "see esnli.json")
-        out["N2"] = es.get("N2", "see esnli.json")
-    if probes is None:
-        out["N3"] = out["N4"] = "not_available"
+        ig = [x == "supported" for x in es["audits"]["ig"]["ig_necessary"]["per_sample"]]
+        hu = [x == "supported" for x in es["audits"]["human"]["human_necessary"]["per_sample"]]
+        n = len(ig)
+        diff = AU.paired_bootstrap(
+            [float(x) for x in ig],
+            [float(x) for x in hu],
+            quantity="PRIMARY SUPPORTED: IG minus human (necessary)",
+            unit="samples",
+            seed=7501,
+        )
+        out["N1"] = {
+            "ig_supported": interval(
+                sum(ig), n, "IG top-k_h necessary PRIMARY SUPPORTED", "samples"
+            ),
+            "human_supported": interval(
+                sum(hu), n, "human highlight necessary PRIMARY SUPPORTED", "samples"
+            ),
+            "paired_difference_95": _iv(diff),
+            "holds": sum(ig) >= sum(hu),
+            "all_claims": {
+                a: {c: v["distribution"] for c, v in claims.items()}
+                for a, claims in es["audits"].items()
+            },
+        }
+        f1 = [m["plausibility"]["ig_token_f1"] for m in es["samples"]]
+        rf1 = [m["plausibility"]["random_token_f1"] for m in es["samples"]]
+        d = AU.paired_bootstrap(
+            f1,
+            rf1,
+            quantity="token F1 vs annotator 1: IG minus random",
+            unit="samples",
+            seed=7501,
+            level=BONFERRONI_LEVEL,
+        )
+        out["N2"] = {
+            "paired_difference_bonferroni": _iv(d),
+            "ig_f1_95": es["plausibility"]["ig_token_f1"],
+            "holds": d.low > 0,
+        }
+    for m in ("D", "E"):
+        p = load(f"nlp_probes_{m}.json")
+        if p is None:
+            out[f"N3-{m}"] = "not_available"
+            continue
+        z = [r["strategies"]["zero"]["ood"] for r in p["samples"]]
+        k = [r["strategies"]["mask"]["ood"] for r in p["samples"]]
+        d = AU.paired_bootstrap(
+            z,
+            k,
+            quantity=f"OOD percentile zero minus [MASK] ({m})",
+            unit="samples",
+            seed=7502,
+            level=BONFERRONI_LEVEL,
+        )
+        out[f"N3-{m}"] = {"paired_difference_bonferroni": _iv(d), "holds": d.low > 0}
+    p = load("nlp_probes_E.json")
+    if p is None:
+        out["N4"] = "not_available"
     else:
-        out["N3"] = probes.get("N3", "see nlp_probes.json")
-        out["N4"] = probes.get("N4", "see nlp_probes.json")
+        text = p["leakage"]["empty_premise_accuracy"]
+        k_, n_ = (int(x) for x in re.search(r"\((\d+) of (\d+);", text).groups())
+        iv = interval(k_, n_, "empty-premise accuracy", "e-SNLI test rows", level=BONFERRONI_LEVEL)
+        out["N4"] = iv | {
+            "chance": 1 / 3,
+            "holds": iv["low"] > 1 / 3,
+            "full": p["leakage"]["full_accuracy"],
+            "masked": p["leakage"]["masked_premise_accuracy"],
+        }
     return out
 
 
@@ -245,11 +427,19 @@ def main() -> None:
         "attribution_only_claim_supported": e["attribution_only_any_supported"],
         "KE1_fails": not out["E2"]["KE1"]["holds"],
     }
-    (RESULTS / "hypotheses75.json").write_text(json.dumps(out, indent=1, sort_keys=True, default=str))
+    (RESULTS / "hypotheses75.json").write_text(
+        json.dumps(out, indent=1, sort_keys=True, default=str)
+    )
     print(json.dumps({k: v for k, v in out.items() if k != "E1"}, indent=1, default=str)[:6000])
     print({k: (v.get("holds"), v.get("text")) for k, v in e.items() if k.startswith("EH")})
     print("RQ3", {k: v["text"] for k, v in e["RQ3"].items()})
-    print("primary_errors", len(e["primary_errors"]), "other_on_clear", len(e["other_on_clear"]), Counter(r["standing"] for r in e["other_on_clear"]))
+    print(
+        "primary_errors",
+        len(e["primary_errors"]),
+        "other_on_clear",
+        len(e["other_on_clear"]),
+        Counter(r["standing"] for r in e["other_on_clear"]),
+    )
 
 
 if __name__ == "__main__":

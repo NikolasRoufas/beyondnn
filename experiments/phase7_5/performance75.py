@@ -1,4 +1,3 @@
-# ruff: noqa: E501
 """Phase 7.5 end-to-end performance (request §33): small model (A MLP input), moderate model
 (D BERT-base SST-2) and the external benchmark (InterpBench case 7, run separately in the
 InterpBench env via ``--external``). Single runs, one torch thread, idle machine.
@@ -50,17 +49,32 @@ def measure(evidence: list[Any], plan: Any, gen_s: float) -> dict[str, Any]:
         _, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
         values = [float(i % 7) for i in range(60)]
-        unc_s, _ = clock(lambda: (AU.wilson(20, 60, quantity="q", unit="samples"), AU.bootstrap(values, quantity="q", unit="samples", seed=1), AU.paired_bootstrap(values, values[::-1], quantity="q", unit="samples", seed=1)))
+        unc_s, _ = clock(
+            lambda: (
+                AU.wilson(20, 60, quantity="q", unit="samples"),
+                AU.bootstrap(values, quantity="q", unit="samples", seed=1),
+                AU.paired_bootstrap(values, values[::-1], quantity="q", unit="samples", seed=1),
+            )
+        )
         ser_s, text = clock(report.to_json)
         verify_s, _ = clock(lambda: AU.verify_report(json.loads(text), paths, plan))
     groups = [g for c in report.claims for g in c.groups]
     return {
-        "results": report.evidence.results, "records": report.evidence.records, "traces": report.evidence.traces,
-        "evidence_generation_s": gen_s, "save_evidence_s": save_s, "evidence_bytes_on_disk": disk,
-        "load_s": load_s, "audit_build_s (integrity + re-derivation + axes)": build_s,
-        "aggregation_and_profiles_s": agg_s, "uncertainty_s (wilson + 2 bootstraps x 10k)": unc_s,
-        "serialize_s": ser_s, "report_bytes": len(text.encode()), "verify_report_s": verify_s,
-        "audit_peak_tracemalloc_mb": peak / 1e6, "process_max_rss_mb": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6,
+        "results": report.evidence.results,
+        "records": report.evidence.records,
+        "traces": report.evidence.traces,
+        "evidence_generation_s": gen_s,
+        "save_evidence_s": save_s,
+        "evidence_bytes_on_disk": disk,
+        "load_s": load_s,
+        "audit_build_s (integrity + re-derivation + axes)": build_s,
+        "aggregation_and_profiles_s": agg_s,
+        "uncertainty_s (wilson + 2 bootstraps x 10k)": unc_s,
+        "serialize_s": ser_s,
+        "report_bytes": len(text.encode()),
+        "verify_report_s": verify_s,
+        "audit_peak_tracemalloc_mb": peak / 1e6,
+        "process_max_rss_mb": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6,
         "configurations_profiled": sum(g.profile.tested for g in groups if g.profile),
         "full_workflow_s": gen_s + save_s + load_s + build_s + agg_s + ser_s,
     }
@@ -122,7 +136,13 @@ def main() -> None:
     out = external() if which == "external" else central(which)
     path = RESULTS / "performance75.json"
     data = json.loads(path.read_text()) if path.exists() else {}
-    data[{"A": "small (MLP A/input)", "D": "moderate (BERT-base D)", "external": "external (InterpBench case 7)"}[which]] = out | {"samples": N_SAMPLES[which]}
+    data[
+        {
+            "A": "small (MLP A/input)",
+            "D": "moderate (BERT-base D)",
+            "external": "external (InterpBench case 7)",
+        }[which]
+    ] = out | {"samples": N_SAMPLES[which]}
     path.write_text(json.dumps(data, indent=1, sort_keys=True))
     print(which, json.dumps(out))
 
