@@ -1,0 +1,18 @@
+# Phase 7 figure candidates
+
+Only figures whose data already exist in `experiments/phase7/results/` are listed, with the exact source fields. Nothing is drawn yet, and no figure uses synthetic or illustrative numbers.
+
+| # | Figure | Data source (file → fields) | What it would show | Caveat to print with it |
+|---|---|---|---|---|
+| F1 | Stacked bars of per-sample standings for G / IG / R `*_necessary`, one group per model/site (5) | `central_{A,B,C}.json` → `settings.<site>.audit.claims.<claim>.distribution` | How the three approaches are distributed over SUPPORTED / ASSUMPTION_SENSITIVE / CONTRADICTED | Counts, not rates of truth; ASSUMPTION_SENSITIVE is coarse |
+| F2 | Paired bars per site: naive single-configuration SUPPORTS vs audited SUPPORTED | `central_*.json` → `naive_single_configuration_supports`; `ig_necessary.distribution.supported` | 84 vs 1 of 280 (E3) | SUPPORTED requires every declared axis; more axes → fewer SUPPORTED by construction |
+| F3 | Heatmap: axis × model/site, number of IG_necessary samples sensitive on that axis | `central_*.json` → `samples_sensitive_by_axis` | Which assumption drives the sensitivity where | Threshold rows are re-evaluations; k differs by design |
+| F4 | Histograms of the per-sample supporting share, IG vs R, per site | `analysis.json` → `<site>.<claim>.supports_share_bins` | The within-ASSUMPTION_SENSITIVE structure the standing hides | Descriptive; not pre-registered; the share is not a score |
+| F5 | Bars: samples with a configuration-level necessity/sufficiency disagreement, and absolute-pass-but-controls-reject, per method and site | `analysis.json` → `<tag>_configuration_level` | E6 and E7 | Not pre-registered; the standing-level check found 0 |
+| F6 | Table: concept × feature kind → standing under the strict / lenient rules, with finding codes | `concepts_{A,B,C}.json` → `audits.<rule>.concepts` | Decodable-but-unused, null / replacement sensitivity, the effect of the cap on K4 | Caps declared with knowledge of the Phase-6 rates |
+| F7 | Table: scenarios A–N, expected vs observed | `scenarios.json` → `rows` | 14/14 + tamper | Tests of the audit on toy models |
+| F8 | Line or table: audit time vs number of results (bench + realistic) | `performance.json`; `central_*.json` → `audit_seconds`, `n_results`; `benchmarks/bench_audit.py` output | Roughly linear cost per result | Single runs, one machine |
+
+Not candidates:
+- any figure that aggregates standings into a single number per method (ADR-007);
+- any figure of Trace 3B.
