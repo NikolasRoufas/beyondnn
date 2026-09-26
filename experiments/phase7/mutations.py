@@ -1,6 +1,8 @@
 """Phase-7 code mutations (plan §31): each must make tests/test_audit.py fail."""
 
-import json, subprocess, sys
+import json
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(sys.argv[1])
