@@ -1,4 +1,4 @@
-# ruff: noqa: E501
+# ruff: noqa: E501, E741
 """Phase 7.5 mutations (plan §32): each mutation of the Phase-7.5 behaviour must make the
 Phase-7.5 tests fail. Runs against a scratch copy of the repository.
 
