@@ -59,6 +59,7 @@ from .bundle import EvidenceBundle
 from .views import (
     FAITHFULNESS_PROTOCOLS,
     AttributionView,
+    AuditView,
     ClaimView,
     ConceptView,
     Coverage,
@@ -437,6 +438,22 @@ class Why:
         return tuple(out)
 
     @property
+    def audit(self) -> AuditView | None:
+        """The composed Phase-7 audit restricted to this input (``None``: no audit)."""
+        report = self._b.audit
+        if report is None:
+            return None
+        sample = self.trace.input.sample_id
+        here = []
+        context = []
+        for c in report.claims:
+            if c.per_sample:
+                here.append((c, c.group(sample)))
+            else:
+                context.append(c)
+        return AuditView(report, sample, tuple(here), tuple(context), report.concepts)
+
+    @property
     def faithfulness_protocols(self) -> tuple[str, ...]:
         """The faithfulness protocols with composed results (in a fixed order)."""
         ran = {v.spec.protocol for v in self.faithfulness_tests}
@@ -478,6 +495,41 @@ class Why:
 
 
 # ------------------------------------------------------------------ rendering helpers
+
+
+def _render_audit(view: AuditView) -> list[str]:
+    """The AUDIT section (ADR-047): the plan's per-sample standings for this input and the
+    dataset-scoped standings as context. Restated from the report; nothing re-derived."""
+    report = view.report
+    lines = [
+        "",
+        f"  AUDIT  [plan {report.plan.name}; standings under the declared plan, not a score; "
+        "never 'trustworthy']",
+        "    (classified from the audited records, which are not composed into this WHY)",
+    ]
+    for claim, group in view.claims:
+        codes = sorted({f"{f.kind.value}:{f.code}" for f in group.findings})
+        lines.append(
+            f"    {claim.name} ({claim.claim.relation.value}) on this input: "
+            f"{group.standing.value.upper()}"
+        )
+        if codes:
+            lines.append(f"      findings: {', '.join(codes)}")
+        total = sum(n for _, n in claim.distribution)
+        dist = ", ".join(f"{s.upper()} {n}" for s, n in claim.distribution)
+        lines.append(f"      across the {total} declared samples: {dist}")
+    for claim in view.context:
+        assert claim.standing is not None
+        lines.append(
+            f"    {claim.name} ({claim.claim.scope.value} claim; context, not about this input "
+            f"alone): {claim.standing.value.upper()}"
+        )
+    for concept in view.concepts:
+        lines.append(
+            f"    concept {concept.label!r}: {concept.standing.value.upper()} "
+            "(dataset-scoped context)"
+        )
+    return lines
 
 
 def _describe(ref: TensorRef) -> str:
@@ -602,6 +654,7 @@ class ExplainResponse:
         policies: Sequence[AssessmentPolicy] = (),
         faithfulness: Sequence[Any] = (),
         concepts: Sequence[Any] = (),
+        audit: Any = None,
     ) -> ExplainResponse:
         """Compose already-computed evidence (see :class:`EvidenceBundle`). Runs no model."""
         bundle = EvidenceBundle.compose(
@@ -612,6 +665,7 @@ class ExplainResponse:
             policies=policies,
             faithfulness=faithfulness,
             concepts=concepts,
+            audit=audit,
         )
         return cls(trace, bundle)
 
@@ -641,6 +695,9 @@ class ExplainResponse:
             if why.concept_views:
                 at = len(lines) - 1 - lines[::-1].index("OUTPUT  [observed]")
                 lines = [*lines[:at], *self._render_concepts(why)[1:], "", *lines[at:]]
+            if why.audit is not None:
+                at = len(lines) - 1 - lines[::-1].index("OUTPUT  [observed]")
+                lines = [*lines[:at], *_render_audit(why.audit)[1:], "", *lines[at:]]
             return "\n".join([*lines, "", *self._render_not_evaluated(why)])
         lines = ["INPUT  [observed]", *_tensors(self.input.tensors)]
         lines.append(f"  sample: {self.input.sample_id}")
@@ -664,6 +721,8 @@ class ExplainResponse:
         lines += self._render_claims(why)
         if why.concept_views:
             lines += self._render_concepts(why)
+        if why.audit is not None:
+            lines += _render_audit(why.audit)
         lines += self._render_coverage(why)
         lines += ["", "  LIMITATIONS", *_grouped_limitation_lines(why.limitations, "    ")]
         lines += ["", *self._render_not_evaluated(why)]
@@ -1062,7 +1121,7 @@ class ExplainResponse:
             ],
             "not_evaluated": list(cov.not_evaluated),
             "unanswered": list(why.unanswered),
-        }
+        } | ({} if why.audit is None else {"audit": why.audit.to_dict()})
 
 
 def compose(
@@ -1074,6 +1133,7 @@ def compose(
     policies: Sequence[AssessmentPolicy] = (),
     faithfulness: Sequence[Any] = (),
     concepts: Sequence[Any] = (),
+    audit: Any = None,
 ) -> ExplainResponse:
     """Compose already-computed evidence into one INPUT -> TARGET -> WHY -> OUTPUT view.
 
@@ -1083,6 +1143,7 @@ def compose(
     the evidence are included automatically). ``policies`` are the explicit,
     versioned assessment policies to apply (e.g. ``bnn.interventions.INTERVENTION_POLICY``,
     ``bnn.attribution.ATTRIBUTION_POLICY``). Incompatible evidence is refused.
+    ``audit`` adds a Phase-7 audit report as an AUDIT section (ADR-047).
     """
     return ExplainResponse.from_evidence(
         trace,
@@ -1092,4 +1153,5 @@ def compose(
         policies=policies,
         faithfulness=faithfulness,
         concepts=concepts,
+        audit=audit,
     )

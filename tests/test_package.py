@@ -23,6 +23,8 @@ def test_top_level_api_is_the_reviewed_surface() -> None:
             "__version__",
             "attribute",
             "attribution",
+            "audit",
+            "audits",
             "compose",
             "concepts",
             "faithfulness",

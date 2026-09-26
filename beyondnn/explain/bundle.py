@@ -144,6 +144,7 @@ class EvidenceBundle:
         "_index",
         "assessments",
         "attributions",
+        "audit",
         "claim_target",
         "claims",
         "concepts",
@@ -172,6 +173,7 @@ class EvidenceBundle:
     primary_sources: tuple[TraceResult, ...]
     faithfulness: tuple[Any, ...]
     concepts: tuple[Any, ...]
+    audit: Any
     _index: Mapping[str, tuple[BaseRecord, TraceResult]]
 
     def __init__(self, token: object, **fields: Any) -> None:
@@ -246,8 +248,13 @@ class EvidenceBundle:
         policies: Sequence[AssessmentPolicy] = (),
         faithfulness: Sequence[Any] = (),
         concepts: Sequence[Any] = (),
+        audit: Any = None,
     ) -> EvidenceBundle:
         """Validate and compose (see module docstring). Runs no model and no method.
+
+        ``audit`` takes one Phase-7 ``AuditReport`` (ADR-047): it must be about the
+        reference model checkpoint and, if it has per-sample claims, declare the
+        reference sample. It is presented as audit context; nothing is re-classified.
 
         ``concepts`` takes Phase-6 ``ConceptValidationResult`` (and
         ``ConceptActivationResult``) objects. A concept validation is dataset-scoped
@@ -475,8 +482,31 @@ class EvidenceBundle:
             primary_sources=tuple(primary),
             faithfulness=faithfulness,
             concepts=_compose_concepts(concepts, reference, sample),
+            audit=_compose_audit(audit, reference, sample),
             _index=MappingProxyType(index),
         )
+
+
+def _compose_audit(audit: Any, reference: ProvenanceRecord, sample: str | None) -> Any:
+    """Check a Phase-7 audit report against the reference context (ADR-047)."""
+    if audit is None:
+        return None
+    from beyondnn.audits import AuditReport
+
+    if not isinstance(audit, AuditReport):
+        raise TypeError("audit must be an AuditReport (from beyondnn.audit)")
+    plan = audit.plan
+    if plan.checkpoint != reference.model.state_digest:
+        raise ModelMismatchError(
+            f"the audit is about checkpoint {plan.checkpoint[:19]}..., not the reference "
+            f"model {reference.model.state_digest[:19]}...; it is never applied to another model"
+        )
+    if audit.per_sample and sample not in plan.samples:
+        raise SampleMismatchError(
+            "the audit's per-sample claims do not declare the reference input's sample; "
+            "its findings are not about this input"
+        )
+    return audit
 
 
 def _compose_concepts(

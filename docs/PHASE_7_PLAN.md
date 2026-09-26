@@ -565,4 +565,24 @@ The paper is not written.
 
 ## Deviations
 
-(None yet. Appended during the phase with date and reason.)
+All of the following were recorded on 2026-09-26, during implementation and before any §29 experiment was run.
+
+- **D1 (§22 precedence vs §29.3 J/K).** Exclusion findings (PROVENANCE_MISMATCH, SCOPE_MISMATCH `sample_out_of_scope` / `dataset_out_of_scope` / `other_sample_set`, INTEGRITY_FAILURE) are BLOCKING but do **not** set UNSUPPORTED. They remove evidence; the standing is then computed from what remains.
+  - Why: this resolves a conflict inside the plan. Step 3 of the §22 precedence ("any BLOCKING → UNSUPPORTED") contradicted the pre-registered J/K expectations (NOT_EVALUATED) and the §22 definition of UNSUPPORTED ("O1–O6, cap exceeded").
+  - The UNSUPPORTED-triggering codes are: `attribution_is_not_intervention`, `decodability_is_not_use`, `generated_label_is_not_validation`, `narrower_estimand`, `invariance_untested`, `missing_required_controls`, `counterexample_cap_exceeded`, `counterexample_heavy`, `decodable_not_used`.
+- **D2 (§22).** A 13th finding kind, LIMITATION, was added for limitation-type notes that are not evidence problems: a validated generated label (`generated_label_unverified`, INFORMATIONAL), the polysemanticity indicator (`feature_encodes_several_concepts`), and SAE limitation codes.
+- **D3 (§13).**
+  - Alternative criteria are declared as `(protocol, key, factor | value)`, so "0.25 · margin / 0.75 · margin" is declared as factors 0.5 / 1.5 of the recorded `min_drop` / `max_drop`.
+  - Re-evaluation is implemented for `intervention_threshold`, `attribution_threshold`, `comprehensiveness`, `sufficiency` and `concept_intervention`.
+  - Alternatives for `concept_encoding` are **refused** (AuditPlanError), because they would need the activations re-derived. Declare a second recorded encoding test instead.
+- **D4 (§29.3 A).** `intervention_threshold` cannot decide a unit subset (it requires `subject.units = None`). Scenario A therefore has two plan claims:
+  - a unit-level comprehensiveness claim (3 replacements, controls);
+  - a site-level `intervention_threshold` claim.
+
+  Both are expected SUPPORTED.
+- **D5 (§16).** Finding kinds for codes the plan left unspecified:
+  - `decodable_not_used` is EVIDENCE_TYPE_MISMATCH (BLOCKING);
+  - `controls_defeat_encoding` is ASSUMPTION_SENSITIVE on the `null` axis (QUALIFYING).
+- **D6 (§11).** The `threshold` axis key excludes control-fraction criteria (`min_fraction_below`, `min_fraction_above`, `min_fraction_beyond_controls`); they are part of the `null` key. Without this, "controls vs none" would differ in two axes and could never be explained by the null axis alone (scenario F).
+- **D7 (§29.3 G, scenario construction).** The first version of scenario G declared the use claim over the whole test split, while `use_test` evaluates the positive subset by default. The audit correctly refused that claim (`other_sample_set`). The scenario was corrected to declare the positive subset. This behaviour is kept as a test of the audit, not reported as a result.
+- **D8 (§9a).** `required_protocol_missing` is raised only for required protocols with **no recorded result**. `derive_verdict`'s `required_but_missing` also lists protocols that ran and contradicted, which would have been reported as "missing". It is not raised when nothing matched at all; the standing already says so, and coverage lists "required protocols never run".

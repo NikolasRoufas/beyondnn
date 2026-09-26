@@ -33,6 +33,7 @@ from beyondnn.schema import (
 __all__ = [
     "FAITHFULNESS_PROTOCOLS",
     "AttributionView",
+    "AuditView",
     "ClaimView",
     "Coverage",
     "FaithfulnessView",
@@ -206,3 +207,38 @@ class ConceptView:
                 ("FUNCTIONAL_OPS", "PARTIAL_SITE", "SELECTED_SITE", "NON_TENSOR")
             )
         )
+
+
+@dataclass(frozen=True, slots=True, eq=False)
+class AuditView:
+    """A composed Phase-7 audit report restricted to the reference input (ADR-047): the
+    per-sample claims with their group for this sample, the finite-sample / population
+    claims as context, and the concept audits (dataset-scoped context)."""
+
+    report: Any
+    sample: str | None
+    claims: tuple[tuple[Any, Any], ...]
+    context: tuple[Any, ...]
+    concepts: tuple[Any, ...]
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "plan": self.report.plan.id,
+            "sample": self.sample,
+            "claims": [
+                {
+                    "claim": c.name,
+                    "standing": g.standing.value,
+                    "findings": sorted({f"{f.kind.value}:{f.code}" for f in g.findings}),
+                    "distribution": dict(c.distribution),
+                }
+                for c, g in self.claims
+            ],
+            "context": [
+                {"claim": c.name, "scope": c.claim.scope.value, "standing": c.standing.value}
+                for c in self.context
+            ],
+            "concepts": [
+                {"concept": k.concept.concept, "standing": k.standing.value} for k in self.concepts
+            ],
+        }
