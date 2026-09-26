@@ -28,7 +28,7 @@ import torch
 from beyondnn.core.tensors import walk
 from beyondnn.schema import JsonMap, MetricDeclaration, MetricSpec
 
-__all__ = ["Metric", "custom", "difference", "get_leaf", "mean", "select"]
+__all__ = ["Metric", "custom", "difference", "get_leaf", "margin", "mean", "select"]
 
 _NAME = re.compile(r"^[A-Za-z0-9_.\-]+$")
 
@@ -141,6 +141,34 @@ def difference(index_a: Sequence[int], index_b: Sequence[int], *, path: str = ""
     def fn_t(out: Any) -> torch.Tensor:
         leaf = get_leaf(out, path)
         return _element_t(leaf, a) - _element_t(leaf, b)
+
+    return Metric(spec, fn, fn_t)
+
+
+def margin(index: Sequence[int], *, path: str = "") -> Metric:
+    """``output[path][index]`` minus the largest *other* element on the same last axis
+    (e.g. the logit of a declared class minus the best competing logit). A drop of at
+    least the clean margin means the declared class is no longer the argmax, whatever
+    class replaces it (ADR-051)."""
+    idx = _index(index)
+    if not idx:
+        raise MetricError("margin needs the index of one element (e.g. [0, class])")
+    spec = MetricSpec(
+        name="margin", builtin=True, params=JsonMap({"path": path, "index": list(idx)})
+    )
+
+    def fn_t(out: Any) -> torch.Tensor:
+        leaf = get_leaf(out, path)
+        row = leaf[idx[:-1]]
+        if row.dim() != 1:
+            raise MetricError("margin's index must address one element of a last-axis vector")
+        others = torch.cat([row[: idx[-1]], row[idx[-1] + 1 :]])
+        if others.numel() == 0:
+            raise MetricError("margin needs at least two classes")
+        return (row[idx[-1]] - others.max()).to(torch.float64)
+
+    def fn(out: Any) -> float:
+        return float(fn_t(out))
 
     return Metric(spec, fn, fn_t)
 

@@ -684,3 +684,41 @@ def test_declared_custom_metric_identity_persists(tmp_path: Path) -> None:
     loaded = iv.InterventionResult.from_trace(bnn.load_trace(tmp_path / "t"))
     assert loaded.effect == r.effect
     assert loaded.effect.metric.declaration == m.spec.declaration
+
+
+def test_margin_metric_is_the_gap_to_the_best_other_class() -> None:
+    import beyondnn as bnn
+    from beyondnn._testing.audit_scenarios import WeightedSum
+
+    out = torch.tensor([[1.0, 4.0, 3.0, -2.0]])
+    m = bnn.interventions.metrics.margin([0, 1])
+    assert m(out) == 1.0
+    assert bnn.interventions.metrics.margin([0, 3])(out) == -6.0
+    assert float(m.tensor(out)) == 1.0
+    assert m.spec.name == "margin"
+    with pytest.raises(bnn.interventions.metrics.MetricError):
+        bnn.interventions.metrics.margin([0, 0])(torch.tensor([[1.0]]))
+    # differentiable: usable as an attribution target and in faithfulness tests
+    model = WeightedSum([5.0, 1.0, 1.0]).eval()
+
+    class Two(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.inner = model
+
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            y = self.inner(x)
+            return torch.cat([y, -y], dim=1)
+
+    two = Two().eval()
+    x = torch.tensor([[1.0, 1.0, 1.0]])
+    target = bnn.interventions.metrics.margin([0, 0])
+    attr = bnn.attribute(two, x, target=target, method=bnn.attribution.gradient())
+    test = bnn.faithfulness.comprehensiveness(
+        target=target, min_drop=1.0, statement="x0 necessary", replacement=bnn.faithfulness.zero()
+    )
+    res = bnn.faithfulness.run(
+        two, x, test=test, selection=bnn.faithfulness.top_k(attr, k=1), attributions=[attr]
+    )
+    assert res.outcome.value == "supports"
+    bnn.compose(bnn.trace(two, x), attributions=[attr], faithfulness=[res])
