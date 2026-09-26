@@ -1,0 +1,352 @@
+{
+ "plan_section": "Phase 7.5 plan \u00a731 / request \u00a732",
+ "first_run": [
+  {
+   "mutation": "configuration count changed",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_sensitivity_profile_exposes_raw_structure"
+   ]
+  },
+  {
+   "mutation": "support profile omits a contradiction",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_sensitivity_profile_exposes_raw_structure"
+   ]
+  },
+  {
+   "mutation": "PRIMARY changed to STRESS_TEST (role order)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+   ]
+  },
+  {
+   "mutation": "standing uses every role, not PRIMARY",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+   ]
+  },
+  {
+   "mutation": "alternative reversal not reported",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+   ]
+  },
+  {
+   "mutation": "sample-specific role rules applied to every sample",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_sample_specific_role_rules_apply_only_to_their_sample"
+   ]
+  },
+  {
+   "mutation": "configuration-level disagreement dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_configuration_level_disagreement_survives_a_summary_standing"
+   ]
+  },
+  {
+   "mutation": "wrong requirement attached to a claim",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_configuration_level_disagreement_survives_a_summary_standing"
+   ]
+  },
+  {
+   "mutation": "uncertainty resamples the wrong unit (unpaired)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_bootstrap_is_seeded_recorded_and_paired"
+   ]
+  },
+  {
+   "mutation": "bootstrap seed ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_bootstrap_is_seeded_recorded_and_paired"
+   ]
+  },
+  {
+   "mutation": "Wilson level ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_wilson_interval_matches_reference_values"
+   ]
+  },
+  {
+   "mutation": "claim intervals dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_per_sample_claims_carry_wilson_intervals"
+   ]
+  },
+  {
+   "mutation": "audit profile serialised incorrectly",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_profile_is_serialised_with_the_report - T..."
+   ]
+  },
+  {
+   "mutation": "saved evidence changes the result",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_public_evidence_helpers_round_trip - beyo..."
+   ]
+  },
+  {
+   "mutation": "wrong checkpoint accepted",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[J] - Assert..."
+   ]
+  },
+  {
+   "mutation": "unsupported protocol version accepted",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_unsupported_protocol_version_is_excluded"
+   ]
+  },
+  {
+   "mutation": "held-out case used as development case",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_development_cases_match_the_frozen_policy"
+   ]
+  },
+  {
+   "mutation": "external ground truth mislabelled",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+   ]
+  },
+  {
+   "mutation": "false-positive count dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+   ]
+  },
+  {
+   "mutation": "false-negative count dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+   ]
+  },
+  {
+   "mutation": "benchmark scope mixed (unreliable cases kept)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_reliable_rows_excludes_unreliable_and_failed_cases"
+   ]
+  },
+  {
+   "mutation": "ambiguous instances counted as clear",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+   ]
+  },
+  {
+   "mutation": "token perturbation mislabelled",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_perturbation_nativeness_labels - ..."
+   ]
+  },
+  {
+   "mutation": "human rationale treated as causal ground truth",
+   "result": "NOT APPLIED"
+  }
+ ],
+ "rerun_after_pattern_fix": [
+  {
+   "mutation": "human rationale treated as causal ground truth",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_plausibility_is_never_ground_truth"
+   ]
+  }
+ ],
+ "final": [
+  {
+   "mutation": "configuration count changed",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_sensitivity_profile_exposes_raw_structure"
+   ]
+  },
+  {
+   "mutation": "support profile omits a contradiction",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_sensitivity_profile_exposes_raw_structure"
+   ]
+  },
+  {
+   "mutation": "PRIMARY changed to STRESS_TEST (role order)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+   ]
+  },
+  {
+   "mutation": "standing uses every role, not PRIMARY",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+   ]
+  },
+  {
+   "mutation": "alternative reversal not reported",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+   ]
+  },
+  {
+   "mutation": "sample-specific role rules applied to every sample",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_sample_specific_role_rules_apply_only_to_their_sample"
+   ]
+  },
+  {
+   "mutation": "configuration-level disagreement dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_configuration_level_disagreement_survives_a_summary_standing"
+   ]
+  },
+  {
+   "mutation": "wrong requirement attached to a claim",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_configuration_level_disagreement_survives_a_summary_standing"
+   ]
+  },
+  {
+   "mutation": "uncertainty resamples the wrong unit (unpaired)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_bootstrap_is_seeded_recorded_and_paired"
+   ]
+  },
+  {
+   "mutation": "bootstrap seed ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_bootstrap_is_seeded_recorded_and_paired"
+   ]
+  },
+  {
+   "mutation": "Wilson level ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_wilson_interval_matches_reference_values"
+   ]
+  },
+  {
+   "mutation": "claim intervals dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_per_sample_claims_carry_wilson_intervals"
+   ]
+  },
+  {
+   "mutation": "audit profile serialised incorrectly",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_profile_is_serialised_with_the_report - T..."
+   ]
+  },
+  {
+   "mutation": "saved evidence changes the result",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_public_evidence_helpers_round_trip - beyo..."
+   ]
+  },
+  {
+   "mutation": "wrong checkpoint accepted",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[J] - Assert..."
+   ]
+  },
+  {
+   "mutation": "unsupported protocol version accepted",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_unsupported_protocol_version_is_excluded"
+   ]
+  },
+  {
+   "mutation": "held-out case used as development case",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_development_cases_match_the_frozen_policy"
+   ]
+  },
+  {
+   "mutation": "external ground truth mislabelled",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+   ]
+  },
+  {
+   "mutation": "false-positive count dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+   ]
+  },
+  {
+   "mutation": "false-negative count dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+   ]
+  },
+  {
+   "mutation": "benchmark scope mixed (unreliable cases kept)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_reliable_rows_excludes_unreliable_and_failed_cases"
+   ]
+  },
+  {
+   "mutation": "ambiguous instances counted as clear",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+   ]
+  },
+  {
+   "mutation": "token perturbation mislabelled",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_perturbation_nativeness_labels - ..."
+   ]
+  },
+  {
+   "mutation": "human rationale treated as causal ground truth",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_analysis.py::test_plausibility_is_never_ground_truth"
+   ]
+  }
+ ],
+ "killed": 24,
+ "total": 24,
+ "note": "one mutation pattern did not apply in the first run (formatter split the string); fixed and re-run; no code change was needed"
+}

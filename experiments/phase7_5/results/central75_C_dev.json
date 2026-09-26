@@ -1,0 +1,9674 @@
+{
+ "environment": {
+  "beyondnn_commit": "e17ba13f8dff2c8912e5b0a9eb7f7eaa91d0288d",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "checkpoint_state_digest": "sha256:e2b44a0891e8b46f810a7b65d5535a29668789b88924f888cd8657a7f7b826e0",
+  "dataset": {
+   "eligible_correct_8_24_tokens": 368,
+   "file_sha256": "a1371f3b3a7b0bcefa8388799a9359dc3ce76c349cc0079507a7991364fd2a9b",
+   "validation_rows": 872
+  },
+  "parameters": 4386178,
+  "repo": "M-FAC/bert-tiny-finetuned-sst2",
+  "revision": "41ad6709ec46b414749b37daf49cf5ca1c7dba7c"
+ },
+ "policy": "docs/PHASE_7_5_FROZEN_POLICY.md \u00a7C",
+ "settings": {
+  "tokens": {
+   "audit": {
+    "g_necessary": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       8
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       11
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       5
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       6
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       34
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       28
+      ],
+      [
+       "protocol_disagreement",
+       "necessary_not_sufficient",
+       3
+      ],
+      [
+       "protocol_disagreement",
+       "sufficient_not_necessary",
+       1
+      ]
+     ],
+     "distribution": {
+      "contradicted": 34,
+      "supported": 6
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.85 (34 of 40; 95% wilson [0.7093, 0.9294] over declared samples)",
+      "fraction of declared samples SUPPORTED: 0.15 (6 of 40; 95% wilson [0.07061, 0.2907] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [
+        "alternative_reverses",
+        "stress_test_reverses"
+       ],
+       "index": 556,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         16
+        ],
+        [
+         "alternative",
+         "supports",
+         1
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold",
+        "combined:k+replacement+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 741,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         24
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 721,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 647,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 30
+      },
+      {
+       "codes": [],
+       "index": 565,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "stress_test_reverses"
+       ],
+       "index": 46,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 424,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         24
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "stress_test_reverses"
+       ],
+       "index": 605,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 368,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 709,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         2
+        ],
+        [
+         "alternative",
+         "supports",
+         15
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         17
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 395,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         9
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         17
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 74,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 99,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         10
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ],
+        [
+         "stress_test",
+         "supports",
+         12
+        ]
+       ],
+       "reversal_axes": [
+        "k,null",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 697,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         21
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 799,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 175,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         19
+        ],
+        [
+         "stress_test",
+         "supports",
+         8
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 302,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 436,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "supports",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 420,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "null"
+       ],
+       "sensitive_axes": [
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 542,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         13
+        ],
+        [
+         "stress_test",
+         "supports",
+         14
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 257,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         9
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         16
+        ],
+        [
+         "stress_test",
+         "supports",
+         11
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k,threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 303,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         15
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         24
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "combined:k+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 503,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         14
+        ],
+        [
+         "alternative",
+         "supports",
+         3
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         22
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "combined:k+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 855,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         25
+        ],
+        [
+         "stress_test",
+         "supports",
+         2
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 859,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:replacement+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 243,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         16
+        ],
+        [
+         "stress_test",
+         "supports",
+         11
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 591,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         10
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         13
+        ],
+        [
+         "stress_test",
+         "supports",
+         14
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k,null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "stress_test_reverses"
+       ],
+       "index": 687,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         23
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [
+        "combined:null+threshold",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 834,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "null"
+       ],
+       "sensitive_axes": [
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 91,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 667,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         12
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "null"
+       ],
+       "sensitive_axes": [
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 30
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 710,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 119,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "supports",
+         13
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         4
+        ],
+        [
+         "stress_test",
+         "supports",
+         23
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+threshold",
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "stress_test_reverses"
+       ],
+       "index": 327,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 102,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         9
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         13
+        ],
+        [
+         "stress_test",
+         "supports",
+         14
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 129,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 399,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 170,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "supports",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         21
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "replacement",
+        "replacement,threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "stress_test_reverses"
+       ],
+       "index": 263,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 156,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "supports",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         23
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      }
+     ]
+    },
+    "g_sufficient": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       8
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       8
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       8
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       36
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       28
+      ],
+      [
+       "protocol_disagreement",
+       "necessary_not_sufficient",
+       3
+      ],
+      [
+       "protocol_disagreement",
+       "sufficient_not_necessary",
+       1
+      ]
+     ],
+     "distribution": {
+      "contradicted": 36,
+      "supported": 4
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.9 (36 of 40; 95% wilson [0.7695, 0.9604] over declared samples)",
+      "fraction of declared samples SUPPORTED: 0.1 (4 of 40; 95% wilson [0.03958, 0.2305] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [],
+       "index": 556,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 741,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 721,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         11
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 647,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 18
+      },
+      {
+       "codes": [],
+       "index": 565,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 46,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 424,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 605,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 368,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 709,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         5
+        ],
+        [
+         "stress_test",
+         "supports",
+         10
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "necessary_not_sufficient"
+       ],
+       "index": 395,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 74,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 99,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         6
+        ],
+        [
+         "alternative",
+         "supports",
+         5
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         6
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 697,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 799,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         8
+        ],
+        [
+         "stress_test",
+         "supports",
+         7
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 175,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 302,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 436,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         8
+        ],
+        [
+         "stress_test",
+         "supports",
+         7
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 420,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 542,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 257,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         9
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 303,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         3
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 503,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 855,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 859,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         12
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 243,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 591,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         3
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 687,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 834,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 91,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 667,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 18
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 710,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         9
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 119,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 327,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 102,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         8
+        ],
+        [
+         "stress_test",
+         "supports",
+         7
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 129,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         9
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 399,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 170,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         12
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 263,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 156,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      }
+     ]
+    },
+    "ig_necessary": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       3
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       9
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       4
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       12
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       4
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       7
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       4
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       32
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       32
+      ],
+      [
+       "protocol_disagreement",
+       "necessary_not_sufficient",
+       3
+      ],
+      [
+       "protocol_disagreement",
+       "sufficient_not_necessary",
+       4
+      ]
+     ],
+     "distribution": {
+      "contradicted": 32,
+      "supported": 8
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.8 (32 of 40; 95% wilson [0.6524, 0.895] over declared samples)",
+      "fraction of declared samples SUPPORTED: 0.2 (8 of 40; 95% wilson [0.105, 0.3476] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 556,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         12
+        ],
+        [
+         "alternative",
+         "supports",
+         5
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         21
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "combined:null+threshold",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 741,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 721,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         14
+        ],
+        [
+         "alternative",
+         "supports",
+         3
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         24
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "combined:k+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 647,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         10
+        ],
+        [
+         "alternative",
+         "supports",
+         1
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         16
+        ],
+        [
+         "stress_test",
+         "supports",
+         2
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold",
+        "combined:k+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 30
+      },
+      {
+       "codes": [],
+       "index": 565,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 46,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "supports",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         14
+        ],
+        [
+         "stress_test",
+         "supports",
+         13
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 424,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 605,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         23
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 368,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         10
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         14
+        ],
+        [
+         "stress_test",
+         "supports",
+         13
+        ]
+       ],
+       "reversal_axes": [
+        "k,null",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 709,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         2
+        ],
+        [
+         "alternative",
+         "supports",
+         15
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "supports",
+         26
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 395,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         9
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         17
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 74,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         10
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         21
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k,replacement,threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 99,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         10
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ],
+        [
+         "stress_test",
+         "supports",
+         12
+        ]
+       ],
+       "reversal_axes": [
+        "k,null",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 697,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         21
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "sufficient_not_necessary"
+       ],
+       "index": 799,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 175,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         16
+        ],
+        [
+         "stress_test",
+         "supports",
+         11
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "stress_test_reverses"
+       ],
+       "index": 302,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 436,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "supports",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         23
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 420,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "null"
+       ],
+       "sensitive_axes": [
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 542,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         13
+        ],
+        [
+         "stress_test",
+         "supports",
+         14
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 257,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         9
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         16
+        ],
+        [
+         "stress_test",
+         "supports",
+         11
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k,threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 303,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         15
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         24
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "combined:k+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 503,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         6
+        ],
+        [
+         "alternative",
+         "supports",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         14
+        ],
+        [
+         "stress_test",
+         "supports",
+         13
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k,threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 855,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         20
+        ],
+        [
+         "stress_test",
+         "supports",
+         7
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "stress_test_reverses"
+       ],
+       "index": 859,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "supports",
+         8
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         22
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 243,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         16
+        ],
+        [
+         "stress_test",
+         "supports",
+         11
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 591,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         10
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         13
+        ],
+        [
+         "stress_test",
+         "supports",
+         14
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k,null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "stress_test_reverses"
+       ],
+       "index": 687,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         24
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "combined:null+threshold",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 834,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "null"
+       ],
+       "sensitive_axes": [
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 91,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 667,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         12
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "null"
+       ],
+       "sensitive_axes": [
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 30
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 710,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 119,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         10
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         11
+        ],
+        [
+         "stress_test",
+         "supports",
+         16
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "stress_test_reverses"
+       ],
+       "index": 327,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         25
+        ],
+        [
+         "stress_test",
+         "supports",
+         2
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 102,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         2
+        ],
+        [
+         "alternative",
+         "supports",
+         15
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         5
+        ],
+        [
+         "stress_test",
+         "supports",
+         22
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "combined:k+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 129,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:replacement+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 399,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "supports",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 170,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "supports",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         21
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "replacement",
+        "replacement,threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 263,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         16
+        ],
+        [
+         "alternative",
+         "supports",
+         1
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         24
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "combined:null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 156,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         6
+        ],
+        [
+         "alternative",
+         "supports",
+         11
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         17
+        ],
+        [
+         "stress_test",
+         "supports",
+         10
+        ]
+       ],
+       "reversal_axes": [
+        "k,null",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      }
+     ]
+    },
+    "ig_sufficient": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       16
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       13
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       8
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       31
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       32
+      ],
+      [
+       "protocol_disagreement",
+       "necessary_not_sufficient",
+       3
+      ],
+      [
+       "protocol_disagreement",
+       "sufficient_not_necessary",
+       4
+      ]
+     ],
+     "distribution": {
+      "contradicted": 31,
+      "supported": 9
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.775 (31 of 40; 95% wilson [0.625, 0.8768] over declared samples)",
+      "fraction of declared samples SUPPORTED: 0.225 (9 of 40; 95% wilson [0.1232, 0.375] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 556,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         14
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+threshold",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 741,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 721,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         5
+        ],
+        [
+         "stress_test",
+         "supports",
+         10
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 647,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         5
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         6
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 18
+      },
+      {
+       "codes": [],
+       "index": 565,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 46,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 424,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 605,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 368,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         11
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 709,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         5
+        ],
+        [
+         "stress_test",
+         "supports",
+         10
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "necessary_not_sufficient"
+       ],
+       "index": 395,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 74,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         11
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 99,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         6
+        ],
+        [
+         "alternative",
+         "supports",
+         5
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         6
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 697,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 799,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         2
+        ],
+        [
+         "stress_test",
+         "supports",
+         13
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+threshold",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 175,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 302,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 436,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         5
+        ],
+        [
+         "stress_test",
+         "supports",
+         10
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 420,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 542,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 257,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         7
+        ],
+        [
+         "stress_test",
+         "supports",
+         8
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 303,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         3
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 503,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         7
+        ],
+        [
+         "stress_test",
+         "supports",
+         8
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 855,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "stress_test_reverses"
+       ],
+       "index": 859,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         3
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 243,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 591,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         3
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 687,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 834,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 91,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 667,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 18
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 710,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         8
+        ],
+        [
+         "stress_test",
+         "supports",
+         7
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 119,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         7
+        ],
+        [
+         "stress_test",
+         "supports",
+         8
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 327,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 102,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         3
+        ],
+        [
+         "alternative",
+         "supports",
+         8
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         2
+        ],
+        [
+         "stress_test",
+         "supports",
+         13
+        ]
+       ],
+       "reversal_axes": [
+        "k,replacement",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 129,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         9
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 399,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 170,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         9
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 263,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 156,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         5
+        ],
+        [
+         "stress_test",
+         "supports",
+         10
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      }
+     ]
+    },
+    "r_necessary": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       37
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       9
+      ],
+      [
+       "protocol_disagreement",
+       "necessary_not_sufficient",
+       2
+      ],
+      [
+       "protocol_disagreement",
+       "sufficient_not_necessary",
+       2
+      ]
+     ],
+     "distribution": {
+      "contradicted": 37,
+      "supported": 3
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.925 (37 of 40; 95% wilson [0.8014, 0.9742] over declared samples)",
+      "fraction of declared samples SUPPORTED: 0.075 (3 of 40; 95% wilson [0.02584, 0.1986] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [],
+       "index": 556,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 741,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 721,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 647,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 30
+      },
+      {
+       "codes": [],
+       "index": 565,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "sufficient_not_necessary"
+       ],
+       "index": 46,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 424,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         24
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 605,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 368,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 709,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 395,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 74,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 99,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         10
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         21
+        ],
+        [
+         "stress_test",
+         "supports",
+         6
+        ]
+       ],
+       "reversal_axes": [
+        "k,null",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 697,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 799,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 175,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 302,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 436,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 420,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         12
+        ],
+        [
+         "alternative",
+         "supports",
+         5
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ],
+        [
+         "stress_test",
+         "supports",
+         12
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 542,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 257,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 303,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 503,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 855,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 859,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 243,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 591,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 687,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 834,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         13
+        ],
+        [
+         "stress_test",
+         "supports",
+         14
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "null"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 91,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 667,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         18
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 30
+      },
+      {
+       "codes": [],
+       "index": 710,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 119,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 327,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 102,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 129,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "necessary_not_sufficient",
+        "stress_test_reverses"
+       ],
+       "index": 399,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         2
+        ],
+        [
+         "alternative",
+         "supports",
+         15
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "supports",
+         26
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 170,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 263,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [],
+       "index": 156,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         27
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      }
+     ]
+    },
+    "r_sufficient": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       5
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       3
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       37
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       9
+      ],
+      [
+       "protocol_disagreement",
+       "necessary_not_sufficient",
+       2
+      ],
+      [
+       "protocol_disagreement",
+       "sufficient_not_necessary",
+       2
+      ]
+     ],
+     "distribution": {
+      "contradicted": 37,
+      "supported": 3
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.925 (37 of 40; 95% wilson [0.8014, 0.9742] over declared samples)",
+      "fraction of declared samples SUPPORTED: 0.075 (3 of 40; 95% wilson [0.02584, 0.1986] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [],
+       "index": 556,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 741,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 721,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 647,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 18
+      },
+      {
+       "codes": [],
+       "index": 565,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 46,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         6
+        ],
+        [
+         "alternative",
+         "supports",
+         5
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         12
+        ],
+        [
+         "stress_test",
+         "supports",
+         3
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 424,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 605,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 368,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 709,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 395,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 74,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 99,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "supports",
+         7
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         5
+        ],
+        [
+         "stress_test",
+         "supports",
+         10
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 697,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 799,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 175,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 302,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 436,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         13
+        ],
+        [
+         "stress_test",
+         "supports",
+         2
+        ]
+       ],
+       "reversal_axes": [
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "necessary_not_sufficient"
+       ],
+       "index": 420,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 542,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 257,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 303,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 503,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "supports",
+         5
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 855,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 859,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 243,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 591,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 687,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         13
+        ],
+        [
+         "stress_test",
+         "supports",
+         2
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+threshold",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 834,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         6
+        ],
+        [
+         "alternative",
+         "supports",
+         5
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         6
+        ],
+        [
+         "stress_test",
+         "supports",
+         9
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+replacement",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 91,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 667,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 18
+      },
+      {
+       "codes": [],
+       "index": 710,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 119,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 327,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 102,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 129,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "necessary_not_sufficient"
+       ],
+       "index": 399,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 170,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 263,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 156,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      }
+     ]
+    }
+   },
+   "audit_seconds": 35.22917399997823,
+   "n_results": 2832,
+   "n_samples": 40,
+   "plan_id": "audit_plan:61dc457c940d9f4f29c0852f2c337b48",
+   "primary_single_configuration_supports": 8,
+   "results_excluded": 0,
+   "run_seconds": 1430.638262958033,
+   "samples": [
+    {
+     "index": 834,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 3.0957393646240234,
+     "n_units": 14,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 4.125735312700272,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       4
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:abe7bb6c5a8b6fb6144d600d580aac0dde5168dc93b4857961afeb4c94e4b9a1",
+     "text": "collateral damage finally delivers the goods for schwarzenegger fans . "
+    },
+    {
+     "index": 156,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 4.864718437194824,
+     "n_units": 20,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 2.609763205051422,
+      "k": 2,
+      "outcome": "supports",
+      "units": [
+       4,
+       17
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:fe67688d25a6c97b88d5bab7d73bb8d28a19033227197bfb8e404c2768deb75f",
+     "text": "manages to transcend the sex , drugs and show-tunes plot into something far richer . "
+    },
+    {
+     "index": 687,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 4.223649024963379,
+     "n_units": 20,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 1.541756272315979,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       5
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:9531a5c79b7950aa837107e80cecc0cb33398776ad23ea83ac6216a04bf889a0",
+     "text": "this is a shameless sham , calculated to cash in on the popularity of its stars . "
+    },
+    {
+     "index": 436,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 4.732526779174805,
+     "n_units": 18,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 1.0506302118301392,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       8
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:2a2250e64127c582b692ee4e7c4b72f93d5e0c474bd78353e37e4ae4e32f51ad",
+     "text": "trite , banal , cliched , mostly inoffensive . "
+    },
+    {
+     "index": 395,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 0.5155421495437622,
+     "n_units": 24,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 2.3202402517199516,
+      "k": 3,
+      "outcome": "supports",
+      "units": [
+       11,
+       12,
+       18
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:12cbcd27c8e9573be1e37083619bad3f5cfc6c7228add92a58f08983365ae1cc",
+     "text": "another in-your-face wallow in the lower depths made by people who have never sung those blues . "
+    },
+    {
+     "index": 697,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 0.7402335405349731,
+     "n_units": 21,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 0.8480576872825623,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       1,
+       14,
+       18
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:217d318d65e66d01d239a043579fb24905a143b9a194fde5950ba40db2a66701",
+     "text": "not since tom cruise in risky business has an actor made such a strong impression in his underwear . "
+    },
+    {
+     "index": 542,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 2.1503243446350098,
+     "n_units": 12,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 2.879131466150284,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       5
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:2ea1ded3c794d6f57332b11ecd292525a5623515c0ed72b4382484eee3646469",
+     "text": "there 's no emotional pulse to solaris . "
+    },
+    {
+     "index": 102,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 4.384260177612305,
+     "n_units": 23,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 3.584517687559128,
+      "k": 3,
+      "outcome": "supports",
+      "units": [
+       4,
+       16,
+       18
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:cf88342101f983e56d78a179c599fb305f017e8eaab89e5eae362c7a73f79658",
+     "text": "does paint some memorable images ... , but makhmalbaf keeps her distance from the characters "
+    },
+    {
+     "index": 721,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 5.352052688598633,
+     "n_units": 13,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 0.44281959533691406,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       8
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:06a63d2f447cd527831c1eba1be1c16abf9c5bee79ba9cef0d34c0681a47c4df",
+     "text": "a poignant , artfully crafted meditation on mortality . "
+    },
+    {
+     "index": 503,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 3.4915425777435303,
+     "n_units": 21,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 1.4678531885147095,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       16,
+       17
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:5240ab822a41bcf94781faed32064acb26f27ae8f4235590a2f2301afad7fef9",
+     "text": "dragonfly has no atmosphere , no tension -- nothing but costner , flailing away . "
+    },
+    {
+     "index": 859,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 4.135064125061035,
+     "n_units": 20,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 2.553054094314575,
+      "k": 2,
+      "outcome": "supports",
+      "units": [
+       7,
+       16
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:6802c0588fa0cba9e544f47c2c0901f99446ccd168d7fefe6cedd8b6e42ecc04",
+     "text": "add yet another hat to a talented head , clooney 's a good director . "
+    },
+    {
+     "index": 257,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 2.999774694442749,
+     "n_units": 21,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 0.9171388149261475,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       15,
+       18
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:50e238ed71f20405bb1debde04533c623b5def33296c7fe4e80ff4f81ea65641",
+     "text": "taylor appears to have blown his entire budget on soundtrack rights and had nothing left over for jokes . "
+    },
+    {
+     "index": 175,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 0.5469928979873657,
+     "n_units": 21,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": -2.5630878508090973,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       1,
+       10,
+       14
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:26d71a2e18f488aa4ce7de75a20c5ca9fc867cbb50d8b3eed0b61bdc1ccae7c6",
+     "text": "bleakly funny , its characters all the more touching for refusing to pity or memorialize themselves . "
+    },
+    {
+     "index": 119,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 2.570864200592041,
+     "n_units": 20,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 1.2068808674812317,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       12,
+       16
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:c556997317014acfe15f6a19235fbab6acb8c3cd888a6a68c210e38a50e8f47a",
+     "text": "comes ... uncomfortably close to coasting in the treads of the bicycle thief . "
+    },
+    {
+     "index": 263,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 5.207827568054199,
+     "n_units": 21,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 1.7474830150604248,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       1,
+       8,
+       16
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:f8f993a4687c2c5d306f69536379f2a2c86e370de42e5b6ff4c9bd2f3a023d9f",
+     "text": "chilling , well-acted , and finely directed : david jacobson 's dahmer . "
+    },
+    {
+     "index": 74,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 3.5257997512817383,
+     "n_units": 19,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 1.6579262018203735,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       8,
+       15
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:14b594932b2f064d474e38c36663099144440343d35f658b876de98b6bf43991",
+     "text": "a string of rehashed sight gags based in insipid vulgarity . "
+    },
+    {
+     "index": 302,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 3.977799654006958,
+     "n_units": 13,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": -0.16344141960144043,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       3
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:28c876c3a309ac2af4799b81bed094ec912773b2ac85de4f92bb340615f5b076",
+     "text": "the wild thornberrys movie is a jolly surprise . "
+    },
+    {
+     "index": 99,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 3.737419366836548,
+     "n_units": 12,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 2.0065383911132812,
+      "k": 2,
+      "outcome": "supports",
+      "units": [
+       7,
+       10
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:20f81e79b0f201de795c502ae74490a8fe48fb42b8303ee2aa678b89126f0ba3",
+     "text": "why make a documentary about these marginal historical figures ? "
+    },
+    {
+     "index": 855,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 3.9518001079559326,
+     "n_units": 19,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 1.1901479959487915,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       14
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:5d71df12c504a1b157f2b432b5a1e4e4afc1d3d413e63132cea14269ce6d6257",
+     "text": "it 's fascinating to see how bettany and mcdowell play off each other . "
+    },
+    {
+     "index": 710,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 3.411656141281128,
+     "n_units": 19,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": -0.24416625499725342,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       1,
+       6
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:bef3c92894ac10800c46d53a0a30e451ba24fd2684396fa6643ce4f2563e7b72",
+     "text": "less dizzying than just dizzy , the jaunt is practically over before it begins . "
+    },
+    {
+     "index": 667,
+     "ks": {
+      "0.05": 1,
+      "0.1": 1,
+      "0.2": 2
+     },
+     "margin": 5.090903282165527,
+     "n_units": 10,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 7.626341104507446,
+      "k": 1,
+      "outcome": "contradicts",
+      "units": [
+       1
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:bacfca6c1f736ffb582bb09bbcfa78ae6a18d00c8a3d39dfcb2df65bf3f71578",
+     "text": "good film , but very glum . "
+    },
+    {
+     "index": 91,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 3.4912619590759277,
+     "n_units": 21,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": -1.1153197288513184,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       1,
+       3,
+       12
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:adf108c8146f4b73f576d48174859470ef76dd2c2e7b616cbbb649b1ac150147",
+     "text": "hardly a masterpiece , but it introduces viewers to a good charitable enterprise and some interesting real people . "
+    },
+    {
+     "index": 741,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 0.049267902970314026,
+     "n_units": 11,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": -0.7279077619314194,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       8,
+       9
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:0453ae50461578307d303df4877ced2018bb88d494b4e0991d9eee4d6dff896b",
+     "text": "but it still jingles in the pocket . "
+    },
+    {
+     "index": 424,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 0.32636749744415283,
+     "n_units": 12,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": -1.7025793939828873,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       9
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:0d14a1bedd894282b5f3510f1824a5f01a1fe33794a87e36fa5c17b8fdbea9c2",
+     "text": "a good piece of work more often than not . "
+    },
+    {
+     "index": 591,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 3.9039804935455322,
+     "n_units": 12,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 4.267188586294651,
+      "k": 2,
+      "outcome": "supports",
+      "units": [
+       4,
+       7
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:90873b7daf7fc9644815175aad94a655b84ca8b0e665b928603a238bdea72ac7",
+     "text": "i got a headache watching this meaningless downer . "
+    },
+    {
+     "index": 243,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 0.32808881998062134,
+     "n_units": 16,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 0.6726495996117592,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       6
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:7c3b0faa6a87013e5807d48c032427198ba1813130f35b78e3d1a7287e3c4d7a",
+     "text": "the film tunes into a grief that could lead a man across centuries . "
+    },
+    {
+     "index": 565,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 5.603269577026367,
+     "n_units": 22,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": -0.01609659194946289,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       12,
+       18
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:0b4cc5c3e2d6c962efff01ab2ad85f6f9884ef89df7c38f2ee389249e28da825",
+     "text": "there are some wonderfully fresh moments that smooth the moral stiffness with human kindness and hopefulness . "
+    },
+    {
+     "index": 556,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 4.884279251098633,
+     "n_units": 22,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 1.5633628368377686,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       15,
+       18
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:0158211fc803f2b3ec16ee55fe93a7d2ec56ad95bed320e1c919dfdacfbeb26a",
+     "text": "but it 's too long and too convoluted and it ends in a muddle . "
+    },
+    {
+     "index": 605,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 3.8941752910614014,
+     "n_units": 16,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 0.25451982021331787,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       12
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:0e1a494f9dde5f2797ba2efea2f02e892f2025607da0f4f0244c3d7e2920c0fa",
+     "text": "puts a human face on a land most westerners are unfamiliar with . "
+    },
+    {
+     "index": 799,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 5.703210830688477,
+     "n_units": 21,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 0.2216777801513672,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       12,
+       17
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:25f1e7c1141f06f8aad2760d7ebdca76a974c15c60bf581039555e1f834960b9",
+     "text": "a tender , witty , captivating film about friendship , love , memory , trust and loyalty . "
+    },
+    {
+     "index": 170,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 4.605607509613037,
+     "n_units": 12,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 1.9164936542510986,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       8,
+       9
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:f308e4258d0efd75c238a6b721e94e0cb6c97f9c539f0f786dbdaa1459877473",
+     "text": "it 's also , clearly , great fun . "
+    },
+    {
+     "index": 303,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 5.550907611846924,
+     "n_units": 11,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 0.9308197498321533,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       1,
+       7
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:51a6281afc362aa97aee67909764483a4c470bdaf0dfb1895d181875a70ee096",
+     "text": "entertains by providing good , lively company . "
+    },
+    {
+     "index": 368,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 4.249368667602539,
+     "n_units": 16,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 2.781469225883484,
+      "k": 2,
+      "outcome": "supports",
+      "units": [
+       6,
+       13
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:0f79f62059c82dd43bbf996593a944961937c648ce201572e748068d050b7b5a",
+     "text": "the humor is forced and heavy-handed , and occasionally simply unpleasant . "
+    },
+    {
+     "index": 420,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 4.091569900512695,
+     "n_units": 18,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 5.289947122335434,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       7
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:2d2df7634cdef729a2bb38c2c2daa9481600e34134998c3c65e6531cbe8a1296",
+     "text": "one of the more irritating cartoons you will see this , or any , year . "
+    },
+    {
+     "index": 129,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 5.393166542053223,
+     "n_units": 21,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 0.6813368797302246,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       6,
+       17
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:cfe0452bc9f3cb98a979d06e52ea17b7c2386a6e4229c87e196a5bbbf1afdea4",
+     "text": "it provides the grand , intelligent entertainment of a superior cast playing smart people amid a compelling plot . "
+    },
+    {
+     "index": 647,
+     "ks": {
+      "0.05": 1,
+      "0.1": 1,
+      "0.2": 2
+     },
+     "margin": 4.464265823364258,
+     "n_units": 10,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 0.059664011001586914,
+      "k": 1,
+      "outcome": "contradicts",
+      "units": [
+       7
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:070618e91401672cd13d75ef4ad7ee27beedebd816ae152af203ee434635924f",
+     "text": "too much of the humor falls flat . "
+    },
+    {
+     "index": 327,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 4.952975273132324,
+     "n_units": 14,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": -0.2219557762145996,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       9
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:cb451a0a24e0472a19ca125a64e6fd5826d1ced29db63b090970287988e22f9c",
+     "text": "it proves quite compelling as an intense , brooding character study . "
+    },
+    {
+     "index": 46,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 4.230261325836182,
+     "n_units": 23,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 2.349276542663574,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       12,
+       20
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:0c31b86e34f6b65bc42f39c341b7dc07404019727fd9e1a2722ba6dc2a222499",
+     "text": "a synthesis of cliches and absurdities that seems positively decadent in its cinematic flash and emptiness . "
+    },
+    {
+     "index": 399,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 1.4231812953948975,
+     "n_units": 24,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": -1.5034760236740112,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       9,
+       17
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:eae9403cb796aa24aa71b30259b81b70f48cabb548baf427cd9f0e6ddd176d12",
+     "text": "if director michael dowse only superficially understands his characters , he does n't hold them in contempt . "
+    },
+    {
+     "index": 709,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 4.658073425292969,
+     "n_units": 23,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 4.599210537970066,
+      "k": 3,
+      "outcome": "supports",
+      "units": [
+       7,
+       12,
+       14
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:1104a6330274910c80cb7d64c9a77ef669aa4e0c4d02ebca137aa375ea1f800a",
+     "text": "i thought my own watch had stopped keeping time as i slogged my way through clockstoppers . "
+    }
+   ],
+   "verify_report": "passed"
+  }
+ },
+ "split": "dev"
+}

@@ -154,8 +154,8 @@ MUTATIONS = [
     (
         "human rationale treated as causal ground truth",
         AN,
-        '"human_is_ground_truth": False}',
-        '"human_is_ground_truth": True}',
+        '"human_is_ground_truth": False,',
+        '"human_is_ground_truth": True,',
     ),
 ]
 ONLY = set(sys.argv[3].split("|")) if len(sys.argv) > 3 else None

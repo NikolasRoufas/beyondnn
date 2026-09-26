@@ -1,0 +1,42 @@
+{
+ "external (InterpBench case 7)": {
+  "aggregation_and_profiles_s": 0.3992243749089539,
+  "audit_build_s (integrity + re-derivation + axes)": 1.9881008749362081,
+  "audit_peak_tracemalloc_mb": 3.321734,
+  "configurations_profiled": 810,
+  "evidence_bytes_on_disk": 15689616,
+  "evidence_generation_s": 6.773092792136595,
+  "full_workflow_s": 10.678046624874696,
+  "load_s": 1.0981085000094026,
+  "process_max_rss_mb": 853.508096,
+  "records": 3946,
+  "report_bytes": 1492722,
+  "results": 230,
+  "samples": 5,
+  "save_evidence_s": 0.3722052499651909,
+  "serialize_s": 0.04731483291834593,
+  "traces": 240,
+  "uncertainty_s (wilson + 2 bootstraps x 10k)": 0.1670842501334846,
+  "verify_report_s": 1.553418958093971
+ },
+ "small (MLP A/input)": {
+  "aggregation_and_profiles_s": 1.1284253329504281,
+  "audit_build_s (integrity + re-derivation + axes)": 11.514314541826025,
+  "audit_peak_tracemalloc_mb": 8.231436,
+  "configurations_profiled": 648,
+  "evidence_bytes_on_disk": 100164095,
+  "evidence_generation_s": 7.30872316705063,
+  "full_workflow_s": 29.28899862547405,
+  "load_s": 6.986972541781142,
+  "process_max_rss_mb": 838.36928,
+  "records": 38263,
+  "report_bytes": 1252558,
+  "results": 216,
+  "samples": 3,
+  "save_evidence_s": 2.313793499954045,
+  "serialize_s": 0.036769541911780834,
+  "traces": 222,
+  "uncertainty_s (wilson + 2 bootstraps x 10k)": 0.17075337492860854,
+  "verify_report_s": 9.460030457936227
+ }
+}
