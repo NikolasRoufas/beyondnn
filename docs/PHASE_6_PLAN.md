@@ -376,3 +376,25 @@ Each mutation must make at least one test fail or produce a refusal:
 ## 26. Corrections log
 
 (Empty at pre-registration. Corrections are appended with the original text kept.)
+
+**Appended 2026-09-26: after the ground-truth run (whose results matched §21 without changes) and before any realistic experiment ran.**
+
+**Implementation names (§18):**
+- `encoding_test` and `use_test` replace `test_encoding` and `test_use`: public `test_*` functions would be collected by pytest (ADR-012 avoids this for classes too).
+- `zero()` and `reference(tensor, name=)` build references; `remove(ref)` and `retain(ref)` build interventions.
+
+**Realistic runs (§22), operational details:**
+- **Concept pools** (the plan said "the stated pool" without naming it). Every model then gets the same seeded (1234) 50/20/30 split:
+  - A: all 569 breast_cancer rows (model inputs standardised as in Phase 5.5);
+  - B: all 1,797 digits images;
+  - C: the 872 SST-2 validation sentences. A and B pools include the models' own training rows; the concept test split is held out from concept *fitting*, not from model training.
+- **Label thresholds:** the medians are computed on the concept **train** split.
+- **K9 (negation):** a whitespace token in {not, no, never, nothing, nobody} or a token ending in "n't".
+- **Encoding controls:**
+  - The decision uses `random_directions(200, covariance, 11)` and `label_permutation(200, 12)`, both at `min_fraction_below` 0.95.
+  - The isotropic variant is a separate encoding test with the same criteria, reported for R7; it does not change the status.
+  - Neuron features use the same encoding controls as directions.
+- **Use targets:** the lift rule uses the models' true class labels (A: 0 = malignant, 1 = benign; B: digit; C: 0 = negative, 1 = positive). The target is a caller metric `custom:log_softmax_c{c}` (declared revision `phase6-v1`).
+- **Mean reference:** the per-element mean of the site leaf over the concept train split, which has a fixed shape at all three sites.
+- **R6:** the test split is subsampled to 40 samples (seed 1235), with train and val unchanged. The random directions are isotropic N(0, I), seeds 5000–5019. They are evaluated with the decision controls above; the naive criterion is AUROC ≥ 0.6 with no controls.
+
