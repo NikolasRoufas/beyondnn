@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from typing import Any
 
 from beyondnn.schema import (
@@ -20,6 +20,7 @@ from beyondnn.schema import (
     Invariance,
     ModelDeclaration,
     Relation,
+    SampleTarget,
     SelectionSubject,
     SemanticStatus,
     Site,
@@ -86,17 +87,23 @@ def claim(
     target: Any,
     scope: str | EstimandScope,
     requirement: str,
+    sample_targets: Mapping[str, Any] | None = None,
     subject: Subject | None = None,
     selection: SelectionSubject | None = None,
     sample_set: str | None = None,
     population: str | None = None,
     invariant_over: Iterable[Invariance] = (),
 ) -> AuditedClaim:
+    """``target`` is one metric/TargetSpec, or ``None`` with ``sample_targets`` mapping each
+    plan sample id to its own declared target (per-sample claims)."""
     return AuditedClaim(
         name=name,
         statement=statement,
         relation=Relation(relation),
-        target=_target(target),
+        target=None if target is None else _target(target),
+        sample_targets=tuple(
+            SampleTarget(sample=s, target=_target(t)) for s, t in (sample_targets or {}).items()
+        ),
         scope=EstimandScope(scope),
         requirement=requirement,
         subject=subject,

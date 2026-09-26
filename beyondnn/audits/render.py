@@ -39,7 +39,8 @@ def _claim(c: ClaimAudit) -> list[str]:
         else f"subject {decl.subject.site.module or 'input'}"  # type: ignore[union-attr]
     )
     lines = [
-        f"  {decl.name}: {decl.relation.value.upper()} {decl.target.metric} "
+        f"  {decl.name}: {decl.relation.value.upper()} "
+        f"{decl.target.metric if decl.target is not None else 'per-sample targets'} "
         f"({decl.scope.value}; {about}; requirement {decl.requirement})",
         f"    statement (declared, not evidence): {decl.statement}",
     ]

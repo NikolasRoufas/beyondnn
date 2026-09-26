@@ -234,7 +234,7 @@ class _Auditor:
 
     def _structure(self, c: AuditedClaim, e: ResultEntry, *, method_known: bool = True) -> bool:
         claim = e.claim
-        if claim.relation is not c.relation or claim.target != c.target:
+        if claim.relation is not c.relation or claim.target != _target_for(c, e.sample):
             return False
         if c.subject is not None:
             return claim.subject == c.subject
@@ -276,7 +276,7 @@ class _Auditor:
                 if not e.usable or e.claim.subject != c.subject:
                     continue
                 r = e.claim.relation
-                if r is Relation.ATTRIBUTED_TO and e.claim.target == c.target:
+                if r is Relation.ATTRIBUTED_TO and e.claim.target == _target_for(c, e.sample):
                     same = c.scope is not EstimandScope.INSTANCE or e.sample == group
                     if same:
                         ids.append(e.id)
@@ -314,7 +314,7 @@ class _Auditor:
                     record.sample_id == group
                     and record.site == sel.site
                     and record.method.name == sel.method
-                    and record.target.target() == c.target
+                    and record.target.target() == _target_for(c, group)
                     and trace.origin(record).model.state_digest == self.plan.checkpoint
                 ):
                     ids.append(record.id)
@@ -627,7 +627,8 @@ class _Auditor:
         for a, b in combinations(claims, 2):
             ca, cb = a.claim, b.claim
             same_subject = (ca.subject, ca.selection) == (cb.subject, cb.selection)
-            if not same_subject or ca.target != cb.target or ca.scope is not cb.scope:
+            same_target = (ca.target, ca.sample_targets) == (cb.target, cb.sample_targets)
+            if not same_subject or not same_target or ca.scope is not cb.scope:
                 continue
             if ca.relation is cb.relation or ca.sample_set != cb.sample_set:
                 continue
@@ -1206,6 +1207,16 @@ class _Auditor:
 
 
 # ------------------------------------------------------------------ rules
+
+
+def _target_for(c: AuditedClaim, sample: str | None) -> Any:
+    """The claim's declared target (on ``sample``, for per-sample targets)."""
+    if not c.sample_targets:
+        return c.target
+    for t in c.sample_targets:
+        if t.sample == sample:
+            return t.target
+    return None
 
 
 def _standing(

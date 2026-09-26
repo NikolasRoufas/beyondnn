@@ -43,6 +43,7 @@ __all__ = [
     "CounterexampleRule",
     "EvidenceRequirement",
     "Invariance",
+    "SampleTarget",
     "SelectionSubject",
 ]
 
@@ -97,20 +98,36 @@ class SelectionSubject(Value):
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
+class SampleTarget(Value):
+    """The declared target of a per-sample claim on one sample (e.g. a margin between
+    that sample's predicted class and its runner-up, fixed from its clean pass)."""
+
+    sample: str
+    target: TargetSpec
+
+    def _validate(self) -> None:
+        require(bool(self.sample.strip()), "SampleTarget.sample must be non-empty")
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class AuditedClaim(Value):
     """A claim under audit, by formal structure (ADR-016), never by record id.
 
     ``scope`` INSTANCE: the claim is audited on every plan sample (per-sample; plan
     §21). FINITE_SAMPLE: about exactly the sample set ``sample_set`` (an
     ``Estimand.sample_id``). POPULATION: about ``population``.
+
+    The target is one declared ``target`` or, for per-sample claims whose target depends
+    on the sample, ``sample_targets`` (one per plan sample, declared before the audit).
     """
 
     name: str
     statement: str
     relation: Relation
-    target: TargetSpec
+    target: TargetSpec | None
     scope: EstimandScope
     requirement: str
+    sample_targets: tuple[SampleTarget, ...] = ()
     subject: Subject | None = None
     selection: SelectionSubject | None = None
     sample_set: str | None = None
@@ -121,6 +138,20 @@ class AuditedClaim(Value):
         require(bool(_NAME_RE.match(self.name)), f"invalid claim name {self.name!r}")
         require(bool(self.statement.strip()), "AuditedClaim.statement must be non-empty")
         require(bool(_NAME_RE.match(self.requirement)), "invalid requirement name")
+        require(
+            (self.target is None) != (not self.sample_targets),
+            "an audited claim has exactly one of target / sample_targets",
+        )
+        if self.sample_targets:
+            require(
+                self.scope is EstimandScope.INSTANCE,
+                "sample_targets are declared for per-sample (INSTANCE) claims only",
+            )
+            samples = [t.sample for t in self.sample_targets]
+            require(len(set(samples)) == len(samples), "one sample target per sample")
+            object.__setattr__(
+                self, "sample_targets", tuple(sorted(self.sample_targets, key=lambda t: t.sample))
+            )
         require(
             (self.subject is None) != (self.selection is None),
             "an audited claim has exactly one of subject / selection",
@@ -285,6 +316,11 @@ class AuditPlan(BaseRecord):
                 f"claim {claim.name} names unknown requirement {claim.requirement!r}",
             )
             assert requirement is not None
+            require(
+                not claim.sample_targets
+                or {t.sample for t in claim.sample_targets} == set(self.samples),
+                f"claim {claim.name}: sample_targets must declare exactly the plan samples",
+            )
             require(
                 claim.relation not in CAUSAL_RELATIONS
                 or bool(requirement.policy.protocols_for(claim.relation)),

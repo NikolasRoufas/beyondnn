@@ -1354,3 +1354,88 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 **Consequences:**
 - The same use test takes 6.6 s; the cost is now linear, about 1.4 ms per paired pass on the toy model.
 - The results are unchanged: the full suite passes unmodified.
+
+## ADR-044: The audit classifies claims from re-derived records, with standings and findings and no score
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7. Awaiting Phase 7 review.
+
+**Context:**
+- Phases 1–6 produce typed, provenance-bound, re-derivable evidence, but nothing reads a whole body of it.
+- Phase 6's validations were instance-WHY context only (P6-5).
+- Users need to know which claims the recorded evidence establishes, which it contradicts, and where the answer depends on an assumption or a missing test.
+- ADR-007 forbids a global confidence scalar.
+
+**Decision:**
+- `bnn.audit(evidence, plan=plan)` is a deterministic, **model-free** function of recorded traces and a declared plan (ADR-045).
+- **Evidence handling.** Every trace is integrity-checked, and every claim-test result is re-derived from its cited records with its registered protocol. Evidence that fails, or that is out of the plan's checkpoint, declared model, sample or dataset scope, is **excluded and reported**, never merged or corrected.
+- **Standings.** Each plan claim or concept receives one of 7 standings (SUPPORTED, CONTRADICTED, MIXED, ASSUMPTION_SENSITIVE, INCONCLUSIVE, UNSUPPORTED, NOT_EVALUATED), derived by the fixed precedence in `docs/PHASE_7_PLAN.md` §22 and deviation D1. The verdict part reuses `derive_verdict`.
+- **Findings.** 13 finding kinds, each with a closed-vocabulary code and a categorical severity (BLOCKING / QUALIFYING / INFORMATIONAL). Severities are never summed or compared.
+- **Disagreement is explained, never resolved.** SUPPORTS/CONTRADICTS pairs are explained by the assumption axes (protocol, threshold, replacement, k, null, method, dataset) they differ in. A disagreement without an axis is MIXED.
+- **Per-sample claims** yield a distribution and counterexample identities, never a claim-level truth value.
+- **Missing evidence** is NOT_EVALUATED.
+
+**Alternatives considered:**
+- *A weighted evidence score:* violates ADR-007 and hides which assumption a conclusion rests on.
+- *Auto-resolving disagreements by majority or by protocol priority:* hides exactly the finding the audit exists to report.
+- *Auditing live result objects only:* ties audits to one Python session (P6-4); the audit reads traces.
+
+**Consequences:**
+- Structural overclaims are caught mechanically: attribution → causal, probe → use, generated → validated, narrower estimand, untested invariance, missing controls.
+- An audit can only see what was recorded and supplied. Selective *recording* is invisible; only an untested *declared* invariance is visible.
+
+## ADR-045: `AuditPlan` is a content-addressed record with no invisible defaults
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7. Awaiting Phase 7 review.
+
+**Decision:**
+- `AuditPlan` (record kind `audit_plan` v1) declares:
+  - the checkpoint digest and the declared model;
+  - the sample ids and concept-dataset ids;
+  - the claims (formal structure; subject **or** a selection by an attribution method; scope; named requirement; asserted invariances);
+  - the evidence requirements (an assessment policy, whether controls are required, and alternative criteria for threshold sensitivity);
+  - the concepts asserted to be validated;
+  - the counterexample caps and the naive-AUROC reference.
+- **No defaults.** Every constructor argument is required. `None` means "not declared", and the report states it (for example "no cap declared").
+- **Identity.** The plan's id covers everything it declares, and the report embeds the full plan.
+- **Refusals.** A causal claim whose requirement names no protocol for its relation is refused at construction. Unregistered or unjustified policies, and alternatives that cannot be re-evaluated (`concept_encoding`), are refused by the audit.
+
+**Consequences:**
+- Plans are serialisable with the schema codec and can be pre-registered, committed and re-used verbatim.
+- A dishonest plan (one that declares no invariance, say) is not detected, but it is visible to every reader of the report.
+
+## ADR-046: Trace-level re-derivation makes audits reload-safe (partial fix of P6-4)
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7. Awaiting Phase 7 review.
+
+**Context:**
+- Phase-6 verification took live result objects (`EncodingResult`, `UseResult`, `ConceptValidationResult`). Those cannot be rebuilt from saved traces (P6-4).
+
+**Decision:**
+- `concepts.verify` gains `verify_encoding_trace`, `verify_use_trace`, `verify_validation_trace(trace, locate)` and `verify_feature_record(record, recording, dataset)`. They use records and retained tensors only; the object-level verifiers delegate to them.
+- The audit re-derives a fitted or searched feature from **any** supplied recording holding the train-split activations. Encoding traces do; if none does, the audit reports `feature_derivation_not_rederived`.
+- `AuditReport.to_dict()` is deterministic.
+- `verify_report(document, evidence, plan)` re-runs the audit and raises `AuditMismatchError` (listing paths) on any difference; it never corrects.
+- `report.save` is atomic and never overwrites.
+
+**Consequences:**
+- The loop "save traces → restart → load → audit" gives byte-identical reports, without recomputation.
+- `compose` still needs live Phase-6 objects; P6-4 remains open there.
+
+## ADR-047: The WHY shows an AUDIT section, restricted to the reference input
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7. Awaiting Phase 7 review.
+
+**Decision:**
+- `bnn.compose(..., audit=report)` accepts one `AuditReport`. It **refuses** a report about another checkpoint (`ModelMismatchError`), and one whose per-sample claims do not declare the reference sample (`SampleMismatchError`).
+- `why.audit` gives an `AuditView`:
+  - the per-sample standing and findings of every per-sample plan claim for this input, with the distribution across the declared samples;
+  - finite-sample and population claims, and concept audits, as dataset-scoped context.
+- `render()` adds an AUDIT section, which states that the standings come from the audited records, not from the evidence composed into this WHY.
+- `to_dict()` gains an `audit` key only when an audit is composed, so earlier outputs are unchanged.
+
+**Consequences:**
+- An instance explanation can show, for example, "IG top-k necessary on this input: ASSUMPTION_SENSITIVE (replacement)" next to its own evidence, without merging the two.

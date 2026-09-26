@@ -670,3 +670,57 @@ def test_why_audit_view_and_refusals() -> None:
         bnn.compose(bnn.trace(WeightedSum([1.0] * 32), x), audit=report)
     with pytest.raises(TypeError):
         bnn.compose(bnn.trace(model, x), audit=report.to_dict())
+
+
+# ------------------------------------------------------------------ per-sample targets
+
+
+class _TwoOut(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        from beyondnn._testing.audit_scenarios import _Pass
+
+        self.hidden = _Pass()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        h = self.hidden(x)
+        return torch.stack([5.0 * h[:, 0], 5.0 * h[:, 1]], dim=1)
+
+
+def test_per_sample_targets_match_each_samples_own_target() -> None:
+    model = _TwoOut().eval()
+    xs = [torch.full((1, 8), 2.0), torch.full((1, 8), 3.0)]
+    targets = [iv.metrics.select([0, 0]), iv.metrics.select([0, 1])]  # e.g. per-sample margins
+    results = []
+    for x, t in zip(xs, targets, strict=True):
+        test = F.comprehensiveness(
+            target=t, min_drop=5.0, statement="unit 0 necessary", replacement=F.zero()
+        )
+        results.append(
+            F.run(model, x, test=test, selection=F.units(A.layer("hidden"), (0,), n_units=8))
+        )
+    samples = [sample_id(x) for x in xs]
+    subject = Subject(site=Site(module="hidden"), units=(0,))
+    common: dict[str, Any] = {
+        "statement": "unit 0 is necessary for each sample's own target",
+        "relation": "necessary_for",
+        "scope": "instance",
+        "requirement": "comprehensiveness",
+        "subject": subject,
+    }
+    per_sample = AU.claim(
+        "own", target=None, sample_targets=dict(zip(samples, targets, strict=True)), **common
+    )
+    single = AU.claim("single", target=targets[0], **common)
+    plan = _plan(model, samples, [per_sample, single], [_comp_req(False)])
+    report = bnn.audit(results, plan=plan)
+    own = report.claim("own")
+    assert own.group(samples[0]).standing is Standing.SUPPORTED
+    assert own.group(samples[1]).standing is Standing.CONTRADICTED  # unit 0 does not feed y1
+    one = report.claim("single")
+    assert one.group(samples[0]).standing is Standing.SUPPORTED
+    assert one.group(samples[1]).standing is Standing.NOT_EVALUATED  # another target
+    with pytest.raises(SchemaError, match="exactly the plan samples"):
+        _plan(model, samples[:1], [per_sample], [_comp_req(False)])
+    with pytest.raises(SchemaError, match="exactly one of target"):
+        AU.claim("x", target=targets[0], sample_targets={samples[0]: targets[0]}, **common)

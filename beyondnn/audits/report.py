@@ -382,6 +382,9 @@ class AuditReport:
             raise FileExistsError(f"{target} already exists")
         text = self.to_json() + "\n"
         fd, tmp = tempfile.mkstemp(prefix=f".{target.name}.", dir=target.parent)
+        mask = os.umask(0)
+        os.umask(mask)
+        os.chmod(tmp, 0o666 & ~mask)  # like an ordinary new file, not mkstemp's 0600
         try:
             with os.fdopen(fd, "w", encoding="utf-8") as fh:
                 fh.write(text)

@@ -393,16 +393,18 @@ class EvidenceSet:
             status = "declared"
         else:
             status = "not_rederived: no supplied recording holds the train-split activations"
+            failures = []
             for candidate in self._recordings(data):
                 try:
                     verify_feature_record(feature, candidate, data)
                     status = "rederived"
                     break
                 except ConceptVerificationError as exc:
-                    status = f"failed: {exc}"
-                    break
+                    failures.append(str(exc))
                 except ConceptError:
                     continue
+            if status != "rederived" and failures:
+                status = f"failed: {failures[0]} ({len(failures)} recording(s) tried)"
         problem = None
         if status.startswith("failed"):
             problem = Problem("integrity_failure", "feature_rederivation_failed", status)

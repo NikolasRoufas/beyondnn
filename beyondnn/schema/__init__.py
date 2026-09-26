@@ -27,6 +27,7 @@ from .audit import (
     CounterexampleRule,
     EvidenceRequirement,
     Invariance,
+    SampleTarget,
     SelectionSubject,
 )
 from .base import BaseRecord, EvidenceRef, RecordRef, verify_ref
@@ -197,6 +198,7 @@ __all__ = [
     "Relation",
     "ResultRef",
     "SAEIdentity",
+    "SampleTarget",
     "SchemaError",
     "SchemaTypeError",
     "SelectionSource",
