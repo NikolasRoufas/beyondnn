@@ -38,6 +38,7 @@ __all__ = [
     "DIAGNOSTIC_PROTOCOLS",
     "INTERVENTION_THRESHOLD",
     "PROTOCOLS",
+    "PROTOCOL_VERSIONS",
     "SUFFICIENCY",
     "check_policy",
 ]
@@ -64,6 +65,9 @@ PROTOCOLS: Mapping[str, frozenset[Relation]] = MappingProxyType(
         ),
     }
 )
+
+#: The version of each claim-test protocol this BeyondNN implements (and can re-derive).
+PROTOCOL_VERSIONS: Mapping[str, int] = MappingProxyType(dict.fromkeys(PROTOCOLS, 1))
 
 #: Phase-5 diagnostic protocols (ADR-033): they produce ``ProtocolResult`` records and
 #: never decide a claim, so they are deliberately not in ``PROTOCOLS``.

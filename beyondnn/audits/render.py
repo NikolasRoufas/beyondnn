@@ -49,11 +49,24 @@ def _claim(c: ClaimAudit) -> list[str]:
             "    asserted invariant over: "
             + ", ".join(f"{i.axis.value} (>= {i.min_values} values)" for i in decl.invariant_over)
         )
+    if decl.roles:
+        lines.append(
+            "    declared roles: "
+            + "; ".join(
+                f"{r.axis.value} {r.pattern!r} {r.role.value}"
+                + (f" (sample {r.sample[:15]}...)" if r.sample else "")
+                for r in decl.roles[:8]
+            )
+            + (f"; ... ({len(decl.roles)} rules)" if len(decl.roles) > 8 else "")
+        )
+        lines.append("    (standings use PRIMARY configurations; other roles are reported)")
     if c.per_sample:
         total = sum(n for _, n in c.distribution)
         dist = ", ".join(f"{s.upper()} {n}" for s, n in c.distribution)
         lines.append(f"    per-sample standings ({total} declared samples): {dist}")
         lines.append("    (a distribution over samples; no claim-level truth value is derived)")
+        for interval in c.intervals:
+            lines.append(f"      {interval.describe()}")
         if c.counterexamples:
             lines.append(
                 f"    counterexample samples: {', '.join(c.counterexamples[:10])}"
@@ -63,6 +76,12 @@ def _claim(c: ClaimAudit) -> list[str]:
         assert c.standing is not None
         g = c.groups[0]
         lines.append(f"    STANDING: {c.standing.value.upper()} (verdict {g.verdict})")
+        if g.profile is not None:
+            lines.append(f"    profile: {g.profile.describe()}")
+            if g.profile.sensitive_axes:
+                lines.append(
+                    f"    reversed by a single change of: {', '.join(g.profile.sensitive_axes)}"
+                )
         for t in g.tests:
             alt = f" [re-evaluated: {t.alternative}]" if t.alternative else ""
             lines.append(f"      {t.protocol}: {t.outcome.upper()} ({t.result}){alt}")
@@ -80,6 +99,8 @@ def _concept(k: ConceptAudit) -> list[str]:
         f"{k.concept.policy.version}",
         f"    STANDING: {k.standing.value.upper()}",
     ]
+    if k.profile is not None:
+        lines.append(f"    tests: {k.profile.describe()}")
     for vid, status, unmet in k.validations:
         lines.append(f"      validation {vid}: {status.upper()}")
         for reason in unmet:

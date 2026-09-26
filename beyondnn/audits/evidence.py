@@ -26,6 +26,7 @@ from beyondnn.protocols import (
     CONCEPT_INTERVENTION,
     DIAGNOSTIC_PROTOCOLS,
     INTERVENTION_THRESHOLD,
+    PROTOCOL_VERSIONS,
     PROTOCOLS,
     SUFFICIENCY,
 )
@@ -333,6 +334,13 @@ class EvidenceSet:
         from beyondnn.explain.bundle import _revalidate
 
         protocol = entry.spec.protocol
+        if protocol in PROTOCOLS and entry.spec.protocol_version != PROTOCOL_VERSIONS[protocol]:
+            return Problem(
+                "scope_mismatch",
+                "unsupported_protocol_version",
+                f"{entry.id}: {protocol} v{entry.spec.protocol_version} was recorded; this "
+                f"BeyondNN implements v{PROTOCOL_VERSIONS[protocol]} and cannot re-derive it",
+            )
         if protocol not in PROTOCOLS:
             return Problem(
                 "integrity_failure",

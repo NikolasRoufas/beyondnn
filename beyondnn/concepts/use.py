@@ -104,6 +104,11 @@ class Reference:
     tensor: torch.Tensor | None = None
 
     def identity(self) -> dict[str, Any]:
+        if self.kind == "tensor" and self.tensor is None:
+            raise ConceptError(
+                f"reference {self.name!r} was reconstructed from records (load_validation) and "
+                "has no tensor; it cannot be used to run a test"
+            )
         if self.tensor is None:
             return {"kind": "zero", "name": self.name}
         from beyondnn.attribution.spec import tensor_digest

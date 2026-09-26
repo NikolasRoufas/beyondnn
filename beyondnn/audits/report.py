@@ -19,12 +19,15 @@ from typing import Any
 
 from beyondnn.schema import AuditedClaim, AuditedConcept, AuditPlan, to_dict
 
+from .uncertainty import Interval
+
 __all__ = [
     "REPORT_FORMAT",
     "REPORT_FORMAT_VERSION",
     "AuditReport",
     "ClaimAudit",
     "ConceptAudit",
+    "ConfigurationEntry",
     "Coverage",
     "Diagnostic",
     "EvidenceSummary",
@@ -32,14 +35,16 @@ __all__ = [
     "FindingKind",
     "FindingSeverity",
     "GroupAudit",
+    "Interval",
     "InventoryEntry",
+    "SensitivityProfile",
     "Standing",
     "TestEntry",
     "load_report",
 ]
 
 REPORT_FORMAT = "beyondnn.audit_report"
-REPORT_FORMAT_VERSION = 1
+REPORT_FORMAT_VERSION = 2
 
 
 class Standing(Enum):
@@ -111,6 +116,60 @@ class TestEntry:
     outcome: str
     axes: tuple[tuple[str, str], ...]
     alternative: str | None = None
+    role: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ConfigurationEntry:
+    """One tested configuration: a recorded result, or its re-evaluation under declared
+    alternative criteria (``alternative``), with its assumption values and declared role
+    (``primary``, ``alternative``, ``stress_test``, or ``undeclared``)."""
+
+    configuration: str
+    role: str
+    outcome: str
+    result: str
+    axes: tuple[tuple[str, str], ...]
+    alternative: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class SensitivityProfile:
+    """What was tested and how outcomes vary with assumptions (ADR-048). Raw structure,
+    no score: counts are descriptive and never an epistemic confidence.
+
+    ``sensitive_axes``: axes along which a single-assumption change reverses the outcome.
+    ``stable_axes``: axes with >= 2 tested values and no such reversal. ``reversals``:
+    (supporting configuration, contradicting configuration, differing axes) pairs with the
+    fewest differing axes (at most 50 listed; ``reversal_count`` counts them all)."""
+
+    tested: int
+    outcomes: tuple[tuple[str, str, int], ...]
+    supporting: tuple[str, ...]
+    contradicting: tuple[str, ...]
+    inconclusive: tuple[str, ...]
+    sensitive_axes: tuple[str, ...]
+    stable_axes: tuple[str, ...]
+    reversals: tuple[tuple[str, str, tuple[str, ...]], ...]
+    reversal_count: int
+    untested_values: tuple[tuple[str, str], ...]
+    configurations: tuple[ConfigurationEntry, ...]
+
+    def count(self, *, role: str | None = None, outcome: str | None = None) -> int:
+        return sum(
+            n
+            for r, o, n in self.outcomes
+            if (role is None or r == role) and (outcome is None or o == outcome)
+        )
+
+    def describe(self) -> str:
+        """E.g. '20 of 21 tested configurations SUPPORT (primary 1 of 1, ...)'."""
+        supported = self.count(outcome="supports")
+        roles = sorted({r for r, _, _ in self.outcomes})
+        per_role = ", ".join(
+            f"{r} {self.count(role=r, outcome='supports')} of {self.count(role=r)}" for r in roles
+        )
+        return f"{supported} of {self.tested} tested configurations SUPPORT ({per_role})"
 
 
 @dataclass(frozen=True, slots=True)
@@ -125,6 +184,7 @@ class GroupAudit:
     findings: tuple[Finding, ...]
     axis_values: tuple[tuple[str, tuple[str, ...]], ...]
     related: tuple[str, ...] = ()
+    profile: SensitivityProfile | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -140,6 +200,7 @@ class ClaimAudit:
     counterexamples: tuple[str, ...]
     findings: tuple[Finding, ...]
     limitations: tuple[tuple[str, int], ...]
+    intervals: tuple[Interval, ...] = ()
 
     @property
     def name(self) -> str:
@@ -170,6 +231,7 @@ class ConceptAudit:
     false_positives: tuple[str, ...]
     false_negatives: tuple[str, ...]
     limitations: tuple[tuple[str, int], ...]
+    profile: SensitivityProfile | None = None
 
 
 @dataclass(frozen=True, slots=True)

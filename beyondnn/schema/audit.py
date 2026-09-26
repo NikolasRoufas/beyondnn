@@ -25,9 +25,10 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 from ._types import Value, require
-from .base import BaseRecord, is_record_id, record_kind
+from .base import BaseRecord, is_record_id, record_kind, register_migration
 from .claims import AssessmentPolicy
 from .concepts import ConceptPolicy
 from .provenance import ModelDeclaration
@@ -40,9 +41,11 @@ __all__ = [
     "AuditPlan",
     "AuditedClaim",
     "AuditedConcept",
+    "ConfigurationRole",
     "CounterexampleRule",
     "EvidenceRequirement",
     "Invariance",
+    "RoleRule",
     "SampleTarget",
     "SelectionSubject",
 ]
@@ -65,6 +68,42 @@ class AuditAxis(Enum):
     NULL = "null"
     METHOD = "method"
     DATASET = "dataset"
+
+
+class ConfigurationRole(Enum):
+    """The declared role of an assumption value (ADR-048; plan 7.5 §22).
+
+    PRIMARY: the pre-registered analysis; it decides the standing. ALTERNATIVE: a
+    reasonable alternative; a reversal is reported, it does not change the standing.
+    STRESS_TEST: deliberately extreme or out of distribution; a reversal is reported
+    as context."""
+
+    PRIMARY = "primary"
+    ALTERNATIVE = "alternative"
+    STRESS_TEST = "stress_test"
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class RoleRule(Value):
+    """Values of ``axis`` whose key matches the glob ``pattern`` (``fnmatch``) have
+    ``role``; ``sample`` restricts the rule to one sample (e.g. the k that p = 10% gives
+    on that sample). A configuration's role is the worst role over the declared axes,
+    where on one axis the best matching rule counts; a value on a declared axis that no
+    rule matches makes the configuration UNDECLARED (reported, never in a standing)."""
+
+    axis: AuditAxis
+    pattern: str
+    role: ConfigurationRole
+    sample: str | None = None
+
+    def _validate(self) -> None:
+        require(bool(self.pattern), "RoleRule.pattern must be non-empty")
+
+
+def _sorted_rules(rules: tuple[RoleRule, ...]) -> tuple[RoleRule, ...]:
+    keys = [(r.axis.value, r.sample or "", r.pattern, r.role.value) for r in rules]
+    require(len(set(keys)) == len(keys), "duplicate role rules")
+    return tuple(r for _, r in sorted(zip(keys, rules, strict=True), key=lambda kr: kr[0]))
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -133,9 +172,11 @@ class AuditedClaim(Value):
     sample_set: str | None = None
     population: str | None = None
     invariant_over: tuple[Invariance, ...] = ()
+    roles: tuple[RoleRule, ...] = ()
 
     def _validate(self) -> None:
         require(bool(_NAME_RE.match(self.name)), f"invalid claim name {self.name!r}")
+        object.__setattr__(self, "roles", _sorted_rules(self.roles))
         require(bool(self.statement.strip()), "AuditedClaim.statement must be non-empty")
         require(bool(_NAME_RE.match(self.requirement)), "invalid requirement name")
         require(
@@ -228,8 +269,10 @@ class AuditedConcept(Value):
     asserted: SemanticStatus
     policy: ConceptPolicy
     invariant_over: tuple[Invariance, ...] = ()
+    roles: tuple[RoleRule, ...] = ()
 
     def _validate(self) -> None:
+        object.__setattr__(self, "roles", _sorted_rules(self.roles))
         require(is_record_id(self.concept, "concept"), "AuditedConcept.concept is a concept id")
         require(
             self.asserted is SemanticStatus.VALIDATED_CONCEPT,
@@ -267,7 +310,7 @@ class CounterexampleRule(Value):
             require(cap is None or 0.0 <= cap <= 1.0, "counterexample caps are in [0, 1]")
 
 
-@record_kind("audit_plan")
+@record_kind("audit_plan", version=2)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class AuditPlan(BaseRecord):
     """Everything an audit is about and requires, declared before it runs (plan §28).
@@ -337,3 +380,13 @@ class AuditPlan(BaseRecord):
         require(
             bool(self.claims or self.concepts), "an audit plan declares at least one claim/concept"
         )
+
+
+@register_migration("audit_plan", 1)
+def _audit_plan_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
+    """v1 claims and concepts declared no configuration roles (ADR-048): ``roles=[]``
+    keeps that meaning (every configuration undeclared; Phase-7 standings)."""
+    return data | {
+        "claims": [c | {"roles": []} for c in data["claims"]],
+        "concepts": [c | {"roles": []} for c in data["concepts"]],
+    }

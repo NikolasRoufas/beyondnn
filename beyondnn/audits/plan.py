@@ -14,12 +14,14 @@ from beyondnn.schema import (
     AuditedConcept,
     AuditPlan,
     ConceptPolicy,
+    ConfigurationRole,
     CounterexampleRule,
     EstimandScope,
     EvidenceRequirement,
     Invariance,
     ModelDeclaration,
     Relation,
+    RoleRule,
     SampleTarget,
     SelectionSubject,
     SemanticStatus,
@@ -38,6 +40,7 @@ __all__ = [
     "invariance",
     "plan",
     "requirement",
+    "role",
     "selection",
 ]
 
@@ -74,6 +77,15 @@ def selection(site: str | Site, *, method: str, k: int | None) -> SelectionSubje
     return SelectionSubject(site=_site(site), method=method, k=k)
 
 
+def role(axis: str, pattern: str, role: str, *, sample: str | None = None) -> RoleRule:
+    """Declare the role (``primary``, ``alternative``, ``stress_test``) of the ``axis``
+    values whose key matches the glob ``pattern``; ``sample`` restricts it to one sample.
+    Declared before the audit; PRIMARY configurations decide the standing (ADR-048)."""
+    return RoleRule(
+        axis=AuditAxis(axis), pattern=pattern, role=ConfigurationRole(role), sample=sample
+    )
+
+
 def invariance(axis: str, *, min_values: int, values: Sequence[str] = ()) -> Invariance:
     """The claim asserts it holds across ``axis`` (>= ``min_values`` tested values)."""
     return Invariance(axis=AuditAxis(axis), min_values=min_values, values=tuple(values))
@@ -93,6 +105,7 @@ def claim(
     sample_set: str | None = None,
     population: str | None = None,
     invariant_over: Iterable[Invariance] = (),
+    roles: Iterable[RoleRule] = (),
 ) -> AuditedClaim:
     """``target`` is one metric/TargetSpec, or ``None`` with ``sample_targets`` mapping each
     plan sample id to its own declared target (per-sample claims)."""
@@ -111,6 +124,7 @@ def claim(
         sample_set=sample_set,
         population=population,
         invariant_over=tuple(invariant_over),
+        roles=tuple(roles),
     )
 
 
@@ -140,6 +154,7 @@ def concept(
     policy: ConceptPolicy,
     asserted: str | SemanticStatus = SemanticStatus.VALIDATED_CONCEPT,
     invariant_over: Iterable[Invariance] = (),
+    roles: Iterable[RoleRule] = (),
 ) -> AuditedConcept:
     """A concept asserted to be validated under ``policy`` (the only concept claim)."""
     return AuditedConcept(
@@ -147,6 +162,7 @@ def concept(
         asserted=SemanticStatus(asserted),
         policy=policy,
         invariant_over=tuple(invariant_over),
+        roles=tuple(roles),
     )
 
 

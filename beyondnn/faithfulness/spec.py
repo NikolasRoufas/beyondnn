@@ -211,23 +211,32 @@ class Replacement:
     shape (e.g. caller-computed means). Never a neutral "absence"."""
 
     tensor: torch.Tensor | None = None
+    name: str | None = None
 
     def identity(self) -> dict[str, Any]:
         if self.tensor is None:
             return {"kind": "zero"}
-        return {"kind": "tensor", "digest": tensor_digest(self.tensor)}
+        out: dict[str, Any] = {"kind": "tensor", "digest": tensor_digest(self.tensor)}
+        if self.name is not None:  # declared label (ADR-048); absent keeps the v1 identity
+            out["name"] = self.name
+        return out
 
 
 def zero() -> Replacement:
     return Replacement()
 
 
-def replacement(tensor: torch.Tensor) -> Replacement:
+def replacement(tensor: torch.Tensor, *, name: str | None = None) -> Replacement:
+    """An explicit replacement tensor. ``name`` (optional) labels it in the recorded
+    identity, e.g. ``"resample"`` when the tensor differs per sample, so an audit plan
+    can declare the role of that replacement (ADR-048)."""
     if not isinstance(tensor, torch.Tensor):
         raise TypeError("replacement() takes a tensor")
     if tensor.is_floating_point() and not bool(torch.isfinite(tensor).all()):
         raise ValueError("the replacement must be finite")
-    return Replacement(tensor.detach().to("cpu").clone(memory_format=torch.contiguous_format))
+    if name is not None and not (name.strip() and name == name.strip()):
+        raise ValueError("a replacement name must be a non-empty, unpadded string")
+    return Replacement(tensor.detach().to("cpu").clone(memory_format=torch.contiguous_format), name)
 
 
 @dataclass(frozen=True, slots=True)

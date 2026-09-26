@@ -1439,3 +1439,65 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 
 **Consequences:**
 - An instance explanation can show, for example, "IG top-k necessary on this input: ASSUMPTION_SENSITIVE (replacement)" next to its own evidence, without merging the two.
+
+## ADR-048: Declared configuration roles, sensitivity profiles, and configuration-level disagreement
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7.5. Awaiting Phase 7.5 review.
+
+**Context:**
+- In Phase 7, ASSUMPTION_SENSITIVE collapsed "supported in 20 of 21 configurations" and "in 1 of 21".
+- Every configuration counted equally, so a claim had to survive every stress test.
+- The standing-level necessity/sufficiency check fired on 0 samples, while configuration-level disagreements were common (Phase 7 report §32).
+
+**Decision:**
+- **Roles.** `RoleRule(axis, pattern, role, sample=None)` on `AuditedClaim.roles` and `AuditedConcept.roles` (`audit_plan` v2, with a migration: v1 means no roles).
+  - Roles are PRIMARY, ALTERNATIVE or STRESS_TEST, and patterns are `fnmatch` globs over axis keys.
+  - A configuration's role is the worst over the declared axes; on a single axis, the best matching rule counts. A value on a declared axis that no rule matches makes the configuration UNDECLARED (listed, never in a standing).
+- **Standings with roles.**
+  - The standing and verdict use PRIMARY configurations only.
+  - ALTERNATIVE reversals of the primary conclusion are `alternative_reverses` (QUALIFYING); STRESS_TEST reversals are `stress_test_reverses` (INFORMATIONAL).
+  - If no PRIMARY configuration was tested, the result is `primary_untested`.
+  - Claims without roles keep Phase-7 behaviour.
+- **`SensitivityProfile` per group and per concept.** It holds the tested configurations (id, role, outcome, axes); counts by role and outcome; supporting, contradicting and inconclusive configuration ids; sensitive and stable axes; minimal reversals; and untested declared values.
+- **Configuration-level PROTOCOL_DISAGREEMENT** (`configuration_level_disagreement`): configurations of two claims with the same subject/selection and target that agree on replacement, k, method and dataset, where one SUPPORTS and the other CONTRADICTS. It is reported whatever the standings are.
+- **Replacement names.** `faithfulness.replacement(tensor, name=...)` labels a replacement whose tensor differs per sample, so a role can refer to it. The identity is unchanged without a name.
+- **Report format version 2.**
+
+**Alternatives considered:**
+- A robustness fraction or threshold ("≥ 80% of configurations"): rejected by ADR-007; the counts are descriptive only.
+- Requiring survival of every configuration: that was Phase 7's behaviour, and it confounded plan breadth with evidence.
+
+**Consequences:**
+- A claim reads "SUPPORTED under the pre-registered primary configuration; reversed by these alternatives; fails these stress tests".
+- Roles must be declared before evaluation. They are part of the plan id.
+
+## ADR-049: Uncertainty statements for aggregate audit quantities
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7.5. Awaiting Phase 7.5 review.
+
+**Decision** (`beyondnn.audits.uncertainty`; literature in `docs/research/PHASE_7_5_LITERATURE.md` §1):
+- `wilson(k, n)` for proportions (Brown, Cai & DasGupta 2001), exact at k = 0 and k = n;
+- `bootstrap` (percentile) and `paired_bootstrap` over per-sample values, with at least 1,000 draws and a required integer seed (Efron & Tibshirani; Koehn 2004);
+- every `Interval` records its quantity, estimate, bounds, level, method, resampling unit, n, k, draws and seed;
+- per-sample claims carry Wilson intervals for each standing's share of the declared samples.
+
+**Not a confidence:** an interval describes sampling variability over inputs drawn like the declared samples. It is never a confidence in an explanation, and intervals are never combined into a score.
+
+## ADR-050: Concept validations from saved traces; explicit protocol versions
+
+- **Date:** 2026-09-26
+- **Status:** Accepted for Phase 7.5. Awaiting Phase 7.5 review.
+
+**Context:** `compose` needed live Phase-6 result objects (P6-4). A saved concept validation could be audited (ADR-046), but not shown in a WHY after a restart.
+
+**Decision:**
+- **`concepts.load_validation(traces)`** rebuilds a `ConceptValidationResult` from saved traces (objects or paths), after re-deriving everything (`verify_validation_trace`; the fitted feature from the encoding trace).
+  - The rebuilt dataset has no inputs, and its references have no tensors.
+  - `encoding_test`, `use_test` and `Reference.identity()` refuse to run with them.
+- **`PROTOCOL_VERSIONS`** declares the implemented version of each claim-test protocol. Evidence recorded under another version is excluded from audits (`unsupported_protocol_version`) instead of failing re-derivation opaquely.
+
+**Consequences:**
+- The loop "run → save → new process → load → audit → compose WHY" works with no live objects. P6-4 is closed for concept validations.
+- Other Phase 3–5 results were already composable from traces through their own result classes' `trace` attribute.

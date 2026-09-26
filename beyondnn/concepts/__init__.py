@@ -61,6 +61,7 @@ from .validate import (
     ConceptActivationResult,
     ConceptValidationResult,
     activation,
+    load_validation,
     validate,
 )
 
@@ -90,6 +91,7 @@ __all__ = [
     "fit_direction",
     "generated_label",
     "label_permutation",
+    "load_validation",
     "neuron",
     "propose",
     "random_directions",

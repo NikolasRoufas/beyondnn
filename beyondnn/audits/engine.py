@@ -8,7 +8,11 @@ evidence is NOT_EVALUATED, never positive or negative.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
+from fnmatch import fnmatchcase
 from itertools import combinations
 from typing import Any
 
@@ -26,6 +30,7 @@ from beyondnn.schema import (
     AuditPlan,
     Claim,
     ConceptRecord,
+    ConfigurationRole,
     EstimandScope,
     EvidenceRequirement,
     Invariance,
@@ -34,6 +39,7 @@ from beyondnn.schema import (
     ProtocolResult,
     Relation,
     ResultRef,
+    RoleRule,
     SemanticStatus,
     Verdict,
     derive_verdict,
@@ -44,6 +50,7 @@ from .report import (
     AuditReport,
     ClaimAudit,
     ConceptAudit,
+    ConfigurationEntry,
     Coverage,
     Diagnostic,
     EvidenceSummary,
@@ -52,10 +59,12 @@ from .report import (
     FindingSeverity,
     GroupAudit,
     InventoryEntry,
+    SensitivityProfile,
     Standing,
     TestEntry,
     aggregate,
 )
+from .uncertainty import Interval, wilson
 
 __all__ = ["AuditPlanError", "audit"]
 
@@ -395,6 +404,17 @@ class _Auditor:
             standing = groups[0].standing
             findings += groups[0].findings
         limitations = self._limitations([e for es in matched.values() for e in es])
+        intervals: tuple[Interval, ...] = ()
+        if per_sample and groups:
+            intervals = tuple(
+                wilson(
+                    n,
+                    len(groups),
+                    quantity=f"fraction of declared samples {value.upper()}",
+                    unit="declared samples",
+                )
+                for value, n in sorted(distribution)
+            )
         return ClaimAudit(
             claim=c,
             per_sample=per_sample,
@@ -404,6 +424,7 @@ class _Auditor:
             counterexamples=tuple(sorted(counterexamples)),
             findings=tuple(_dedupe(findings)),
             limitations=limitations,
+            intervals=intervals,
         )
 
     def _group(
@@ -418,30 +439,30 @@ class _Auditor:
         name = c.name
         samples = (group,) if group is not None else ()
         findings: list[Finding] = []
+        configs = self._configurations(c, requirement, group, matched)
+        declared = bool(c.roles)
+        role_of = {id(cf.entry): cf.role for cf in configs if cf.alternative is None}
+        primary_entries = (
+            [e for e in matched if role_of.get(id(e)) == PRIMARY] if declared else list(matched)
+        )
         verdict, missing = derive_verdict(
-            c.relation, requirement.policy, [ResultRef.to(e.result) for e in matched]
+            c.relation, requirement.policy, [ResultRef.to(e.result) for e in primary_entries]
         )
         tests = [
-            TestEntry(e.id, e.spec.protocol, e.outcome.value, tuple(sorted(e.axes.items())))
-            for e in sorted(matched, key=lambda e: e.id)
+            TestEntry(
+                cf.entry.id,
+                cf.entry.spec.protocol,
+                cf.outcome.value,
+                tuple(sorted(cf.axes.items())),
+                cf.alternative,
+                cf.role,
+            )
+            for cf in configs
         ]
+        in_standing = [cf for cf in configs if not declared or cf.role == PRIMARY]
         decisive: list[tuple[dict[str, str], Outcome, str]] = [
-            (e.axes, e.outcome, e.id) for e in matched if e.outcome in _DECISIVE
+            (cf.axes, cf.outcome, cf.entry.id) for cf in in_standing if cf.outcome in _DECISIVE
         ]
-        for alt in requirement.alternatives:
-            for e in matched:
-                outcome = self.ev.reevaluate(e, alt)
-                if outcome is None:
-                    continue
-                how = f"x{alt.factor!r}" if alt.factor is not None else f"={alt.value!r}"
-                label = f"{alt.key}{how}"
-                axes = dict(e.axes) | {"threshold": f"{e.axes['threshold']}|alt:{label}"}
-                tests.append(
-                    TestEntry(
-                        e.id, e.spec.protocol, outcome.value, tuple(sorted(axes.items())), label
-                    )
-                )
-                decisive.append((axes, outcome, e.id))
         # inconclusive evidence is never ignored
         weak = [e for e in matched if e.outcome not in _DECISIVE]
         if weak:
@@ -463,7 +484,22 @@ class _Auditor:
         if sup and con:
             sensitivity, unexplained = _disagreement(sup, con, name, samples)
             findings += sensitivity
-        ran = {e.spec.protocol for e in matched}
+        if declared:
+            findings += _role_findings(configs, sup, con, name, samples)
+            if matched and not primary_entries:
+                findings.append(
+                    _f(
+                        K.MISSING_EVIDENCE,
+                        "primary_untested",
+                        S.BLOCKING,
+                        name,
+                        "no matched result is in a PRIMARY configuration; the pre-registered "
+                        "analysis was not run on this "
+                        + ("sample" if group is not None else "claim"),
+                        samples=samples,
+                    )
+                )
+        ran = {e.spec.protocol for e in primary_entries}
         missing = tuple(p for p in missing if p not in ran)  # never recorded (not: contradicted)
         if missing and matched:  # with nothing matched, the standing already says so
             findings.append(
@@ -478,7 +514,7 @@ class _Auditor:
                 )
             )
         if requirement.controls:
-            supports = [e for e in matched if e.outcome is Outcome.SUPPORTS]
+            supports = [e for e in primary_entries if e.outcome is Outcome.SUPPORTS]
             if supports and not any(e.controlled for e in supports):
                 findings.append(
                     _f(
@@ -494,7 +530,8 @@ class _Auditor:
                 )
         values = {a: sorted({e.axes[a] for e in matched}) for a in AXES}
         values["threshold"] = sorted(
-            {d[0]["threshold"] for d in decisive} | set(values["threshold"])
+            {cf.axes["threshold"] for cf in configs if cf.outcome in _DECISIVE}
+            | set(values["threshold"])
         )
         for inv in c.invariant_over:
             findings += self._invariance(name, inv, values, samples, bool(matched))
@@ -563,7 +600,32 @@ class _Auditor:
             findings=tuple(_dedupe(findings)),
             axis_values=tuple((a, tuple(v)) for a, v in sorted(values.items()) if v),
             related=tuple(sorted(related)),
+            profile=_profile(configs, c.invariant_over, values) if configs else None,
         )
+
+    def _configurations(
+        self,
+        c: AuditedClaim,
+        requirement: EvidenceRequirement,
+        group: str | None,
+        matched: list[ResultEntry],
+    ) -> list[_Configuration]:
+        """Every tested configuration: recorded results and their re-evaluations under the
+        requirement's declared alternative criteria, each with its declared role."""
+        out = []
+        for e in sorted(matched, key=lambda e: e.id):
+            out.append(_Configuration(e, dict(e.axes), e.outcome, None, ""))
+            for alt in requirement.alternatives:
+                outcome = self.ev.reevaluate(e, alt)
+                if outcome is None:
+                    continue
+                how = f"x{alt.factor!r}" if alt.factor is not None else f"={alt.value!r}"
+                label = f"{alt.key}{how}"
+                axes = dict(e.axes) | {"threshold": f"{e.axes['threshold']}|alt:{label}"}
+                out.append(_Configuration(e, axes, outcome, label, ""))
+        for cf in out:
+            cf.role = _role(c.roles, group, cf.axes) if c.roles else UNDECLARED
+        return out
 
     def _invariance(
         self,
@@ -637,6 +699,8 @@ class _Auditor:
                 other = gb.get(ga.sample)
                 if other is None:
                     continue
+                for claim_name, finding in _configuration_disagreements(ca, cb, ga, other):
+                    extra.setdefault(claim_name, []).append(finding)
                 pair = {ga.standing, other.standing}
                 if pair != {Standing.SUPPORTED, Standing.CONTRADICTED}:
                     continue
@@ -683,6 +747,7 @@ class _Auditor:
                         (*g.findings, *more),
                         g.axis_values,
                         g.related,
+                        g.profile,
                     ),
                 )
             else:
@@ -698,6 +763,7 @@ class _Auditor:
                         (*g.findings, *by_sample.get(g.sample, [])),
                         g.axis_values,
                         g.related,
+                        g.profile,
                     )
                     for g in groups
                 )
@@ -711,6 +777,7 @@ class _Auditor:
                     counterexamples=c.counterexamples,
                     findings=tuple(_dedupe((*c.findings, *level))),
                     limitations=c.limitations,
+                    intervals=c.intervals,
                 )
             )
         return out
@@ -794,6 +861,27 @@ class _Auditor:
                 findings.append(_problem_finding(problem, name, e, S.QUALIFYING))
                 continue
             tests.append(e)
+        all_tests = list(tests)
+        all_validations = list(validations)
+        test_roles = {id(e): UNDECLARED for e in tests}
+        if ac.roles:
+            test_roles = {id(e): _role(ac.roles, None, e.axes) for e in tests}
+
+            def validation_role(v: ValidationEntry) -> str:
+                members = [
+                    test_roles[id(e)]
+                    for e in all_tests
+                    if e.trace is v.encoding or any(e.trace is t for t in v.uses)
+                ]
+                if not members or UNDECLARED in members:
+                    return UNDECLARED
+                return max(members, key=_ROLE_ORDER.__getitem__)
+
+            findings += _concept_role_findings(
+                all_tests, test_roles, validations, validation_role, name
+            )
+            tests = [e for e in tests if test_roles[id(e)] == PRIMARY]
+            validations = [v for v in validations if validation_role(v) == PRIMARY]
         encodings = [e for e in tests if e.spec.protocol == CONCEPT_ENCODING]
         uses = [e for e in tests if e.spec.protocol == CONCEPT_INTERVENTION]
         unexplained = False
@@ -890,10 +978,18 @@ class _Auditor:
                     records=tuple(sorted(other)),
                 )
             )
-        values = {
-            "null": sorted({e.axes["null"] for e in encodings}),
-            "replacement": sorted({e.axes["replacement"] for e in uses}),
-            "dataset": sorted({v.record.dataset.record_id for v in validations}),
+        values = {  # every tested value counts for invariance, whatever its role
+            "null": sorted(
+                {e.axes["null"] for e in all_tests if e.spec.protocol == CONCEPT_ENCODING}
+            ),
+            "replacement": sorted(
+                {
+                    e.axes["replacement"]
+                    for e in all_tests
+                    if e.spec.protocol == CONCEPT_INTERVENTION
+                }
+            ),
+            "dataset": sorted({v.record.dataset.record_id for v in all_validations}),
         }
         for inv in ac.invariant_over:
             findings += self._invariance(name, inv, values, (), bool(tests or validations))
@@ -968,9 +1064,19 @@ class _Auditor:
         else:
             standing = Standing.UNSUPPORTED
         test_entries = tuple(
-            TestEntry(e.id, e.spec.protocol, e.outcome.value, tuple(sorted(e.axes.items())))
-            for e in sorted(tests, key=lambda e: e.id)
+            TestEntry(
+                e.id,
+                e.spec.protocol,
+                e.outcome.value,
+                tuple(sorted(e.axes.items())),
+                None,
+                test_roles[id(e)],
+            )
+            for e in sorted(all_tests, key=lambda e: e.id)
         )
+        configs = [
+            _Configuration(e, dict(e.axes), e.outcome, None, test_roles[id(e)]) for e in all_tests
+        ]
         return ConceptAudit(
             concept=ac,
             label=concept.label,
@@ -984,7 +1090,8 @@ class _Auditor:
             findings=tuple(_dedupe(findings)),
             false_positives=tuple(sorted(fps)),
             false_negatives=tuple(sorted(fns)),
-            limitations=self._limitations(tests),
+            limitations=self._limitations(all_tests),
+            profile=_profile(configs, ac.invariant_over, values) if configs else None,
         )
 
     def _validation_disagreement(
@@ -1380,3 +1487,298 @@ def _count(items: Iterable[str]) -> tuple[tuple[str, int], ...]:
 
 def _cap_text(cap: float | None) -> str:
     return "not declared" if cap is None else repr(cap)
+
+
+PRIMARY = ConfigurationRole.PRIMARY.value
+ALTERNATIVE = ConfigurationRole.ALTERNATIVE.value
+STRESS_TEST = ConfigurationRole.STRESS_TEST.value
+UNDECLARED = "undeclared"
+_ROLE_ORDER = {PRIMARY: 0, ALTERNATIVE: 1, STRESS_TEST: 2}
+_MAX_REVERSALS = 50
+
+
+@dataclass(eq=False)
+class _Configuration:
+    entry: ResultEntry
+    axes: dict[str, str]
+    outcome: Outcome
+    alternative: str | None
+    role: str
+
+    @property
+    def key(self) -> str:
+        text = json.dumps([sorted(self.axes.items()), self.alternative], sort_keys=True)
+        return "cfg:" + hashlib.sha256(text.encode()).hexdigest()[:12]
+
+
+def _role(rules: Sequence[RoleRule], sample: str | None, axes: dict[str, str]) -> str:
+    """ADR-048: on one axis the best matching rule counts; across the declared axes the
+    worst role counts; a declared axis whose value no rule matches makes the
+    configuration UNDECLARED (unless another axis already makes it ALTERNATIVE or
+    STRESS_TEST)."""
+    applicable = [r for r in rules if r.sample is None or r.sample == sample]
+    worst = PRIMARY
+    undeclared = False
+    for axis in sorted({r.axis.value for r in applicable}):
+        value = axes.get(axis, "-")
+        matches = [
+            r.role.value
+            for r in applicable
+            if r.axis.value == axis and fnmatchcase(value, r.pattern)
+        ]
+        if not matches:
+            undeclared = True
+            continue
+        best = min(matches, key=_ROLE_ORDER.__getitem__)
+        if _ROLE_ORDER[best] > _ROLE_ORDER[worst]:
+            worst = best
+    if worst != PRIMARY:
+        return worst
+    return UNDECLARED if undeclared or not applicable else PRIMARY
+
+
+def _role_findings(
+    configs: Sequence[_Configuration],
+    sup: Sequence[tuple[dict[str, str], Outcome, str]],
+    con: Sequence[tuple[dict[str, str], Outcome, str]],
+    subject: str,
+    samples: tuple[str, ...],
+) -> list[Finding]:
+    """Reversals of the PRIMARY conclusion by ALTERNATIVE or STRESS_TEST configurations,
+    and configurations outside every declared role (ADR-048)."""
+    findings: list[Finding] = []
+    undeclared = [cf for cf in configs if cf.role == UNDECLARED]
+    if undeclared:
+        findings.append(
+            _f(
+                K.LIMITATION,
+                "undeclared_configuration",
+                S.QUALIFYING,
+                subject,
+                f"{len(undeclared)} tested configuration(s) match no declared role; they are "
+                "listed but take no part in the standing",
+                records=tuple(sorted({cf.entry.id for cf in undeclared})),
+                samples=samples,
+            )
+        )
+    if bool(sup) == bool(con):  # no single-valued primary conclusion to reverse
+        return findings
+    primary = list(sup or con)
+    reference = (sup or con)[0][1]
+    for role, code, severity in (
+        (ALTERNATIVE, "alternative_reverses", S.QUALIFYING),
+        (STRESS_TEST, "stress_test_reverses", S.INFORMATIONAL),
+    ):
+        reversing = [
+            (cf.axes, cf.outcome, cf.entry.id)
+            for cf in configs
+            if cf.role == role and cf.outcome in _DECISIVE and cf.outcome is not reference
+        ]
+        if not reversing:
+            continue
+        a, b = (primary, reversing) if reference is Outcome.SUPPORTS else (reversing, primary)
+        explained, _ = _disagreement(a, b, subject, samples)
+        axes = sorted({f.axis for f in explained if f.axis})
+        findings.append(
+            _f(
+                K.ASSUMPTION_SENSITIVE,
+                code,
+                severity,
+                subject,
+                f"the PRIMARY conclusion ({reference.value}) is reversed by "
+                f"{len(reversing)} {role.replace('_', ' ')} configuration(s)"
+                + (f"; reversing assumption(s): {', '.join(axes)}" if axes else ""),
+                axis=",".join(axes) if axes else None,
+                records=tuple(sorted({r[2] for r in reversing})),
+                samples=samples,
+            )
+        )
+    return findings
+
+
+def _profile(
+    configs: Sequence[_Configuration],
+    invariances: Sequence[Invariance],
+    values: dict[str, list[str]],
+) -> SensitivityProfile:
+    """ADR-048: the raw structure of what was tested (no score)."""
+    outcomes = _count(f"{cf.role}\x1f{cf.outcome.value}" for cf in configs)
+    sup = [cf for cf in configs if cf.outcome is Outcome.SUPPORTS]
+    con = [cf for cf in configs if cf.outcome is Outcome.CONTRADICTS]
+    pairs: list[tuple[int, str, str, tuple[str, ...]]] = []
+    single: set[str] = set()
+    for s_cf in sup:
+        for c_cf in con:
+            diff = tuple(
+                a
+                for a in sorted(set(s_cf.axes) | set(c_cf.axes))
+                if s_cf.axes.get(a) != c_cf.axes.get(a)
+            )
+            pairs.append((len(diff), s_cf.key, c_cf.key, diff))
+            if len(diff) == 1:
+                single.add(diff[0])
+    minimal = min((p[0] for p in pairs), default=0)
+    reversals = sorted((a, b, d) for n, a, b, d in pairs if n == minimal)
+    tested_axes = {a for a, v in values.items() if len([x for x in v if x != "-"]) >= 2}
+    untested = sorted(
+        (inv.axis.value, v)
+        for inv in invariances
+        for v in inv.values
+        if v not in values.get(inv.axis.value, [])
+    )
+    return SensitivityProfile(
+        tested=len(configs),
+        outcomes=tuple((key.split("\x1f")[0], key.split("\x1f")[1], n) for key, n in outcomes),
+        supporting=tuple(sorted({cf.key for cf in sup})),
+        contradicting=tuple(sorted({cf.key for cf in con})),
+        inconclusive=tuple(sorted({cf.key for cf in configs if cf.outcome not in _DECISIVE})),
+        sensitive_axes=tuple(sorted(single)),
+        stable_axes=tuple(sorted(tested_axes - single)),
+        reversals=tuple(reversals[:_MAX_REVERSALS]),
+        reversal_count=len(reversals),
+        untested_values=tuple(untested),
+        configurations=tuple(
+            ConfigurationEntry(
+                configuration=cf.key,
+                role=cf.role,
+                outcome=cf.outcome.value,
+                result=cf.entry.id,
+                axes=tuple(sorted(cf.axes.items())),
+                alternative=cf.alternative,
+            )
+            for cf in sorted(configs, key=lambda cf: cf.key)
+        ),
+    )
+
+
+#: Axes on which configurations of two claims must agree to be compared (plan 7.5 §7).
+_PAIRING_AXES = ("replacement", "k", "method", "dataset")
+
+
+def _configuration_disagreements(
+    ca: AuditedClaim, cb: AuditedClaim, ga: GroupAudit, gb: GroupAudit
+) -> list[tuple[str, Finding]]:
+    """Configuration-level PROTOCOL_DISAGREEMENT (plan 7.5 §7): recorded configurations
+    of two claims about the same subject and target that agree on replacement, k, method
+    and dataset, where one SUPPORTS and the other CONTRADICTS. Reported whatever the
+    claim-level standings are, so a summary standing never hides it."""
+    if ga.profile is None or gb.profile is None:
+        return []
+
+    def keyed(p: SensitivityProfile) -> dict[tuple[str, ...], list[ConfigurationEntry]]:
+        out: dict[tuple[str, ...], list[ConfigurationEntry]] = {}
+        for cf in p.configurations:
+            if cf.alternative is not None or cf.outcome not in ("supports", "contradicts"):
+                continue
+            axes = dict(cf.axes)
+            out.setdefault(tuple(axes.get(a, "-") for a in _PAIRING_AXES), []).append(cf)
+        return out
+
+    left, right = keyed(ga.profile), keyed(gb.profile)
+    pairs = []
+    for key in sorted(set(left) & set(right)):
+        for x in left[key]:
+            for y in right[key]:
+                if {x.outcome, y.outcome} == {"supports", "contradicts"}:
+                    pairs.append((x.configuration, y.configuration))
+    if not pairs:
+        return []
+    samples = (ga.sample,) if ga.sample else ()
+    detail = (
+        f"{len(pairs)} configuration pair(s) with the same replacement, k, method and dataset "
+        f"disagree between {ca.name} ({ca.relation.value}) and {cb.name} ({cb.relation.value})"
+    )
+    return [
+        (
+            name,
+            _f(
+                K.PROTOCOL_DISAGREEMENT,
+                "configuration_level_disagreement",
+                S.QUALIFYING,
+                name,
+                detail,
+                values=tuple(sorted(pairs))[:_MAX_REVERSALS],
+                samples=samples,
+            ),
+        )
+        for name in (ca.name, cb.name)
+    ]
+
+
+def _concept_role_findings(
+    tests: Sequence[ResultEntry],
+    roles: dict[int, str],
+    validations: Sequence[ValidationEntry],
+    validation_role: Any,
+    subject: str,
+) -> list[Finding]:
+    """Concept counterpart of :func:`_role_findings` (ADR-048): tests or validations
+    outside every declared role, and ALTERNATIVE / STRESS_TEST outcomes that differ from
+    a single-valued PRIMARY outcome of the same test structure or validation."""
+    findings: list[Finding] = []
+    undeclared = [e for e in tests if roles[id(e)] == UNDECLARED]
+    if undeclared:
+        findings.append(
+            _f(
+                K.LIMITATION,
+                "undeclared_configuration",
+                S.QUALIFYING,
+                subject,
+                f"{len(undeclared)} concept test(s) match no declared role; they are listed "
+                "but take no part in the standing",
+                records=tuple(sorted(e.id for e in undeclared)),
+            )
+        )
+    for group in _by_structure(list(tests)):
+        primary = {e.outcome for e in group if roles[id(e)] == PRIMARY and e.outcome in _DECISIVE}
+        if len(primary) != 1:
+            continue
+        (reference,) = primary
+        for role, code, severity in (
+            (ALTERNATIVE, "alternative_reverses", S.QUALIFYING),
+            (STRESS_TEST, "stress_test_reverses", S.INFORMATIONAL),
+        ):
+            reversing = [
+                e
+                for e in group
+                if roles[id(e)] == role and e.outcome in _DECISIVE and e.outcome is not reference
+            ]
+            if reversing:
+                findings.append(
+                    _f(
+                        K.ASSUMPTION_SENSITIVE,
+                        code,
+                        severity,
+                        subject,
+                        f"{len(reversing)} {role.replace('_', ' ')} test(s) reverse the PRIMARY "
+                        f"outcome ({reference.value}) of a {group[0].spec.protocol} test",
+                        records=tuple(sorted(e.id for e in reversing)),
+                    )
+                )
+    primary_status = {
+        v.record.semantic_status for v in validations if validation_role(v) == PRIMARY
+    }
+    if len(primary_status) == 1:
+        (reference_status,) = primary_status
+        for role, code, severity in (
+            (ALTERNATIVE, "alternative_reverses", S.QUALIFYING),
+            (STRESS_TEST, "stress_test_reverses", S.INFORMATIONAL),
+        ):
+            reversing_v = [
+                v
+                for v in validations
+                if validation_role(v) == role and v.record.semantic_status is not reference_status
+            ]
+            if reversing_v:
+                findings.append(
+                    _f(
+                        K.ASSUMPTION_SENSITIVE,
+                        code,
+                        severity,
+                        subject,
+                        f"{len(reversing_v)} {role.replace('_', ' ')} validation(s) derive "
+                        f"another status than the PRIMARY one ({reference_status.value})",
+                        records=tuple(sorted(v.record.id for v in reversing_v)),
+                    )
+                )
+    return findings

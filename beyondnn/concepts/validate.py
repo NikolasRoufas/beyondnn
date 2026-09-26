@@ -46,6 +46,7 @@ __all__ = [
     "ConceptActivationResult",
     "ConceptValidationResult",
     "activation",
+    "load_validation",
     "validate",
 ]
 
@@ -329,3 +330,101 @@ def _json(data: dict[str, Any]) -> Any:
     from beyondnn.schema import JsonMap
 
     return JsonMap(data)
+
+
+def load_validation(traces: Sequence[Any]) -> ConceptValidationResult:
+    """Rebuild a :class:`ConceptValidationResult` from saved traces alone (ADR-050).
+
+    ``traces`` are ``TraceResult`` objects or saved trace paths: the validation's trace and
+    the traces of its encoding and use tests (anything else is ignored). Everything is
+    re-derived first (``verify_validation_trace``; the fitted feature from the encoding
+    trace's train-split activations). The result can be composed into a WHY
+    (``bnn.compose(trace, concepts=[...])``) and audited; its dataset has no inputs and its
+    references have no tensors, so it can never be used to run a new test.
+    """
+    import os
+    from pathlib import Path
+
+    from beyondnn.core.persistence import load_trace
+    from beyondnn.schema import (
+        ConceptDataset,
+        ConceptRecord,
+        FeatureRecord,
+        GeneratedLabel,
+        JsonMap,
+    )
+
+    from .data import ConceptData, GeneratedLabelResult
+    from .encoding import EncodingResult
+    from .features import Feature
+    from .use import FeatureIntervention, Reference, UseResult
+    from .verify import (
+        ConceptVerificationError,
+        needs_derivation,
+        verify_feature_record,
+        verify_validation_trace,
+    )
+
+    loaded = [load_trace(Path(t)) if isinstance(t, (str, os.PathLike)) else t for t in traces]
+    if not all(isinstance(t, TraceResult) for t in loaded):
+        raise TypeError("load_validation takes TraceResult objects or saved trace paths")
+    holders = [t for t in loaded if any(isinstance(r, ConceptValidation) for r in t.records)]
+    if len(holders) != 1:
+        raise ConceptError(f"expected exactly one validation trace, got {len(holders)}")
+    (vtrace,) = holders
+    by_assessment = {r.id: t for t in loaded for r in t.records if isinstance(r, Assessment)}
+
+    def locate(assessment_id: str) -> TraceResult:
+        return by_assessment[assessment_id]
+
+    encoding_trace, use_traces = verify_validation_trace(vtrace, locate)
+    (record,) = [r for r in vtrace.records if isinstance(r, ConceptValidation)]
+
+    def one(kind: type, record_id: str) -> Any:
+        found = vtrace.get(record_id)
+        if not isinstance(found, kind):
+            raise ConceptError(f"{record_id} is not a {kind.__name__} in the validation trace")
+        return found
+
+    feature_record = one(FeatureRecord, record.feature.record_id)
+    concept_record = one(ConceptRecord, record.concept.record_id)
+    dataset_record = one(ConceptDataset, record.dataset.record_id)
+    fit_trace = None
+    if needs_derivation(feature_record):
+        try:
+            verify_feature_record(feature_record, encoding_trace, dataset_record)
+        except ConceptError as exc:  # the recording lacks train samples: not re-derivable
+            raise ConceptVerificationError(
+                f"{feature_record.id}: the fitted feature cannot be re-derived from the "
+                f"supplied traces ({exc})"
+            ) from None
+        fit_trace = encoding_trace
+    feature = Feature(feature_record, vtrace, fit_trace)
+    generated = None
+    if concept_record.generated_label is not None:
+        generated = GeneratedLabelResult(
+            one(GeneratedLabel, concept_record.generated_label), vtrace
+        )
+    concept = Concept(concept_record, feature, vtrace, generated)
+    data = ConceptData(dataset_record, (), (), vtrace)
+
+    def intervention_of(trace: TraceResult) -> FeatureIntervention:
+        (spec,) = [r for r in trace.records if isinstance(r, ClaimTestSpec)]
+        declared = spec.params.get("intervention")
+        assert isinstance(declared, JsonMap)
+        ref = declared.get("reference")
+        assert isinstance(ref, JsonMap)
+        return FeatureIntervention(
+            str(declared.get("mode")),
+            Reference(str(ref.get("kind")), str(ref.get("name")), None),
+        )
+
+    uses = [UseResult(t, concept, data, intervention_of(t)) for t in use_traces]
+    n_use = len(record.use)
+    return ConceptValidationResult(
+        vtrace,
+        concept,
+        EncodingResult(encoding_trace, concept, data),
+        tuple(uses[:n_use]),
+        tuple(uses[n_use:]),
+    )

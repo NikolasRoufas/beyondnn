@@ -329,6 +329,11 @@ def _check_scope(model: nn.Module, concept: Concept, data: ConceptData) -> str:
             "a fitted/searched feature is evaluated only on the concept dataset it was "
             "derived on (its test split is guaranteed disjoint from its train split)"
         )
+    if len(data.inputs) != len(data.record.samples):
+        raise ConceptError(
+            "this concept dataset was reconstructed from records (load_validation) and has no "
+            "inputs; tests cannot be re-run with it"
+        )
     for i in data.record.indices("test"):
         from beyondnn.core.samples import sample_id
 

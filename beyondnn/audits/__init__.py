@@ -29,6 +29,7 @@ from .plan import (
     invariance,
     plan,
     requirement,
+    role,
     selection,
 )
 from .report import (
@@ -40,9 +41,11 @@ from .report import (
     FindingKind,
     FindingSeverity,
     GroupAudit,
+    SensitivityProfile,
     Standing,
     load_report,
 )
+from .uncertainty import Interval, bootstrap, paired_bootstrap, wilson
 
 __all__ = [
     "AuditMismatchError",
@@ -55,19 +58,25 @@ __all__ = [
     "FindingKind",
     "FindingSeverity",
     "GroupAudit",
+    "Interval",
+    "SensitivityProfile",
     "Standing",
     "alternative",
     "audit",
+    "bootstrap",
     "checkpoint_of",
     "claim",
     "concept",
     "counterexample_rule",
     "invariance",
     "load_report",
+    "paired_bootstrap",
     "plan",
     "requirement",
+    "role",
     "selection",
     "verify_report",
+    "wilson",
 ]
 
 
