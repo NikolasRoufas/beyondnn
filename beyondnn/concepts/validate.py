@@ -19,7 +19,10 @@ from torch import nn
 from beyondnn.core.samples import sample_id
 from beyondnn.core.trace import TraceResult, recording
 from beyondnn.schema import (
+    Assessment,
     AssessmentSummary,
+    Claim,
+    ClaimTestSpec,
     ConceptActivation,
     ConceptPolicy,
     ConceptValidation,
@@ -58,14 +61,21 @@ _CONTROL_KEYS = {
 
 def summary(result: EncodingResult | UseResult) -> AssessmentSummary:
     """What a validation relies on from one test (re-derived by composition)."""
-    spec, assessment = result.spec, result.assessment
+    return record_summary(result.trace)
+
+
+def record_summary(trace: TraceResult) -> AssessmentSummary:
+    """:func:`summary` from a test's trace alone (one claim, spec and assessment)."""
+    (spec,) = [r for r in trace.records if isinstance(r, ClaimTestSpec)]
+    (claim,) = [r for r in trace.records if isinstance(r, Claim)]
+    (assessment,) = [r for r in trace.records if isinstance(r, Assessment)]
     controls = spec.params.get("controls")
     key = _CONTROL_KEYS.get(spec.protocol)
     declared = bool(controls) and key is not None and key in spec.criteria
     return AssessmentSummary(
         assessment_id=assessment.id,
-        claim_id=result.claim.id,
-        relation=result.claim.relation,
+        claim_id=claim.id,
+        relation=claim.relation,
         protocol=spec.protocol,
         verdict=assessment.verdict,
         controls_declared=declared,

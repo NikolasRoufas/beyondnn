@@ -12,7 +12,7 @@ model.
 from __future__ import annotations
 
 import math
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from typing import Any, TypeVar
 
 import torch
@@ -27,6 +27,7 @@ from beyondnn.schema import (
     ClaimTestSpec,
     ConceptDataset,
     ConceptRecord,
+    ConceptValidation,
     Estimand,
     EstimandScope,
     FeatureBasis,
@@ -65,9 +66,13 @@ from .use import USE_POLICY, USE_PROTOCOL, UseCriteria, UseResult, evaluate_use
 __all__ = [
     "ConceptVerificationError",
     "verify_encoding",
+    "verify_encoding_trace",
     "verify_feature",
+    "verify_feature_record",
     "verify_use",
+    "verify_use_trace",
     "verify_validation",
+    "verify_validation_trace",
 ]
 
 R = TypeVar("R")
@@ -148,11 +153,24 @@ def _floats(values: Sequence[float]) -> list[float]:
 def verify_feature(feature: Feature, data: ConceptDataset | None = None) -> None:
     """Re-derive a fitted (mean difference) or searched (train AUROC) feature from its
     fitting recording; declared and SAE features have nothing to re-derive."""
-    record = feature.record
+    verify_feature_record(feature.record, feature.fit_trace, data)
+
+
+def needs_derivation(record: FeatureRecord) -> bool:
+    """Whether ``record`` was fitted or searched (and so can be re-derived)."""
+    return record.source.kind in ("fit", "search") and record.basis is not FeatureBasis.SAE
+
+
+def verify_feature_record(
+    record: FeatureRecord, recording: TraceResult | None, data: ConceptDataset | None
+) -> None:
+    """Re-derive a fitted or searched feature from any recording that holds the site's
+    activations for every train sample of ``data`` (the fitting recording, or an encoding
+    test's trace, which records the train split too)."""
     source = record.source
-    if source.kind not in ("fit", "search") or record.basis is FeatureBasis.SAE:
+    if not needs_derivation(record):
         return
-    if feature.fit_trace is None or data is None:
+    if recording is None or data is None:
         raise ConceptVerificationError(f"{record.id}: the fitting recording/dataset is missing")
     if data.id != source.dataset:
         raise ConceptVerificationError(f"{record.id}: derived on another concept dataset")
@@ -171,7 +189,7 @@ def verify_feature(feature: Feature, data: ConceptDataset | None = None) -> None
     rows = torch.stack(
         [
             pooled_vectors(t, probe)
-            for _, t in site_tensors(feature.fit_trace, data, train, record.site, record.call_index)
+            for _, t in site_tensors(recording, data, train, record.site, record.call_index)
         ]
     )
     labels = [data.labels[i] for i in train]
@@ -207,7 +225,17 @@ def _declared() -> Any:
 
 
 def verify_encoding(result: EncodingResult) -> None:
-    trace = result.trace
+    _, concept, data = verify_encoding_trace(result.trace)
+    if (concept.id, data.id) != (result.concept.id, result.data.id):
+        raise ConceptVerificationError("encoding: the result is about another concept/dataset")
+
+
+def verify_encoding_trace(
+    trace: TraceResult,
+) -> tuple[FeatureRecord, ConceptRecord, ConceptDataset]:
+    """Re-derive an encoding test from its trace alone (records and retained tensors; no
+    live objects), e.g. after ``load_trace``. Returns the feature, concept and dataset
+    records the test is about."""
     where = "encoding"
     claim = _one(trace, Claim, where)
     spec = _one(trace, ClaimTestSpec, where)
@@ -216,8 +244,6 @@ def verify_encoding(result: EncodingResult) -> None:
     if spec.protocol != ENCODING_PROTOCOL or claim.relation is not Relation.ENCODES:
         raise ConceptVerificationError(f"{where}: not a concept_encoding test of an ENCODES claim")
     feature, concept, data = _definitions(trace, spec.params, where)
-    if (concept.id, data.id) != (result.concept.id, result.data.id):
-        raise ConceptVerificationError(f"{where}: the result is about another concept/dataset")
     _model_digest(trace, feature, where)
     train, val, test = data.indices("train"), data.indices("val"), data.indices("test")
     test_ids = [data.samples[i] for i in test]
@@ -296,6 +322,7 @@ def verify_encoding(result: EncodingResult) -> None:
         != assessment.id
     ):
         raise ConceptVerificationError(f"{where}: the assessment does not follow from the result")
+    return feature, concept, data
 
 
 # ------------------------------------------------------------------ use
@@ -318,7 +345,13 @@ def _reference_matches(record: InterventionRecord, ref: Any, basis: FeatureBasis
 
 
 def verify_use(result: UseResult) -> None:
-    trace = result.trace
+    _, concept, data = verify_use_trace(result.trace)
+    if (concept.id, data.id) != (result.concept.id, result.data.id):
+        raise ConceptVerificationError("use: the result is about another concept/dataset")
+
+
+def verify_use_trace(trace: TraceResult) -> tuple[FeatureRecord, ConceptRecord, ConceptDataset]:
+    """Re-derive a use test from its trace alone (see :func:`verify_encoding_trace`)."""
     where = "use"
     claim = _one(trace, Claim, where)
     spec = _one(trace, ClaimTestSpec, where)
@@ -327,8 +360,6 @@ def verify_use(result: UseResult) -> None:
     if spec.protocol != USE_PROTOCOL:
         raise ConceptVerificationError(f"{where}: not a concept_intervention test")
     feature, concept, data = _definitions(trace, spec.params, where)
-    if (concept.id, data.id) != (result.concept.id, result.data.id):
-        raise ConceptVerificationError(f"{where}: the result is about another concept/dataset")
     _model_digest(trace, feature, where)
     subset = spec.params.get("subset")
     label = {"positive": 1, "negative": 0, "all": None}
@@ -462,6 +493,7 @@ def verify_use(result: UseResult) -> None:
         != assessment.id
     ):
         raise ConceptVerificationError(f"{where}: the assessment does not follow from the result")
+    return feature, concept, data
 
 
 # ------------------------------------------------------------------ validation
@@ -506,3 +538,51 @@ def verify_validation(validation: Any) -> None:
         or ce.measurements["false_negative_rate"] != record.false_negative_rate
     ):
         raise ConceptVerificationError("the counterexample rates do not follow from the record")
+
+
+def verify_validation_trace(
+    trace: TraceResult, locate: Callable[[str], TraceResult]
+) -> tuple[TraceResult, tuple[TraceResult, ...]]:
+    """Re-derive a validation record from traces alone (e.g. after ``load_trace``).
+
+    ``locate(assessment_id)`` returns the trace holding that test's assessment (raising
+    ``KeyError`` if none was supplied). Every test is re-derived from its trace, and the
+    summaries, counterexample rates, model checkpoint and derived status must follow.
+    The feature's own derivation is checked separately (:func:`verify_feature_record`).
+    Returns the encoding trace and the use/additional traces.
+    """
+    from .validate import record_summary
+
+    record = _one(trace, ConceptValidation, "validation")
+    ids = (record.concept.record_id, record.feature.record_id, record.dataset.record_id)
+
+    def test_trace(assessment_id: str) -> TraceResult:
+        try:
+            return locate(assessment_id)
+        except KeyError:
+            raise ConceptVerificationError(
+                f"validation: the test with assessment {assessment_id} was not supplied"
+            ) from None
+
+    encoding = test_trace(record.encoding.assessment_id)
+    uses = tuple(test_trace(s.assessment_id) for s in (*record.use, *record.additional))
+    checked = [(encoding, verify_encoding_trace(encoding))]
+    checked += [(t, verify_use_trace(t)) for t in uses]
+    for t, (feature, concept, data) in checked:
+        if (concept.id, feature.id, data.id) != ids:
+            raise ConceptVerificationError("a test is about another concept, feature or dataset")
+        if _model_digest(t, feature, "validation") != record.model_state_digest:
+            raise ConceptVerificationError("a test ran on another model checkpoint")
+    if record_summary(encoding) != record.encoding:
+        raise ConceptVerificationError("the encoding summary does not follow from its assessment")
+    for t, s in zip(uses, (*record.use, *record.additional), strict=True):
+        if record_summary(t) != s:
+            raise ConceptVerificationError("a use summary does not follow from its assessment")
+    ce = _one(encoding, ProtocolResult, "validation")
+    if (
+        ce.id != record.counterexamples
+        or ce.measurements["false_positive_rate"] != record.false_positive_rate
+        or ce.measurements["false_negative_rate"] != record.false_negative_rate
+    ):
+        raise ConceptVerificationError("the counterexample rates do not follow from the record")
+    return encoding, uses
