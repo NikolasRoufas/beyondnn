@@ -1,0 +1,517 @@
+{
+ "A_input": {
+  "g_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 113,
+   "samples_absolute_pass_but_controls_reject": 2,
+   "samples_with_a_disagreeing_pair": 44
+  },
+  "g_necessary": {
+   "sensitive_axis_sets": {
+    "k+null": 1,
+    "k+null+replacement+threshold": 15,
+    "k+null+threshold": 3,
+    "k+replacement": 2,
+    "k+replacement+threshold": 33
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 27,
+    "(0.25,0.5]": 8,
+    "(0.5,0.75]": 2,
+    "0": 23
+   }
+  },
+  "g_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement+threshold": 41,
+    "replacement+threshold": 2
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 22,
+    "(0.25,0.5]": 5,
+    "(0.5,0.75]": 1,
+    "0": 32
+   }
+  },
+  "ig_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 149,
+   "samples_absolute_pass_but_controls_reject": 2,
+   "samples_with_a_disagreeing_pair": 52
+  },
+  "ig_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement": 1,
+    "k+null+replacement+threshold": 20,
+    "k+null+threshold": 3,
+    "k+replacement+threshold": 30,
+    "k+threshold": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 20,
+    "(0.25,0.5]": 19,
+    "(0.5,0.75]": 4,
+    "0": 17
+   }
+  },
+  "ig_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 3,
+    "k+replacement+threshold": 52
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 30,
+    "(0.25,0.5]": 15,
+    "(0.5,0.75]": 7,
+    "(0.75,1.0]": 1,
+    "0": 7
+   }
+  },
+  "r_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 19,
+   "samples_absolute_pass_but_controls_reject": 2,
+   "samples_with_a_disagreeing_pair": 12
+  },
+  "r_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement": 1,
+    "k+null+replacement+threshold": 2,
+    "k+null+threshold": 4,
+    "k+replacement+threshold": 3
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 2,
+    "(0.25,0.5]": 2,
+    "0": 56
+   }
+  },
+  "r_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 9,
+    "k+replacement+threshold": 5
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 10,
+    "0": 50
+   }
+  }
+ },
+ "A_net.1": {
+  "g_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 42,
+   "samples_absolute_pass_but_controls_reject": 1,
+   "samples_with_a_disagreeing_pair": 21
+  },
+  "g_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement+threshold": 7,
+    "k+null+threshold": 2,
+    "k+replacement": 2,
+    "k+replacement+threshold": 24,
+    "k+threshold": 3
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 8,
+    "(0.25,0.5]": 4,
+    "0": 48
+   }
+  },
+  "g_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 2,
+    "k+replacement+threshold": 30,
+    "replacement": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 9,
+    "(0.25,0.5]": 7,
+    "0": 44
+   }
+  },
+  "ig_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 115,
+   "samples_absolute_pass_but_controls_reject": 1,
+   "samples_with_a_disagreeing_pair": 48
+  },
+  "ig_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement": 2,
+    "k+null+replacement+threshold": 14,
+    "k+replacement+threshold": 41,
+    "k+threshold": 3
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 24,
+    "(0.25,0.5]": 31,
+    "(0.5,0.75]": 3,
+    "(0.75,1.0]": 2
+   }
+  },
+  "ig_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 1,
+    "k+replacement+threshold": 59
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 26,
+    "(0.25,0.5]": 25,
+    "(0.5,0.75]": 8,
+    "(0.75,1.0]": 1
+   }
+  },
+  "r_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 6,
+   "samples_absolute_pass_but_controls_reject": 1,
+   "samples_with_a_disagreeing_pair": 4
+  },
+  "r_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement+threshold": 6,
+    "k+null+threshold": 8,
+    "k+replacement+threshold": 1,
+    "k+threshold": 1,
+    "null": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 5,
+    "0": 55
+   }
+  },
+  "r_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement+threshold": 14
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 3,
+    "0": 57
+   }
+  }
+ },
+ "B_pixels": {
+  "g_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 154,
+   "samples_absolute_pass_but_controls_reject": 19,
+   "samples_with_a_disagreeing_pair": 50
+  },
+  "g_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement": 6,
+    "k+null+replacement+threshold": 27,
+    "k+null+threshold": 1,
+    "k+replacement": 5,
+    "k+replacement+threshold": 16,
+    "replacement": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 13,
+    "(0.25,0.5]": 24,
+    "(0.5,0.75]": 8,
+    "(0.75,1.0]": 6,
+    "0": 7,
+    "1": 2
+   }
+  },
+  "g_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 3,
+    "k+replacement+threshold": 42,
+    "replacement": 2,
+    "replacement+threshold": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 24,
+    "(0.25,0.5]": 8,
+    "(0.5,0.75]": 4,
+    "(0.75,1.0]": 3,
+    "0": 21
+   }
+  },
+  "ig_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 114,
+   "samples_absolute_pass_but_controls_reject": 17,
+   "samples_with_a_disagreeing_pair": 41
+  },
+  "ig_necessary": {
+   "sensitive_axis_sets": {
+    "k+null": 2,
+    "k+null+replacement": 9,
+    "k+null+replacement+threshold": 26,
+    "k+null+threshold": 2,
+    "k+replacement": 1,
+    "k+replacement+threshold": 13,
+    "replacement+threshold": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 12,
+    "(0.25,0.5]": 14,
+    "(0.5,0.75]": 16,
+    "(0.75,1.0]": 9,
+    "0": 8,
+    "1": 1
+   }
+  },
+  "ig_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 13,
+    "k+replacement+threshold": 33,
+    "replacement": 2
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 24,
+    "(0.25,0.5]": 13,
+    "(0.5,0.75]": 6,
+    "(0.75,1.0]": 2,
+    "0": 15
+   }
+  },
+  "r_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 11,
+   "samples_absolute_pass_but_controls_reject": 21,
+   "samples_with_a_disagreeing_pair": 8
+  },
+  "r_necessary": {
+   "sensitive_axis_sets": {
+    "k+null": 3,
+    "k+null+replacement": 2,
+    "k+null+replacement+threshold": 8,
+    "k+null+threshold": 17,
+    "k+replacement+threshold": 4,
+    "null": 1,
+    "null+threshold": 2
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 20,
+    "(0.25,0.5]": 5,
+    "0": 35
+   }
+  },
+  "r_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 2,
+    "k+replacement+threshold": 4,
+    "k+threshold": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 2,
+    "(0.25,0.5]": 1,
+    "0": 57
+   }
+  }
+ },
+ "B_relu2": {
+  "g_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 26,
+   "samples_absolute_pass_but_controls_reject": 14,
+   "samples_with_a_disagreeing_pair": 17
+  },
+  "g_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement": 2,
+    "k+null+replacement+threshold": 17,
+    "k+null+threshold": 19,
+    "k+replacement": 2,
+    "k+replacement+threshold": 3
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 18,
+    "(0.25,0.5]": 7,
+    "0": 35
+   }
+  },
+  "g_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 5,
+    "k+replacement+threshold": 14
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 12,
+    "(0.25,0.5]": 1,
+    "0": 47
+   }
+  },
+  "ig_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 38,
+   "samples_absolute_pass_but_controls_reject": 18,
+   "samples_with_a_disagreeing_pair": 25
+  },
+  "ig_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement": 3,
+    "k+null+replacement+threshold": 35,
+    "k+null+threshold": 10,
+    "k+replacement+threshold": 8,
+    "k+threshold": 1,
+    "null": 1,
+    "null+replacement": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 28,
+    "(0.25,0.5]": 21,
+    "(0.5,0.75]": 2,
+    "0": 9
+   }
+  },
+  "ig_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 7,
+    "k+replacement+threshold": 39,
+    "replacement": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 35,
+    "(0.25,0.5]": 5,
+    "(0.5,0.75]": 3,
+    "0": 17
+   }
+  },
+  "r_configuration_level": {
+   "necessity_sufficiency_pairs": 540,
+   "pairs_disagreeing": 7,
+   "samples_absolute_pass_but_controls_reject": 9,
+   "samples_with_a_disagreeing_pair": 5
+  },
+  "r_necessary": {
+   "sensitive_axis_sets": {
+    "k+null+replacement": 1,
+    "k+null+replacement+threshold": 8,
+    "k+null+threshold": 18,
+    "k+replacement": 1,
+    "k+replacement+threshold": 2,
+    "null+threshold": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 11,
+    "(0.25,0.5]": 2,
+    "0": 47
+   }
+  },
+  "r_sufficient": {
+   "sensitive_axis_sets": {
+    "k+replacement": 4,
+    "k+replacement+threshold": 9
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 9,
+    "(0.25,0.5]": 1,
+    "0": 50
+   }
+  }
+ },
+ "C_tokens": {
+  "g_configuration_level": {
+   "necessity_sufficiency_pairs": 354,
+   "pairs_disagreeing": 55,
+   "samples_absolute_pass_but_controls_reject": 10,
+   "samples_with_a_disagreeing_pair": 19
+  },
+  "g_necessary": {
+   "sensitive_axis_sets": {
+    "k": 1,
+    "k+null": 7,
+    "k+null+replacement+threshold": 8,
+    "k+null+threshold": 9,
+    "k+threshold": 2,
+    "null": 3
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 10,
+    "(0.25,0.5]": 8,
+    "(0.5,0.75]": 4,
+    "(0.75,1.0]": 2,
+    "0": 16
+   }
+  },
+  "g_sufficient": {
+   "sensitive_axis_sets": {
+    "k": 6,
+    "k+replacement": 9,
+    "k+replacement+threshold": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 6,
+    "(0.25,0.5]": 8,
+    "(0.5,0.75]": 2,
+    "0": 24
+   }
+  },
+  "ig_configuration_level": {
+   "necessity_sufficiency_pairs": 354,
+   "pairs_disagreeing": 80,
+   "samples_absolute_pass_but_controls_reject": 11,
+   "samples_with_a_disagreeing_pair": 22
+  },
+  "ig_necessary": {
+   "sensitive_axis_sets": {
+    "k": 1,
+    "k+null": 5,
+    "k+null+replacement+threshold": 9,
+    "k+null+threshold": 9,
+    "k+replacement+threshold": 2,
+    "k+threshold": 4,
+    "null": 3
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 9,
+    "(0.25,0.5]": 11,
+    "(0.5,0.75]": 6,
+    "0": 12,
+    "1": 2
+   }
+  },
+  "ig_sufficient": {
+   "sensitive_axis_sets": {
+    "k": 10,
+    "k+replacement": 13
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 5,
+    "(0.25,0.5]": 11,
+    "(0.5,0.75]": 5,
+    "(0.75,1.0]": 2,
+    "0": 17
+   }
+  },
+  "r_configuration_level": {
+   "necessity_sufficiency_pairs": 354,
+   "pairs_disagreeing": 26,
+   "samples_absolute_pass_but_controls_reject": 3,
+   "samples_with_a_disagreeing_pair": 8
+  },
+  "r_necessary": {
+   "sensitive_axis_sets": {
+    "k+null": 3,
+    "k+null+replacement+threshold": 1,
+    "k+null+threshold": 3
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 1,
+    "(0.25,0.5]": 3,
+    "(0.75,1.0]": 1,
+    "0": 35
+   }
+  },
+  "r_sufficient": {
+   "sensitive_axis_sets": {
+    "k": 2,
+    "k+replacement": 3,
+    "k+replacement+threshold": 1
+   },
+   "supports_share_bins": {
+    "(0.0,0.25]": 2,
+    "(0.25,0.5]": 2,
+    "(0.5,0.75]": 2,
+    "0": 34
+   }
+  }
+ },
+ "note": "descriptive; not a pre-registered hypothesis; shares are not scores"
+}

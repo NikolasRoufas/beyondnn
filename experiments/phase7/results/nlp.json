@@ -1,0 +1,870 @@
+{
+ "by_length_tertile": {
+  "g_necessary": {
+   "long": {
+    "assumption_sensitive": 5,
+    "contradicted": 2
+   },
+   "medium": {
+    "assumption_sensitive": 12,
+    "contradicted": 5
+   },
+   "short": {
+    "assumption_sensitive": 13,
+    "contradicted": 3
+   }
+  },
+  "ig_necessary": {
+   "long": {
+    "assumption_sensitive": 5,
+    "contradicted": 1,
+    "supported": 1
+   },
+   "medium": {
+    "assumption_sensitive": 14,
+    "contradicted": 3
+   },
+   "short": {
+    "assumption_sensitive": 14,
+    "contradicted": 2
+   }
+  },
+  "ig_sufficient": {
+   "long": {
+    "assumption_sensitive": 4,
+    "contradicted": 3
+   },
+   "medium": {
+    "assumption_sensitive": 10,
+    "contradicted": 7
+   },
+   "short": {
+    "assumption_sensitive": 9,
+    "contradicted": 7
+   }
+  },
+  "r_necessary": {
+   "long": {
+    "assumption_sensitive": 1,
+    "contradicted": 6
+   },
+   "medium": {
+    "assumption_sensitive": 3,
+    "contradicted": 14
+   },
+   "short": {
+    "assumption_sensitive": 3,
+    "contradicted": 13
+   }
+  }
+ },
+ "by_negation": {
+  "g_necessary": {
+   "False": {
+    "assumption_sensitive": 24,
+    "contradicted": 10
+   },
+   "True": {
+    "assumption_sensitive": 6
+   }
+  },
+  "ig_necessary": {
+   "False": {
+    "assumption_sensitive": 28,
+    "contradicted": 5,
+    "supported": 1
+   },
+   "True": {
+    "assumption_sensitive": 5,
+    "contradicted": 1
+   }
+  },
+  "ig_sufficient": {
+   "False": {
+    "assumption_sensitive": 20,
+    "contradicted": 14
+   },
+   "True": {
+    "assumption_sensitive": 3,
+    "contradicted": 3
+   }
+  },
+  "r_necessary": {
+   "False": {
+    "assumption_sensitive": 5,
+    "contradicted": 29
+   },
+   "True": {
+    "assumption_sensitive": 2,
+    "contradicted": 4
+   }
+  }
+ },
+ "by_special_token_in_selection": {
+  "g_necessary": {
+   "False": {
+    "assumption_sensitive": 30,
+    "contradicted": 10
+   }
+  },
+  "ig_necessary": {
+   "False": {
+    "assumption_sensitive": 33,
+    "contradicted": 6,
+    "supported": 1
+   }
+  },
+  "ig_sufficient": {
+   "False": {
+    "assumption_sensitive": 23,
+    "contradicted": 17
+   }
+  },
+  "r_necessary": {
+   "False": {
+    "assumption_sensitive": 7,
+    "contradicted": 33
+   }
+  }
+ },
+ "by_top1_position": {
+  "g_necessary": {
+   "interior": {
+    "assumption_sensitive": 30,
+    "contradicted": 10
+   }
+  },
+  "ig_necessary": {
+   "interior": {
+    "assumption_sensitive": 33,
+    "contradicted": 6,
+    "supported": 1
+   }
+  },
+  "ig_sufficient": {
+   "interior": {
+    "assumption_sensitive": 23,
+    "contradicted": 17
+   }
+  },
+  "r_necessary": {
+   "interior": {
+    "assumption_sensitive": 7,
+    "contradicted": 33
+   }
+  }
+ },
+ "documented_not_tested": {
+  "label_leakage": "third-party fine-tune on SST-2 train; validation split used; training data not verifiable",
+  "lexical_shortcuts": "see concepts_C.json (K7 positive words, K9 negation)",
+  "padding": "batch size 1; attention masks are all ones; padding effects not evaluated"
+ },
+ "environment": {
+  "beyondnn_commit": "34e432d4f8fdf19c5bb311e900a42e98edf3ccdf",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "length_cuts": [
+  16,
+  21
+ ],
+ "n": 40,
+ "plan_section": "docs/PHASE_7_PLAN.md \u00a730 (descriptive)",
+ "recomputed_selection_mismatches": 0,
+ "replacement_sensitive_samples": {
+  "g_necessary": 8,
+  "ig_necessary": 11,
+  "ig_sufficient": 13,
+  "r_necessary": 1
+ },
+ "rows": [
+  {
+   "has_negation": false,
+   "index": 834,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "assumption_sensitive"
+   },
+   "text": "collateral damage finally delivers the goods for schwarzenegger fans . ",
+   "tokens": 14,
+   "top1_position": "interior",
+   "top1_token": "delivers"
+  },
+  {
+   "has_negation": false,
+   "index": 156,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "manages to transcend the sex , drugs and show-tunes plot into something far richer . ",
+   "tokens": 20,
+   "top1_position": "interior",
+   "top1_token": "richer"
+  },
+  {
+   "has_negation": false,
+   "index": 687,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "this is a shameless sham , calculated to cash in on the popularity of its stars . ",
+   "tokens": 20,
+   "top1_position": "interior",
+   "top1_token": "shame"
+  },
+  {
+   "has_negation": false,
+   "index": 436,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "trite , banal , cliched , mostly inoffensive . ",
+   "tokens": 18,
+   "top1_position": "interior",
+   "top1_token": "ban"
+  },
+  {
+   "has_negation": true,
+   "index": 395,
+   "length_tertile": "long",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "another in-your-face wallow in the lower depths made by people who have never sung those blues . ",
+   "tokens": 24,
+   "top1_position": "interior",
+   "top1_token": "lower"
+  },
+  {
+   "has_negation": true,
+   "index": 697,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "not since tom cruise in risky business has an actor made such a strong impression in his underwear . ",
+   "tokens": 21,
+   "top1_position": "interior",
+   "top1_token": "strong"
+  },
+  {
+   "has_negation": true,
+   "index": 542,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "there 's no emotional pulse to solaris . ",
+   "tokens": 12,
+   "top1_position": "interior",
+   "top1_token": "no"
+  },
+  {
+   "has_negation": false,
+   "index": 102,
+   "length_tertile": "long",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "does paint some memorable images ... , but makhmalbaf keeps her distance from the characters ",
+   "tokens": 23,
+   "top1_position": "interior",
+   "top1_token": "keeps"
+  },
+  {
+   "has_negation": false,
+   "index": 721,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "a poignant , artfully crafted meditation on mortality . ",
+   "tokens": 13,
+   "top1_position": "interior",
+   "top1_token": "meditation"
+  },
+  {
+   "has_negation": true,
+   "index": 503,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "assumption_sensitive"
+   },
+   "text": "dragonfly has no atmosphere , no tension -- nothing but costner , flailing away . ",
+   "tokens": 21,
+   "top1_position": "interior",
+   "top1_token": "##ailing"
+  },
+  {
+   "has_negation": false,
+   "index": 859,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "add yet another hat to a talented head , clooney 's a good director . ",
+   "tokens": 20,
+   "top1_position": "interior",
+   "top1_token": "good"
+  },
+  {
+   "has_negation": true,
+   "index": 257,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "taylor appears to have blown his entire budget on soundtrack rights and had nothing left over for jokes . ",
+   "tokens": 21,
+   "top1_position": "interior",
+   "top1_token": "jokes"
+  },
+  {
+   "has_negation": false,
+   "index": 175,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "bleakly funny , its characters all the more touching for refusing to pity or memorialize themselves . ",
+   "tokens": 21,
+   "top1_position": "interior",
+   "top1_token": "touching"
+  },
+  {
+   "has_negation": false,
+   "index": 119,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "comes ... uncomfortably close to coasting in the treads of the bicycle thief . ",
+   "tokens": 20,
+   "top1_position": "interior",
+   "top1_token": "tread"
+  },
+  {
+   "has_negation": false,
+   "index": 263,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "chilling , well-acted , and finely directed : david jacobson 's dahmer . ",
+   "tokens": 21,
+   "top1_position": "interior",
+   "top1_token": "chilling"
+  },
+  {
+   "has_negation": false,
+   "index": 74,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "a string of rehashed sight gags based in insipid vulgarity . ",
+   "tokens": 19,
+   "top1_position": "interior",
+   "top1_token": "vulgar"
+  },
+  {
+   "has_negation": false,
+   "index": 302,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "the wild thornberrys movie is a jolly surprise . ",
+   "tokens": 13,
+   "top1_position": "interior",
+   "top1_token": "wild"
+  },
+  {
+   "has_negation": false,
+   "index": 99,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "assumption_sensitive"
+   },
+   "text": "why make a documentary about these marginal historical figures ? ",
+   "tokens": 12,
+   "top1_position": "interior",
+   "top1_token": "marginal"
+  },
+  {
+   "has_negation": false,
+   "index": 855,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "it 's fascinating to see how bettany and mcdowell play off each other . ",
+   "tokens": 19,
+   "top1_position": "interior",
+   "top1_token": "fascinating"
+  },
+  {
+   "has_negation": false,
+   "index": 710,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "contradicted",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "less dizzying than just dizzy , the jaunt is practically over before it begins . ",
+   "tokens": 19,
+   "top1_position": "interior",
+   "top1_token": "less"
+  },
+  {
+   "has_negation": false,
+   "index": 667,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "good film , but very glum . ",
+   "tokens": 10,
+   "top1_position": "interior",
+   "top1_token": "good"
+  },
+  {
+   "has_negation": false,
+   "index": 91,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "contradicted",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "assumption_sensitive"
+   },
+   "text": "hardly a masterpiece , but it introduces viewers to a good charitable enterprise and some interesting real people . ",
+   "tokens": 21,
+   "top1_position": "interior",
+   "top1_token": "hardly"
+  },
+  {
+   "has_negation": false,
+   "index": 741,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "contradicted",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "but it still jingles in the pocket . ",
+   "tokens": 11,
+   "top1_position": "interior",
+   "top1_token": "pocket"
+  },
+  {
+   "has_negation": true,
+   "index": 424,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "contradicted",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "assumption_sensitive"
+   },
+   "text": "a good piece of work more often than not . ",
+   "tokens": 12,
+   "top1_position": "interior",
+   "top1_token": "not"
+  },
+  {
+   "has_negation": false,
+   "index": 591,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "i got a headache watching this meaningless downer . ",
+   "tokens": 12,
+   "top1_position": "interior",
+   "top1_token": "meaningless"
+  },
+  {
+   "has_negation": false,
+   "index": 243,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "the film tunes into a grief that could lead a man across centuries . ",
+   "tokens": 16,
+   "top1_position": "interior",
+   "top1_token": "tunes"
+  },
+  {
+   "has_negation": false,
+   "index": 565,
+   "length_tertile": "long",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "contradicted",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "there are some wonderfully fresh moments that smooth the moral stiffness with human kindness and hopefulness . ",
+   "tokens": 22,
+   "top1_position": "interior",
+   "top1_token": "hopeful"
+  },
+  {
+   "has_negation": false,
+   "index": 556,
+   "length_tertile": "long",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "but it 's too long and too convoluted and it ends in a muddle . ",
+   "tokens": 22,
+   "top1_position": "interior",
+   "top1_token": "mud"
+  },
+  {
+   "has_negation": false,
+   "index": 605,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "puts a human face on a land most westerners are unfamiliar with . ",
+   "tokens": 16,
+   "top1_position": "interior",
+   "top1_token": "human"
+  },
+  {
+   "has_negation": false,
+   "index": 799,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "contradicted",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "a tender , witty , captivating film about friendship , love , memory , trust and loyalty . ",
+   "tokens": 21,
+   "top1_position": "interior",
+   "top1_token": "tender"
+  },
+  {
+   "has_negation": false,
+   "index": 170,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "it 's also , clearly , great fun . ",
+   "tokens": 12,
+   "top1_position": "interior",
+   "top1_token": "fun"
+  },
+  {
+   "has_negation": false,
+   "index": 303,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "entertains by providing good , lively company . ",
+   "tokens": 11,
+   "top1_position": "interior",
+   "top1_token": "lively"
+  },
+  {
+   "has_negation": false,
+   "index": 368,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "the humor is forced and heavy-handed , and occasionally simply unpleasant . ",
+   "tokens": 16,
+   "top1_position": "interior",
+   "top1_token": "heavy"
+  },
+  {
+   "has_negation": false,
+   "index": 420,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "assumption_sensitive"
+   },
+   "text": "one of the more irritating cartoons you will see this , or any , year . ",
+   "tokens": 18,
+   "top1_position": "interior",
+   "top1_token": "irritating"
+  },
+  {
+   "has_negation": false,
+   "index": 129,
+   "length_tertile": "medium",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "it provides the grand , intelligent entertainment of a superior cast playing smart people amid a compelling plot . ",
+   "tokens": 21,
+   "top1_position": "interior",
+   "top1_token": "provides"
+  },
+  {
+   "has_negation": false,
+   "index": 647,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "too much of the humor falls flat . ",
+   "tokens": 10,
+   "top1_position": "interior",
+   "top1_token": "flat"
+  },
+  {
+   "has_negation": false,
+   "index": 327,
+   "length_tertile": "short",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "contradicted"
+   },
+   "text": "it proves quite compelling as an intense , brooding character study . ",
+   "tokens": 14,
+   "top1_position": "interior",
+   "top1_token": "intense"
+  },
+  {
+   "has_negation": false,
+   "index": 46,
+   "length_tertile": "long",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "a synthesis of cliches and absurdities that seems positively decadent in its cinematic flash and emptiness . ",
+   "tokens": 23,
+   "top1_position": "interior",
+   "top1_token": "emptiness"
+  },
+  {
+   "has_negation": false,
+   "index": 399,
+   "length_tertile": "long",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "contradicted",
+    "ig_necessary": "assumption_sensitive",
+    "ig_sufficient": "contradicted",
+    "r_necessary": "assumption_sensitive"
+   },
+   "text": "if director michael dowse only superficially understands his characters , he does n't hold them in contempt . ",
+   "tokens": 24,
+   "top1_position": "interior",
+   "top1_token": "understands"
+  },
+  {
+   "has_negation": false,
+   "index": 709,
+   "length_tertile": "long",
+   "selection_has_special_token": false,
+   "standing": {
+    "g_necessary": "assumption_sensitive",
+    "ig_necessary": "supported",
+    "ig_sufficient": "assumption_sensitive",
+    "r_necessary": "contradicted"
+   },
+   "text": "i thought my own watch had stopped keeping time as i slogged my way through clockstoppers . ",
+   "tokens": 23,
+   "top1_position": "interior",
+   "top1_token": "sl"
+  }
+ ],
+ "top1_tokens": [
+  "##ailing",
+  "ban",
+  "chilling",
+  "delivers",
+  "emptiness",
+  "fascinating",
+  "flat",
+  "fun",
+  "good",
+  "hardly",
+  "heavy",
+  "hopeful",
+  "human",
+  "intense",
+  "irritating",
+  "jokes",
+  "keeps",
+  "less",
+  "lively",
+  "lower",
+  "marginal",
+  "meaningless",
+  "meditation",
+  "mud",
+  "no",
+  "not",
+  "pocket",
+  "provides",
+  "richer",
+  "shame",
+  "sl",
+  "strong",
+  "tender",
+  "touching",
+  "tread",
+  "tunes",
+  "understands",
+  "vulgar",
+  "wild"
+ ]
+}

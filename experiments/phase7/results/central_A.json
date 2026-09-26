@@ -1,0 +1,5732 @@
+{
+ "environment": {
+  "beyondnn_commit": "27d027cd2b9a601ab1aadc891a615d70d7fbcf4b",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "accuracy": {
+   "test": 0.9736841917037964,
+   "train": 0.9970674514770508,
+   "val": 0.9561403393745422
+  },
+  "architecture": "MLP(\n  (net): Sequential(\n    (0): Linear(in_features=30, out_features=64, bias=True)\n    (1): ReLU()\n    (2): Linear(in_features=64, out_features=32, bias=True)\n    (3): ReLU()\n    (4): Linear(in_features=32, out_features=2, bias=True)\n  )\n)",
+  "checkpoint_state_digest": "sha256:4c19a8dafa3c0b38219220528303b3f195487a131b3e12a64c703203946b1c24",
+  "dataset": {
+   "features": [
+    "mean radius",
+    "mean texture",
+    "mean perimeter",
+    "mean area",
+    "mean smoothness",
+    "mean compactness",
+    "mean concavity",
+    "mean concave points",
+    "mean symmetry",
+    "mean fractal dimension",
+    "radius error",
+    "texture error",
+    "perimeter error",
+    "area error",
+    "smoothness error",
+    "compactness error",
+    "concavity error",
+    "concave points error",
+    "symmetry error",
+    "fractal dimension error",
+    "worst radius",
+    "worst texture",
+    "worst perimeter",
+    "worst area",
+    "worst smoothness",
+    "worst compactness",
+    "worst concavity",
+    "worst concave points",
+    "worst symmetry",
+    "worst fractal dimension"
+   ],
+   "n": 569,
+   "source": "sklearn.datasets.load_breast_cancer",
+   "standardised_with": "train mean/std"
+  },
+  "split": {
+   "rule": "stratified 60/20/20, train_test_split random_state=0 twice",
+   "sizes": [
+    341,
+    114,
+    114
+   ]
+  },
+  "training": {
+   "batch": "full",
+   "epochs": 300,
+   "loss": "cross_entropy",
+   "lr": 0.001,
+   "optimizer": "Adam",
+   "seed": 0
+  }
+ },
+ "plan_section": "docs/PHASE_7_PLAN.md \u00a729.1 (D9-D11)",
+ "settings": {
+  "input": {
+   "attribution_only": {
+    "claims": {
+     "g_necessary": {
+      "counterexamples": [],
+      "distribution": {
+       "unsupported": 60
+      },
+      "per_sample": {
+       "100": "unsupported",
+       "108": "unsupported",
+       "134": "unsupported",
+       "150": "unsupported",
+       "155": "unsupported",
+       "167": "unsupported",
+       "174": "unsupported",
+       "177": "unsupported",
+       "188": "unsupported",
+       "219": "unsupported",
+       "234": "unsupported",
+       "240": "unsupported",
+       "276": "unsupported",
+       "278": "unsupported",
+       "284": "unsupported",
+       "286": "unsupported",
+       "293": "unsupported",
+       "302": "unsupported",
+       "304": "unsupported",
+       "31": "unsupported",
+       "315": "unsupported",
+       "316": "unsupported",
+       "32": "unsupported",
+       "325": "unsupported",
+       "327": "unsupported",
+       "328": "unsupported",
+       "35": "unsupported",
+       "354": "unsupported",
+       "356": "unsupported",
+       "359": "unsupported",
+       "365": "unsupported",
+       "368": "unsupported",
+       "373": "unsupported",
+       "391": "unsupported",
+       "393": "unsupported",
+       "401": "unsupported",
+       "410": "unsupported",
+       "414": "unsupported",
+       "42": "unsupported",
+       "423": "unsupported",
+       "425": "unsupported",
+       "436": "unsupported",
+       "440": "unsupported",
+       "441": "unsupported",
+       "446": "unsupported",
+       "448": "unsupported",
+       "464": "unsupported",
+       "482": "unsupported",
+       "488": "unsupported",
+       "497": "unsupported",
+       "532": "unsupported",
+       "534": "unsupported",
+       "537": "unsupported",
+       "552": "unsupported",
+       "557": "unsupported",
+       "565": "unsupported",
+       "6": "unsupported",
+       "62": "unsupported",
+       "81": "unsupported",
+       "84": "unsupported"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "evidence_type_mismatch": 60
+      }
+     },
+     "g_sufficient": {
+      "counterexamples": [],
+      "distribution": {
+       "unsupported": 60
+      },
+      "per_sample": {
+       "100": "unsupported",
+       "108": "unsupported",
+       "134": "unsupported",
+       "150": "unsupported",
+       "155": "unsupported",
+       "167": "unsupported",
+       "174": "unsupported",
+       "177": "unsupported",
+       "188": "unsupported",
+       "219": "unsupported",
+       "234": "unsupported",
+       "240": "unsupported",
+       "276": "unsupported",
+       "278": "unsupported",
+       "284": "unsupported",
+       "286": "unsupported",
+       "293": "unsupported",
+       "302": "unsupported",
+       "304": "unsupported",
+       "31": "unsupported",
+       "315": "unsupported",
+       "316": "unsupported",
+       "32": "unsupported",
+       "325": "unsupported",
+       "327": "unsupported",
+       "328": "unsupported",
+       "35": "unsupported",
+       "354": "unsupported",
+       "356": "unsupported",
+       "359": "unsupported",
+       "365": "unsupported",
+       "368": "unsupported",
+       "373": "unsupported",
+       "391": "unsupported",
+       "393": "unsupported",
+       "401": "unsupported",
+       "410": "unsupported",
+       "414": "unsupported",
+       "42": "unsupported",
+       "423": "unsupported",
+       "425": "unsupported",
+       "436": "unsupported",
+       "440": "unsupported",
+       "441": "unsupported",
+       "446": "unsupported",
+       "448": "unsupported",
+       "464": "unsupported",
+       "482": "unsupported",
+       "488": "unsupported",
+       "497": "unsupported",
+       "532": "unsupported",
+       "534": "unsupported",
+       "537": "unsupported",
+       "552": "unsupported",
+       "557": "unsupported",
+       "565": "unsupported",
+       "6": "unsupported",
+       "62": "unsupported",
+       "81": "unsupported",
+       "84": "unsupported"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "evidence_type_mismatch": 60
+      }
+     },
+     "ig_necessary": {
+      "counterexamples": [],
+      "distribution": {
+       "unsupported": 60
+      },
+      "per_sample": {
+       "100": "unsupported",
+       "108": "unsupported",
+       "134": "unsupported",
+       "150": "unsupported",
+       "155": "unsupported",
+       "167": "unsupported",
+       "174": "unsupported",
+       "177": "unsupported",
+       "188": "unsupported",
+       "219": "unsupported",
+       "234": "unsupported",
+       "240": "unsupported",
+       "276": "unsupported",
+       "278": "unsupported",
+       "284": "unsupported",
+       "286": "unsupported",
+       "293": "unsupported",
+       "302": "unsupported",
+       "304": "unsupported",
+       "31": "unsupported",
+       "315": "unsupported",
+       "316": "unsupported",
+       "32": "unsupported",
+       "325": "unsupported",
+       "327": "unsupported",
+       "328": "unsupported",
+       "35": "unsupported",
+       "354": "unsupported",
+       "356": "unsupported",
+       "359": "unsupported",
+       "365": "unsupported",
+       "368": "unsupported",
+       "373": "unsupported",
+       "391": "unsupported",
+       "393": "unsupported",
+       "401": "unsupported",
+       "410": "unsupported",
+       "414": "unsupported",
+       "42": "unsupported",
+       "423": "unsupported",
+       "425": "unsupported",
+       "436": "unsupported",
+       "440": "unsupported",
+       "441": "unsupported",
+       "446": "unsupported",
+       "448": "unsupported",
+       "464": "unsupported",
+       "482": "unsupported",
+       "488": "unsupported",
+       "497": "unsupported",
+       "532": "unsupported",
+       "534": "unsupported",
+       "537": "unsupported",
+       "552": "unsupported",
+       "557": "unsupported",
+       "565": "unsupported",
+       "6": "unsupported",
+       "62": "unsupported",
+       "81": "unsupported",
+       "84": "unsupported"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "evidence_type_mismatch": 60
+      }
+     },
+     "ig_sufficient": {
+      "counterexamples": [],
+      "distribution": {
+       "unsupported": 60
+      },
+      "per_sample": {
+       "100": "unsupported",
+       "108": "unsupported",
+       "134": "unsupported",
+       "150": "unsupported",
+       "155": "unsupported",
+       "167": "unsupported",
+       "174": "unsupported",
+       "177": "unsupported",
+       "188": "unsupported",
+       "219": "unsupported",
+       "234": "unsupported",
+       "240": "unsupported",
+       "276": "unsupported",
+       "278": "unsupported",
+       "284": "unsupported",
+       "286": "unsupported",
+       "293": "unsupported",
+       "302": "unsupported",
+       "304": "unsupported",
+       "31": "unsupported",
+       "315": "unsupported",
+       "316": "unsupported",
+       "32": "unsupported",
+       "325": "unsupported",
+       "327": "unsupported",
+       "328": "unsupported",
+       "35": "unsupported",
+       "354": "unsupported",
+       "356": "unsupported",
+       "359": "unsupported",
+       "365": "unsupported",
+       "368": "unsupported",
+       "373": "unsupported",
+       "391": "unsupported",
+       "393": "unsupported",
+       "401": "unsupported",
+       "410": "unsupported",
+       "414": "unsupported",
+       "42": "unsupported",
+       "423": "unsupported",
+       "425": "unsupported",
+       "436": "unsupported",
+       "440": "unsupported",
+       "441": "unsupported",
+       "446": "unsupported",
+       "448": "unsupported",
+       "464": "unsupported",
+       "482": "unsupported",
+       "488": "unsupported",
+       "497": "unsupported",
+       "532": "unsupported",
+       "534": "unsupported",
+       "537": "unsupported",
+       "552": "unsupported",
+       "557": "unsupported",
+       "565": "unsupported",
+       "6": "unsupported",
+       "62": "unsupported",
+       "81": "unsupported",
+       "84": "unsupported"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "evidence_type_mismatch": 60
+      }
+     },
+     "r_necessary": {
+      "counterexamples": [],
+      "distribution": {
+       "not_evaluated": 60
+      },
+      "per_sample": {
+       "100": "not_evaluated",
+       "108": "not_evaluated",
+       "134": "not_evaluated",
+       "150": "not_evaluated",
+       "155": "not_evaluated",
+       "167": "not_evaluated",
+       "174": "not_evaluated",
+       "177": "not_evaluated",
+       "188": "not_evaluated",
+       "219": "not_evaluated",
+       "234": "not_evaluated",
+       "240": "not_evaluated",
+       "276": "not_evaluated",
+       "278": "not_evaluated",
+       "284": "not_evaluated",
+       "286": "not_evaluated",
+       "293": "not_evaluated",
+       "302": "not_evaluated",
+       "304": "not_evaluated",
+       "31": "not_evaluated",
+       "315": "not_evaluated",
+       "316": "not_evaluated",
+       "32": "not_evaluated",
+       "325": "not_evaluated",
+       "327": "not_evaluated",
+       "328": "not_evaluated",
+       "35": "not_evaluated",
+       "354": "not_evaluated",
+       "356": "not_evaluated",
+       "359": "not_evaluated",
+       "365": "not_evaluated",
+       "368": "not_evaluated",
+       "373": "not_evaluated",
+       "391": "not_evaluated",
+       "393": "not_evaluated",
+       "401": "not_evaluated",
+       "410": "not_evaluated",
+       "414": "not_evaluated",
+       "42": "not_evaluated",
+       "423": "not_evaluated",
+       "425": "not_evaluated",
+       "436": "not_evaluated",
+       "440": "not_evaluated",
+       "441": "not_evaluated",
+       "446": "not_evaluated",
+       "448": "not_evaluated",
+       "464": "not_evaluated",
+       "482": "not_evaluated",
+       "488": "not_evaluated",
+       "497": "not_evaluated",
+       "532": "not_evaluated",
+       "534": "not_evaluated",
+       "537": "not_evaluated",
+       "552": "not_evaluated",
+       "557": "not_evaluated",
+       "565": "not_evaluated",
+       "6": "not_evaluated",
+       "62": "not_evaluated",
+       "81": "not_evaluated",
+       "84": "not_evaluated"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "not_evaluated": 60
+      }
+     },
+     "r_sufficient": {
+      "counterexamples": [],
+      "distribution": {
+       "not_evaluated": 60
+      },
+      "per_sample": {
+       "100": "not_evaluated",
+       "108": "not_evaluated",
+       "134": "not_evaluated",
+       "150": "not_evaluated",
+       "155": "not_evaluated",
+       "167": "not_evaluated",
+       "174": "not_evaluated",
+       "177": "not_evaluated",
+       "188": "not_evaluated",
+       "219": "not_evaluated",
+       "234": "not_evaluated",
+       "240": "not_evaluated",
+       "276": "not_evaluated",
+       "278": "not_evaluated",
+       "284": "not_evaluated",
+       "286": "not_evaluated",
+       "293": "not_evaluated",
+       "302": "not_evaluated",
+       "304": "not_evaluated",
+       "31": "not_evaluated",
+       "315": "not_evaluated",
+       "316": "not_evaluated",
+       "32": "not_evaluated",
+       "325": "not_evaluated",
+       "327": "not_evaluated",
+       "328": "not_evaluated",
+       "35": "not_evaluated",
+       "354": "not_evaluated",
+       "356": "not_evaluated",
+       "359": "not_evaluated",
+       "365": "not_evaluated",
+       "368": "not_evaluated",
+       "373": "not_evaluated",
+       "391": "not_evaluated",
+       "393": "not_evaluated",
+       "401": "not_evaluated",
+       "410": "not_evaluated",
+       "414": "not_evaluated",
+       "42": "not_evaluated",
+       "423": "not_evaluated",
+       "425": "not_evaluated",
+       "436": "not_evaluated",
+       "440": "not_evaluated",
+       "441": "not_evaluated",
+       "446": "not_evaluated",
+       "448": "not_evaluated",
+       "464": "not_evaluated",
+       "482": "not_evaluated",
+       "488": "not_evaluated",
+       "497": "not_evaluated",
+       "532": "not_evaluated",
+       "534": "not_evaluated",
+       "537": "not_evaluated",
+       "552": "not_evaluated",
+       "557": "not_evaluated",
+       "565": "not_evaluated",
+       "6": "not_evaluated",
+       "62": "not_evaluated",
+       "81": "not_evaluated",
+       "84": "not_evaluated"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "not_evaluated": 60
+      }
+     }
+    },
+    "coverage": {
+     "claims": 6,
+     "claims_by_standing": [],
+     "concepts": 0,
+     "concepts_evaluated": 0,
+     "counterexample_caps": [
+      [
+       "max_counterexample_fraction",
+       "not declared"
+      ],
+      [
+       "max_false_positive_rate",
+       "not declared"
+      ],
+      [
+       "max_false_negative_rate",
+       "not declared"
+      ]
+     ],
+     "evidence_statuses": [
+      "attributed",
+      "observed"
+     ],
+     "per_sample_claims": [
+      [
+       "g_necessary",
+       60,
+       60
+      ],
+      [
+       "g_sufficient",
+       60,
+       60
+      ],
+      [
+       "ig_necessary",
+       60,
+       60
+      ],
+      [
+       "ig_sufficient",
+       60,
+       60
+      ],
+      [
+       "r_necessary",
+       60,
+       0
+      ],
+      [
+       "r_sufficient",
+       60,
+       0
+      ]
+     ],
+     "plan_samples": 60,
+     "protocols_required_not_run": [
+      "comprehensiveness",
+      "sufficiency"
+     ],
+     "protocols_run": [],
+     "samples_with_evidence": 0,
+     "untested_invariances": []
+    },
+    "evidence": {
+     "digest": "sha256:aff8ccc971e33a50c43cdf67eac476295d090e4d04d3013e5c34dd1ce4f620ab",
+     "records": 485,
+     "results": 0,
+     "results_excluded": 0,
+     "results_included": 0,
+     "traces": 120
+    },
+    "protocol_disagreement_samples": {},
+    "report_findings": []
+   },
+   "audit": {
+    "claims": {
+     "g_necessary": {
+      "counterexamples": [
+       354,
+       401,
+       391,
+       488,
+       532,
+       150
+      ],
+      "distribution": {
+       "assumption_sensitive": 54,
+       "contradicted": 6
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "assumption_sensitive",
+       "134": "assumption_sensitive",
+       "150": "contradicted",
+       "155": "assumption_sensitive",
+       "167": "assumption_sensitive",
+       "174": "assumption_sensitive",
+       "177": "assumption_sensitive",
+       "188": "assumption_sensitive",
+       "219": "assumption_sensitive",
+       "234": "assumption_sensitive",
+       "240": "assumption_sensitive",
+       "276": "assumption_sensitive",
+       "278": "assumption_sensitive",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "assumption_sensitive",
+       "302": "assumption_sensitive",
+       "304": "assumption_sensitive",
+       "31": "assumption_sensitive",
+       "315": "assumption_sensitive",
+       "316": "assumption_sensitive",
+       "32": "assumption_sensitive",
+       "325": "assumption_sensitive",
+       "327": "assumption_sensitive",
+       "328": "assumption_sensitive",
+       "35": "assumption_sensitive",
+       "354": "contradicted",
+       "356": "assumption_sensitive",
+       "359": "assumption_sensitive",
+       "365": "assumption_sensitive",
+       "368": "assumption_sensitive",
+       "373": "assumption_sensitive",
+       "391": "contradicted",
+       "393": "assumption_sensitive",
+       "401": "contradicted",
+       "410": "assumption_sensitive",
+       "414": "assumption_sensitive",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "assumption_sensitive",
+       "436": "assumption_sensitive",
+       "440": "assumption_sensitive",
+       "441": "assumption_sensitive",
+       "446": "assumption_sensitive",
+       "448": "assumption_sensitive",
+       "464": "assumption_sensitive",
+       "482": "assumption_sensitive",
+       "488": "contradicted",
+       "497": "assumption_sensitive",
+       "532": "contradicted",
+       "534": "assumption_sensitive",
+       "537": "assumption_sensitive",
+       "552": "assumption_sensitive",
+       "557": "assumption_sensitive",
+       "565": "assumption_sensitive",
+       "6": "assumption_sensitive",
+       "62": "assumption_sensitive",
+       "81": "assumption_sensitive",
+       "84": "assumption_sensitive"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 54,
+       "null": 19,
+       "replacement": 50,
+       "threshold": 51
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 174
+      }
+     },
+     "g_sufficient": {
+      "counterexamples": [
+       557,
+       448,
+       354,
+       482,
+       365,
+       391,
+       488,
+       532,
+       414,
+       167,
+       150,
+       356,
+       302,
+       359,
+       373,
+       368,
+       81
+      ],
+      "distribution": {
+       "assumption_sensitive": 43,
+       "contradicted": 17
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "assumption_sensitive",
+       "134": "assumption_sensitive",
+       "150": "contradicted",
+       "155": "assumption_sensitive",
+       "167": "contradicted",
+       "174": "assumption_sensitive",
+       "177": "assumption_sensitive",
+       "188": "assumption_sensitive",
+       "219": "assumption_sensitive",
+       "234": "assumption_sensitive",
+       "240": "assumption_sensitive",
+       "276": "assumption_sensitive",
+       "278": "assumption_sensitive",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "assumption_sensitive",
+       "302": "contradicted",
+       "304": "assumption_sensitive",
+       "31": "assumption_sensitive",
+       "315": "assumption_sensitive",
+       "316": "assumption_sensitive",
+       "32": "assumption_sensitive",
+       "325": "assumption_sensitive",
+       "327": "assumption_sensitive",
+       "328": "assumption_sensitive",
+       "35": "assumption_sensitive",
+       "354": "contradicted",
+       "356": "contradicted",
+       "359": "contradicted",
+       "365": "contradicted",
+       "368": "contradicted",
+       "373": "contradicted",
+       "391": "contradicted",
+       "393": "assumption_sensitive",
+       "401": "assumption_sensitive",
+       "410": "assumption_sensitive",
+       "414": "contradicted",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "assumption_sensitive",
+       "436": "assumption_sensitive",
+       "440": "assumption_sensitive",
+       "441": "assumption_sensitive",
+       "446": "assumption_sensitive",
+       "448": "contradicted",
+       "464": "assumption_sensitive",
+       "482": "contradicted",
+       "488": "contradicted",
+       "497": "assumption_sensitive",
+       "532": "contradicted",
+       "534": "assumption_sensitive",
+       "537": "assumption_sensitive",
+       "552": "assumption_sensitive",
+       "557": "contradicted",
+       "565": "assumption_sensitive",
+       "6": "assumption_sensitive",
+       "62": "assumption_sensitive",
+       "81": "contradicted",
+       "84": "assumption_sensitive"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 41,
+       "replacement": 43,
+       "threshold": 43
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 127
+      }
+     },
+     "ig_necessary": {
+      "counterexamples": [
+       410,
+       532,
+       464,
+       537,
+       81
+      ],
+      "distribution": {
+       "assumption_sensitive": 55,
+       "contradicted": 5
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "assumption_sensitive",
+       "134": "assumption_sensitive",
+       "150": "assumption_sensitive",
+       "155": "assumption_sensitive",
+       "167": "assumption_sensitive",
+       "174": "assumption_sensitive",
+       "177": "assumption_sensitive",
+       "188": "assumption_sensitive",
+       "219": "assumption_sensitive",
+       "234": "assumption_sensitive",
+       "240": "assumption_sensitive",
+       "276": "assumption_sensitive",
+       "278": "assumption_sensitive",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "assumption_sensitive",
+       "302": "assumption_sensitive",
+       "304": "assumption_sensitive",
+       "31": "assumption_sensitive",
+       "315": "assumption_sensitive",
+       "316": "assumption_sensitive",
+       "32": "assumption_sensitive",
+       "325": "assumption_sensitive",
+       "327": "assumption_sensitive",
+       "328": "assumption_sensitive",
+       "35": "assumption_sensitive",
+       "354": "assumption_sensitive",
+       "356": "assumption_sensitive",
+       "359": "assumption_sensitive",
+       "365": "assumption_sensitive",
+       "368": "assumption_sensitive",
+       "373": "assumption_sensitive",
+       "391": "assumption_sensitive",
+       "393": "assumption_sensitive",
+       "401": "assumption_sensitive",
+       "410": "contradicted",
+       "414": "assumption_sensitive",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "assumption_sensitive",
+       "436": "assumption_sensitive",
+       "440": "assumption_sensitive",
+       "441": "assumption_sensitive",
+       "446": "assumption_sensitive",
+       "448": "assumption_sensitive",
+       "464": "contradicted",
+       "482": "assumption_sensitive",
+       "488": "assumption_sensitive",
+       "497": "assumption_sensitive",
+       "532": "contradicted",
+       "534": "assumption_sensitive",
+       "537": "contradicted",
+       "552": "assumption_sensitive",
+       "557": "assumption_sensitive",
+       "565": "assumption_sensitive",
+       "6": "assumption_sensitive",
+       "62": "assumption_sensitive",
+       "81": "contradicted",
+       "84": "assumption_sensitive"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 55,
+       "null": 24,
+       "replacement": 51,
+       "threshold": 54
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 184,
+       "missing_control": 1
+      }
+     },
+     "ig_sufficient": {
+      "counterexamples": [
+       410,
+       532,
+       464,
+       537,
+       81
+      ],
+      "distribution": {
+       "assumption_sensitive": 55,
+       "contradicted": 5
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "assumption_sensitive",
+       "134": "assumption_sensitive",
+       "150": "assumption_sensitive",
+       "155": "assumption_sensitive",
+       "167": "assumption_sensitive",
+       "174": "assumption_sensitive",
+       "177": "assumption_sensitive",
+       "188": "assumption_sensitive",
+       "219": "assumption_sensitive",
+       "234": "assumption_sensitive",
+       "240": "assumption_sensitive",
+       "276": "assumption_sensitive",
+       "278": "assumption_sensitive",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "assumption_sensitive",
+       "302": "assumption_sensitive",
+       "304": "assumption_sensitive",
+       "31": "assumption_sensitive",
+       "315": "assumption_sensitive",
+       "316": "assumption_sensitive",
+       "32": "assumption_sensitive",
+       "325": "assumption_sensitive",
+       "327": "assumption_sensitive",
+       "328": "assumption_sensitive",
+       "35": "assumption_sensitive",
+       "354": "assumption_sensitive",
+       "356": "assumption_sensitive",
+       "359": "assumption_sensitive",
+       "365": "assumption_sensitive",
+       "368": "assumption_sensitive",
+       "373": "assumption_sensitive",
+       "391": "assumption_sensitive",
+       "393": "assumption_sensitive",
+       "401": "assumption_sensitive",
+       "410": "contradicted",
+       "414": "assumption_sensitive",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "assumption_sensitive",
+       "436": "assumption_sensitive",
+       "440": "assumption_sensitive",
+       "441": "assumption_sensitive",
+       "446": "assumption_sensitive",
+       "448": "assumption_sensitive",
+       "464": "contradicted",
+       "482": "assumption_sensitive",
+       "488": "assumption_sensitive",
+       "497": "assumption_sensitive",
+       "532": "contradicted",
+       "534": "assumption_sensitive",
+       "537": "contradicted",
+       "552": "assumption_sensitive",
+       "557": "assumption_sensitive",
+       "565": "assumption_sensitive",
+       "6": "assumption_sensitive",
+       "62": "assumption_sensitive",
+       "81": "contradicted",
+       "84": "assumption_sensitive"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 55,
+       "replacement": 55,
+       "threshold": 52
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 162
+      }
+     },
+     "r_necessary": {
+      "counterexamples": [
+       557,
+       410,
+       188,
+       219,
+       315,
+       446,
+       552,
+       448,
+       155,
+       6,
+       293,
+       327,
+       425,
+       423,
+       354,
+       393,
+       440,
+       325,
+       401,
+       177,
+       234,
+       365,
+       391,
+       240,
+       174,
+       488,
+       534,
+       565,
+       532,
+       441,
+       284,
+       167,
+       150,
+       356,
+       278,
+       31,
+       84,
+       302,
+       328,
+       32,
+       42,
+       464,
+       100,
+       276,
+       537,
+       108,
+       316,
+       436,
+       368,
+       35
+      ],
+      "distribution": {
+       "assumption_sensitive": 10,
+       "contradicted": 50
+      },
+      "per_sample": {
+       "100": "contradicted",
+       "108": "contradicted",
+       "134": "assumption_sensitive",
+       "150": "contradicted",
+       "155": "contradicted",
+       "167": "contradicted",
+       "174": "contradicted",
+       "177": "contradicted",
+       "188": "contradicted",
+       "219": "contradicted",
+       "234": "contradicted",
+       "240": "contradicted",
+       "276": "contradicted",
+       "278": "contradicted",
+       "284": "contradicted",
+       "286": "assumption_sensitive",
+       "293": "contradicted",
+       "302": "contradicted",
+       "304": "assumption_sensitive",
+       "31": "contradicted",
+       "315": "contradicted",
+       "316": "contradicted",
+       "32": "contradicted",
+       "325": "contradicted",
+       "327": "contradicted",
+       "328": "contradicted",
+       "35": "contradicted",
+       "354": "contradicted",
+       "356": "contradicted",
+       "359": "assumption_sensitive",
+       "365": "contradicted",
+       "368": "contradicted",
+       "373": "assumption_sensitive",
+       "391": "contradicted",
+       "393": "contradicted",
+       "401": "contradicted",
+       "410": "contradicted",
+       "414": "assumption_sensitive",
+       "42": "contradicted",
+       "423": "contradicted",
+       "425": "contradicted",
+       "436": "contradicted",
+       "440": "contradicted",
+       "441": "contradicted",
+       "446": "contradicted",
+       "448": "contradicted",
+       "464": "contradicted",
+       "482": "assumption_sensitive",
+       "488": "contradicted",
+       "497": "assumption_sensitive",
+       "532": "contradicted",
+       "534": "contradicted",
+       "537": "contradicted",
+       "552": "contradicted",
+       "557": "contradicted",
+       "565": "contradicted",
+       "6": "contradicted",
+       "62": "assumption_sensitive",
+       "81": "assumption_sensitive",
+       "84": "contradicted"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 10,
+       "null": 7,
+       "replacement": 6,
+       "threshold": 9
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 32
+      }
+     },
+     "r_sufficient": {
+      "counterexamples": [
+       557,
+       410,
+       188,
+       219,
+       304,
+       446,
+       552,
+       448,
+       155,
+       6,
+       327,
+       423,
+       393,
+       440,
+       325,
+       401,
+       177,
+       234,
+       365,
+       391,
+       240,
+       488,
+       534,
+       565,
+       532,
+       441,
+       284,
+       167,
+       150,
+       356,
+       31,
+       84,
+       302,
+       328,
+       32,
+       42,
+       464,
+       100,
+       276,
+       373,
+       537,
+       108,
+       436,
+       368,
+       35,
+       81
+      ],
+      "distribution": {
+       "assumption_sensitive": 14,
+       "contradicted": 46
+      },
+      "per_sample": {
+       "100": "contradicted",
+       "108": "contradicted",
+       "134": "assumption_sensitive",
+       "150": "contradicted",
+       "155": "contradicted",
+       "167": "contradicted",
+       "174": "assumption_sensitive",
+       "177": "contradicted",
+       "188": "contradicted",
+       "219": "contradicted",
+       "234": "contradicted",
+       "240": "contradicted",
+       "276": "contradicted",
+       "278": "assumption_sensitive",
+       "284": "contradicted",
+       "286": "assumption_sensitive",
+       "293": "assumption_sensitive",
+       "302": "contradicted",
+       "304": "contradicted",
+       "31": "contradicted",
+       "315": "assumption_sensitive",
+       "316": "assumption_sensitive",
+       "32": "contradicted",
+       "325": "contradicted",
+       "327": "contradicted",
+       "328": "contradicted",
+       "35": "contradicted",
+       "354": "assumption_sensitive",
+       "356": "contradicted",
+       "359": "assumption_sensitive",
+       "365": "contradicted",
+       "368": "contradicted",
+       "373": "contradicted",
+       "391": "contradicted",
+       "393": "contradicted",
+       "401": "contradicted",
+       "410": "contradicted",
+       "414": "assumption_sensitive",
+       "42": "contradicted",
+       "423": "contradicted",
+       "425": "assumption_sensitive",
+       "436": "contradicted",
+       "440": "contradicted",
+       "441": "contradicted",
+       "446": "contradicted",
+       "448": "contradicted",
+       "464": "contradicted",
+       "482": "assumption_sensitive",
+       "488": "contradicted",
+       "497": "assumption_sensitive",
+       "532": "contradicted",
+       "534": "contradicted",
+       "537": "contradicted",
+       "552": "contradicted",
+       "557": "contradicted",
+       "565": "contradicted",
+       "6": "contradicted",
+       "62": "assumption_sensitive",
+       "81": "contradicted",
+       "84": "contradicted"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 14,
+       "replacement": 14,
+       "threshold": 5
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 33
+      }
+     }
+    },
+    "coverage": {
+     "claims": 6,
+     "claims_by_standing": [],
+     "concepts": 0,
+     "concepts_evaluated": 0,
+     "counterexample_caps": [
+      [
+       "max_counterexample_fraction",
+       "not declared"
+      ],
+      [
+       "max_false_positive_rate",
+       "not declared"
+      ],
+      [
+       "max_false_negative_rate",
+       "not declared"
+      ]
+     ],
+     "evidence_statuses": [
+      "attributed",
+      "interventional",
+      "observed"
+     ],
+     "per_sample_claims": [
+      [
+       "g_necessary",
+       60,
+       60
+      ],
+      [
+       "g_sufficient",
+       60,
+       60
+      ],
+      [
+       "ig_necessary",
+       60,
+       60
+      ],
+      [
+       "ig_sufficient",
+       60,
+       60
+      ],
+      [
+       "r_necessary",
+       60,
+       60
+      ],
+      [
+       "r_sufficient",
+       60,
+       60
+      ]
+     ],
+     "plan_samples": 60,
+     "protocols_required_not_run": [],
+     "protocols_run": [
+      "comprehensiveness",
+      "sufficiency"
+     ],
+     "samples_with_evidence": 60,
+     "untested_invariances": []
+    },
+    "evidence": {
+     "digest": "sha256:98fe35c63786a8f484748d09a49f913e5c9f18002098defdbba582483ad55166",
+     "records": 692178,
+     "results": 4320,
+     "results_excluded": 0,
+     "results_included": 4320,
+     "traces": 4440
+    },
+    "protocol_disagreement_samples": {},
+    "report_findings": []
+   },
+   "audit_seconds": 51.85099941701628,
+   "n_results": 4320,
+   "n_samples": 60,
+   "naive_single_configuration_supports": 5,
+   "plan_id": "audit_plan:1ea5ea315815cc7e980ffc2d14f2385f",
+   "run_seconds": 203.81488708406687,
+   "samples": [
+    {
+     "index": 327,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 11.880582809448242,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.8597257137298584,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       10,
+       27
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:4420f65e1bb78ef671d950a204e9f8ee7059cf865665a1941c97bdefd61f0024",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 84,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.609808921813965,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.510143280029297,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       10,
+       12
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:c73157893a1d7d308c3620b5be959a19c48c1e29d098f68ddec25ad0a28382b2",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 410,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 7.539187431335449,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": -1.3091635704040527,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       18,
+       21
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:08324485046446cb1710f1b24b7b317abe7378c07f25aa6b7a3be3a780130039",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 368,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 27.312976837158203,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 12.38646936416626,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       20,
+       22,
+       23
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:ec85cf8a0efcde92d5165d402d26ee2b1ec9c89d8138f4bc3e8b0108819369c3",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 286,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 9.484394073486328,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.6886420249938965,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       15,
+       19,
+       24
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:c16c2abf78dc1aa31ba0fb84d104105a0b3bb56df0a0d62f3a2d25438daa4da5",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 108,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 47.90598678588867,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 14.876561164855957,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       6,
+       22,
+       26
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:e7c1e898345aa1880b905702dc8176014c87b43441a078db7d31d7effc95251d",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 188,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 13.966633796691895,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 1.5946612358093262,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       11,
+       12
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:0aeac63266806222a69f28120a3c12cf46f3c2da38c8ec5e9b523f3d26f9bc2a",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 414,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 3.0104832649230957,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.9275436103343964,
+      "k": 3,
+      "outcome": "supports",
+      "units": [
+       9,
+       21,
+       24
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:a1904f3e5a4e1bf4c4ff8e77d6d2dab68dc7b36965c49ee7cf1a6dff8ebfe1ed",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 150,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 9.232645034790039,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.272146463394165,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       18,
+       29
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:acacd06cc2d12450bdc1e6fba3aae0144fbb5090e20721ac7dd666a87f2cc3e5",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 497,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.02923583984375,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.1786673069000244,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       12,
+       18
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:522d805f45ffe5bf95c11a596f33f2a87fb2b82c62b229e76f2c62d6a5abf631",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 565,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 19.180442810058594,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 8.035264015197754,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       1,
+       21,
+       22
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:88c1b218078b7df40d83f56c29e8790c201d6dd07974fa3db28d98dcaeba1026",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 304,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.330509185791016,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.985685348510742,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       22,
+       27
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:1da02feb67e04db43477270c992b43eeeb889ab666fc9d5f3ff7c54fe19c23bf",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 316,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 15.63698673248291,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.904727935791016,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       11,
+       27
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:e86a6595734aa9c9612a673c0ba1013fad65d07c7cef12174141c91a487c8a01",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 219,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 30.316219329833984,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 13.667937755584717,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       21,
+       22,
+       23
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:16e118b03f6134dc8eda801827d9645ac1226789100428be11dd9cfd9a53597c",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 488,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 9.158041000366211,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.448861837387085,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       21,
+       22
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:876b0a1496e47c99d2a03bec37bb162a3636ee5832d8e687a103a633ab42f7db",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 278,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 8.199116706848145,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.9328954219818115,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       27,
+       29
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:bfaaea79186f851b1f0726aaeb5b144c654795ffdf203b6ff92072e432efad84",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 425,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 12.861204147338867,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.028175592422485,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       10,
+       22
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:4628b02fe5a52b4e77d2dc78041cf242f4c341ef66ccc0ed6dee61e8038f8e55",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 448,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 3.2395029067993164,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 1.9032297134399414,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       18,
+       24
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:29bbdc1b919a3be51baf7a902d5a62c8c239793fb89c40c59f2bb24d19ed58c0",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 174,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 14.721406936645508,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.947779178619385,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       18,
+       27
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:7428a52f87cd78c868652c13aa028b8f22fda74c297f828034282fdafed7870a",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 62,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 16.377323150634766,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 8.26326298713684,
+      "k": 3,
+      "outcome": "supports",
+      "units": [
+       6,
+       24,
+       26
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:fb9567fadfeb41f285f23070238ec2479acf18166dad182c77a14aa5f7caa101",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 328,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 13.5671968460083,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.992190361022949,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       21,
+       24
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:cbf9952d858af9144d93f15e77ab472d7291635ffa6a38aba428d140fd6911a9",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 354,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 14.726106643676758,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.206003189086914,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       21,
+       24
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:559146db69563cf2fa35852c6df57c37656eb14962cef192b4b81fda3bdb0fff",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 391,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 12.323946952819824,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.72440767288208,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       22,
+       27
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:6add4d08cdf4ee05e4b44a21a5d75b2d47e79343bcc9a222096ccb3e3d0af62d",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 365,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 16.59258270263672,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.546360015869141,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       20,
+       22
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:69f61e089188c452f75b6e17e707ac956f2f4e9ba5d5b39bee4f6e485749d700",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 31,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 14.267131805419922,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 12.511483788490295,
+      "k": 3,
+      "outcome": "supports",
+      "units": [
+       24,
+       28,
+       29
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:c1e8d88757a02d55defc0df9eaba663e28f879efb042602c9f9981c0a1e64d6e",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 6,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 17.499591827392578,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.412522315979004,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       20,
+       22,
+       23
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:38b96135639b34bcb28607dca4d73c02676345aa747751ba608dde3587c6b029",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 464,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 7.666385650634766,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 0.6469180583953857,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       18,
+       29
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:cebe5eb6d48430d7ee4a9b08198ab1f1a2bd52884d1848ed2c239740bb3cab72",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 315,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 13.62347412109375,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.468563079833984,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       27,
+       29
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:20aadbdf54f82051ff64d104276cd38baea4dcac5275f69456172688ac7182ca",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 436,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 9.115242004394531,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.213914394378662,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       6,
+       7,
+       27
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:ebebecf96df9153100f259b62e6d9ee1defb361bf81784a20bbb278634b72018",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 423,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 5.247919082641602,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.271233558654785,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       18,
+       24
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:4fc4c4c15c97a1ced6e6b7249b724560088585583f3ba681b79a82f3a908d091",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 234,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 15.56027603149414,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.054040431976318,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       10,
+       22
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:63b7aba4e6631814d4b121b79a4f43e568c74e9464b05b0c4468032c349f04d7",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 359,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 9.415763854980469,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.391127347946167,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       7,
+       22
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:db80407dbd0d5916b700c7aaf7d71d2a34344e623c049a9ae0044e00bd8aa697",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 482,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 9.210887908935547,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.15424656867981,
+      "k": 3,
+      "outcome": "supports",
+      "units": [
+       10,
+       12,
+       21
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:64b2f199e3ad118fe3cc2d39c5d9e9f70b71b9df46c7f98541547b528473444b",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 81,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 1.064375400543213,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": -6.604433745145798,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       24,
+       27,
+       29
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:f98d7456c542defc6ec1dba3a78c620852ca7eebf33b5d2e65599945c99b0fcd",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 441,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 15.359870910644531,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.928203105926514,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       9,
+       21,
+       26
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:8caf4a902ebb4f5e5ebe6f657ce0d6feaafeb95bf58cf5cb1188afa312dd8ad9",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 446,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 23.684904098510742,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 8.830455780029297,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       21,
+       22,
+       26
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:2769109f7742bc8cb7c17bb69cf4ec07153fd4e1cee1070f068397fc4438c67c",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 373,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 21.325794219970703,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 7.724287986755371,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       20,
+       22,
+       23
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:de077128758750f2510cc2a7b58c5d1f9c11b18966bfd5fe1708eff89d47c973",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 167,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 6.570950508117676,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 1.172947883605957,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       9,
+       22,
+       24
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:aa4af285d40fc510a70b655014d09fb87770ffc17f37e6266250cfab37610db5",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 177,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 13.585679054260254,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.070371866226196,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       6,
+       26,
+       27
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:62d342bc637380dc7fe799a8f6fd1089cb77188247cdab1e7ed185beeae2e9d7",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 552,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 9.98375129699707,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 1.8658342361450195,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       12,
+       21
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:27d78a211c4e7439d933e665f2acd8809249727ed2c353c769d3f7cf7787be01",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 32,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 22.868534088134766,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 7.495362758636475,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       6,
+       21,
+       24
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:cc69895c5604975da2dc730e3429742cda9bed25b18284d3db7f09d884a44908",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 440,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 8.950087547302246,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.823698043823242,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       15,
+       16,
+       23
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:5ed4620f82fd7e81e97223eee4201af261063461970972d5b570751cc0a85775",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 356,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 7.221613883972168,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.1485962867736816,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       16,
+       18,
+       23
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:ad1e85898e3b937725c0afe914356b242e1eed50e9a9f72a684bd550ed8aafed",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 42,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 29.49700927734375,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.076284408569336,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       18,
+       22,
+       28
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:ce0b97791e758597501b2d9d27eb44d3b4d29e2d996db043e8591d4ca508cf94",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 100,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 5.0429511070251465,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.701554760336876,
+      "k": 3,
+      "outcome": "supports",
+      "units": [
+       18,
+       21,
+       29
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:d16c86e23e18b77b76c62e8c96560756ea30a15f86fe309c083c1774cae44ae1",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 532,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 8.737086296081543,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 0.8657889366149902,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       11,
+       18
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:8a1c9cc6210ee258e7d03b9b45e36e062a9d4ea6775575e605aec328da7fdb6d",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 537,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 6.889813423156738,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 0.0991201400756836,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       9,
+       21,
+       24
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:e1355aaaaaf880ae051e71fcafbd667489c31fad09317264c5cd9e95e7eb1ac7",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 293,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.708433151245117,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.7601165771484375,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       12,
+       13
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:43919eb36f4467ba24048a326d0d3b9c258ea82f63f5576b19b90e4e3cd2c4a7",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 534,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.842000961303711,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.012635707855225,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       12,
+       13
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:88a45a7830196b80d9bc4f458c0777ce998ff49a20ae257466ef0acd75c8ff42",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 302,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 24.37843894958496,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.939333438873291,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       6,
+       7,
+       22
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:c755336929aa5ae24d85d733b6b943b620d51308d81fe657f6577f9934f36e73",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 276,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 15.010557174682617,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.105862617492676,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       27,
+       29
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:d52bf08fd515f4ca484b07d429bbe8ec2874a76b3a8feb732c79fc5884917078",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 155,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.18673324584961,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.576723575592041,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       10,
+       12
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:2eefba1a57e9269bd824eec24d2b35ec868e0f0a10cc6b7492b314922251f278",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 325,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 12.20500373840332,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.2668466567993164,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       10,
+       12
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:612cdd38da6b9c7f92cd364285b0148dd954e9f7fbeaba8e9843020f0661704f",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 134,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 17.251880645751953,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.4374003410339355,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       21,
+       22,
+       23
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:f2af86d4756af609490bd4a49f17d1f18048b670e02bcb1070108e8d0f65f472",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 35,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 18.986167907714844,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 7.8151774406433105,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       24,
+       26,
+       28
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:f0457b44f0241e6fec23c30e409cd850da40517f0dcc25cc0fcb80b224fb2370",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 240,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 8.79117202758789,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.2582108974456787,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       11,
+       21,
+       29
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:6b7aab05a31f58e1438a471cfc7bccf559d9d720b11d0e6454a3000beacbc3de",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 401,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.151968955993652,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 0.589606761932373,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       1,
+       10,
+       18
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:61656ba4ebdd93ee6ea9286caefaa1a268cc8c56fc1b8665515ef4b8bcf05d63",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 393,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 34.811424255371094,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 9.65489673614502,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       6,
+       7,
+       22
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:56cc7ac269c7786a210e6f9ccd61daaebcb87e0dd6a396544c77fc542da96075",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 284,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.280231475830078,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.0882368087768555,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       10,
+       16,
+       24
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:9150e1964bfd34d35441f0151e609a2d4518313753fe00e39377e8510c6b0d74",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 557,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 6
+     },
+     "margin": 10.797714233398438,
+     "n_units": 30,
+     "naive_ig_r1_p10_count": {
+      "drop": 0.19459199905395508,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       7,
+       11,
+       27
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:07d780e50fa219706d5a4a292214682f87b41061592140d8315ac1106a9a098c",
+     "text": null,
+     "tokens": null
+    }
+   ],
+   "verify_report": "passed",
+   "verify_report_seconds": 49.16301583289169
+  },
+  "net.1": {
+   "attribution_only": {
+    "claims": {
+     "g_necessary": {
+      "counterexamples": [],
+      "distribution": {
+       "unsupported": 60
+      },
+      "per_sample": {
+       "100": "unsupported",
+       "108": "unsupported",
+       "134": "unsupported",
+       "150": "unsupported",
+       "155": "unsupported",
+       "167": "unsupported",
+       "174": "unsupported",
+       "177": "unsupported",
+       "188": "unsupported",
+       "219": "unsupported",
+       "234": "unsupported",
+       "240": "unsupported",
+       "276": "unsupported",
+       "278": "unsupported",
+       "284": "unsupported",
+       "286": "unsupported",
+       "293": "unsupported",
+       "302": "unsupported",
+       "304": "unsupported",
+       "31": "unsupported",
+       "315": "unsupported",
+       "316": "unsupported",
+       "32": "unsupported",
+       "325": "unsupported",
+       "327": "unsupported",
+       "328": "unsupported",
+       "35": "unsupported",
+       "354": "unsupported",
+       "356": "unsupported",
+       "359": "unsupported",
+       "365": "unsupported",
+       "368": "unsupported",
+       "373": "unsupported",
+       "391": "unsupported",
+       "393": "unsupported",
+       "401": "unsupported",
+       "410": "unsupported",
+       "414": "unsupported",
+       "42": "unsupported",
+       "423": "unsupported",
+       "425": "unsupported",
+       "436": "unsupported",
+       "440": "unsupported",
+       "441": "unsupported",
+       "446": "unsupported",
+       "448": "unsupported",
+       "464": "unsupported",
+       "482": "unsupported",
+       "488": "unsupported",
+       "497": "unsupported",
+       "532": "unsupported",
+       "534": "unsupported",
+       "537": "unsupported",
+       "552": "unsupported",
+       "557": "unsupported",
+       "565": "unsupported",
+       "6": "unsupported",
+       "62": "unsupported",
+       "81": "unsupported",
+       "84": "unsupported"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "evidence_type_mismatch": 60
+      }
+     },
+     "g_sufficient": {
+      "counterexamples": [],
+      "distribution": {
+       "unsupported": 60
+      },
+      "per_sample": {
+       "100": "unsupported",
+       "108": "unsupported",
+       "134": "unsupported",
+       "150": "unsupported",
+       "155": "unsupported",
+       "167": "unsupported",
+       "174": "unsupported",
+       "177": "unsupported",
+       "188": "unsupported",
+       "219": "unsupported",
+       "234": "unsupported",
+       "240": "unsupported",
+       "276": "unsupported",
+       "278": "unsupported",
+       "284": "unsupported",
+       "286": "unsupported",
+       "293": "unsupported",
+       "302": "unsupported",
+       "304": "unsupported",
+       "31": "unsupported",
+       "315": "unsupported",
+       "316": "unsupported",
+       "32": "unsupported",
+       "325": "unsupported",
+       "327": "unsupported",
+       "328": "unsupported",
+       "35": "unsupported",
+       "354": "unsupported",
+       "356": "unsupported",
+       "359": "unsupported",
+       "365": "unsupported",
+       "368": "unsupported",
+       "373": "unsupported",
+       "391": "unsupported",
+       "393": "unsupported",
+       "401": "unsupported",
+       "410": "unsupported",
+       "414": "unsupported",
+       "42": "unsupported",
+       "423": "unsupported",
+       "425": "unsupported",
+       "436": "unsupported",
+       "440": "unsupported",
+       "441": "unsupported",
+       "446": "unsupported",
+       "448": "unsupported",
+       "464": "unsupported",
+       "482": "unsupported",
+       "488": "unsupported",
+       "497": "unsupported",
+       "532": "unsupported",
+       "534": "unsupported",
+       "537": "unsupported",
+       "552": "unsupported",
+       "557": "unsupported",
+       "565": "unsupported",
+       "6": "unsupported",
+       "62": "unsupported",
+       "81": "unsupported",
+       "84": "unsupported"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "evidence_type_mismatch": 60
+      }
+     },
+     "ig_necessary": {
+      "counterexamples": [],
+      "distribution": {
+       "unsupported": 60
+      },
+      "per_sample": {
+       "100": "unsupported",
+       "108": "unsupported",
+       "134": "unsupported",
+       "150": "unsupported",
+       "155": "unsupported",
+       "167": "unsupported",
+       "174": "unsupported",
+       "177": "unsupported",
+       "188": "unsupported",
+       "219": "unsupported",
+       "234": "unsupported",
+       "240": "unsupported",
+       "276": "unsupported",
+       "278": "unsupported",
+       "284": "unsupported",
+       "286": "unsupported",
+       "293": "unsupported",
+       "302": "unsupported",
+       "304": "unsupported",
+       "31": "unsupported",
+       "315": "unsupported",
+       "316": "unsupported",
+       "32": "unsupported",
+       "325": "unsupported",
+       "327": "unsupported",
+       "328": "unsupported",
+       "35": "unsupported",
+       "354": "unsupported",
+       "356": "unsupported",
+       "359": "unsupported",
+       "365": "unsupported",
+       "368": "unsupported",
+       "373": "unsupported",
+       "391": "unsupported",
+       "393": "unsupported",
+       "401": "unsupported",
+       "410": "unsupported",
+       "414": "unsupported",
+       "42": "unsupported",
+       "423": "unsupported",
+       "425": "unsupported",
+       "436": "unsupported",
+       "440": "unsupported",
+       "441": "unsupported",
+       "446": "unsupported",
+       "448": "unsupported",
+       "464": "unsupported",
+       "482": "unsupported",
+       "488": "unsupported",
+       "497": "unsupported",
+       "532": "unsupported",
+       "534": "unsupported",
+       "537": "unsupported",
+       "552": "unsupported",
+       "557": "unsupported",
+       "565": "unsupported",
+       "6": "unsupported",
+       "62": "unsupported",
+       "81": "unsupported",
+       "84": "unsupported"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "evidence_type_mismatch": 60
+      }
+     },
+     "ig_sufficient": {
+      "counterexamples": [],
+      "distribution": {
+       "unsupported": 60
+      },
+      "per_sample": {
+       "100": "unsupported",
+       "108": "unsupported",
+       "134": "unsupported",
+       "150": "unsupported",
+       "155": "unsupported",
+       "167": "unsupported",
+       "174": "unsupported",
+       "177": "unsupported",
+       "188": "unsupported",
+       "219": "unsupported",
+       "234": "unsupported",
+       "240": "unsupported",
+       "276": "unsupported",
+       "278": "unsupported",
+       "284": "unsupported",
+       "286": "unsupported",
+       "293": "unsupported",
+       "302": "unsupported",
+       "304": "unsupported",
+       "31": "unsupported",
+       "315": "unsupported",
+       "316": "unsupported",
+       "32": "unsupported",
+       "325": "unsupported",
+       "327": "unsupported",
+       "328": "unsupported",
+       "35": "unsupported",
+       "354": "unsupported",
+       "356": "unsupported",
+       "359": "unsupported",
+       "365": "unsupported",
+       "368": "unsupported",
+       "373": "unsupported",
+       "391": "unsupported",
+       "393": "unsupported",
+       "401": "unsupported",
+       "410": "unsupported",
+       "414": "unsupported",
+       "42": "unsupported",
+       "423": "unsupported",
+       "425": "unsupported",
+       "436": "unsupported",
+       "440": "unsupported",
+       "441": "unsupported",
+       "446": "unsupported",
+       "448": "unsupported",
+       "464": "unsupported",
+       "482": "unsupported",
+       "488": "unsupported",
+       "497": "unsupported",
+       "532": "unsupported",
+       "534": "unsupported",
+       "537": "unsupported",
+       "552": "unsupported",
+       "557": "unsupported",
+       "565": "unsupported",
+       "6": "unsupported",
+       "62": "unsupported",
+       "81": "unsupported",
+       "84": "unsupported"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "evidence_type_mismatch": 60
+      }
+     },
+     "r_necessary": {
+      "counterexamples": [],
+      "distribution": {
+       "not_evaluated": 60
+      },
+      "per_sample": {
+       "100": "not_evaluated",
+       "108": "not_evaluated",
+       "134": "not_evaluated",
+       "150": "not_evaluated",
+       "155": "not_evaluated",
+       "167": "not_evaluated",
+       "174": "not_evaluated",
+       "177": "not_evaluated",
+       "188": "not_evaluated",
+       "219": "not_evaluated",
+       "234": "not_evaluated",
+       "240": "not_evaluated",
+       "276": "not_evaluated",
+       "278": "not_evaluated",
+       "284": "not_evaluated",
+       "286": "not_evaluated",
+       "293": "not_evaluated",
+       "302": "not_evaluated",
+       "304": "not_evaluated",
+       "31": "not_evaluated",
+       "315": "not_evaluated",
+       "316": "not_evaluated",
+       "32": "not_evaluated",
+       "325": "not_evaluated",
+       "327": "not_evaluated",
+       "328": "not_evaluated",
+       "35": "not_evaluated",
+       "354": "not_evaluated",
+       "356": "not_evaluated",
+       "359": "not_evaluated",
+       "365": "not_evaluated",
+       "368": "not_evaluated",
+       "373": "not_evaluated",
+       "391": "not_evaluated",
+       "393": "not_evaluated",
+       "401": "not_evaluated",
+       "410": "not_evaluated",
+       "414": "not_evaluated",
+       "42": "not_evaluated",
+       "423": "not_evaluated",
+       "425": "not_evaluated",
+       "436": "not_evaluated",
+       "440": "not_evaluated",
+       "441": "not_evaluated",
+       "446": "not_evaluated",
+       "448": "not_evaluated",
+       "464": "not_evaluated",
+       "482": "not_evaluated",
+       "488": "not_evaluated",
+       "497": "not_evaluated",
+       "532": "not_evaluated",
+       "534": "not_evaluated",
+       "537": "not_evaluated",
+       "552": "not_evaluated",
+       "557": "not_evaluated",
+       "565": "not_evaluated",
+       "6": "not_evaluated",
+       "62": "not_evaluated",
+       "81": "not_evaluated",
+       "84": "not_evaluated"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "not_evaluated": 60
+      }
+     },
+     "r_sufficient": {
+      "counterexamples": [],
+      "distribution": {
+       "not_evaluated": 60
+      },
+      "per_sample": {
+       "100": "not_evaluated",
+       "108": "not_evaluated",
+       "134": "not_evaluated",
+       "150": "not_evaluated",
+       "155": "not_evaluated",
+       "167": "not_evaluated",
+       "174": "not_evaluated",
+       "177": "not_evaluated",
+       "188": "not_evaluated",
+       "219": "not_evaluated",
+       "234": "not_evaluated",
+       "240": "not_evaluated",
+       "276": "not_evaluated",
+       "278": "not_evaluated",
+       "284": "not_evaluated",
+       "286": "not_evaluated",
+       "293": "not_evaluated",
+       "302": "not_evaluated",
+       "304": "not_evaluated",
+       "31": "not_evaluated",
+       "315": "not_evaluated",
+       "316": "not_evaluated",
+       "32": "not_evaluated",
+       "325": "not_evaluated",
+       "327": "not_evaluated",
+       "328": "not_evaluated",
+       "35": "not_evaluated",
+       "354": "not_evaluated",
+       "356": "not_evaluated",
+       "359": "not_evaluated",
+       "365": "not_evaluated",
+       "368": "not_evaluated",
+       "373": "not_evaluated",
+       "391": "not_evaluated",
+       "393": "not_evaluated",
+       "401": "not_evaluated",
+       "410": "not_evaluated",
+       "414": "not_evaluated",
+       "42": "not_evaluated",
+       "423": "not_evaluated",
+       "425": "not_evaluated",
+       "436": "not_evaluated",
+       "440": "not_evaluated",
+       "441": "not_evaluated",
+       "446": "not_evaluated",
+       "448": "not_evaluated",
+       "464": "not_evaluated",
+       "482": "not_evaluated",
+       "488": "not_evaluated",
+       "497": "not_evaluated",
+       "532": "not_evaluated",
+       "534": "not_evaluated",
+       "537": "not_evaluated",
+       "552": "not_evaluated",
+       "557": "not_evaluated",
+       "565": "not_evaluated",
+       "6": "not_evaluated",
+       "62": "not_evaluated",
+       "81": "not_evaluated",
+       "84": "not_evaluated"
+      },
+      "samples_sensitive_by_axis": {},
+      "samples_with_finding_kind": {
+       "not_evaluated": 60
+      }
+     }
+    },
+    "coverage": {
+     "claims": 6,
+     "claims_by_standing": [],
+     "concepts": 0,
+     "concepts_evaluated": 0,
+     "counterexample_caps": [
+      [
+       "max_counterexample_fraction",
+       "not declared"
+      ],
+      [
+       "max_false_positive_rate",
+       "not declared"
+      ],
+      [
+       "max_false_negative_rate",
+       "not declared"
+      ]
+     ],
+     "evidence_statuses": [
+      "attributed",
+      "measured",
+      "observed"
+     ],
+     "per_sample_claims": [
+      [
+       "g_necessary",
+       60,
+       60
+      ],
+      [
+       "g_sufficient",
+       60,
+       60
+      ],
+      [
+       "ig_necessary",
+       60,
+       60
+      ],
+      [
+       "ig_sufficient",
+       60,
+       60
+      ],
+      [
+       "r_necessary",
+       60,
+       0
+      ],
+      [
+       "r_sufficient",
+       60,
+       0
+      ]
+     ],
+     "plan_samples": 60,
+     "protocols_required_not_run": [
+      "comprehensiveness",
+      "sufficiency"
+     ],
+     "protocols_run": [],
+     "samples_with_evidence": 0,
+     "untested_invariances": []
+    },
+    "evidence": {
+     "digest": "sha256:3d404384877d114228690712a84722d13e26994ccdbc7d7dd57dcae6f0059d64",
+     "records": 665,
+     "results": 0,
+     "results_excluded": 0,
+     "results_included": 0,
+     "traces": 120
+    },
+    "protocol_disagreement_samples": {},
+    "report_findings": []
+   },
+   "audit": {
+    "claims": {
+     "g_necessary": {
+      "counterexamples": [
+       410,
+       188,
+       315,
+       293,
+       327,
+       425,
+       497,
+       325,
+       401,
+       234,
+       391,
+       240,
+       174,
+       532,
+       167,
+       150,
+       278,
+       464,
+       276,
+       316,
+       436,
+       81
+      ],
+      "distribution": {
+       "assumption_sensitive": 38,
+       "contradicted": 22
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "assumption_sensitive",
+       "134": "assumption_sensitive",
+       "150": "contradicted",
+       "155": "assumption_sensitive",
+       "167": "contradicted",
+       "174": "contradicted",
+       "177": "assumption_sensitive",
+       "188": "contradicted",
+       "219": "assumption_sensitive",
+       "234": "contradicted",
+       "240": "contradicted",
+       "276": "contradicted",
+       "278": "contradicted",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "contradicted",
+       "302": "assumption_sensitive",
+       "304": "assumption_sensitive",
+       "31": "assumption_sensitive",
+       "315": "contradicted",
+       "316": "contradicted",
+       "32": "assumption_sensitive",
+       "325": "contradicted",
+       "327": "contradicted",
+       "328": "assumption_sensitive",
+       "35": "assumption_sensitive",
+       "354": "assumption_sensitive",
+       "356": "assumption_sensitive",
+       "359": "assumption_sensitive",
+       "365": "assumption_sensitive",
+       "368": "assumption_sensitive",
+       "373": "assumption_sensitive",
+       "391": "contradicted",
+       "393": "assumption_sensitive",
+       "401": "contradicted",
+       "410": "contradicted",
+       "414": "assumption_sensitive",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "contradicted",
+       "436": "contradicted",
+       "440": "assumption_sensitive",
+       "441": "assumption_sensitive",
+       "446": "assumption_sensitive",
+       "448": "assumption_sensitive",
+       "464": "contradicted",
+       "482": "assumption_sensitive",
+       "488": "assumption_sensitive",
+       "497": "contradicted",
+       "532": "contradicted",
+       "534": "assumption_sensitive",
+       "537": "assumption_sensitive",
+       "552": "assumption_sensitive",
+       "557": "assumption_sensitive",
+       "565": "assumption_sensitive",
+       "6": "assumption_sensitive",
+       "62": "assumption_sensitive",
+       "81": "contradicted",
+       "84": "assumption_sensitive"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 38,
+       "null": 9,
+       "replacement": 33,
+       "threshold": 36
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 116,
+       "inconclusive_evidence": 2
+      }
+     },
+     "g_sufficient": {
+      "counterexamples": [
+       557,
+       410,
+       304,
+       315,
+       552,
+       293,
+       327,
+       497,
+       325,
+       401,
+       234,
+       482,
+       391,
+       174,
+       488,
+       532,
+       414,
+       167,
+       150,
+       278,
+       84,
+       464,
+       276,
+       359,
+       316,
+       436,
+       81
+      ],
+      "distribution": {
+       "assumption_sensitive": 33,
+       "contradicted": 27
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "assumption_sensitive",
+       "134": "assumption_sensitive",
+       "150": "contradicted",
+       "155": "assumption_sensitive",
+       "167": "contradicted",
+       "174": "contradicted",
+       "177": "assumption_sensitive",
+       "188": "assumption_sensitive",
+       "219": "assumption_sensitive",
+       "234": "contradicted",
+       "240": "assumption_sensitive",
+       "276": "contradicted",
+       "278": "contradicted",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "contradicted",
+       "302": "assumption_sensitive",
+       "304": "contradicted",
+       "31": "assumption_sensitive",
+       "315": "contradicted",
+       "316": "contradicted",
+       "32": "assumption_sensitive",
+       "325": "contradicted",
+       "327": "contradicted",
+       "328": "assumption_sensitive",
+       "35": "assumption_sensitive",
+       "354": "assumption_sensitive",
+       "356": "assumption_sensitive",
+       "359": "contradicted",
+       "365": "assumption_sensitive",
+       "368": "assumption_sensitive",
+       "373": "assumption_sensitive",
+       "391": "contradicted",
+       "393": "assumption_sensitive",
+       "401": "contradicted",
+       "410": "contradicted",
+       "414": "contradicted",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "assumption_sensitive",
+       "436": "contradicted",
+       "440": "assumption_sensitive",
+       "441": "assumption_sensitive",
+       "446": "assumption_sensitive",
+       "448": "assumption_sensitive",
+       "464": "contradicted",
+       "482": "contradicted",
+       "488": "contradicted",
+       "497": "contradicted",
+       "532": "contradicted",
+       "534": "assumption_sensitive",
+       "537": "assumption_sensitive",
+       "552": "contradicted",
+       "557": "contradicted",
+       "565": "assumption_sensitive",
+       "6": "assumption_sensitive",
+       "62": "assumption_sensitive",
+       "81": "contradicted",
+       "84": "contradicted"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 32,
+       "replacement": 33,
+       "threshold": 30
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 95
+      }
+     },
+     "ig_necessary": {
+      "counterexamples": [],
+      "distribution": {
+       "assumption_sensitive": 60
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "assumption_sensitive",
+       "134": "assumption_sensitive",
+       "150": "assumption_sensitive",
+       "155": "assumption_sensitive",
+       "167": "assumption_sensitive",
+       "174": "assumption_sensitive",
+       "177": "assumption_sensitive",
+       "188": "assumption_sensitive",
+       "219": "assumption_sensitive",
+       "234": "assumption_sensitive",
+       "240": "assumption_sensitive",
+       "276": "assumption_sensitive",
+       "278": "assumption_sensitive",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "assumption_sensitive",
+       "302": "assumption_sensitive",
+       "304": "assumption_sensitive",
+       "31": "assumption_sensitive",
+       "315": "assumption_sensitive",
+       "316": "assumption_sensitive",
+       "32": "assumption_sensitive",
+       "325": "assumption_sensitive",
+       "327": "assumption_sensitive",
+       "328": "assumption_sensitive",
+       "35": "assumption_sensitive",
+       "354": "assumption_sensitive",
+       "356": "assumption_sensitive",
+       "359": "assumption_sensitive",
+       "365": "assumption_sensitive",
+       "368": "assumption_sensitive",
+       "373": "assumption_sensitive",
+       "391": "assumption_sensitive",
+       "393": "assumption_sensitive",
+       "401": "assumption_sensitive",
+       "410": "assumption_sensitive",
+       "414": "assumption_sensitive",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "assumption_sensitive",
+       "436": "assumption_sensitive",
+       "440": "assumption_sensitive",
+       "441": "assumption_sensitive",
+       "446": "assumption_sensitive",
+       "448": "assumption_sensitive",
+       "464": "assumption_sensitive",
+       "482": "assumption_sensitive",
+       "488": "assumption_sensitive",
+       "497": "assumption_sensitive",
+       "532": "assumption_sensitive",
+       "534": "assumption_sensitive",
+       "537": "assumption_sensitive",
+       "552": "assumption_sensitive",
+       "557": "assumption_sensitive",
+       "565": "assumption_sensitive",
+       "6": "assumption_sensitive",
+       "62": "assumption_sensitive",
+       "81": "assumption_sensitive",
+       "84": "assumption_sensitive"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 60,
+       "null": 16,
+       "replacement": 57,
+       "threshold": 58
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 191
+      }
+     },
+     "ig_sufficient": {
+      "counterexamples": [],
+      "distribution": {
+       "assumption_sensitive": 60
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "assumption_sensitive",
+       "134": "assumption_sensitive",
+       "150": "assumption_sensitive",
+       "155": "assumption_sensitive",
+       "167": "assumption_sensitive",
+       "174": "assumption_sensitive",
+       "177": "assumption_sensitive",
+       "188": "assumption_sensitive",
+       "219": "assumption_sensitive",
+       "234": "assumption_sensitive",
+       "240": "assumption_sensitive",
+       "276": "assumption_sensitive",
+       "278": "assumption_sensitive",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "assumption_sensitive",
+       "302": "assumption_sensitive",
+       "304": "assumption_sensitive",
+       "31": "assumption_sensitive",
+       "315": "assumption_sensitive",
+       "316": "assumption_sensitive",
+       "32": "assumption_sensitive",
+       "325": "assumption_sensitive",
+       "327": "assumption_sensitive",
+       "328": "assumption_sensitive",
+       "35": "assumption_sensitive",
+       "354": "assumption_sensitive",
+       "356": "assumption_sensitive",
+       "359": "assumption_sensitive",
+       "365": "assumption_sensitive",
+       "368": "assumption_sensitive",
+       "373": "assumption_sensitive",
+       "391": "assumption_sensitive",
+       "393": "assumption_sensitive",
+       "401": "assumption_sensitive",
+       "410": "assumption_sensitive",
+       "414": "assumption_sensitive",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "assumption_sensitive",
+       "436": "assumption_sensitive",
+       "440": "assumption_sensitive",
+       "441": "assumption_sensitive",
+       "446": "assumption_sensitive",
+       "448": "assumption_sensitive",
+       "464": "assumption_sensitive",
+       "482": "assumption_sensitive",
+       "488": "assumption_sensitive",
+       "497": "assumption_sensitive",
+       "532": "assumption_sensitive",
+       "534": "assumption_sensitive",
+       "537": "assumption_sensitive",
+       "552": "assumption_sensitive",
+       "557": "assumption_sensitive",
+       "565": "assumption_sensitive",
+       "6": "assumption_sensitive",
+       "62": "assumption_sensitive",
+       "81": "assumption_sensitive",
+       "84": "assumption_sensitive"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 60,
+       "replacement": 60,
+       "threshold": 59
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 179
+      }
+     },
+     "r_necessary": {
+      "counterexamples": [
+       557,
+       410,
+       188,
+       219,
+       304,
+       315,
+       446,
+       155,
+       293,
+       327,
+       425,
+       497,
+       354,
+       393,
+       440,
+       325,
+       177,
+       234,
+       482,
+       391,
+       240,
+       534,
+       565,
+       532,
+       441,
+       167,
+       150,
+       278,
+       84,
+       302,
+       328,
+       32,
+       276,
+       359,
+       373,
+       537,
+       108,
+       316,
+       436,
+       368,
+       35,
+       134,
+       62
+      ],
+      "distribution": {
+       "assumption_sensitive": 17,
+       "contradicted": 43
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "contradicted",
+       "134": "contradicted",
+       "150": "contradicted",
+       "155": "contradicted",
+       "167": "contradicted",
+       "174": "assumption_sensitive",
+       "177": "contradicted",
+       "188": "contradicted",
+       "219": "contradicted",
+       "234": "contradicted",
+       "240": "contradicted",
+       "276": "contradicted",
+       "278": "contradicted",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "contradicted",
+       "302": "contradicted",
+       "304": "contradicted",
+       "31": "assumption_sensitive",
+       "315": "contradicted",
+       "316": "contradicted",
+       "32": "contradicted",
+       "325": "contradicted",
+       "327": "contradicted",
+       "328": "contradicted",
+       "35": "contradicted",
+       "354": "contradicted",
+       "356": "assumption_sensitive",
+       "359": "contradicted",
+       "365": "assumption_sensitive",
+       "368": "contradicted",
+       "373": "contradicted",
+       "391": "contradicted",
+       "393": "contradicted",
+       "401": "assumption_sensitive",
+       "410": "contradicted",
+       "414": "assumption_sensitive",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "contradicted",
+       "436": "contradicted",
+       "440": "contradicted",
+       "441": "contradicted",
+       "446": "contradicted",
+       "448": "assumption_sensitive",
+       "464": "assumption_sensitive",
+       "482": "contradicted",
+       "488": "assumption_sensitive",
+       "497": "contradicted",
+       "532": "contradicted",
+       "534": "contradicted",
+       "537": "contradicted",
+       "552": "assumption_sensitive",
+       "557": "contradicted",
+       "565": "contradicted",
+       "6": "assumption_sensitive",
+       "62": "contradicted",
+       "81": "assumption_sensitive",
+       "84": "contradicted"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 16,
+       "null": 15,
+       "replacement": 7,
+       "threshold": 16
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 54,
+       "inconclusive_evidence": 3,
+       "missing_control": 1
+      }
+     },
+     "r_sufficient": {
+      "counterexamples": [
+       557,
+       410,
+       188,
+       219,
+       304,
+       315,
+       446,
+       552,
+       155,
+       6,
+       327,
+       425,
+       497,
+       354,
+       393,
+       440,
+       325,
+       401,
+       234,
+       482,
+       391,
+       240,
+       534,
+       565,
+       532,
+       441,
+       414,
+       150,
+       356,
+       278,
+       31,
+       84,
+       302,
+       328,
+       32,
+       276,
+       359,
+       537,
+       108,
+       316,
+       436,
+       368,
+       35,
+       134,
+       81,
+       62
+      ],
+      "distribution": {
+       "assumption_sensitive": 14,
+       "contradicted": 46
+      },
+      "per_sample": {
+       "100": "assumption_sensitive",
+       "108": "contradicted",
+       "134": "contradicted",
+       "150": "contradicted",
+       "155": "contradicted",
+       "167": "assumption_sensitive",
+       "174": "assumption_sensitive",
+       "177": "assumption_sensitive",
+       "188": "contradicted",
+       "219": "contradicted",
+       "234": "contradicted",
+       "240": "contradicted",
+       "276": "contradicted",
+       "278": "contradicted",
+       "284": "assumption_sensitive",
+       "286": "assumption_sensitive",
+       "293": "assumption_sensitive",
+       "302": "contradicted",
+       "304": "contradicted",
+       "31": "contradicted",
+       "315": "contradicted",
+       "316": "contradicted",
+       "32": "contradicted",
+       "325": "contradicted",
+       "327": "contradicted",
+       "328": "contradicted",
+       "35": "contradicted",
+       "354": "contradicted",
+       "356": "contradicted",
+       "359": "contradicted",
+       "365": "assumption_sensitive",
+       "368": "contradicted",
+       "373": "assumption_sensitive",
+       "391": "contradicted",
+       "393": "contradicted",
+       "401": "contradicted",
+       "410": "contradicted",
+       "414": "contradicted",
+       "42": "assumption_sensitive",
+       "423": "assumption_sensitive",
+       "425": "contradicted",
+       "436": "contradicted",
+       "440": "contradicted",
+       "441": "contradicted",
+       "446": "contradicted",
+       "448": "assumption_sensitive",
+       "464": "assumption_sensitive",
+       "482": "contradicted",
+       "488": "assumption_sensitive",
+       "497": "contradicted",
+       "532": "contradicted",
+       "534": "contradicted",
+       "537": "contradicted",
+       "552": "contradicted",
+       "557": "contradicted",
+       "565": "contradicted",
+       "6": "contradicted",
+       "62": "contradicted",
+       "81": "contradicted",
+       "84": "contradicted"
+      },
+      "samples_sensitive_by_axis": {
+       "k": 14,
+       "replacement": 14,
+       "threshold": 14
+      },
+      "samples_with_finding_kind": {
+       "assumption_sensitive": 42
+      }
+     }
+    },
+    "coverage": {
+     "claims": 6,
+     "claims_by_standing": [],
+     "concepts": 0,
+     "concepts_evaluated": 0,
+     "counterexample_caps": [
+      [
+       "max_counterexample_fraction",
+       "not declared"
+      ],
+      [
+       "max_false_positive_rate",
+       "not declared"
+      ],
+      [
+       "max_false_negative_rate",
+       "not declared"
+      ]
+     ],
+     "evidence_statuses": [
+      "attributed",
+      "interventional",
+      "measured",
+      "observed"
+     ],
+     "per_sample_claims": [
+      [
+       "g_necessary",
+       60,
+       60
+      ],
+      [
+       "g_sufficient",
+       60,
+       60
+      ],
+      [
+       "ig_necessary",
+       60,
+       60
+      ],
+      [
+       "ig_sufficient",
+       60,
+       60
+      ],
+      [
+       "r_necessary",
+       60,
+       60
+      ],
+      [
+       "r_sufficient",
+       60,
+       60
+      ]
+     ],
+     "plan_samples": 60,
+     "protocols_required_not_run": [],
+     "protocols_run": [
+      "comprehensiveness",
+      "sufficiency"
+     ],
+     "samples_with_evidence": 60,
+     "untested_invariances": []
+    },
+    "evidence": {
+     "digest": "sha256:067039cd71a405135906bc323e657121ff9b7a5d5f07516a517ecf4b173411ba",
+     "records": 876963,
+     "results": 4320,
+     "results_excluded": 0,
+     "results_included": 4320,
+     "traces": 4440
+    },
+    "protocol_disagreement_samples": {},
+    "report_findings": []
+   },
+   "audit_seconds": 67.53073791600764,
+   "n_results": 4320,
+   "n_samples": 60,
+   "naive_single_configuration_supports": 19,
+   "plan_id": "audit_plan:42965f1cb7ceba6743cc7f0be05a1fcd",
+   "run_seconds": 202.92042116704397,
+   "samples": [
+    {
+     "index": 327,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 11.880582809448242,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.9058985710144043,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       5,
+       31,
+       37,
+       40,
+       44,
+       51
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:4420f65e1bb78ef671d950a204e9f8ee7059cf865665a1941c97bdefd61f0024",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 84,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.609808921813965,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.779508590698242,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       19,
+       31,
+       41,
+       42,
+       46,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:c73157893a1d7d308c3620b5be959a19c48c1e29d098f68ddec25ad0a28382b2",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 410,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 7.539187431335449,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.1075769662857056,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       28,
+       40,
+       41,
+       45,
+       52,
+       59
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:08324485046446cb1710f1b24b7b317abe7378c07f25aa6b7a3be3a780130039",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 368,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 27.312976837158203,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 11.272026538848877,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       7,
+       8,
+       25,
+       30,
+       57,
+       59
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:ec85cf8a0efcde92d5165d402d26ee2b1ec9c89d8138f4bc3e8b0108819369c3",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 286,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 9.484394073486328,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.769344925880432,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       0,
+       13,
+       20,
+       44,
+       45,
+       56,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:c16c2abf78dc1aa31ba0fb84d104105a0b3bb56df0a0d62f3a2d25438daa4da5",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 108,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 47.90598678588867,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 17.91960048675537,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       3,
+       10,
+       16,
+       30,
+       57,
+       61
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:e7c1e898345aa1880b905702dc8176014c87b43441a078db7d31d7effc95251d",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 188,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 13.966633796691895,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.436477422714233,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       28,
+       31,
+       41,
+       42,
+       46,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:0aeac63266806222a69f28120a3c12cf46f3c2da38c8ec5e9b523f3d26f9bc2a",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 414,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 3.0104832649230957,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.8889293298125267,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       3,
+       10,
+       16,
+       30,
+       41,
+       45,
+       57
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:a1904f3e5a4e1bf4c4ff8e77d6d2dab68dc7b36965c49ee7cf1a6dff8ebfe1ed",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 150,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 9.232645034790039,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.13600218296051,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       17,
+       19,
+       28,
+       31,
+       38,
+       41,
+       42
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:acacd06cc2d12450bdc1e6fba3aae0144fbb5090e20721ac7dd666a87f2cc3e5",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 497,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.02923583984375,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.806368350982666,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       31,
+       37,
+       40,
+       41,
+       47,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:522d805f45ffe5bf95c11a596f33f2a87fb2b82c62b229e76f2c62d6a5abf631",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 565,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 19.180442810058594,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 7.576489448547363,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       3,
+       4,
+       10,
+       25,
+       30,
+       57
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:88c1b218078b7df40d83f56c29e8790c201d6dd07974fa3db28d98dcaeba1026",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 304,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.330509185791016,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.175671577453613,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       18,
+       44,
+       47,
+       52,
+       56,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:1da02feb67e04db43477270c992b43eeeb889ab666fc9d5f3ff7c54fe19c23bf",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 316,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 15.63698673248291,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.428754806518555,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       31,
+       37,
+       40,
+       47,
+       50,
+       51
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:e86a6595734aa9c9612a673c0ba1013fad65d07c7cef12174141c91a487c8a01",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 219,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 30.316219329833984,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 12.084746360778809,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       4,
+       8,
+       15,
+       33,
+       57,
+       59
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:16e118b03f6134dc8eda801827d9645ac1226789100428be11dd9cfd9a53597c",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 488,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 9.158041000366211,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.563137054443359,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       19,
+       28,
+       31,
+       42,
+       46,
+       47,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:876b0a1496e47c99d2a03bec37bb162a3636ee5832d8e687a103a633ab42f7db",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 278,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 8.199116706848145,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.8253180980682373,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       5,
+       31,
+       37,
+       40,
+       41,
+       51
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:bfaaea79186f851b1f0726aaeb5b144c654795ffdf203b6ff92072e432efad84",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 425,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 12.861204147338867,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.212269067764282,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       0,
+       40,
+       41,
+       44,
+       45,
+       51,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:4628b02fe5a52b4e77d2dc78041cf242f4c341ef66ccc0ed6dee61e8038f8e55",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 448,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 3.2395029067993164,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 1.6646142601966858,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       0,
+       5,
+       33,
+       40,
+       47,
+       59,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:29bbdc1b919a3be51baf7a902d5a62c8c239793fb89c40c59f2bb24d19ed58c0",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 174,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 14.721406936645508,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.293561697006226,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       18,
+       31,
+       36,
+       41,
+       46,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:7428a52f87cd78c868652c13aa028b8f22fda74c297f828034282fdafed7870a",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 62,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 16.377323150634766,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 7.09308385848999,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       10,
+       13,
+       15,
+       16,
+       57,
+       61
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:fb9567fadfeb41f285f23070238ec2479acf18166dad182c77a14aa5f7caa101",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 328,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 13.5671968460083,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.272093296051025,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       8,
+       10,
+       15,
+       16,
+       57,
+       59
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:cbf9952d858af9144d93f15e77ab472d7291635ffa6a38aba428d140fd6911a9",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 354,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 14.726106643676758,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.776304483413696,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       18,
+       19,
+       20,
+       44,
+       52,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:559146db69563cf2fa35852c6df57c37656eb14962cef192b4b81fda3bdb0fff",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 391,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 12.323946952819824,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.151101589202881,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       18,
+       19,
+       28,
+       31,
+       45,
+       46,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:6add4d08cdf4ee05e4b44a21a5d75b2d47e79343bcc9a222096ccb3e3d0af62d",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 365,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 16.59258270263672,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.57412052154541,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       4,
+       8,
+       15,
+       25,
+       30,
+       57
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:69f61e089188c452f75b6e17e707ac956f2f4e9ba5d5b39bee4f6e485749d700",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 31,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 14.267131805419922,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 8.837920188903809,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       7,
+       8,
+       23,
+       33,
+       59,
+       61,
+       63
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:c1e8d88757a02d55defc0df9eaba663e28f879efb042602c9f9981c0a1e64d6e",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 6,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 17.499591827392578,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 7.4339599609375,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       8,
+       15,
+       33,
+       57,
+       59,
+       63
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:38b96135639b34bcb28607dca4d73c02676345aa747751ba608dde3587c6b029",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 464,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 7.666385650634766,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.656810879707336,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       4,
+       5,
+       31,
+       37,
+       38,
+       40,
+       50
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:cebe5eb6d48430d7ee4a9b08198ab1f1a2bd52884d1848ed2c239740bb3cab72",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 315,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 13.62347412109375,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.057028532028198,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       4,
+       5,
+       31,
+       37,
+       40,
+       47,
+       51
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:20aadbdf54f82051ff64d104276cd38baea4dcac5275f69456172688ac7182ca",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 436,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 9.115242004394531,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.032815217971802,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       18,
+       19,
+       31,
+       40,
+       41,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:ebebecf96df9153100f259b62e6d9ee1defb361bf81784a20bbb278634b72018",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 423,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 5.247919082641602,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.5611677169799805,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       0,
+       5,
+       17,
+       40,
+       44,
+       47,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:4fc4c4c15c97a1ced6e6b7249b724560088585583f3ba681b79a82f3a908d091",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 234,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 15.56027603149414,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.242358207702637,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       18,
+       19,
+       31,
+       38,
+       42,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:63b7aba4e6631814d4b121b79a4f43e568c74e9464b05b0c4468032c349f04d7",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 359,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 9.415763854980469,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.718959331512451,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       18,
+       28,
+       44,
+       46,
+       51,
+       52,
+       56
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:db80407dbd0d5916b700c7aaf7d71d2a34344e623c049a9ae0044e00bd8aa697",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 482,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 9.210887908935547,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.5802388191223145,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       5,
+       18,
+       19,
+       31,
+       42,
+       46,
+       47
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:64b2f199e3ad118fe3cc2d39c5d9e9f70b71b9df46c7f98541547b528473444b",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 81,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 1.064375400543213,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.0387769043445587,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       10,
+       19,
+       31,
+       42,
+       46,
+       47,
+       61
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:f98d7456c542defc6ec1dba3a78c620852ca7eebf33b5d2e65599945c99b0fcd",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 441,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 15.359870910644531,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.236149311065674,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       4,
+       10,
+       15,
+       16,
+       25,
+       57
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:8caf4a902ebb4f5e5ebe6f657ce0d6feaafeb95bf58cf5cb1188afa312dd8ad9",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 446,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 23.684904098510742,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 9.59240436553955,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       8,
+       10,
+       15,
+       33,
+       57,
+       59
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:2769109f7742bc8cb7c17bb69cf4ec07153fd4e1cee1070f068397fc4438c67c",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 373,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 21.325794219970703,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 8.18559217453003,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       8,
+       15,
+       25,
+       33,
+       57,
+       59
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:de077128758750f2510cc2a7b58c5d1f9c11b18966bfd5fe1708eff89d47c973",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 167,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 6.570950508117676,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 2.969792366027832,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       4,
+       16,
+       25,
+       30,
+       35,
+       57
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:aa4af285d40fc510a70b655014d09fb87770ffc17f37e6266250cfab37610db5",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 177,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 13.585679054260254,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.048555135726929,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       10,
+       13,
+       15,
+       16,
+       57,
+       61
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:62d342bc637380dc7fe799a8f6fd1089cb77188247cdab1e7ed185beeae2e9d7",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 552,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 9.98375129699707,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.246502161026001,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       0,
+       4,
+       28,
+       40,
+       41,
+       45,
+       58
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:27d78a211c4e7439d933e665f2acd8809249727ed2c353c769d3f7cf7787be01",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 32,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 22.868534088134766,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 8.957439422607422,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       3,
+       8,
+       10,
+       16,
+       30,
+       57
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:cc69895c5604975da2dc730e3429742cda9bed25b18284d3db7f09d884a44908",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 440,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 8.950087547302246,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.4064531326293945,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       0,
+       13,
+       20,
+       45,
+       47,
+       56,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:5ed4620f82fd7e81e97223eee4201af261063461970972d5b570751cc0a85775",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 356,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 7.221613883972168,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.098056197166443,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       0,
+       17,
+       19,
+       42,
+       47,
+       52,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:ad1e85898e3b937725c0afe914356b242e1eed50e9a9f72a684bd550ed8aafed",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 42,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 29.49700927734375,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 14.15531873703003,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       3,
+       10,
+       16,
+       30,
+       49,
+       57
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:ce0b97791e758597501b2d9d27eb44d3b4d29e2d996db043e8591d4ca508cf94",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 100,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 5.0429511070251465,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 3.9443249702453613,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       1,
+       3,
+       16,
+       33,
+       45,
+       57,
+       59
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:d16c86e23e18b77b76c62e8c96560756ea30a15f86fe309c083c1774cae44ae1",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 532,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 8.737086296081543,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.432960271835327,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       5,
+       31,
+       37,
+       40,
+       47,
+       50,
+       59
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:8a1c9cc6210ee258e7d03b9b45e36e062a9d4ea6775575e605aec328da7fdb6d",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 537,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 6.889813423156738,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.408700108528137,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       2,
+       10,
+       19,
+       28,
+       42,
+       45,
+       46
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:e1355aaaaaf880ae051e71fcafbd667489c31fad09317264c5cd9e95e7eb1ac7",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 293,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.708433151245117,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.570704698562622,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       31,
+       40,
+       41,
+       42,
+       50,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:43919eb36f4467ba24048a326d0d3b9c258ea82f63f5576b19b90e4e3cd2c4a7",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 534,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.842000961303711,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.704469919204712,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       0,
+       20,
+       42,
+       45,
+       47,
+       52,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:88a45a7830196b80d9bc4f458c0777ce998ff49a20ae257466ef0acd75c8ff42",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 302,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 24.37843894958496,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 9.828045845031738,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       2,
+       3,
+       10,
+       13,
+       15,
+       30,
+       57
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:c755336929aa5ae24d85d733b6b943b620d51308d81fe657f6577f9934f36e73",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 276,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 15.010557174682617,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.637969017028809,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       31,
+       41,
+       42,
+       46,
+       50,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:d52bf08fd515f4ca484b07d429bbe8ec2874a76b3a8feb732c79fc5884917078",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 155,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.18673324584961,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.044629335403442,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       17,
+       31,
+       40,
+       41,
+       42,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:2eefba1a57e9269bd824eec24d2b35ec868e0f0a10cc6b7492b314922251f278",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 325,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 12.20500373840332,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.447772741317749,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       5,
+       31,
+       41,
+       42,
+       46,
+       47,
+       50
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:612cdd38da6b9c7f92cd364285b0148dd954e9f7fbeaba8e9843020f0661704f",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 134,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 17.251880645751953,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.895090103149414,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       8,
+       15,
+       25,
+       33,
+       57,
+       59
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:f2af86d4756af609490bd4a49f17d1f18048b670e02bcb1070108e8d0f65f472",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 35,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 18.986167907714844,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 7.685512542724609,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       8,
+       10,
+       16,
+       30,
+       57,
+       59
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:f0457b44f0241e6fec23c30e409cd850da40517f0dcc25cc0fcb80b224fb2370",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 240,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 8.79117202758789,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 4.699293613433838,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       5,
+       31,
+       37,
+       38,
+       40,
+       47,
+       50
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:6b7aab05a31f58e1438a471cfc7bccf559d9d720b11d0e6454a3000beacbc3de",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 401,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.151968955993652,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.290221691131592,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       5,
+       31,
+       37,
+       40,
+       42,
+       47,
+       50
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:61656ba4ebdd93ee6ea9286caefaa1a268cc8c56fc1b8665515ef4b8bcf05d63",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 393,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 34.811424255371094,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 12.295540809631348,
+      "k": 7,
+      "outcome": "contradicts",
+      "units": [
+       3,
+       8,
+       10,
+       15,
+       57,
+       59,
+       61
+      ]
+     },
+     "pred": 0,
+     "runner_up": 1,
+     "sample_id": "sha256:56cc7ac269c7786a210e6f9ccd61daaebcb87e0dd6a396544c77fc542da96075",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 284,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.280231475830078,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 6.221848964691162,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       0,
+       5,
+       20,
+       44,
+       47,
+       56,
+       60
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:9150e1964bfd34d35441f0151e609a2d4518313753fe00e39377e8510c6b0d74",
+     "text": null,
+     "tokens": null
+    },
+    {
+     "index": 557,
+     "ks": {
+      "0.05": 4,
+      "0.1": 7,
+      "0.2": 13
+     },
+     "margin": 10.797714233398438,
+     "n_units": 64,
+     "naive_ig_r1_p10_count": {
+      "drop": 5.583752632141113,
+      "k": 7,
+      "outcome": "supports",
+      "units": [
+       17,
+       28,
+       41,
+       44,
+       45,
+       51,
+       52
+      ]
+     },
+     "pred": 1,
+     "runner_up": 0,
+     "sample_id": "sha256:07d780e50fa219706d5a4a292214682f87b41061592140d8315ac1106a9a098c",
+     "text": null,
+     "tokens": null
+    }
+   ],
+   "verify_report": "passed",
+   "verify_report_seconds": 67.03191445907578
+  }
+ }
+}
