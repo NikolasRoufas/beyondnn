@@ -1,0 +1,57 @@
+# Phase 7.5 regression matrix (84e0283, 2026-09-27)
+== py3.10 no-captum
+SKIPPED [1] tests/test_attribution_captum.py:28: Captum not installed (optional extra) 1014 passed, 1 skipped in 215.26s (0:03:35) 
+3.10.16 2.14.0
+== py3.10 --extra captum
+3.10.16 2.14.0
+== py3.12 no-captum
+SKIPPED [1] tests/test_attribution_captum.py:28: Captum not installed (optional extra) 1014 passed, 1 skipped in 144.78s (0:02:24) 
+3.12.13 2.14.0
+== py3.12 --extra captum
+3.12.13 2.14.0
+== py3.14 no-captum
+SKIPPED [1] tests/test_attribution_captum.py:28: Captum not installed (optional extra) 1014 passed, 1 skipped in 171.01s (0:02:51) 
+3.14.3 2.14.0
+== py3.14 --extra captum
+3.14.3 2.14.0
+== ruff
+All checks passed!
+149 files already formatted
+== mypy (no captum)
+Success: no issues found in 112 source files
+== mypy (captum)
+Success: no issues found in 112 source files
+== build
+Successfully built /private/tmp/claude-501/-Users-nikolasroufas/bc562b42-f87a-43ef-a959-a6b16bc26158/scratchpad/dist75c/beyondnn-0.0.0.dev0.tar.gz
+Successfully built /private/tmp/claude-501/-Users-nikolasroufas/bc562b42-f87a-43ef-a959-a6b16bc26158/scratchpad/dist75c/beyondnn-0.0.0.dev0-py3-none-any.whl
+== clean wheel (none)
+phase-1 smoke OK
+phase-2 smoke OK: effect 4.0 interventional
+phase-3 smoke OK: EvidenceStatus.ATTRIBUTED
+phase-4 smoke OK; captum imported: False
+TypeError: comprehensiveness() missing 1 required keyword-only argument: 'replacement'
+TypeError: comprehensiveness() missing 1 required keyword-only argument: 'replacement'
+phase6 smoke OK ['validated_concept', 'proposed_concept']
+phase7 smoke ok {"C": "(('contradicted', 1),)", "E": "(('assumption_sensitive', 1),)", "L": "(('assumption_sensitive', 1),)", "N": "(('not_evaluated', 1),)"}
+phase7.5 smoke ok 1 of 2 tested configurations SUPPORT (undeclared 1 of 2)
+7 README examples OK
+== clean wheel (captum)
+phase-1 smoke OK
+phase-2 smoke OK: effect 4.0 interventional
+phase-3 smoke OK: EvidenceStatus.ATTRIBUTED
+phase-4 smoke OK; captum imported: False
+TypeError: comprehensiveness() missing 1 required keyword-only argument: 'replacement'
+TypeError: comprehensiveness() missing 1 required keyword-only argument: 'replacement'
+phase6 smoke OK ['validated_concept', 'proposed_concept']
+phase7 smoke ok {"C": "(('contradicted', 1),)", "E": "(('assumption_sensitive', 1),)", "L": "(('assumption_sensitive', 1),)", "N": "(('not_evaluated', 1),)"}
+phase7.5 smoke ok 1 of 2 tested configurations SUPPORT (undeclared 1 of 2)
+7 README examples OK
+== external-researcher workflow (clean wheel, public API only)
+run ok {'claim': {'contradicted': 2, 'supported': 8}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True}
+reload ok {'claim': {'contradicted': 2, 'supported': 8}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True} same as before: True
+VALIDATE75_DONE
+
+## note
+phase-5 / phase-5.5 clean-wheel smokes (scratch scripts written before ADR-052) failed with 'comprehensiveness() missing 1 required keyword-only argument: replacement' -- the intended ADR-052 break. With replacement=F.zero() added they print:
+phase-5 smoke OK; captum imported: False
+phase5.5 smoke OK supports (2, 3) 5 0.5
