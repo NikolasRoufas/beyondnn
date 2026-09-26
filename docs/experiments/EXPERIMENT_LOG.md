@@ -562,3 +562,70 @@ Open items are listed in `docs/PHASE_5_5_API_REVIEW.md`.
 - One faithfulness test with N = 50: A 32–39 ms, B 33–39 ms, C 0.51 s.
 - Controls scale linearly (C: N = 10, 50, 200 → 0.12, 0.51, 2.04 s).
 - Dataset runtime (full grid, 3 or 4 concurrent runs on 8 cores): A 29 min, B 19 min, C 75 min.
+
+## 2026-09-26: Phase 6 concepts and concept validation (pre-registered)
+
+- **Commits:** `c48d30c` (literature + plan) through the Phase 6 report commit.
+- **Pre-registration:** `docs/PHASE_6_PLAN.md`. §26 records the implementation names and the realistic-run operational details, written after the ground-truth run and before any realistic run.
+- **Environment:**
+  - Ground truth and tests: Python 3.14.3, torch 2.14.0.
+  - Realistic runs: the Phase-5.5 experiment environment (Python 3.12.13, torch 2.14.0, transformers 5.17.0, scikit-learn 1.9.1); CPU, one thread.
+
+**Ground truth** (hand-built `ConceptToy`; `experiments/phase6/results/ground_truth.json`; full pre-registered N): **every case behaved as pre-registered.**
+
+| Case | Result |
+|---|---|
+| A: encoded and used | ENCODES AUROC 1.0; use −2.62; VALIDATED (neuron and direction) |
+| B: decodable, unused | ENCODES AUROC 1.0 SUPPORTED; use effect **exactly 0**, CONTRADICTED; PROPOSED |
+| C: distributed | neuron AUROC 0.83, use −0.82; direction AUROC 1.0, use −1.71 (≈ 2×) |
+| D: redundant | neuron use 0, CONTRADICTED; spanning direction −0.82, VALIDATED |
+| E: proxy | E1 (correlated) VALIDATED; E2 (independent) ENCODES CONTRADICTED (AUROC 0.53) |
+| F: random directions, test n = 16 | naive AUROC ≥ 0.7 in 5/50; controlled ENCODES SUPPORTED in 2/50 |
+| G: permuted labels | CONTRADICTED (AUROC 0.49) |
+| H: polysemantic | AUROC 0.85; false-positive rate 0.26 (listed); **VALIDATED under v1**: no rate caps; the rates are shown |
+| I: split | neuron false-negative rate 0.58, use CONTRADICTED; direction VALIDATED |
+| J: generated labels | wrong label: GENERATED, ENCODES CONTRADICTED, PROPOSED; right label: VALIDATED only through `validate` |
+
+**Realistic** (`experiments/phase6/results/realistic_{A,B,C}.json`): 9 concepts × (fitted direction, train-searched neuron) × 2 references.
+- Encoding: covariance-matched random directions (N = 200) plus label permutation (N = 200) at 0.95.
+- Use: removal with zero and with train-mean references; N = 50 matched controls; `min_change` 0.1 nats; 0.95.
+
+| Hypothesis | Result | Verdict |
+|---|---|---|
+| R1: ENCODES for ≥ 7/9 directions | 3/9 directions (6/9 neurons) | **not held** |
+| R2: a concept encoded but not used under both references | the neurons of K1, K2 and K4 (MLP), K8 and K9 (BERT) | held |
+| R3: label-aligned K7 validated | not validated under either reference: the direction's AUROC 0.88 is **contradicted by the covariance null** (median 0.878) | **not held** |
+| R4: the reference changes the use outcome | K1 (−2.99 zero vs +1.60 train-mean), K7, K9 directions | held |
+| R5: the best neuron is worse than the direction for ≥ 6/9 | the neuron is worse in 2/9 | **not held** |
+| R6: random directions pass a naive test but not the controlled one | naive AUROC ≥ 0.6 in 13 / 11 / 6 of 20; controlled 0/20 at every site | held |
+| R7: the covariance null is stronger everywhere | stronger in 6/9 concepts; weaker for K4, K8, K9 | **not held** |
+
+- **Validated:** only MLP K4 (fractal-dimension direction) is VALIDATED, under both references.
+- **Decodable but unused:** natural cases include the BERT pooler neurons for length (AUROC 0.75) and negation (0.87), both ENCODES SUPPORTED, with use effects of −0.006 and −0.015 nats.
+- **Wrong-direction effects:** 7 of the 8 CNN use effects were *positive* (the intervention raised the lift class's log-probability). The exception is the K5 neuron under zero removal (−0.47), which still failed its controls.
+
+**Negative and limiting results (kept):**
+
+- **The covariance null can be over-matched.** At the BERT pooler, the dominant variance *is* sentiment, so random covariance directions decode sentiment (median AUROC 0.878) almost as well as the fitted direction (0.881). ENCODES for the task label is contradicted.
+- **Intervention semantics decide use.** On MLP K1 the same direction's removal lowers log p(malignant) by 2.99 nats with a zero reference and *raises* it by 1.60 with the train-mean reference. This was recomputed by hand and is exact.
+- **v1 validates polysemantic features.** Case H is VALIDATED under v1 with a 26% false-positive rate (listed). Rate caps are available but not in v1.
+- **Label text is not checked.** In the SAE case the GENERATED label ("responds to low mean perimeter") has the opposite polarity to the K1 dataset concept. BeyondNN tests the dataset extension, not the text.
+
+**SAE case** (`sae_case.json`):
+- A 64→128 SAE was trained locally on K1-train activations: validation explained variance 0.986; 0 dead latents; **L0 ≈ 69 of 128**. The L1 penalty (3e-3) was too weak, so this SAE is barely sparse. The case exercises the adapter and pipeline, not a realistic sparse dictionary.
+- Latent 115 was chosen by search from 128 candidates (train AUROC 0.917).
+- Its GENERATED label stays PROPOSED: ENCODES CONTRADICTED under the covariance null (test AUROC 0.866); use CONTRADICTED under both references.
+
+**Framework failure found and fixed:** trace lookups were O(N²) at concept scale. A use test took 54 s, which fell to 6.6 s after the fix (ADR-043).
+
+**Mutation checks:**
+- 26 mutations of the Phase-6 code.
+- First run: 24 caught; two survivors (`min_change` ignored; control-direction check disabled).
+- Tests were added for both, and both are now caught: **26/26**.
+
+**Performance** (idle, one thread; `performance.json`):
+- MLP: encoding test with 400 controls 0.40 s; use test with 50 controls 2.8 s.
+- BERT-tiny: encoding 8.1 s; use 79 s; composition with full re-derivation 1.3 s.
+- Random-direction scaling from n = 50 to 800 adds under 0.2 s.
+
+**Phase-5.5 compatibility:** re-running MLP sample 1 at HEAD reproduces all 280 rows' values, outcomes and statistics. Every record id differs because of Claim v3 and InterventionRecord v4.

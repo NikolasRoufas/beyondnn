@@ -131,7 +131,31 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
   - a diagnostic takes one reduction for both methods;
   - `faithfulness.stats` is not exported.
 
-## Phase 6: Concepts
+## Phase 6: Concepts: **gate READY FOR PHASE 7 WITH EXPLICIT LIMITATIONS** (2026-09-26; `docs/PHASE_6_REPORT.md`, ADR-039 to ADR-043)
+
+- **As built:**
+  - feature records (neurons, directions, SAE latents through a tensor-only adapter) with train-only discovery;
+  - concept datasets and proposals, and GENERATED labels;
+  - the three-state semantic lifecycle (no global REJECTED);
+  - ENCODES (`concept_encoding`) and use (`concept_intervention`) claim tests with mandatory controls, and counterexamples;
+  - DIRECTION interventions;
+  - derived validation (`POLICY_V1`) with full re-derivation;
+  - a CONCEPTS section in the WHY;
+  - trace indexes.
+- **Results:**
+  - the pre-registered ground truth (A–J) behaved as predicted;
+  - realistic runs found natural decodable-but-unused features and strong intervention-semantics dependence;
+  - only 1 of 9 realistic concepts validated.
+- **Open (bounded; see the report):**
+  - the covariance null can be over-matched;
+  - v1 has no counterexample-rate caps;
+  - label text is not checked against the extension;
+  - result objects are not reconstructable from saved traces;
+  - concept validations appear only as context in the instance WHY;
+  - there is no dataset-level WHY;
+  - SUFFICIENT_FOR is shown but not required.
+
+**Original plan:**
 - `FeatureBasis` (neuron, direction; SAE via adapter).
 - The `SemanticStatus` lifecycle, and `concepts.validate()` implemented as testing an `ENCODES` claim plus a causal claim, with counterexamples and random-direction controls.
 
