@@ -629,3 +629,44 @@ Open items are listed in `docs/PHASE_5_5_API_REVIEW.md`.
 - Random-direction scaling from n = 50 to 800 adds under 0.2 s.
 
 **Phase-5.5 compatibility:** re-running MLP sample 1 at HEAD reproduces all 280 rows' values, outcomes and statistics. Every record id differs because of Claim v3 and InterventionRecord v4.
+
+## 2026-09-26: Phase 7 scientific audits (pre-registered)
+
+- **Commits:** `6faca63` (literature + differentiation), `4786efc` (plan), then implementation through `a1b62ef`. Plan deviations D1–D13 and execution note E1 are listed in `docs/PHASE_7_PLAN.md`.
+- **Environment:** `experiments/phase5_5/requirements.txt` pins, Python 3.12, one torch thread. No file under `beyondnn/` changed between `27d027c` and the last run.
+
+**Scenarios A–N** (`scenarios.json`): 14/14 matched their pre-registration; the tampered A gave INTEGRITY_FAILURE with 1 result excluded.
+
+**Central experiment** (`central_{A,B,C}.json`): 280 samples (60/60/60/60/40 over A/input, A/net.1, B/pixels, B/relu2, C/tokens); 20,112 re-derived results with 0 integrity failures; `verify_report` passed on all 5.
+- The naive single configuration (IG, r1, p = 10%, count controls at 0.95, 0.5 · margin) SUPPORTS on 5/19/35/16/9 = 84/280.
+- The audited per-sample IG_necessary is SUPPORTED on 0/0/0/0/1 = 1/280; ASSUMPTION_SENSITIVE on 55/60/54/59/33; CONTRADICTED on 5/0/6/1/6.
+- R_necessary is CONTRADICTED on 50/43/23/29/33; ASSUMPTION_SENSITIVE on 10/17/37/31/7.
+- The attribution-only audit is UNSUPPORTED for G and IG on 280/280 and NOT_EVALUATED for R.
+- Hypotheses: CH1–CH6 held. CH1 holds essentially by construction: SUPPORTED is almost never reached under the declared invariances.
+
+**Negative and limiting results (kept):**
+- **Coarse standings.** ASSUMPTION_SENSITIVE covers both "supported in most configurations" and "supported in one"; `analysis.json` gives the descriptive supporting shares.
+- **The cross-claim necessity/sufficiency check fired on 0 samples,** while configuration-level disagreements occurred on 22–52 IG samples per site (`analysis.json`).
+- **Absolute pass, controls reject:** on B/pixels, B/relu2 and C/tokens, 11–18 IG and 3–21 R samples pass an uncontrolled removal test that their matched random controls reject.
+- **D13:** the first central run declared one target for margin claims whose targets differ per sample. The audit left 22/60 (A/input) and 55/60 (B/pixels) NOT_EVALUATED. The run was discarded and repeated with per-sample targets.
+- **E1:** concurrent runs thrashed memory; three runs were stopped and restarted.
+
+**NLP** (`nlp.json`, descriptive):
+- IG top-k selections never included [CLS] / [SEP].
+- The top-1 tokens were sentiment-bearing words.
+- Replacement (token-removal) sensitivity appeared on 11/40 samples.
+
+**Concept audits** (`concepts_{A,B,C}.json`):
+- The Phase-6 hand analysis was reproduced (KH1–KH4, NH1–NH2).
+- No concept is SUPPORTED under the strict caps (KH5). K4-direction is UNSUPPORTED under strict (FP 0.277) and SUPPORTED under lenient.
+- Concept A's audit reloaded from 76 saved traces was byte-identical.
+
+**Reload** (`performance.json`): in a fresh process, 54/54 per-sample groups (the first 3 samples of 3 sites) were equal to the in-memory full audits.
+
+**Mutations** (`mutations.json`): 25 code mutations. 6 were not killed in the first run (5 survivors plus 1 pattern that did not apply). 5 tests were added; the final count is 25/25 killed.
+
+**Performance:** full central audits took 36–68 s for 2,832–4,320 results (about 12–16 ms per result), and `verify_report` costs the same again. The evidence itself is about 0.5 MB per test trace on disk (0.9 MB for BERT).
+
+**Compatibility:**
+- A Phase-5.5 re-run of 2 MLP samples reproduces 560/560 rows (outcomes and drops).
+- A Phase-6 ground-truth re-run reproduces every outcome and status. One claim id in `J-wrong`'s `unmet` text differs from the committed Phase-6 JSON; it is identical at `25fe462` and at HEAD (pre-existing: generated-label provenance includes the environment).

@@ -159,9 +159,31 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 - `FeatureBasis` (neuron, direction; SAE via adapter).
 - The `SemanticStatus` lifecycle, and `concepts.validate()` implemented as testing an `ENCODES` claim plus a causal claim, with counterexamples and random-direction controls.
 
-## Phase 7: Audit
+## Phase 7: Audit: **gate READY FOR PHASE 7.5 WITH EXPLICIT LIMITATIONS** (2026-09-26; `docs/PHASE_7_REPORT.md`, ADR-044 to ADR-047)
+
+- **As built:**
+  - `bnn.audit(evidence, plan=plan)`: model-free; it re-derives every result, excludes evidence by provenance and scope, and yields 7 standings and 13 finding kinds with no score;
+  - `AuditPlan` records, including per-sample targets;
+  - reload-safe audits and `verify_report`;
+  - an AUDIT section in the WHY.
+- **Results:**
+  - scenarios A–N 14/14;
+  - on the realistic models, the IG necessity claim is SUPPORTED on 1/280 samples under the declared invariances, vs 84/280 for a single configuration;
+  - random selections are mostly CONTRADICTED;
+  - the concept audit reproduces Phase 6.
+- **Open (Phase 7.5):**
+  - ASSUMPTION_SENSITIVE is coarse (conditional standings are needed);
+  - configuration-level protocol disagreement;
+  - uncertainty statements;
+  - streaming or compact evidence storage;
+  - `compose` still needs live Phase-6 objects (P6-4).
+
+**Original plan:**
 - `bnn.audit(model, dataset, plan) -> AuditReport` with `metadata` (versions, seed, device, config, methods).
 - It uses only tests and metrics that already exist with documentation.
+
+## Phase 7.5: Audit refinement (not started)
+- Scope to be set by the Phase-7 report's §44. Trace 3B is out of scope (`TRACE3B_FUTURE.md`).
 
 ## Phase 8: Benchmark
 - Capability and correctness vs nnsight, Captum, TransformerLens, and pyvene on the tiny models, plus runtime and memory.
