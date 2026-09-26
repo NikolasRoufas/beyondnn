@@ -1,0 +1,330 @@
+{
+ "environment": {
+  "python": "3.11.15",
+  "torch": "2.3.1",
+  "interpbench_revision": "a1242a84f8a4d07d1be9a8f5ec710415198016b2",
+  "beyondnn_commit": "e17ba13f8dff2c8912e5b0a9eb7f7eaa91d0288d"
+ },
+ "split": "heldout",
+ "cases": {
+  "39": {
+   "case": "39",
+   "task": "Returns the fraction of 'x' in the input up to the i-th position for all i (longer sequence length).",
+   "n": 400,
+   "train_median_fraction": 0.03389830508474576,
+   "label_balance": 0.41,
+   "residual_labels": [
+    "frac_prevs_1",
+    "indices:0",
+    "indices:1",
+    "indices:2",
+    "indices:3",
+    "indices:4",
+    "indices:5",
+    "indices:6",
+    "indices:7",
+    "indices:8",
+    "indices:9",
+    "indices:10",
+    "indices:11",
+    "indices:12",
+    "indices:13",
+    "indices:14",
+    "indices:15",
+    "indices:16",
+    "indices:17",
+    "indices:18",
+    "indices:19",
+    "indices:20",
+    "indices:21",
+    "indices:22",
+    "indices:23",
+    "indices:24",
+    "indices:25",
+    "indices:26",
+    "indices:27",
+    "indices:28",
+    "indices:29",
+    "indices:30",
+    "indices:31",
+    "indices:32",
+    "indices:33",
+    "indices:34",
+    "indices:35",
+    "indices:36",
+    "indices:37",
+    "indices:38",
+    "indices:39",
+    "indices:40",
+    "indices:41",
+    "indices:42",
+    "indices:43",
+    "indices:44",
+    "indices:45",
+    "indices:46",
+    "indices:47",
+    "indices:48",
+    "indices:49",
+    "indices:50",
+    "indices:51",
+    "indices:52",
+    "indices:53",
+    "indices:54",
+    "indices:55",
+    "indices:56",
+    "indices:57",
+    "indices:58",
+    "is_x_3",
+    "one",
+    "tokens:BOS",
+    "tokens:PAD",
+    "tokens:a",
+    "tokens:b",
+    "tokens:c",
+    "tokens:d",
+    "tokens:e",
+    "tokens:f",
+    "tokens:g",
+    "tokens:h",
+    "tokens:i",
+    "tokens:j",
+    "tokens:k",
+    "tokens:l",
+    "tokens:m",
+    "tokens:n",
+    "tokens:o",
+    "tokens:p",
+    "tokens:q",
+    "tokens:r",
+    "tokens:s",
+    "tokens:t",
+    "tokens:u",
+    "tokens:v",
+    "tokens:w",
+    "tokens:x",
+    "tokens:y",
+    "tokens:z"
+   ],
+   "models": {
+    "tracr_hl": {
+     "params": 53019,
+     "concepts": {
+      "K+": {
+       "known": "positive",
+       "auroc": 1.0,
+       "encoding": {
+        "covariance": "supports",
+        "isotropic": "supports"
+       },
+       "control_superiority": {
+        "covariance": [
+         1.0,
+         1.0
+        ],
+        "isotropic": [
+         1.0,
+         1.0
+        ]
+       },
+       "use": "contradicts",
+       "use_effect": -0.06225378911655683,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 0.0,
+       "fn": 0.0
+      },
+      "K-": {
+       "known": "decodable_unused",
+       "auroc": 0.5070701357466063,
+       "encoding": {
+        "covariance": "contradicts",
+        "isotropic": "contradicts"
+       },
+       "control_superiority": {
+        "covariance": [
+         0.02,
+         0.52
+        ],
+        "isotropic": [
+         0.0575,
+         0.52
+        ]
+       },
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 0.16176470588235295,
+       "fn": 0.8076923076923077
+      },
+      "K0": {
+       "known": "negative",
+       "auroc": 0.5287013356067064,
+       "encoding": {
+        "covariance": "contradicts",
+        "isotropic": "contradicts"
+       },
+       "control_superiority": {
+        "covariance": [
+         0.48,
+         0.665
+        ],
+        "isotropic": [
+         0.455,
+         0.665
+        ]
+       },
+       "use": "contradicts",
+       "use_effect": -0.04054389079557914,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 0.8260869565217391,
+       "fn": 0.0392156862745098
+      }
+     },
+     "audits": {
+      "strict": {
+       "K+": {
+        "standing": "unsupported",
+        "findings": [
+         "decodable_not_used"
+        ]
+       },
+       "K0": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexample_heavy",
+         "feature_encodes_several_concepts"
+        ]
+       },
+       "K-": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexample_heavy"
+        ]
+       }
+      },
+      "lenient": {
+       "K+": {
+        "standing": "unsupported",
+        "findings": [
+         "decodable_not_used"
+        ]
+       },
+       "K0": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexample_heavy",
+         "feature_encodes_several_concepts"
+        ]
+       },
+       "K-": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexample_heavy"
+        ]
+       }
+      }
+     },
+     "seconds": 32.17496379208751
+    },
+    "siit_ll": {
+     "params": 358441,
+     "concepts": {
+      "K+": {
+       "known": "positive",
+       "auroc": 0.9906674208144797,
+       "encoding": {
+        "covariance": "supports",
+        "isotropic": "supports"
+       },
+       "control_superiority": {
+        "covariance": [
+         1.0,
+         1.0
+        ],
+        "isotropic": [
+         1.0,
+         1.0
+        ]
+       },
+       "use": "contradicts",
+       "use_effect": -0.06383278041791457,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 0.029411764705882353,
+       "fn": 0.07692307692307693
+      },
+      "K0": {
+       "known": "negative",
+       "auroc": 0.4816709292412617,
+       "encoding": {
+        "covariance": "contradicts",
+        "isotropic": "contradicts"
+       },
+       "control_superiority": {
+        "covariance": [
+         0.0,
+         0.3525
+        ],
+        "isotropic": [
+         0.0,
+         0.3525
+        ]
+       },
+       "use": "contradicts",
+       "use_effect": -0.001091279409022308,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       },
+       "fp": 0.8260869565217391,
+       "fn": 0.2549019607843137
+      }
+     },
+     "audits": {
+      "strict": {
+       "K+": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexamples_present",
+         "decodable_not_used"
+        ]
+       },
+       "K0": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexample_heavy"
+        ]
+       }
+      },
+      "lenient": {
+       "K+": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexamples_present",
+         "decodable_not_used"
+        ]
+       },
+       "K0": {
+        "standing": "unsupported",
+        "findings": [
+         "counterexample_heavy"
+        ]
+       }
+      }
+     },
+     "seconds": 30.592133458936587
+    }
+   }
+  }
+ }
+}

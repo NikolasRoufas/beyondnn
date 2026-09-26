@@ -202,7 +202,14 @@ def run_case(c: str) -> dict[str, Any]:
         hl_pred = hl(xs_all)[:, P].argmax(-1)
         ll_pred = ll(xs_all)[:, P].argmax(-1)
     agree = hl_pred == ll_pred
-    chosen = [i for i in range(len(xs_all)) if bool(agree[i])][:N_SAMPLES]
+    seen: set[tuple[int, ...]] = set()
+    chosen = []
+    for i in range(len(xs_all)):  # deviation DV-1: the benchmark's unique_data does not dedupe
+        key = tuple(int(v) for v in xs_all[i])
+        if bool(agree[i]) and key not in seen:
+            seen.add(key)
+            chosen.append(i)
+    chosen = chosen[:N_SAMPLES]
     xs = xs_all[chosen]
     n = len(xs)
     heads_c, mlps_c = circuit_nodes(c)
@@ -460,6 +467,8 @@ def run_case(c: str) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("split", choices=["dev", "heldout", "list"])
+    parser.add_argument("--cases", default=None, help="re-run only these cases (comma-separated)")
+    parser.add_argument("--out", default=None)
     args = parser.parse_args()
     torch.set_num_threads(1)
     eligible = eligible_cases()
@@ -467,6 +476,8 @@ def main() -> None:
         print(json.dumps({"eligible": eligible, "dev": DEV_CASES}))
         return
     cases = [c for c in eligible if (c in DEV_CASES) == (args.split == "dev")]
+    if args.cases:
+        cases = [c for c in cases if c in args.cases.split(",")]
     out: dict[str, Any] = {
         "environment": {
             "python": platform.python_version(),
@@ -491,9 +502,8 @@ def main() -> None:
             {k: v for k, v in out["cases"][c].items() if k not in ("rows",)}.get("error") or "ok",
             flush=True,
         )
-    (RESULTS / f"external_interpbench_{args.split}.json").write_text(
-        json.dumps(out, indent=1, default=str)
-    )
+    name = args.out or f"external_interpbench_{args.split}.json"
+    (RESULTS / name).write_text(json.dumps(out, indent=1, default=str))
 
 
 if __name__ == "__main__":

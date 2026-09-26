@@ -144,3 +144,11 @@ Development findings that shaped this policy:
 ## Deviations
 
 (None at the freeze.)
+
+### DV-1 (2026-09-26, after the held-out E1 run; seen: that case 124 errored, not any outcome of it)
+
+- **Original rule (§7, E1):** the first 40 inputs of `get_clean_data(max_samples=400, seed=42, unique_data=True)` whose trained-model prediction equals the Tracr model's.
+- **Problem:** circuits-benchmark's `unique_data` compares `str(input)` against a set of tuples, so it never removes duplicates. Case 124's first 40 agreeing inputs contained duplicates. The audit plan refused them (`duplicate plan samples`), and case 124 produced no result.
+- **Why only case 124:** every other case's plan was accepted, and a duplicate would have been refused, so their samples were already distinct and this rule leaves them unchanged.
+- **Replacement rule:** the first 40 *distinct* inputs (by token sequence), in the same order, whose predictions agree.
+- **Status:** case 124 is re-run alone with this rule. Its result is reported as held-out, flagged "re-run after DV-1". The other 17 held-out cases stand as run.
