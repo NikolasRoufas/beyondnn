@@ -54,13 +54,22 @@ def clock(fn: Any) -> tuple[float, Any]:
 
 
 def restricted(plan: AuditPlan, samples: list[str]) -> AuditPlan:
+    import dataclasses
+
+    keep = set(samples)
+    claims = tuple(
+        dataclasses.replace(
+            c, sample_targets=tuple(t for t in c.sample_targets if t.sample in keep)
+        )
+        for c in plan.claims
+    )
     return AuditPlan(
         name=plan.name,
         checkpoint=plan.checkpoint,
         declared_model=plan.declared_model,
         samples=tuple(samples),
         datasets=plan.datasets,
-        claims=plan.claims,
+        claims=claims,
         requirements=plan.requirements,
         concepts=plan.concepts,
         counterexamples=plan.counterexamples,

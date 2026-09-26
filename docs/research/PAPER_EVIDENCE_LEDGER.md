@@ -114,7 +114,7 @@
   - KH1–KH4 held (A): only K4-direction validates; K1-direction encoding is null-sensitive and its use claim replacement-sensitive.
   - K4-direction is **UNSUPPORTED** under the strict caps (FP 0.277 > 0.10) and **SUPPORTED** under the lenient caps (≤ 0.30).
   - B: K5 (both kinds) and K6-neuron are ASSUMPTION_SENSITIVE (null); K6-direction is UNSUPPORTED.
-  - C: see `concepts_C.json` and the report §20.
+  - C: nothing is SUPPORTED under either rule. The K8 (length) and K9 (negation) neurons are UNSUPPORTED (`decodable_not_used`; NH1). K7-direction is ASSUMPTION_SENSITIVE (null and replacement; NH2). K9-direction's use claim is replacement-sensitive.
 - **Counterevidence:** the caps were declared knowing the Phase-6 rates. Both rules are therefore reported, and the result depends on the rule.
 - **Allowed wording:** "Whether the one validated concept counts as supported depends on the declared counterexample cap."
 - **Disallowed wording:** "The model uses concept K4."
@@ -126,7 +126,7 @@
   - `verify_report` passed on all 5 central reports and 6 concept reports;
   - 0 integrity failures in 20,112 re-derived central results;
   - concept A: an audit from 76 reloaded traces was byte-identical;
-  - central reload subsets: see `performance.json`.
+  - central reload subsets (the first 3 samples of A/input, B/pixels and C/tokens, loaded in a fresh process): 54/54 per-sample groups equal to the in-memory full audits.
 - **Allowed wording:** "Audits were re-derived from saved traces with identical output."
 
 ### E10. Mutation testing

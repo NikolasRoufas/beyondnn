@@ -1,0 +1,118 @@
+{
+ "CNN": {
+  "aggregate_s": 0.7793178749270737,
+  "audit_peak_memory_mb (tracemalloc)": 7.489815,
+  "build_s (integrity + re-derivation + axes)": 11.416784375207499,
+  "integrity_s": 1.2047379999421537,
+  "load_traces_s": 6.782467749901116,
+  "per_result_ms (build + aggregate)": 56.46343634321561,
+  "records": 39438,
+  "rederivation_s (build - integrity)": 10.212046375265345,
+  "reload_group_mismatches": 0,
+  "reload_groups_compared": 18,
+  "report_bytes": 581507,
+  "report_load_s": 0.0012744590640068054,
+  "report_save_s": 0.01746745896525681,
+  "results": 216,
+  "samples": 3,
+  "serialize_s": 0.01677358290180564,
+  "trace_bytes_on_disk": 103337406,
+  "trace_dirs": 222
+ },
+ "MLP": {
+  "aggregate_s": 0.7639350418467075,
+  "audit_peak_memory_mb (tracemalloc)": 7.187046,
+  "build_s (integrity + re-derivation + axes)": 11.073712500045076,
+  "integrity_s": 1.1492885421030223,
+  "load_traces_s": 6.362033041892573,
+  "per_result_ms (build + aggregate)": 54.80392380505455,
+  "records": 37736,
+  "rederivation_s (build - integrity)": 9.924423957942054,
+  "reload_group_mismatches": 0,
+  "reload_groups_compared": 18,
+  "report_bytes": 590481,
+  "report_load_s": 0.0012870419304817915,
+  "report_save_s": 0.01749287499114871,
+  "results": 216,
+  "samples": 3,
+  "serialize_s": 0.017144375015050173,
+  "trace_bytes_on_disk": 98477136,
+  "trace_dirs": 222
+ },
+ "environment": {
+  "beyondnn_commit": "418029480e8f6d685db86b90392fe6c9766d549d",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "full_central_audits": {
+  "A": {
+   "input": {
+    "audit_seconds": 51.85099941701628,
+    "n_results": 4320,
+    "n_samples": 60,
+    "run_seconds": 203.81488708406687,
+    "verify_report_seconds": 49.16301583289169
+   },
+   "net.1": {
+    "audit_seconds": 67.53073791600764,
+    "n_results": 4320,
+    "n_samples": 60,
+    "run_seconds": 202.92042116704397,
+    "verify_report_seconds": 67.03191445907578
+   }
+  },
+  "B": {
+   "pixels": {
+    "audit_seconds": 51.144195792032406,
+    "n_results": 4320,
+    "n_samples": 60,
+    "run_seconds": 209.00698116607964,
+    "verify_report_seconds": 47.99585250020027
+   },
+   "relu2": {
+    "audit_seconds": 64.98244908289053,
+    "n_results": 4320,
+    "n_samples": 60,
+    "run_seconds": 194.61827095900662,
+    "verify_report_seconds": 60.79108337499201
+   }
+  },
+  "C": {
+   "tokens": {
+    "audit_seconds": 35.75546458293684,
+    "n_results": 2880,
+    "n_samples": 40,
+    "run_seconds": 1413.0762519158889,
+    "verify_report_seconds": 34.42285254178569
+   }
+  }
+ },
+ "note": "single run each; one torch thread; fresh process; first 3 samples per site (D10)",
+ "transformer": {
+  "aggregate_s": 0.7575730420649052,
+  "audit_peak_memory_mb (tracemalloc)": 6.756474,
+  "build_s (integrity + re-derivation + axes)": 13.48146341694519,
+  "integrity_s": 1.3398962919600308,
+  "load_traces_s": 7.8031572920735925,
+  "per_result_ms (build + aggregate)": 65.9214650880097,
+  "records": 34872,
+  "rederivation_s (build - integrity)": 12.141567124985158,
+  "reload_group_mismatches": 0,
+  "reload_groups_compared": 18,
+  "report_bytes": 582542,
+  "report_load_s": 0.0012690001167356968,
+  "report_save_s": 0.017471292056143284,
+  "results": 216,
+  "samples": 3,
+  "serialize_s": 0.016920624999329448,
+  "trace_bytes_on_disk": 176902244,
+  "trace_dirs": 222
+ }
+}

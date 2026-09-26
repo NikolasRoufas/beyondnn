@@ -1,0 +1,180 @@
+{
+ "phase": 7,
+ "plan": "docs/PHASE_7_PLAN.md (deviations D1-D13, execution note E1)",
+ "environment": "experiments/phase5_5/requirements.txt (torch 2.14.0, captum 0.9.0, transformers 5.17.0, sklearn 1.9.1, numpy 2.5.3, pyarrow 25.0.1), Python 3.12, one torch thread, macOS arm64",
+ "results": [
+  {
+   "file": "experiments/phase7/results/scenarios.json",
+   "sha256": "sha256:8edd9d876921bc118475ffc77cde9ef13b9117a52085d20cf6ffe7fc400c7534",
+   "bytes": 6480,
+   "script": "experiments/phase7/scenarios.py",
+   "command": "python experiments/phase7/scenarios.py",
+   "plan_section": "\u00a729.3",
+   "code_commit_at_run": null
+  },
+  {
+   "file": "experiments/phase7/results/central_A.json",
+   "sha256": "sha256:66dbb08da9661e0861e52ace07d5b77e2fc1221bdb719ce8825e6fa3710e1423",
+   "bytes": 128448,
+   "script": "experiments/phase7/central.py",
+   "command": "python ../phase7/central.py A (from experiments/phase5_5)",
+   "plan_section": "\u00a729.1",
+   "code_commit_at_run": "27d027cd2b9a601ab1aadc891a615d70d7fbcf4b"
+  },
+  {
+   "file": "experiments/phase7/results/central_B.json",
+   "sha256": "sha256:c871a953aeabcfeafa5dd4b7525c76f5e46c68e074996f1b64879df5c62a84bf",
+   "bytes": 128172,
+   "script": "experiments/phase7/central.py",
+   "command": "python ../phase7/central.py B",
+   "plan_section": "\u00a729.1",
+   "code_commit_at_run": "27d027cd2b9a601ab1aadc891a615d70d7fbcf4b"
+  },
+  {
+   "file": "experiments/phase7/results/central_C.json",
+   "sha256": "sha256:aecb9ee2bd77bdb3c80018e2f37c546bafa2e58fd5699f917c877b262b438e4e",
+   "bytes": 47240,
+   "script": "experiments/phase7/central.py",
+   "command": "python ../phase7/central.py C",
+   "plan_section": "\u00a729.1, \u00a730",
+   "code_commit_at_run": "d219393b0ef68a8b9eb844a91473591d0f3b4fcb"
+  },
+  {
+   "file": "experiments/phase7/results/concepts_A.json",
+   "sha256": "sha256:4d1686ec2aedddc7c249f4523f77dd8e63854ef3b3c67bb15985a6017d7a3b82",
+   "bytes": 16111,
+   "script": "experiments/phase7/concepts.py",
+   "command": "python ../phase7/concepts.py A",
+   "plan_section": "\u00a729.2",
+   "code_commit_at_run": "d219393b0ef68a8b9eb844a91473591d0f3b4fcb"
+  },
+  {
+   "file": "experiments/phase7/results/concepts_B.json",
+   "sha256": "sha256:49fe2708cbc907a9cef739ac41da5223406cd9b0854491a175ab90084ba9aca1",
+   "bytes": 10525,
+   "script": "experiments/phase7/concepts.py",
+   "command": "python ../phase7/concepts.py B",
+   "plan_section": "\u00a729.2",
+   "code_commit_at_run": "ad4cbc7aaefa6c8797bf2d4268b69073f694f498"
+  },
+  {
+   "file": "experiments/phase7/results/concepts_C.json",
+   "sha256": "sha256:ef85aa509a6e811dd9d4c1e8352e2eac4389dcf8791bdd9dc9f5d3ad1635826e",
+   "bytes": 13255,
+   "script": "experiments/phase7/concepts.py",
+   "command": "python ../phase7/concepts.py C",
+   "plan_section": "\u00a729.2, \u00a730",
+   "code_commit_at_run": "418029480e8f6d685db86b90392fe6c9766d549d"
+  },
+  {
+   "file": "experiments/phase7/results/nlp.json",
+   "sha256": "sha256:2a3b3cfbea2d95cbfa4b9f34e34ca312716bdc6e1145c187f5fb916fe02e53f0",
+   "bytes": 22828,
+   "script": "experiments/phase7/nlp.py",
+   "command": "python ../phase7/nlp.py",
+   "plan_section": "\u00a730 (descriptive)",
+   "code_commit_at_run": "34e432d4f8fdf19c5bb311e900a42e98edf3ccdf"
+  },
+  {
+   "file": "experiments/phase7/results/analysis.json",
+   "sha256": "sha256:5e8a8c656b01d5a047a2e0125c28804ed3583c64271587cd46271551f8398fee",
+   "bytes": 11282,
+   "script": "experiments/phase7/analysis.py",
+   "command": "python experiments/phase7/analysis.py",
+   "plan_section": "descriptive, not pre-registered",
+   "code_commit_at_run": null
+  },
+  {
+   "file": "experiments/phase7/results/performance.json",
+   "sha256": "sha256:ffed3d9cbd46a8e420f0495668dea206145e30cc0492cbba2bd5c865b1c7d5c9",
+   "bytes": 3465,
+   "script": "experiments/phase7/performance.py",
+   "command": "python ../phase7/performance.py",
+   "plan_section": "\u00a732, D10",
+   "code_commit_at_run": "418029480e8f6d685db86b90392fe6c9766d549d"
+  },
+  {
+   "file": "experiments/phase7/results/mutations.json",
+   "sha256": "sha256:f9d01430b1c3ac41ead3d519ef10c4048a8500f203a2c59ab0e2b1c392dbe1d8",
+   "bytes": 6316,
+   "script": "experiments/phase7/mutations.py",
+   "command": "python mutations.py <repo copy> <out> (scratch copy of the repo)",
+   "plan_section": "\u00a731",
+   "code_commit_at_run": null
+  }
+ ],
+ "full_reports_not_committed": [
+  {
+   "file": "experiments/phase7/artifacts/central_A_input_report.json",
+   "sha256": "sha256:76a4d05c2e9a63ae41e5860507022b39e0910bf5bae3011575883f66754ece58",
+   "bytes": 11584121,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/central_A_net.1_report.json",
+   "sha256": "sha256:5e2f9044d5441812bf2997d7b0194d10101be884e638c4d7247e831dd36ff560",
+   "bytes": 11576592,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/central_B_pixels_report.json",
+   "sha256": "sha256:39dbf94197714ad943162d138335d007dedd74e5a8e9f2044e48652dab2efc02",
+   "bytes": 11599993,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/central_B_relu2_report.json",
+   "sha256": "sha256:5da0efd35872a7016134d06c772a0d7aa3e9771574ff95e1557152659e4780f3",
+   "bytes": 11459124,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/central_C_tokens_report.json",
+   "sha256": "sha256:72dfc7ef874b3382cd8219ef7165d6b3a1d715faf3754b3996b1ea324723b11c",
+   "bytes": 7360774,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/concepts_A_lenient_report.json",
+   "sha256": "sha256:489e2a12a82adb0630ac169a508baf59e66a6527eef0b601dfdea136328201bc",
+   "bytes": 203332,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/concepts_A_strict_report.json",
+   "sha256": "sha256:7725d197a93734d2d577103e0d7f1fb14249d444a15c57a2d678cbae3894c10f",
+   "bytes": 203593,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/concepts_B_lenient_report.json",
+   "sha256": "sha256:a5aadad0a7045c26949888b7a240e559284db63b7228a901aa175a29de56685a",
+   "bytes": 177389,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/concepts_B_strict_report.json",
+   "sha256": "sha256:1b0f1a72d7c087014b077a30298c12e46ca5a7d889e0626804b45c6cf98ea80b",
+   "bytes": 177532,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/concepts_C_lenient_report.json",
+   "sha256": "sha256:de7bde0b7afb529c9d496bf906e07798ef5c10e740d4296e4c3de3d997576f63",
+   "bytes": 221610,
+   "committed": false
+  },
+  {
+   "file": "experiments/phase7/artifacts/concepts_C_strict_report.json",
+   "sha256": "sha256:4ede45377c60d12d769337caf1dc6af5c9f467d44341f628603f09dfcb9ea4c3",
+   "bytes": 221861,
+   "committed": false
+  }
+ ],
+ "discarded_runs": [
+  "artifacts/aborted_run1 (D13: one target per claim)",
+  "artifacts/aborted_run2 (E1: memory thrashing; restarted)"
+ ],
+ "note": "Single deterministic runs; no confidence intervals. Full reports are git-ignored (7-11 MB each); their digests are listed so they can be matched after regeneration.",
+ "code_identity": "No file under beyondnn/ changed between 27d027c and the last run (git log 27d027c..HEAD -- beyondnn/ is empty); the runs used identical package code. experiments/phase7/central.py and concepts.py changed only by formatting after the runs started (committed in d219393)."
+}

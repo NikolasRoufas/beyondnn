@@ -1,0 +1,537 @@
+{
+ "audits": {
+  "lenient": {
+   "audit_seconds": 20.245295791886747,
+   "claims": {
+    "k7_direction_encodes": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@null"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k7_direction_used": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@replacement"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k7_neuron_encodes": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@null"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k7_neuron_used": {
+     "findings": [],
+     "standing": "contradicted"
+    },
+    "k8_direction_encodes": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@null"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k8_direction_used": {
+     "findings": [],
+     "standing": "contradicted"
+    },
+    "k8_neuron_encodes": {
+     "findings": [],
+     "standing": "supported"
+    },
+    "k8_neuron_used": {
+     "findings": [],
+     "standing": "contradicted"
+    },
+    "k9_direction_encodes": {
+     "findings": [],
+     "standing": "contradicted"
+    },
+    "k9_direction_used": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@replacement"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k9_neuron_encodes": {
+     "findings": [],
+     "standing": "supported"
+    },
+    "k9_neuron_used": {
+     "findings": [],
+     "standing": "contradicted"
+    }
+   },
+   "concepts": {
+    "k7_direction": {
+     "false_negatives": 37,
+     "false_positives": 17,
+     "findings": [
+      "assumption_sensitive:controls_defeat_encoding@null",
+      "assumption_sensitive:null_sensitive@null",
+      "assumption_sensitive:replacement_sensitive@replacement",
+      "counterexample_found:counterexamples_present"
+     ],
+     "standing": "assumption_sensitive",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k7_neuron": {
+     "false_negatives": 34,
+     "false_positives": 17,
+     "findings": [
+      "assumption_sensitive:controls_defeat_encoding@null",
+      "assumption_sensitive:null_sensitive@null",
+      "counterexample_found:counterexamples_present",
+      "evidence_type_mismatch:decodable_not_used"
+     ],
+     "standing": "assumption_sensitive",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k8_direction": {
+     "false_negatives": 90,
+     "false_positives": 11,
+     "findings": [
+      "assumption_sensitive:controls_defeat_encoding@null",
+      "assumption_sensitive:null_sensitive@null",
+      "counterexample_found:counterexample_heavy",
+      "evidence_type_mismatch:decodable_not_used"
+     ],
+     "standing": "assumption_sensitive",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k8_neuron": {
+     "false_negatives": 38,
+     "false_positives": 43,
+     "findings": [
+      "counterexample_found:counterexample_heavy",
+      "evidence_type_mismatch:decodable_not_used"
+     ],
+     "standing": "unsupported",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k9_direction": {
+     "false_negatives": 8,
+     "false_positives": 106,
+     "findings": [
+      "assumption_sensitive:controls_defeat_encoding@null",
+      "assumption_sensitive:replacement_sensitive@replacement",
+      "counterexample_found:counterexample_heavy"
+     ],
+     "standing": "assumption_sensitive",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k9_neuron": {
+     "false_negatives": 7,
+     "false_positives": 55,
+     "findings": [
+      "counterexample_found:counterexamples_present",
+      "evidence_type_mismatch:decodable_not_used"
+     ],
+     "standing": "unsupported",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    }
+   },
+   "coverage": {
+    "claims": 12,
+    "claims_by_standing": [
+     [
+      "assumption_sensitive",
+      5
+     ],
+     [
+      "contradicted",
+      5
+     ],
+     [
+      "supported",
+      2
+     ]
+    ],
+    "concepts": 6,
+    "concepts_evaluated": 6,
+    "counterexample_caps": [
+     [
+      "max_counterexample_fraction",
+      "not declared"
+     ],
+     [
+      "max_false_positive_rate",
+      "0.3"
+     ],
+     [
+      "max_false_negative_rate",
+      "0.3"
+     ]
+    ],
+    "evidence_statuses": [
+     "interventional",
+     "measured",
+     "observed"
+    ],
+    "per_sample_claims": [],
+    "plan_samples": 0,
+    "protocols_required_not_run": [],
+    "protocols_run": [
+     "concept_encoding",
+     "concept_intervention"
+    ],
+    "samples_with_evidence": 0,
+    "untested_invariances": []
+   },
+   "evidence": {
+    "digest": "sha256:e555d0ec2b50fcd719385b125fd73874644f4c914da8f28ba07686b6c9e41693",
+    "records": 491898,
+    "results": 24,
+    "results_excluded": 0,
+    "results_included": 24,
+    "traces": 57
+   },
+   "plan_id": "audit_plan:bebb117908fddee6bbe0126e779e81cf",
+   "report_findings": [],
+   "verify_report": "passed"
+  },
+  "strict": {
+   "audit_seconds": 20.650104959029704,
+   "claims": {
+    "k7_direction_encodes": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@null"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k7_direction_used": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@replacement"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k7_neuron_encodes": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@null"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k7_neuron_used": {
+     "findings": [],
+     "standing": "contradicted"
+    },
+    "k8_direction_encodes": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@null"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k8_direction_used": {
+     "findings": [],
+     "standing": "contradicted"
+    },
+    "k8_neuron_encodes": {
+     "findings": [],
+     "standing": "supported"
+    },
+    "k8_neuron_used": {
+     "findings": [],
+     "standing": "contradicted"
+    },
+    "k9_direction_encodes": {
+     "findings": [],
+     "standing": "contradicted"
+    },
+    "k9_direction_used": {
+     "findings": [
+      "assumption_sensitive:assumption_sensitive@replacement"
+     ],
+     "standing": "assumption_sensitive"
+    },
+    "k9_neuron_encodes": {
+     "findings": [],
+     "standing": "supported"
+    },
+    "k9_neuron_used": {
+     "findings": [],
+     "standing": "contradicted"
+    }
+   },
+   "concepts": {
+    "k7_direction": {
+     "false_negatives": 37,
+     "false_positives": 17,
+     "findings": [
+      "assumption_sensitive:controls_defeat_encoding@null",
+      "assumption_sensitive:null_sensitive@null",
+      "assumption_sensitive:replacement_sensitive@replacement",
+      "counterexample_found:counterexample_heavy"
+     ],
+     "standing": "assumption_sensitive",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k7_neuron": {
+     "false_negatives": 34,
+     "false_positives": 17,
+     "findings": [
+      "assumption_sensitive:controls_defeat_encoding@null",
+      "assumption_sensitive:null_sensitive@null",
+      "counterexample_found:counterexample_heavy",
+      "evidence_type_mismatch:decodable_not_used"
+     ],
+     "standing": "assumption_sensitive",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k8_direction": {
+     "false_negatives": 90,
+     "false_positives": 11,
+     "findings": [
+      "assumption_sensitive:controls_defeat_encoding@null",
+      "assumption_sensitive:null_sensitive@null",
+      "counterexample_found:counterexample_heavy",
+      "evidence_type_mismatch:decodable_not_used"
+     ],
+     "standing": "assumption_sensitive",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k8_neuron": {
+     "false_negatives": 38,
+     "false_positives": 43,
+     "findings": [
+      "counterexample_found:counterexample_heavy",
+      "evidence_type_mismatch:decodable_not_used"
+     ],
+     "standing": "unsupported",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k9_direction": {
+     "false_negatives": 8,
+     "false_positives": 106,
+     "findings": [
+      "assumption_sensitive:controls_defeat_encoding@null",
+      "assumption_sensitive:replacement_sensitive@replacement",
+      "counterexample_found:counterexample_heavy"
+     ],
+     "standing": "assumption_sensitive",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    },
+    "k9_neuron": {
+     "false_negatives": 7,
+     "false_positives": 55,
+     "findings": [
+      "counterexample_found:counterexample_heavy",
+      "evidence_type_mismatch:decodable_not_used"
+     ],
+     "standing": "unsupported",
+     "validations": [
+      "proposed_concept",
+      "proposed_concept"
+     ]
+    }
+   },
+   "coverage": {
+    "claims": 12,
+    "claims_by_standing": [
+     [
+      "assumption_sensitive",
+      5
+     ],
+     [
+      "contradicted",
+      5
+     ],
+     [
+      "supported",
+      2
+     ]
+    ],
+    "concepts": 6,
+    "concepts_evaluated": 6,
+    "counterexample_caps": [
+     [
+      "max_counterexample_fraction",
+      "not declared"
+     ],
+     [
+      "max_false_positive_rate",
+      "0.1"
+     ],
+     [
+      "max_false_negative_rate",
+      "0.1"
+     ]
+    ],
+    "evidence_statuses": [
+     "interventional",
+     "measured",
+     "observed"
+    ],
+    "per_sample_claims": [],
+    "plan_samples": 0,
+    "protocols_required_not_run": [],
+    "protocols_run": [
+     "concept_encoding",
+     "concept_intervention"
+    ],
+    "samples_with_evidence": 0,
+    "untested_invariances": []
+   },
+   "evidence": {
+    "digest": "sha256:e555d0ec2b50fcd719385b125fd73874644f4c914da8f28ba07686b6c9e41693",
+    "records": 491898,
+    "results": 24,
+    "results_excluded": 0,
+    "results_included": 24,
+    "traces": 57
+   },
+   "plan_id": "audit_plan:b213cedef9b56a10d5d524d22ff3d8bf",
+   "report_findings": [],
+   "verify_report": "passed"
+  }
+ },
+ "environment": {
+  "beyondnn_commit": "418029480e8f6d685db86b90392fe6c9766d549d",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "checkpoint_state_digest": "sha256:e2b44a0891e8b46f810a7b65d5535a29668789b88924f888cd8657a7f7b826e0",
+  "dataset": {
+   "file_sha256": "a1371f3b3a7b0bcefa8388799a9359dc3ce76c349cc0079507a7991364fd2a9b",
+   "validation_rows": 872
+  },
+  "parameters": 4386178,
+  "repo": "M-FAC/bert-tiny-finetuned-sst2",
+  "revision": "41ad6709ec46b414749b37daf49cf5ca1c7dba7c"
+ },
+ "plan_section": "docs/PHASE_7_PLAN.md \u00a729.2",
+ "run_seconds": 852.7010517090093,
+ "tests": {
+  "k7_direction": {
+   "auroc": 0.8813539401774696,
+   "concept": "concept:f0f23a74db90d2e91433ddc8d48b09d0",
+   "encoding": {
+    "covariance": "contradicts",
+    "isotropic": "supports"
+   },
+   "feature": "feature:91133377d175c8d5409832b2596c7c31",
+   "fn": 0.25874125874125875,
+   "fp": 0.14285714285714285,
+   "validations": [
+    "proposed_concept",
+    "proposed_concept"
+   ]
+  },
+  "k7_neuron": {
+   "auroc": 0.8792384086501733,
+   "concept": "concept:868012c40d6a94f6441fed92620dbe44",
+   "encoding": {
+    "covariance": "contradicts",
+    "isotropic": "supports"
+   },
+   "feature": "feature:0cb8940356c38f7d7b2fd27b0d42bfa0",
+   "fn": 0.23776223776223776,
+   "fp": 0.14285714285714285,
+   "validations": [
+    "proposed_concept",
+    "proposed_concept"
+   ]
+  },
+  "k8_direction": {
+   "auroc": 0.6139673626952097,
+   "concept": "concept:82831dc0898efa408258c3fdddbb3075",
+   "encoding": {
+    "covariance": "supports",
+    "isotropic": "contradicts"
+   },
+   "feature": "feature:19e02469dea0aae94ea6e4e9813ca84b",
+   "fn": 0.6474820143884892,
+   "fp": 0.08943089430894309,
+   "validations": [
+    "proposed_concept",
+    "proposed_concept"
+   ]
+  },
+  "k8_neuron": {
+   "auroc": 0.7517108264607826,
+   "concept": "concept:b876032dbc5c75a36e43023f18997888",
+   "encoding": {
+    "covariance": "supports",
+    "isotropic": "supports"
+   },
+   "feature": "feature:c5edd4d328ac0ad10f272d5f2f739a3d",
+   "fn": 0.2733812949640288,
+   "fp": 0.34959349593495936,
+   "validations": [
+    "proposed_concept",
+    "proposed_concept"
+   ]
+  },
+  "k9_direction": {
+   "auroc": 0.7558777065328501,
+   "concept": "concept:85756ca6bcf96ddc468f87ab712262bd",
+   "encoding": {
+    "covariance": "contradicts",
+    "isotropic": "contradicts"
+   },
+   "feature": "feature:0990a7ac27562267fc5e8c1259493164",
+   "fn": 0.1568627450980392,
+   "fp": 0.5023696682464455,
+   "validations": [
+    "proposed_concept",
+    "proposed_concept"
+   ]
+  },
+  "k9_neuron": {
+   "auroc": 0.874361118855125,
+   "concept": "concept:2d3a75e16408e91d113a941ade0297c2",
+   "encoding": {
+    "covariance": "supports",
+    "isotropic": "supports"
+   },
+   "feature": "feature:51d3d63624bbb80183e0ca6ea4d1f73b",
+   "fn": 0.13725490196078433,
+   "fp": 0.26066350710900477,
+   "validations": [
+    "proposed_concept",
+    "proposed_concept"
+   ]
+  }
+ },
+ "total_seconds": 935.6837269589305
+}
