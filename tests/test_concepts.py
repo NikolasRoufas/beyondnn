@@ -639,3 +639,16 @@ def test_recorded_control_directions_must_match_their_declaration(tmp_path: Path
     forged = _forge(tmp_path, use.trace, "claim_test_spec", reseed, 1)
     with pytest.raises(ConceptVerificationError, match="not the declared intervention"):
         verify_use(C.UseResult(forged, concept, use.data, use.intervention))
+
+
+def test_the_flagship_example_runs_and_keeps_the_claims_apart(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import runpy
+
+    path = Path(__file__).resolve().parents[1] / "examples" / "phase6_concepts.py"
+    runpy.run_path(str(path), run_name="__main__")
+    out = capsys.readouterr().out
+    assert "USE CLAIM (decreases, remove with zero reference): CONTRADICTED" in out
+    assert "evidence status generated, semantic status proposed_concept" in out
+    assert "the model understands" not in out.replace("never 'the model understands C'", "")

@@ -1,0 +1,57 @@
+{
+ "environment": {
+  "python": "3.12.13",
+  "torch": "2.14.0",
+  "numpy": "2.5.3",
+  "sklearn": "1.9.1",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "torch_threads": 1,
+  "beyondnn_commit": "4cc5780d0c6b500216c50a2efac8c2d9978e179c",
+  "captum": "0.9.0",
+  "transformers": "5.17.0"
+ },
+ "note": "single run each; one torch thread; idle machine",
+ "toy": {
+  "n_samples": 600,
+  "n_test": 200,
+  "activation_extraction_s": 0.27887829183600843,
+  "encoding_200_200_s": 0.3068095420021564,
+  "encoding_random_directions_50_s": 0.27333370805718005,
+  "encoding_random_directions_200_s": 0.2826580840628594,
+  "encoding_random_directions_800_s": 0.31936533306725323,
+  "use_50_s": 3.208385291043669,
+  "use_evaluated_samples": 88,
+  "use_trace_records": 28697,
+  "validate_s": 0.006347917020320892,
+  "compose_with_rederivation_s": 0.6550809170585126
+ },
+ "A": {
+  "n_samples": 569,
+  "n_test": 172,
+  "activation_extraction_s": 0.24471124983392656,
+  "encoding_200_200_s": 0.39959000004455447,
+  "encoding_random_directions_50_s": 0.2939322500023991,
+  "encoding_random_directions_200_s": 0.29954962502233684,
+  "encoding_random_directions_800_s": 0.33002508291974664,
+  "use_50_s": 2.842834958108142,
+  "use_evaluated_samples": 70,
+  "use_trace_records": 26623,
+  "validate_s": 0.0057299998588860035,
+  "compose_with_rederivation_s": 0.5377748750615865
+ },
+ "C": {
+  "n_samples": 872,
+  "n_test": 262,
+  "activation_extraction_s": 7.943536083912477,
+  "encoding_200_200_s": 8.1123245828785,
+  "encoding_random_directions_50_s": 8.064104833872989,
+  "encoding_random_directions_200_s": 8.035020790994167,
+  "encoding_random_directions_800_s": 8.212969082873315,
+  "use_50_s": 78.85326258302666,
+  "use_evaluated_samples": 143,
+  "use_trace_records": 53584,
+  "validate_s": 0.011017832905054092,
+  "compose_with_rederivation_s": 1.3254528751131147
+ }
+}
