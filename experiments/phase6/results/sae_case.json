@@ -1,0 +1,85 @@
+{
+ "sae": {
+  "d_sae": 128,
+  "l1": 0.003,
+  "steps": 3000,
+  "lr": 0.001,
+  "trained_on": "K1 concept train split activations of net.1",
+  "checkpoint": "sha256:9156bde067e6eaca0a972f156eb8af56f511d16ceb75a9c2b283fa7249c0c1fd",
+  "stats": {
+   "train": {
+    "mse": 0.02993447333574295,
+    "explained_variance": 0.9991196747625734,
+    "l0": 68.18309783935547,
+    "dead_latents": 0
+   },
+   "val": {
+    "mse": 0.4807884097099304,
+    "explained_variance": 0.9856295538382935,
+    "l0": 68.87610626220703,
+    "dead_latents": 0
+   }
+  }
+ },
+ "latent": 115,
+ "search_train_auroc": 0.9173527077960723,
+ "sign": -1,
+ "generated_label": {
+  "text": "responds to low mean perimeter",
+  "status": "generated",
+  "corr": -0.6543416637950896
+ },
+ "encoding": {
+  "outcome": "contradicts",
+  "auroc": 0.8662464985994398,
+  "controls": [
+   {
+    "kind": "random_directions",
+    "superiority": 0.5525,
+    "median": 0.8506302521008403,
+    "q95": 0.9312675070028011
+   },
+   {
+    "kind": "label_permutation",
+    "superiority": 1.0,
+    "median": 0.49950980392156863,
+    "q95": 0.5707843137254901
+   }
+  ],
+  "fp_rate": 0.10784313725490197,
+  "fn_rate": 0.3142857142857143
+ },
+ "use": {
+  "zero": {
+   "use": "contradicts",
+   "mean_effect": -0.0820297691516727,
+   "superiority": 0.34,
+   "status": "proposed_concept",
+   "unmet": [
+    "encoding claim contradicted",
+    "use claim claim:238df0a8df0330247908299ef51f2406 contradicted"
+   ]
+  },
+  "train_mean": {
+   "use": "contradicts",
+   "mean_effect": 0.059859790330707846,
+   "superiority": 0.88,
+   "status": "proposed_concept",
+   "unmet": [
+    "encoding claim contradicted",
+    "use claim claim:988abcf9bf677e60cbbce9b8def44d74 contradicted"
+   ]
+  }
+ },
+ "limitations": [
+  "DECODABILITY_NOT_USE",
+  "FEATURE_MAY_CARRY_OTHER_INFORMATION",
+  "FUNCTIONAL_OPS_UNOBSERVED",
+  "PARTIAL_SITE_COVERAGE",
+  "SAE_FEATURE_ABSORPTION",
+  "SAE_FEATURE_SPLITTING",
+  "SAE_MISSING_FEATURES",
+  "SAE_POLYSEMANTICITY_NOT_EXCLUDED",
+  "SAE_RECONSTRUCTION_ERROR"
+ ]
+}

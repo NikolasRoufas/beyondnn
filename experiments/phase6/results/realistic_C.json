@@ -1,0 +1,542 @@
+{
+ "environment": {
+  "python": "3.12.13",
+  "torch": "2.14.0",
+  "numpy": "2.5.3",
+  "sklearn": "1.9.1",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "torch_threads": 1,
+  "beyondnn_commit": "f733063b43d0d6ed5d49badc1fb40ae745b05b60",
+  "captum": "0.9.0",
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "repo": "M-FAC/bert-tiny-finetuned-sst2",
+  "revision": "41ad6709ec46b414749b37daf49cf5ca1c7dba7c",
+  "parameters": 4386178,
+  "checkpoint_state_digest": "sha256:e2b44a0891e8b46f810a7b65d5535a29668789b88924f888cd8657a7f7b826e0",
+  "dataset": {
+   "validation_rows": 872,
+   "file_sha256": "a1371f3b3a7b0bcefa8388799a9359dc3ce76c349cc0079507a7991364fd2a9b"
+  }
+ },
+ "concepts": [
+  {
+   "concept": "K7 positive",
+   "definition": "SST-2 label = positive (label-aligned positive control)",
+   "target": {
+    "log_softmax_class": 1,
+    "train_lift": {
+     "0": 0.0,
+     "1": 2.0469483568075115
+    }
+   },
+   "direction": {
+    "feature": "feature:91133377d175c8d5409832b2596c7c31",
+    "encoding_seconds": 8.724890707992017,
+    "auroc": 0.8813539401774696,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.75,
+      "median": 0.8777105247693483,
+      "q95": 0.885179526355997
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49958864664747016,
+      "q95": 0.558562026209085
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.98,
+      "median": 0.8122465769524594,
+      "q95": 0.8747252747252747
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49958864664747016,
+      "q95": 0.558562026209085
+     }
+    ],
+    "false_positive_rate": 0.14285714285714285,
+    "false_negative_rate": 0.25874125874125875,
+    "n_false_positives": 17,
+    "n_false_negatives": 37,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": -0.04775494080036555,
+     "superiority": 0.86,
+     "control_median": 0.06528356279501647,
+     "n": 143,
+     "seconds": 83.51800295803696
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:3220fd46c0baf17c687891786678d508 contradicted"
+     ],
+     "verify_seconds": 0.4956310000270605,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c1 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "supports",
+     "mean_effect": -0.11173286649307868,
+     "superiority": 1.0,
+     "control_median": 0.04879424349372454,
+     "n": 143,
+     "seconds": 80.3243307908997
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted"
+     ],
+     "verify_seconds": 0.4620273339096457,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c1 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:0cb8940356c38f7d7b2fd27b0d42bfa0",
+    "neuron_index": 12,
+    "search": {
+     "candidate_count": 128,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.9057874902629529,
+     "train_set": "sample:9e337f951f904305ebee28b984efafe36a73cccfd1f27ad375ce6ab95df845b1",
+     "sign": -1
+    },
+    "encoding_seconds": 8.063455832889304,
+    "auroc": 0.8792384086501733,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.585,
+      "median": 0.8777105247693483,
+      "q95": 0.885179526355997
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4993535875888817,
+      "q95": 0.563812657930305
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.97,
+      "median": 0.8122465769524594,
+      "q95": 0.8747252747252747
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4993535875888817,
+      "q95": 0.563812657930305
+     }
+    ],
+    "false_positive_rate": 0.14285714285714285,
+    "false_negative_rate": 0.23776223776223776,
+    "n_false_positives": 17,
+    "n_false_negatives": 34,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 0.00032781068228858386,
+     "superiority": 0.68,
+     "control_median": 0.0021678389395904975,
+     "n": 143,
+     "seconds": 70.67669137497433
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:fe7246b2720eb91035bdba7463b7d274 contradicted"
+     ],
+     "verify_seconds": 0.16992858285084367,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c1 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 0.0006614774335486299,
+     "superiority": 0.66,
+     "control_median": 0.0017468023417110464,
+     "n": 143,
+     "seconds": 71.40563029190525
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:9c994e0d27c47be944e9be0d7c28adca contradicted"
+     ],
+     "verify_seconds": 0.1766027919948101,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c1 under remove/train_mean"
+    }
+   }
+  },
+  {
+   "concept": "K8 length",
+   "definition": "token count > train median",
+   "target": {
+    "log_softmax_class": 0,
+    "train_lift": {
+     "0": 1.0155426879707432,
+     "1": 0.9837276083686586
+    }
+   },
+   "direction": {
+    "feature": "feature:19e02469dea0aae94ea6e4e9813ca84b",
+    "encoding_seconds": 8.270112958038226,
+    "auroc": 0.6139673626952097,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.95,
+      "median": 0.5176054278528397,
+      "q95": 0.6059659589401647
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49406328595660054,
+      "q95": 0.5536497631163362
+     }
+    ],
+    "encoding_isotropic": "contradicts",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.88,
+      "median": 0.5514417734105399,
+      "q95": 0.6519418611452301
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49406328595660054,
+      "q95": 0.5536497631163362
+     }
+    ],
+    "false_positive_rate": 0.08943089430894309,
+    "false_negative_rate": 0.6474820143884892,
+    "n_false_positives": 11,
+    "n_false_negatives": 90,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 0.35994940559849475,
+     "superiority": 0.74,
+     "control_median": 0.7255565950927491,
+     "n": 139,
+     "seconds": 81.9293128750287
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:c77257f79f9b3fa4d8f9e6afcd1e06dc contradicted"
+     ],
+     "verify_seconds": 0.5140270839910954,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 0.2662348810588257,
+     "superiority": 0.78,
+     "control_median": 0.7764688026055724,
+     "n": 139,
+     "seconds": 81.39363787509501
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:3031f331359711197349b6c2aec2f5b5 contradicted"
+     ],
+     "verify_seconds": 0.48829895816743374,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:c5edd4d328ac0ad10f272d5f2f739a3d",
+    "neuron_index": 2,
+    "search": {
+     "candidate_count": 128,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.830793583790629,
+     "train_set": "sample:9e337f951f904305ebee28b984efafe36a73cccfd1f27ad375ce6ab95df845b1",
+     "sign": -1
+    },
+    "encoding_seconds": 8.388410624815151,
+    "auroc": 0.7517108264607826,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 1.0,
+      "median": 0.5176054278528397,
+      "q95": 0.6059659589401647
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49847926536819326,
+      "q95": 0.5536731590337486
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 1.0,
+      "median": 0.5514417734105399,
+      "q95": 0.6519418611452301
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49847926536819326,
+      "q95": 0.5536731590337486
+     }
+    ],
+    "false_positive_rate": 0.34959349593495936,
+    "false_negative_rate": 0.2733812949640288,
+    "n_false_positives": 43,
+    "n_false_negatives": 38,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": -0.0063780786818295795,
+     "superiority": 0.92,
+     "control_median": 0.008813560382362343,
+     "n": 139,
+     "seconds": 71.02923999982886
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:af1bad14df61a9f12c93ad1f48bcab2c contradicted"
+     ],
+     "verify_seconds": 0.17936612502671778,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": -0.004738129700575399,
+     "superiority": 0.92,
+     "control_median": 0.006851894351767924,
+     "n": 139,
+     "seconds": 71.03691612486728
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:431a2d6d58e47c97c99e695abf337843 contradicted"
+     ],
+     "verify_seconds": 0.18335404177196324,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   }
+  },
+  {
+   "concept": "K9 negation",
+   "definition": "contains one of ('not', \"n't\", 'no', 'never', 'nothing', 'nobody') (whitespace tokens, or ending in n't)",
+   "target": {
+    "log_softmax_class": 0,
+    "train_lift": {
+     "0": 1.3244611601330825,
+     "1": 0.6603059215508102
+    }
+   },
+   "direction": {
+    "feature": "feature:0990a7ac27562267fc5e8c1259493164",
+    "encoding_seconds": 8.310658667003736,
+    "auroc": 0.7558777065328501,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.94,
+      "median": 0.6019421986804201,
+      "q95": 0.763720843787752
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49744447542049997,
+      "q95": 0.5625081312145711
+     }
+    ],
+    "encoding_isotropic": "contradicts",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.91,
+      "median": 0.6162066722423567,
+      "q95": 0.7783198587491869
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49744447542049997,
+      "q95": 0.5625081312145711
+     }
+    ],
+    "false_positive_rate": 0.5023696682464455,
+    "false_negative_rate": 0.1568627450980392,
+    "n_false_positives": 106,
+    "n_false_negatives": 8,
+    "use_zero": {
+     "outcome": "supports",
+     "mean_effect": -0.4842242282820029,
+     "superiority": 1.0,
+     "control_median": 0.08282987806995334,
+     "n": 51,
+     "seconds": 34.4171801249031
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted"
+     ],
+     "verify_seconds": 0.2911181668750942,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": -0.09453321047640811,
+     "superiority": 0.98,
+     "control_median": 0.14118529564299478,
+     "n": 51,
+     "seconds": 34.337008042028174
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:e238fc3314f932eb12e08249fc8f6b87 contradicted"
+     ],
+     "verify_seconds": 0.3001244158949703,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:51d3d63624bbb80183e0ca6ea4d1f73b",
+    "neuron_index": 61,
+    "search": {
+     "candidate_count": 128,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.8413116398633186,
+     "train_set": "sample:9e337f951f904305ebee28b984efafe36a73cccfd1f27ad375ce6ab95df845b1",
+     "sign": -1
+    },
+    "encoding_seconds": 8.517861542059109,
+    "auroc": 0.874361118855125,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 1.0,
+      "median": 0.6019421986804201,
+      "q95": 0.763720843787752
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4943313818418362,
+      "q95": 0.5747049530712759
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 1.0,
+      "median": 0.6162066722423567,
+      "q95": 0.7783198587491869
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4943313818418362,
+      "q95": 0.5747049530712759
+     }
+    ],
+    "false_positive_rate": 0.26066350710900477,
+    "false_negative_rate": 0.13725490196078433,
+    "n_false_positives": 55,
+    "n_false_negatives": 7,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": -0.01537433406549448,
+     "superiority": 0.98,
+     "control_median": 0.002216809801132729,
+     "n": 51,
+     "seconds": 28.716472124913707
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:19dc9a1b8809d2f64fbcca598129a952 contradicted"
+     ],
+     "verify_seconds": 0.18286954192444682,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": -0.0013023924576455728,
+     "superiority": 0.94,
+     "control_median": 0.002240015676909328,
+     "n": 51,
+     "seconds": 28.300165334017947
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:6003e24b6a75ecd17b584607f5de46ab contradicted"
+     ],
+     "verify_seconds": 0.18020700011402369,
+     "scope": "dataset sst2-validation[872; seed 1234 50/20/30] (test split, n=262); model sha256:e2b44a0891e8b46f; site bert.pooler axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   }
+  }
+ ],
+ "random_direction_proposals": {
+  "concept": "K7 positive",
+  "n": 20,
+  "naive_auroc_ge_0.6": 6,
+  "controls_supports": 0,
+  "aurocs": [
+   0.2807017543859649,
+   0.19047619047619047,
+   0.22556390977443608,
+   0.7869674185463659,
+   0.40100250626566414,
+   0.2656641604010025,
+   0.24561403508771928,
+   0.7017543859649122,
+   0.606516290726817,
+   0.7994987468671679,
+   0.5288220551378446,
+   0.7493734335839599,
+   0.2706766917293233,
+   0.6766917293233082,
+   0.18295739348370926,
+   0.2506265664160401,
+   0.18546365914786966,
+   0.3132832080200501,
+   0.21303258145363407,
+   0.3659147869674185
+  ]
+ },
+ "runtime_seconds": 1030.377325666137
+}

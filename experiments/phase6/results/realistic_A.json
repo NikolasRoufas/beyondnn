@@ -1,0 +1,752 @@
+{
+ "environment": {
+  "python": "3.12.13",
+  "torch": "2.14.0",
+  "numpy": "2.5.3",
+  "sklearn": "1.9.1",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "torch_threads": 1,
+  "beyondnn_commit": "f733063b43d0d6ed5d49badc1fb40ae745b05b60",
+  "captum": "0.9.0",
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "architecture": "MLP(\n  (net): Sequential(\n    (0): Linear(in_features=30, out_features=64, bias=True)\n    (1): ReLU()\n    (2): Linear(in_features=64, out_features=32, bias=True)\n    (3): ReLU()\n    (4): Linear(in_features=32, out_features=2, bias=True)\n  )\n)",
+  "training": {
+   "optimizer": "Adam",
+   "lr": 0.001,
+   "loss": "cross_entropy",
+   "epochs": 300,
+   "batch": "full",
+   "seed": 0
+  },
+  "checkpoint_state_digest": "sha256:4c19a8dafa3c0b38219220528303b3f195487a131b3e12a64c703203946b1c24",
+  "accuracy": {
+   "train": 0.9970674514770508,
+   "val": 0.9561403393745422,
+   "test": 0.9736841917037964
+  },
+  "dataset": {
+   "source": "sklearn.datasets.load_breast_cancer",
+   "n": 569,
+   "features": [
+    "mean radius",
+    "mean texture",
+    "mean perimeter",
+    "mean area",
+    "mean smoothness",
+    "mean compactness",
+    "mean concavity",
+    "mean concave points",
+    "mean symmetry",
+    "mean fractal dimension",
+    "radius error",
+    "texture error",
+    "perimeter error",
+    "area error",
+    "smoothness error",
+    "compactness error",
+    "concavity error",
+    "concave points error",
+    "symmetry error",
+    "fractal dimension error",
+    "worst radius",
+    "worst texture",
+    "worst perimeter",
+    "worst area",
+    "worst smoothness",
+    "worst compactness",
+    "worst concavity",
+    "worst concave points",
+    "worst symmetry",
+    "worst fractal dimension"
+   ],
+   "standardised_with": "train mean/std"
+  },
+  "split": {
+   "rule": "stratified 60/20/20, train_test_split random_state=0 twice",
+   "sizes": [
+    341,
+    114,
+    114
+   ]
+  }
+ },
+ "concepts": [
+  {
+   "concept": "K1 size",
+   "definition": "mean radius > train-split median",
+   "target": {
+    "log_softmax_class": 0,
+    "train_lift": {
+     "0": 1.7419354838709677,
+     "1": 0.42499999999999993
+    }
+   },
+   "direction": {
+    "feature": "feature:ec1ad1eabdbac9ff410661ca24542209",
+    "encoding_seconds": 0.32527391612529755,
+    "auroc": 0.9239495798319328,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.915,
+      "median": 0.8506302521008403,
+      "q95": 0.9312675070028011
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4969887955182073,
+      "q95": 0.571533613445378
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.985,
+      "median": 0.7319327731092438,
+      "q95": 0.9040826330532213
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4969887955182073,
+      "q95": 0.571533613445378
+     }
+    ],
+    "false_positive_rate": 0.24509803921568626,
+    "false_negative_rate": 0.1,
+    "n_false_positives": 25,
+    "n_false_negatives": 7,
+    "use_zero": {
+     "outcome": "supports",
+     "mean_effect": -2.990430081600723,
+     "superiority": 0.96,
+     "control_median": -0.24794779297567868,
+     "n": 70,
+     "seconds": 2.9897690408397466
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted"
+     ],
+     "verify_seconds": 0.1874602921307087,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 1.6036569521502588,
+     "superiority": 0.2,
+     "control_median": 1.097077400811767,
+     "n": 70,
+     "seconds": 3.1388817918486893
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:e851858ffa5f3f860398436daa8fa11b contradicted"
+     ],
+     "verify_seconds": 0.19075904204510152,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:bd044ccb93e60f67b8385707869778d0",
+    "neuron_index": 52,
+    "search": {
+     "candidate_count": 64,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.9613419956357866,
+     "train_set": "sample:654fb469b68d039df0ef45fe027f7da485a2eb917fde0e0c9a0a26b9acccaaf5",
+     "sign": -1
+    },
+    "encoding_seconds": 0.32031500013545156,
+    "auroc": 0.9323529411764706,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.955,
+      "median": 0.8506302521008403,
+      "q95": 0.9312675070028011
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5012605042016807,
+      "q95": 0.5802450980392156
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.995,
+      "median": 0.7319327731092438,
+      "q95": 0.9040826330532213
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5012605042016807,
+      "q95": 0.5802450980392156
+     }
+    ],
+    "false_positive_rate": 0.19607843137254902,
+    "false_negative_rate": 0.12857142857142856,
+    "n_false_positives": 20,
+    "n_false_negatives": 9,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 0.07369733857847661,
+     "superiority": 0.24,
+     "control_median": 0.03878887713653275,
+     "n": 70,
+     "seconds": 2.587085874984041
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:565d7ad505e86c68173d0b167739a850 contradicted"
+     ],
+     "verify_seconds": 0.08482533413916826,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": -0.0531589057270554,
+     "superiority": 1.0,
+     "control_median": 0.01130051722946327,
+     "n": 70,
+     "seconds": 2.6375226250384003
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:fd6e62ed9ae0e3458fbbc1b873d61f9f contradicted"
+     ],
+     "verify_seconds": 0.08591454196721315,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   }
+  },
+  {
+   "concept": "K2 texture",
+   "definition": "mean texture > train-split median",
+   "target": {
+    "log_softmax_class": 0,
+    "train_lift": {
+     "0": 1.5806451612903225,
+     "1": 0.5499999999999999
+    }
+   },
+   "direction": {
+    "feature": "feature:29e7339441f620b2ad2576544eb6da9d",
+    "encoding_seconds": 0.3172805840149522,
+    "auroc": 0.8240489130434783,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.95,
+      "median": 0.7395380434782608,
+      "q95": 0.8222826086956522
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4969429347826087,
+      "q95": 0.5698709239130435
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.965,
+      "median": 0.6470788043478262,
+      "q95": 0.8193750000000001
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4969429347826087,
+      "q95": 0.5698709239130435
+     }
+    ],
+    "false_positive_rate": 0.33695652173913043,
+    "false_negative_rate": 0.1625,
+    "n_false_positives": 31,
+    "n_false_negatives": 13,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": -1.0095067160609867,
+     "superiority": 0.86,
+     "control_median": -0.18949380292970056,
+     "n": 80,
+     "seconds": 3.5310919168405235
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:a36336840c14d41aad33e3c3490fa98a contradicted"
+     ],
+     "verify_seconds": 0.20470408396795392,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 3.2207410680760815,
+     "superiority": 0.2,
+     "control_median": 1.7723111574364314,
+     "n": 80,
+     "seconds": 3.4837960831355304
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:7bf53f35ce36cf4a207d3967f5cc9715 contradicted"
+     ],
+     "verify_seconds": 0.21372937504202127,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:d3496c5b6a663f63eb5f3813c2fd579c",
+    "neuron_index": 14,
+    "search": {
+     "candidate_count": 64,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.8679825431462012,
+     "train_set": "sample:654fb469b68d039df0ef45fe027f7da485a2eb917fde0e0c9a0a26b9acccaaf5",
+     "sign": -1
+    },
+    "encoding_seconds": 0.3282688339240849,
+    "auroc": 0.8434782608695652,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.98,
+      "median": 0.7395380434782608,
+      "q95": 0.8222826086956522
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49996603260869565,
+      "q95": 0.5661990489130435
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.985,
+      "median": 0.6470788043478262,
+      "q95": 0.8193750000000001
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49996603260869565,
+      "q95": 0.5661990489130435
+     }
+    ],
+    "false_positive_rate": 0.18478260869565216,
+    "false_negative_rate": 0.2625,
+    "n_false_positives": 17,
+    "n_false_negatives": 21,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 0.051969307886627424,
+     "superiority": 0.58,
+     "control_median": 0.08326649270184157,
+     "n": 80,
+     "seconds": 3.120139375096187
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:5416f3db732bd2db9ff767da36897506 contradicted"
+     ],
+     "verify_seconds": 0.08583395788446069,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": -0.031458453435376024,
+     "superiority": 0.98,
+     "control_median": 0.039179570477507586,
+     "n": 80,
+     "seconds": 3.0530307090375572
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:608fe257e0193edee6edbcc533ec9020 contradicted"
+     ],
+     "verify_seconds": 0.08650412503629923,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   }
+  },
+  {
+   "concept": "K3 smoothness",
+   "definition": "mean smoothness > train-split median",
+   "target": {
+    "log_softmax_class": 0,
+    "train_lift": {
+     "0": 1.306451612903226,
+     "1": 0.7625
+    }
+   },
+   "direction": {
+    "feature": "feature:7ddcf34db8a4f65aa5bf1465d77d0d5a",
+    "encoding_seconds": 0.32774929190054536,
+    "auroc": 0.809484649122807,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.91,
+      "median": 0.6785910087719298,
+      "q95": 0.8297286184210526
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49890350877192985,
+      "q95": 0.5739309210526315
+     }
+    ],
+    "encoding_isotropic": "contradicts",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.93,
+      "median": 0.6463130482456141,
+      "q95": 0.8276178728070174
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49890350877192985,
+      "q95": 0.5739309210526315
+     }
+    ],
+    "false_positive_rate": 0.4166666666666667,
+    "false_negative_rate": 0.06578947368421052,
+    "n_false_positives": 40,
+    "n_false_negatives": 5,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": -1.0316335322769756,
+     "superiority": 0.84,
+     "control_median": -0.11677131058700253,
+     "n": 76,
+     "seconds": 3.3557679168879986
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:18f741e78826a5d3b8e5d77a581e3cf2 contradicted"
+     ],
+     "verify_seconds": 0.20857158303260803,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 2.2031776815847604,
+     "superiority": 0.48,
+     "control_median": 1.96423657216363,
+     "n": 76,
+     "seconds": 3.4717261251062155
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:b8cfe8cc4f9f9594a7e90374860274f2 contradicted"
+     ],
+     "verify_seconds": 0.20459179091267288,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:aba85c009e99b5a598c87b55662a0b23",
+    "neuron_index": 40,
+    "search": {
+     "candidate_count": 64,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.8159343384249157,
+     "train_set": "sample:654fb469b68d039df0ef45fe027f7da485a2eb917fde0e0c9a0a26b9acccaaf5",
+     "sign": -1
+    },
+    "encoding_seconds": 0.32467433414421976,
+    "auroc": 0.7986567982456141,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.89,
+      "median": 0.6785910087719298,
+      "q95": 0.8297286184210526
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4999314692982456,
+      "q95": 0.5606222587719298
+     }
+    ],
+    "encoding_isotropic": "contradicts",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.895,
+      "median": 0.6463130482456141,
+      "q95": 0.8276178728070174
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4999314692982456,
+      "q95": 0.5606222587719298
+     }
+    ],
+    "false_positive_rate": 0.3645833333333333,
+    "false_negative_rate": 0.14473684210526316,
+    "n_false_positives": 35,
+    "n_false_negatives": 11,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 0.10631469397303603,
+     "superiority": 0.44,
+     "control_median": 0.07403739768286755,
+     "n": 76,
+     "seconds": 2.8674268340691924
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:b8e299609b8145b2c52acea435a68309 contradicted"
+     ],
+     "verify_seconds": 0.09061887511052191,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": -0.058025980675955345,
+     "superiority": 0.94,
+     "control_median": 0.050658757558285646,
+     "n": 76,
+     "seconds": 3.0273787500336766
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:4be8dc47eaee6e2460e667bf38b7f990 contradicted"
+     ],
+     "verify_seconds": 0.08988712495192885,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c0 under remove/train_mean"
+    }
+   }
+  },
+  {
+   "concept": "K4 fractal",
+   "definition": "mean fractal dimension > train-split median",
+   "target": {
+    "log_softmax_class": 1,
+    "train_lift": {
+     "0": 0.9193548387096775,
+     "1": 1.0625
+    }
+   },
+   "direction": {
+    "feature": "feature:f535800797ed96daf98d73af0a2b0a64",
+    "encoding_seconds": 0.32991033303551376,
+    "auroc": 0.8979814511729405,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.99,
+      "median": 0.6255455537370431,
+      "q95": 0.84243726132024
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5012274959083469,
+      "q95": 0.5743521549372612
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 1.0,
+      "median": 0.6307965084560829,
+      "q95": 0.8437602291325694
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5012274959083469,
+      "q95": 0.5743521549372612
+     }
+    ],
+    "false_positive_rate": 0.2765957446808511,
+    "false_negative_rate": 0.14102564102564102,
+    "n_false_positives": 26,
+    "n_false_negatives": 11,
+    "use_zero": {
+     "outcome": "supports",
+     "mean_effect": -0.4418854679362302,
+     "superiority": 0.98,
+     "control_median": 3.636707352865452,
+     "n": 78,
+     "seconds": 3.453104624990374
+    },
+    "validation_zero": {
+     "status": "validated_concept",
+     "unmet": [],
+     "verify_seconds": 0.21317850006744266,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c1 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "supports",
+     "mean_effect": -0.25825492379868076,
+     "superiority": 1.0,
+     "control_median": 2.125190662585075,
+     "n": 78,
+     "seconds": 3.5835960002150387
+    },
+    "validation_train_mean": {
+     "status": "validated_concept",
+     "unmet": [],
+     "verify_seconds": 0.21566479187458754,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c1 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:8dcea263c4da0e431299f9bedf45790c",
+    "neuron_index": 4,
+    "search": {
+     "candidate_count": 64,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.9071612775243008,
+     "train_set": "sample:654fb469b68d039df0ef45fe027f7da485a2eb917fde0e0c9a0a26b9acccaaf5",
+     "sign": -1
+    },
+    "encoding_seconds": 0.33475308306515217,
+    "auroc": 0.9105291871249318,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.995,
+      "median": 0.6255455537370431,
+      "q95": 0.84243726132024
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5027277686852155,
+      "q95": 0.5642457719585379
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 1.0,
+      "median": 0.6307965084560829,
+      "q95": 0.8437602291325694
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5027277686852155,
+      "q95": 0.5642457719585379
+     }
+    ],
+    "false_positive_rate": 0.13829787234042554,
+    "false_negative_rate": 0.1282051282051282,
+    "n_false_positives": 13,
+    "n_false_negatives": 10,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 0.01963859874050729,
+     "superiority": 0.4,
+     "control_median": -0.00019406854513314404,
+     "n": 78,
+     "seconds": 2.967215958982706
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:931b5c5901fe7a694e6dab3d6f3dcc86 contradicted"
+     ],
+     "verify_seconds": 0.09101616707630455,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c1 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": -0.05451744420442012,
+     "superiority": 1.0,
+     "control_median": 0.04814227682747484,
+     "n": 78,
+     "seconds": 3.11895633302629
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:0b62b3c9fa635b65111dca4459497065 contradicted"
+     ],
+     "verify_seconds": 0.09057083283551037,
+     "scope": "dataset breast_cancer[all 569; seed 1234 50/20/30] (test split, n=172); model sha256:4c19a8dafa3c0b38; site net.1 axis 1; decreases custom:log_softmax_c1 under remove/train_mean"
+    }
+   }
+  }
+ ],
+ "random_direction_proposals": {
+  "concept": "K1 size",
+  "n": 20,
+  "naive_auroc_ge_0.6": 13,
+  "controls_supports": 0,
+  "aurocs": [
+   0.7263427109974424,
+   0.29411764705882354,
+   0.8388746803069054,
+   0.19437340153452684,
+   0.7340153452685422,
+   0.13043478260869565,
+   0.8465473145780051,
+   0.9309462915601023,
+   0.6726342710997443,
+   0.8516624040920716,
+   0.8746803069053708,
+   0.9437340153452686,
+   0.45524296675191817,
+   0.7800511508951407,
+   0.27365728900255754,
+   0.8286445012787724,
+   0.48081841432225064,
+   0.7519181585677749,
+   0.5601023017902813,
+   0.6342710997442456
+  ]
+ },
+ "runtime_seconds": 66.73350979201496
+}

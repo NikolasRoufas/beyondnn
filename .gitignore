@@ -32,3 +32,5 @@ runs/
 
 # Phase 5.5 experiment artifacts (checkpoints, downloads, raw per-test traces)
 experiments/phase5_5/artifacts/
+# Phase 6 experiment logs
+experiments/phase6/artifacts/

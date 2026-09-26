@@ -1,0 +1,419 @@
+{
+ "environment": {
+  "python": "3.12.13",
+  "torch": "2.14.0",
+  "numpy": "2.5.3",
+  "sklearn": "1.9.1",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "torch_threads": 1,
+  "beyondnn_commit": "f733063b43d0d6ed5d49badc1fb40ae745b05b60",
+  "captum": "0.9.0",
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "architecture": "CNN(\n  (conv1): Conv2d(1, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n  (relu1): ReLU()\n  (conv2): Conv2d(8, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n  (relu2): ReLU()\n  (pool): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)\n  (head): Linear(in_features=256, out_features=10, bias=True)\n)",
+  "training": {
+   "optimizer": "Adam",
+   "lr": 0.001,
+   "loss": "cross_entropy",
+   "epochs": 30,
+   "batch": 64,
+   "seed": 0
+  },
+  "checkpoint_state_digest": "sha256:d799d1e89efd31f2df0f9d3b815257e80e1e375e91bbc9d6206f9d46dc36ed53",
+  "accuracy": {
+   "train": 0.9851577281951904,
+   "val": 0.9721448421478271,
+   "test": 0.9638888835906982
+  },
+  "dataset": {
+   "source": "sklearn.datasets.load_digits",
+   "n": 1797,
+   "scale": "/16"
+  },
+  "split": {
+   "rule": "stratified 60/20/20, train_test_split random_state=0 twice",
+   "sizes": [
+    1078,
+    359,
+    360
+   ]
+  }
+ },
+ "concepts": [
+  {
+   "concept": "K5 ink",
+   "definition": "total ink > train-split median",
+   "target": {
+    "log_softmax_class": 8,
+    "train_lift": {
+     "0": 1.0962132536123568,
+     "1": 0.9965575032839606,
+     "2": 0.9172396611858495,
+     "3": 0.8490464098546654,
+     "4": 0.8733048787076557,
+     "5": 0.9954149241698996,
+     "6": 0.9238195726721182,
+     "7": 0.8596765254194588,
+     "8": 1.397089777615082,
+     "9": 1.028611815168649
+    }
+   },
+   "direction": {
+    "feature": "feature:4aa47b9269db6ed5f1aa0dda5c223e35",
+    "encoding_seconds": 1.260192833840847,
+    "auroc": 0.968661480427243,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.855,
+      "median": 0.9632034931118818,
+      "q95": 0.9696846803277556
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49935747744262204,
+      "q95": 0.5491412306034185
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.95,
+      "median": 0.8866465849580634,
+      "q95": 0.9679063437012062
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.49935747744262204,
+      "q95": 0.5491412306034185
+     }
+    ],
+    "false_positive_rate": 0.12627986348122866,
+    "false_negative_rate": 0.09716599190283401,
+    "n_false_positives": 37,
+    "n_false_negatives": 24,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 1.7384743893614683,
+     "superiority": 0.58,
+     "control_median": 1.9085246321566345,
+     "n": 247,
+     "seconds": 11.871583415893838
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:502d3bc068d9856cdb9d25ea9f90c791 contradicted"
+     ],
+     "verify_seconds": 1.7355135409161448,
+     "scope": "dataset digits[all 1797; seed 1234 50/20/30] (test split, n=540); model sha256:d799d1e89efd31f2; site relu2 axis 1; decreases custom:log_softmax_c8 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 3.9042794741742166,
+     "superiority": 0.24,
+     "control_median": 3.2979461857486445,
+     "n": 247,
+     "seconds": 12.229610458947718
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:6386d99bf5d8b272c9d5e506b9dc6348 contradicted"
+     ],
+     "verify_seconds": 1.7589830418583006,
+     "scope": "dataset digits[all 1797; seed 1234 50/20/30] (test split, n=540); model sha256:d799d1e89efd31f2; site relu2 axis 1; decreases custom:log_softmax_c8 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:2bc0f444862ec34c65b331b742a82971",
+    "neuron_index": 1,
+    "search": {
+     "candidate_count": 16,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.9777570538513433,
+     "train_set": "sample:ad72803bbeae974e834b4a3dcb178f13b1fbbe17c154b49e97b5b47f9836ae76",
+     "sign": 1
+    },
+    "encoding_seconds": 1.2737722909078002,
+    "auroc": 0.9687858396318968,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.87,
+      "median": 0.9632034931118818,
+      "q95": 0.9696846803277556
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4986665929723232,
+      "q95": 0.5490949413439085
+     }
+    ],
+    "encoding_isotropic": "supports",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.9525,
+      "median": 0.8866465849580634,
+      "q95": 0.9679063437012062
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.4986665929723232,
+      "q95": 0.5490949413439085
+     }
+    ],
+    "false_positive_rate": 0.12286689419795221,
+    "false_negative_rate": 0.10121457489878542,
+    "n_false_positives": 36,
+    "n_false_negatives": 25,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": -0.4678209915190386,
+     "superiority": 0.88,
+     "control_median": 0.5833061534537362,
+     "n": 247,
+     "seconds": 10.622389874886721
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:806f06543eac91c008a3fd70c26ee4bb contradicted"
+     ],
+     "verify_seconds": 0.5491645419970155,
+     "scope": "dataset digits[all 1797; seed 1234 50/20/30] (test split, n=540); model sha256:d799d1e89efd31f2; site relu2 axis 1; decreases custom:log_softmax_c8 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 0.24966180427787435,
+     "superiority": 0.94,
+     "control_median": 0.5938955177041448,
+     "n": 247,
+     "seconds": 10.833403791999444
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:5fe85df647f6944b0eb572f459f49a33 contradicted"
+     ],
+     "verify_seconds": 0.546093458076939,
+     "scope": "dataset digits[all 1797; seed 1234 50/20/30] (test split, n=540); model sha256:d799d1e89efd31f2; site relu2 axis 1; decreases custom:log_softmax_c8 under remove/train_mean"
+    }
+   }
+  },
+  {
+   "concept": "K6 centre",
+   "definition": "ink in the central 4x4 > train-split median",
+   "target": {
+    "log_softmax_class": 4,
+    "train_lift": {
+     "0": 0.3386123680241327,
+     "1": 1.641756935874583,
+     "2": 0.04514831573655104,
+     "3": 0.09791201003107454,
+     "4": 1.933762198113722,
+     "5": 0.4109004016472622,
+     "6": 1.195102475379292,
+     "7": 1.4838070059484467,
+     "8": 1.8450918829070089,
+     "9": 0.883336612236868
+    }
+   },
+   "direction": {
+    "feature": "feature:50d28809eaca832e2fb39e2ebd3f92c6",
+    "encoding_seconds": 1.298166292021051,
+    "auroc": 0.7859623015873016,
+    "encoding": "contradicts",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.91,
+      "median": 0.7792038690476191,
+      "q95": 0.7868861607142856
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5013778659611993,
+      "q95": 0.5393938767636683
+     }
+    ],
+    "encoding_isotropic": "contradicts",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.85,
+      "median": 0.7320257385361553,
+      "q95": 0.8027550429894179
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5013778659611993,
+      "q95": 0.5393938767636683
+     }
+    ],
+    "false_positive_rate": 0.3298611111111111,
+    "false_negative_rate": 0.2222222222222222,
+    "n_false_positives": 95,
+    "n_false_negatives": 56,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 5.098067270765636,
+     "superiority": 0.1,
+     "control_median": 3.8671714638156347,
+     "n": 252,
+     "seconds": 12.195729124825448
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:860891a3737a4b8ce34cd90657b81014 contradicted"
+     ],
+     "verify_seconds": 1.686809416860342,
+     "scope": "dataset digits[all 1797; seed 1234 50/20/30] (test split, n=540); model sha256:d799d1e89efd31f2; site relu2 axis 1; decreases custom:log_softmax_c4 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 2.2588488574720755,
+     "superiority": 0.4,
+     "control_median": 2.1156760942580313,
+     "n": 252,
+     "seconds": 12.085744500160217
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "encoding claim contradicted",
+      "use claim claim:df24735f2db3bf739de1f00cea13a39c contradicted"
+     ],
+     "verify_seconds": 1.6722305000294,
+     "scope": "dataset digits[all 1797; seed 1234 50/20/30] (test split, n=540); model sha256:d799d1e89efd31f2; site relu2 axis 1; decreases custom:log_softmax_c4 under remove/train_mean"
+    }
+   },
+   "neuron": {
+    "feature": "feature:89f534b28b187a3c3b1d4468aefc9567",
+    "neuron_index": 1,
+    "search": {
+     "candidate_count": 16,
+     "criterion": "max sign-free train AUROC, ties to the lower index",
+     "train_auroc": 0.806645431451933,
+     "train_set": "sample:ad72803bbeae974e834b4a3dcb178f13b1fbbe17c154b49e97b5b47f9836ae76",
+     "sign": 1
+    },
+    "encoding_seconds": 1.2433103749062866,
+    "auroc": 0.7898341049382716,
+    "encoding": "supports",
+    "controls_covariance": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.985,
+      "median": 0.7792038690476191,
+      "q95": 0.7868861607142856
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5009782848324515,
+      "q95": 0.5387903714726632
+     }
+    ],
+    "encoding_isotropic": "contradicts",
+    "controls_isotropic": [
+     {
+      "kind": "random_directions",
+      "superiority": 0.87,
+      "median": 0.7320257385361553,
+      "q95": 0.8027550429894179
+     },
+     {
+      "kind": "label_permutation",
+      "superiority": 1.0,
+      "median": 0.5009782848324515,
+      "q95": 0.5387903714726632
+     }
+    ],
+    "false_positive_rate": 0.3125,
+    "false_negative_rate": 0.24206349206349206,
+    "n_false_positives": 90,
+    "n_false_negatives": 61,
+    "use_zero": {
+     "outcome": "contradicts",
+     "mean_effect": 1.2213650829352696,
+     "superiority": 0.1,
+     "control_median": 0.3681595935919243,
+     "n": 252,
+     "seconds": 10.349963915999979
+    },
+    "validation_zero": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:0af05d68cd7fa69dbc758c1147477a20 contradicted"
+     ],
+     "verify_seconds": 0.5235594578552991,
+     "scope": "dataset digits[all 1797; seed 1234 50/20/30] (test split, n=540); model sha256:d799d1e89efd31f2; site relu2 axis 1; decreases custom:log_softmax_c4 under remove/zero"
+    },
+    "use_train_mean": {
+     "outcome": "contradicts",
+     "mean_effect": 0.403142654404122,
+     "superiority": 0.34,
+     "control_median": 0.3441746720968432,
+     "n": 252,
+     "seconds": 10.596706165932119
+    },
+    "validation_train_mean": {
+     "status": "proposed_concept",
+     "unmet": [
+      "use claim claim:e7c6796b2b34d1eca6ea2a093118af13 contradicted"
+     ],
+     "verify_seconds": 0.5088237498421222,
+     "scope": "dataset digits[all 1797; seed 1234 50/20/30] (test split, n=540); model sha256:d799d1e89efd31f2; site relu2 axis 1; decreases custom:log_softmax_c4 under remove/train_mean"
+    }
+   }
+  }
+ ],
+ "random_direction_proposals": {
+  "concept": "K5 ink",
+  "n": 20,
+  "naive_auroc_ge_0.6": 11,
+  "controls_supports": 0,
+  "aurocs": [
+   0.5454545454545454,
+   0.0219435736677116,
+   0.9373040752351097,
+   0.6394984326018809,
+   0.16614420062695925,
+   0.06269592476489028,
+   0.658307210031348,
+   0.7711598746081505,
+   0.3605015673981191,
+   0.9341692789968652,
+   0.5109717868338558,
+   0.9498432601880877,
+   0.47335423197492166,
+   0.9341692789968652,
+   0.4827586206896552,
+   0.9373040752351097,
+   0.8934169278996865,
+   0.27899686520376177,
+   0.7460815047021944,
+   0.9561128526645768
+  ]
+ },
+ "runtime_seconds": 132.33254754194058
+}
