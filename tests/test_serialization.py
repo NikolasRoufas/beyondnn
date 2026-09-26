@@ -15,6 +15,7 @@ import pytest
 from beyondnn.schema import (
     SCHEMA_VERSION,
     ActivationRecord,
+    AlternativeCriteria,
     AspectOutcome,
     Assessment,
     AssessmentPolicy,
@@ -23,6 +24,10 @@ from beyondnn.schema import (
     AttributionMethodSpec,
     AttributionRecord,
     AttributionReduction,
+    AuditAxis,
+    AuditedClaim,
+    AuditedConcept,
+    AuditPlan,
     BaselineKind,
     BaseRecord,
     CausalEffect,
@@ -33,9 +38,12 @@ from beyondnn.schema import (
     ConceptPolicy,
     ConceptRecord,
     ConceptValidation,
+    CounterexampleRule,
     DecodeError,
     EnvironmentIdentity,
     Estimand,
+    EstimandScope,
+    EvidenceRequirement,
     EvidenceRuleError,
     EvidenceSelection,
     ExecutionContext,
@@ -49,6 +57,7 @@ from beyondnn.schema import (
     IntegrityError,
     InterventionOperation,
     InterventionRecord,
+    Invariance,
     JsonMap,
     LabelSource,
     MethodIdentity,
@@ -64,9 +73,11 @@ from beyondnn.schema import (
     Relation,
     SAEIdentity,
     SelectionSource,
+    SelectionSubject,
     SemanticStatus,
     Site,
     SiteIO,
+    Subject,
     TensorRef,
     TensorStats,
     TraceLimitation,
@@ -291,7 +302,70 @@ def _samples(mk: SimpleNamespace) -> list[BaseRecord]:
         provenance_id=mk.PROV,
         derived_from=(RecordRef.to(act),),
     )
+    audit_plan = AuditPlan(
+        name="toy_audit",
+        checkpoint=digest,
+        declared_model=None,
+        samples=("s1", "s2"),
+        datasets=(cdata.id,),
+        claims=(
+            AuditedClaim(
+                name="c",
+                statement="unit 0 of h is necessary",
+                relation=Relation.NECESSARY_FOR,
+                target=claim.target,
+                scope=EstimandScope.INSTANCE,
+                requirement="r",
+                subject=Subject(site=Site(module="h"), units=(0,)),
+                invariant_over=(Invariance(axis=AuditAxis.REPLACEMENT, min_values=2),),
+            ),
+            AuditedClaim(
+                name="s",
+                statement="the IG top-2 units are sufficient",
+                relation=Relation.SUFFICIENT_FOR,
+                target=claim.target,
+                scope=EstimandScope.INSTANCE,
+                requirement="r",
+                selection=SelectionSubject(site=Site(module="h"), method="ig", k=2),
+            ),
+        ),
+        requirements=(
+            EvidenceRequirement(
+                name="r",
+                policy=AssessmentPolicy(
+                    name="p",
+                    version=1,
+                    requirements=(
+                        PolicyRequirement(
+                            relation=Relation.NECESSARY_FOR, protocols=("comprehensiveness",)
+                        ),
+                        PolicyRequirement(
+                            relation=Relation.SUFFICIENT_FOR, protocols=("sufficiency",)
+                        ),
+                    ),
+                ),
+                controls=True,
+                alternatives=(
+                    AlternativeCriteria(protocol="comprehensiveness", key="min_drop", factor=0.5),
+                ),
+            ),
+        ),
+        concepts=(
+            AuditedConcept(
+                concept=concept.id,
+                asserted=SemanticStatus.VALIDATED_CONCEPT,
+                policy=ConceptPolicy(name="concept_validation_v1", version=1),
+            ),
+        ),
+        counterexamples=CounterexampleRule(
+            max_counterexample_fraction=0.1,
+            max_false_positive_rate=None,
+            max_false_negative_rate=0.2,
+        ),
+        naive_auroc=0.6,
+    )
     return [
+        audit_plan,
         neuron,
         sae,
         label,

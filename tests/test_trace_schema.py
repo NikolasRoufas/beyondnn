@@ -329,6 +329,7 @@ def test_registered_kinds_are_exactly_schema_0_1() -> None:
         "concept_dataset",
         "concept_validation",
         "concept_activation",
+        "audit_plan",
     }
 
 
