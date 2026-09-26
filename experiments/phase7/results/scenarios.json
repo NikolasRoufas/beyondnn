@@ -1,0 +1,248 @@
+{
+ "all_match": true,
+ "plan_section": "docs/PHASE_7_PLAN.md \u00a729.3",
+ "rows": [
+  {
+   "doc": "A: fully supported (3 replacements with controls + a site-level intervention).",
+   "expected_axis": null,
+   "expected_codes": [],
+   "expected_standing": "supported",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [],
+   "observed_standing": "supported",
+   "scenario": "A",
+   "seconds": 0.14371216692961752
+  },
+  {
+   "doc": "B: attribution-only evidence for a causal claim.",
+   "expected_axis": null,
+   "expected_codes": [
+    "attribution_is_not_intervention"
+   ],
+   "expected_standing": "unsupported",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "attribution_is_not_intervention"
+   ],
+   "observed_standing": "unsupported",
+   "scenario": "B",
+   "seconds": 0.028702625073492527
+  },
+  {
+   "doc": "C: attribution high, intervention on a redundant path shows no effect.",
+   "expected_axis": null,
+   "expected_codes": [
+    "attribution_intervention_disagree"
+   ],
+   "expected_standing": "contradicted",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "attribution_intervention_disagree",
+    "counterexamples_present"
+   ],
+   "observed_standing": "contradicted",
+   "scenario": "C",
+   "seconds": 0.005768874892964959
+  },
+  {
+   "doc": "D: necessary but not sufficient (y = h0 * h1).",
+   "expected_axis": null,
+   "expected_codes": [
+    "necessary_not_sufficient"
+   ],
+   "expected_standing": "supported",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "necessary_not_sufficient"
+   ],
+   "observed_standing": "supported",
+   "scenario": "D",
+   "seconds": 0.005474374862387776
+  },
+  {
+   "doc": "E: the effect reverses between replacements.",
+   "expected_axis": "replacement",
+   "expected_codes": [
+    "assumption_sensitive"
+   ],
+   "expected_standing": "assumption_sensitive",
+   "matches_preregistration": true,
+   "observed_axes": [
+    "replacement"
+   ],
+   "observed_codes": [
+    "assumption_sensitive"
+   ],
+   "observed_standing": "assumption_sensitive",
+   "scenario": "E",
+   "seconds": 0.00522391707636416
+  },
+  {
+   "doc": "F: uncontrolled SUPPORTS; with matched random controls CONTRADICTS.",
+   "expected_axis": "null",
+   "expected_codes": [
+    "assumption_sensitive"
+   ],
+   "expected_standing": "assumption_sensitive",
+   "matches_preregistration": true,
+   "observed_axes": [
+    "null"
+   ],
+   "observed_codes": [
+    "assumption_sensitive"
+   ],
+   "observed_standing": "assumption_sensitive",
+   "scenario": "F",
+   "seconds": 0.025162833044305444
+  },
+  {
+   "doc": "G: decodable but unused (h1 encodes x1 > 0 but feeds no output).",
+   "expected_axis": null,
+   "expected_codes": [
+    "decodable_not_used"
+   ],
+   "expected_standing": "unsupported",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "decodable_not_used"
+   ],
+   "observed_standing": "unsupported",
+   "scenario": "G",
+   "seconds": 5.875138750066981
+  },
+  {
+   "doc": "H: a GENERATED label asserted as validated, with no validation.",
+   "expected_axis": null,
+   "expected_codes": [
+    "generated_label_is_not_validation"
+   ],
+   "expected_standing": "unsupported",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "generated_label_is_not_validation"
+   ],
+   "observed_standing": "unsupported",
+   "scenario": "H",
+   "seconds": 0.6215545001905411
+  },
+  {
+   "doc": "I: a validated concept whose false-positive rate exceeds the declared cap.",
+   "expected_axis": null,
+   "expected_codes": [
+    "counterexample_heavy"
+   ],
+   "expected_standing": "unsupported",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "counterexample_heavy"
+   ],
+   "observed_standing": "unsupported",
+   "scenario": "I",
+   "seconds": 6.382912666071206
+  },
+  {
+   "doc": "J: all evidence from another checkpoint.",
+   "expected_axis": null,
+   "expected_codes": [
+    "other_checkpoint"
+   ],
+   "expected_standing": "not_evaluated",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "other_checkpoint"
+   ],
+   "observed_standing": "not_evaluated",
+   "scenario": "J",
+   "seconds": 0.004894542042165995
+  },
+  {
+   "doc": "K: evidence about a sample the plan does not declare.",
+   "expected_axis": null,
+   "expected_codes": [
+    "sample_out_of_scope"
+   ],
+   "expected_standing": "not_evaluated",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "no_evidence",
+    "sample_out_of_scope"
+   ],
+   "observed_standing": "not_evaluated",
+   "scenario": "K",
+   "seconds": 0.002833582926541567
+  },
+  {
+   "doc": "L: an encoding claim that holds under one null and fails under another (h2 on",
+   "expected_axis": "null",
+   "expected_codes": [
+    "assumption_sensitive"
+   ],
+   "expected_standing": "assumption_sensitive",
+   "matches_preregistration": true,
+   "observed_axes": [
+    "null"
+   ],
+   "observed_codes": [
+    "assumption_sensitive"
+   ],
+   "observed_standing": "assumption_sensitive",
+   "scenario": "L",
+   "seconds": 1.2452983751427382
+  },
+  {
+   "doc": "M: SUPPORTS without controls; the requirement demands controls.",
+   "expected_axis": null,
+   "expected_codes": [
+    "missing_required_controls"
+   ],
+   "expected_standing": "unsupported",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "missing_required_controls"
+   ],
+   "observed_standing": "unsupported",
+   "scenario": "M",
+   "seconds": 0.004839292028918862
+  },
+  {
+   "doc": "N: a declared claim with no evidence at all.",
+   "expected_axis": null,
+   "expected_codes": [
+    "no_evidence"
+   ],
+   "expected_standing": "not_evaluated",
+   "matches_preregistration": true,
+   "observed_axes": [],
+   "observed_codes": [
+    "no_evidence"
+   ],
+   "observed_standing": "not_evaluated",
+   "scenario": "N",
+   "seconds": 0.00025554210878908634
+  },
+  {
+   "doc": "A with one comprehensiveness result forged (SUPPORTS -> CONTRADICTS, ids consistent)",
+   "excluded_results": 1,
+   "expected": "INTEGRITY_FAILURE and exclusion",
+   "matches_preregistration": true,
+   "observed_distribution": {
+    "unsupported": 1
+   },
+   "observed_findings": [
+    "integrity_failure:rederivation_failed:blocking",
+    "missing_evidence:invariance_untested:blocking"
+   ],
+   "scenario": "A-tampered"
+  }
+ ]
+}

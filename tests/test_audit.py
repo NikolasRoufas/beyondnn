@@ -744,3 +744,115 @@ def test_flagship_example() -> None:
     }
     assert {c.distribution for c in attribution_only.claims} == {(("unsupported", 1),)}
     assert "AUDIT  [plan saturated_top1" in why
+
+
+# ------------------------------------------------------------------ mutation-driven tests
+
+
+def test_disagreement_precedes_contradiction() -> None:
+    """A recorded CONTRADICTS that a declared alternative threshold would reverse is
+    ASSUMPTION_SENSITIVE, not CONTRADICTED (plan §22 precedence)."""
+    model, x = _one_unit()
+    res = _comp(model, x, F.zero(), min_drop=15.0)  # drop 10 < 15
+    req = AU.requirement(
+        "comprehensiveness",
+        policy=F.COMPREHENSIVENESS_POLICY,
+        controls=False,
+        alternatives=[AU.alternative("comprehensiveness", "min_drop", factor=0.5)],
+    )
+    plan = _plan(
+        model, [sample_id(x)], [_unit_claim("c", "necessary_for", "comprehensiveness")], [req]
+    )
+    group = bnn.audit([res], plan=plan).claim("c").groups[0]
+    assert group.verdict == "contradicted"
+    assert group.standing is Standing.ASSUMPTION_SENSITIVE
+
+
+def test_unexplained_disagreement_sets_mixed() -> None:
+    from beyondnn.audits.engine import _standing
+    from beyondnn.schema import Verdict
+
+    one = [({}, Outcome.SUPPORTS, "a")]
+    two = [({}, Outcome.CONTRADICTS, "b")]
+    assert _standing(Verdict.MIXED, one, two, True, ()) is Standing.MIXED
+    assert _standing(Verdict.MIXED, one, two, False, ()) is Standing.ASSUMPTION_SENSITIVE
+
+
+def test_concept_test_outside_the_declared_datasets_is_excluded() -> None:
+    s = scenario("L")
+    plan = s.plan
+    narrowed = AuditPlan(
+        name=plan.name,
+        checkpoint=plan.checkpoint,
+        declared_model=None,
+        samples=(),
+        datasets=(),
+        claims=plan.claims,
+        requirements=plan.requirements,
+        concepts=(),
+        counterexamples=plan.counterexamples,
+    )
+    c = bnn.audit(s.evidence, plan=narrowed).claim("l_encodes")
+    assert c.standing is Standing.NOT_EVALUATED
+    assert "dataset_out_of_scope" in {f.code for f in c.findings}
+
+
+def test_forged_concept_validation_is_caught() -> None:
+    """A validation record whose use summary and status were changed consistently (so the
+    record itself constructs) is caught by re-deriving the summaries from the tests."""
+    import dataclasses
+
+    from beyondnn.schema import (
+        ConceptValidation,
+        SemanticStatus,
+        TraceLimitation,
+        Verdict,
+        derive_semantic_status,
+    )
+
+    g = scenario("G")
+    validation = g.evidence[0]
+    record = validation.record
+    use = tuple(dataclasses.replace(u, verdict=Verdict.SUPPORTED) for u in record.use)
+    status, unmet = derive_semantic_status(
+        record.policy, record.encoding, use, record.false_positive_rate, record.false_negative_rate
+    )
+    assert status is SemanticStatus.VALIDATED_CONCEPT
+    forged = ConceptValidation(
+        concept=record.concept,
+        feature=record.feature,
+        dataset=record.dataset,
+        policy=record.policy,
+        encoding=record.encoding,
+        use=use,
+        counterexamples=record.counterexamples,
+        false_positive_rate=record.false_positive_rate,
+        false_negative_rate=record.false_negative_rate,
+        model_state_digest=record.model_state_digest,
+        scope=record.scope,
+        semantic_status=status,
+        unmet=unmet,
+    )
+    trace = TraceResult(validation.trace.config)
+    for r in validation.trace.records:
+        if r.id == record.id:
+            trace._add(forged)
+        elif not isinstance(r, TraceLimitation):
+            trace._add(r)
+    trace._seal()
+    evidence = [
+        trace,
+        validation.encoding,
+        *validation.use,
+        validation.concept,
+    ]
+    k = bnn.audit(evidence, plan=g.plan).concept(g.extra["concept"])
+    assert k.standing is not Standing.SUPPORTED
+    assert FindingKind.INTEGRITY_FAILURE in {f.kind for f in k.findings}
+
+
+def test_concept_null_sensitivity_across_encoding_tests() -> None:
+    s = scenario("L")
+    k = bnn.audit(s.evidence, plan=s.plan).concept(s.plan.concepts[0].concept)
+    assert k.standing is Standing.ASSUMPTION_SENSITIVE
+    assert "null_sensitive" in {f.code for f in k.findings}

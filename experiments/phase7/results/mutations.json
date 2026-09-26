@@ -1,0 +1,228 @@
+{
+ "plan_section": "docs/PHASE_7_PLAN.md \u00a731 (code mutations of beyondnn/audits; each must fail tests/test_audit.py)",
+ "first_run": [
+  {
+   "mutation": "precedence: contradicted before disagreement",
+   "result": "SURVIVED",
+   "by": []
+  },
+  {
+   "mutation": "axis explanation accepts multi-axis pairs",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_unexplained_disagreement_is_mixed_not_resolved"
+   ]
+  },
+  {
+   "mutation": "unexplained disagreement treated as explained",
+   "result": "SURVIVED",
+   "by": []
+  },
+  {
+   "mutation": "invariance count ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_forged_outcome_is_an_integrity_failure_and_excluded"
+   ]
+  },
+  {
+   "mutation": "counterexample fraction cap ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_per_sample_distribution_and_counterexample_cap[0.25]"
+   ]
+  },
+  {
+   "mutation": "FP/FN caps ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[I] - Assert..."
+   ]
+  },
+  {
+   "mutation": "sample scope check dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[K] - Assert..."
+   ]
+  },
+  {
+   "mutation": "dataset scope check dropped",
+   "result": "SURVIVED",
+   "by": []
+  },
+  {
+   "mutation": "checkpoint check dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[J] - Assert..."
+   ]
+  },
+  {
+   "mutation": "attribution->causal overclaim not flagged",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[B] - Assert..."
+   ]
+  },
+  {
+   "mutation": "narrower estimand not flagged",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_finite_sample_and_population_claims_from_instance_evidence"
+   ]
+  },
+  {
+   "mutation": "missing controls not flagged",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[M] - Assert..."
+   ]
+  },
+  {
+   "mutation": "missing evidence -> SUPPORTED",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[J] - Assert..."
+   ]
+  },
+  {
+   "mutation": "missing evidence -> CONTRADICTED",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[J] - Assert..."
+   ]
+  },
+  {
+   "mutation": "INCONCLUSIVE evidence ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_inconclusive_relabelled_as_supports_is_caught"
+   ]
+  },
+  {
+   "mutation": "re-derivation dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_forged_outcome_is_an_integrity_failure_and_excluded"
+   ]
+  },
+  {
+   "mutation": "concept validation re-derivation dropped",
+   "result": "SURVIVED",
+   "by": []
+  },
+  {
+   "mutation": "alternative thresholds ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_threshold_sensitivity_by_declared_alternative_criteria"
+   ]
+  },
+  {
+   "mutation": "decodable_not_used not flagged",
+   "result": "NOT APPLIED"
+  },
+  {
+   "mutation": "generated label promoted",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[H] - Assert..."
+   ]
+  },
+  {
+   "mutation": "concept test disagreement ignored",
+   "result": "SURVIVED",
+   "by": []
+  },
+  {
+   "mutation": "per-sample targets ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_per_sample_targets_match_each_samples_own_target"
+   ]
+  },
+  {
+   "mutation": "verify_report never mismatches",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_report_save_load_verify_and_edits - Failed: ..."
+   ]
+  },
+  {
+   "mutation": "cross-claim protocol disagreement dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[D] - Assert..."
+   ]
+  },
+  {
+   "mutation": "attribution/intervention disagreement dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[C] - Assert..."
+   ]
+  }
+ ],
+ "rerun_after_new_tests": [
+  {
+   "mutation": "precedence: contradicted before disagreement",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_disagreement_precedes_contradiction - assert..."
+   ]
+  },
+  {
+   "mutation": "unexplained disagreement treated as explained",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_unexplained_disagreement_sets_mixed - Assert..."
+   ]
+  },
+  {
+   "mutation": "dataset scope check dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_concept_test_outside_the_declared_datasets_is_excluded"
+   ]
+  },
+  {
+   "mutation": "concept validation re-derivation dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_forged_concept_validation_is_caught - Assert..."
+   ]
+  },
+  {
+   "mutation": "decodable_not_used not flagged",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_scenario_matches_preregistration[G] - Assert..."
+   ]
+  },
+  {
+   "mutation": "concept test disagreement ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit.py::test_concept_null_sensitivity_across_encoding_tests"
+   ]
+  }
+ ],
+ "survivors_first_run": [
+  "precedence: contradicted before disagreement",
+  "unexplained disagreement treated as explained",
+  "dataset scope check dropped",
+  "concept validation re-derivation dropped",
+  "decodable_not_used not flagged",
+  "concept test disagreement ignored"
+ ],
+ "final_all_killed": true,
+ "tests_added": [
+  "test_disagreement_precedes_contradiction",
+  "test_unexplained_disagreement_sets_mixed",
+  "test_concept_test_outside_the_declared_datasets_is_excluded",
+  "test_forged_concept_validation_is_caught",
+  "test_concept_null_sensitivity_across_encoding_tests"
+ ],
+ "evidence_mutations": "tests/test_audit.py: forged outcome, relabelled INCONCLUSIVE, dropped contradiction, changed target/subject, dataset scope, removed counterexamples, favourable k, checkpoint (J), sample (K), removed controls (M), generated label (H), edited report"
+}

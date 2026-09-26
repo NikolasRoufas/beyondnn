@@ -8,6 +8,18 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 7: scientific audits** (`bnn.audit`, `bnn.audits`, ADR-044 to ADR-047):
+  - a deterministic, model-free audit of recorded traces (or saved trace paths) under a pre-declared `AuditPlan` (record kind `audit_plan` v1);
+  - integrity and re-derivation of every result; provenance and scope exclusion;
+  - 7 standings and 13 finding kinds with categorical severities; no score;
+  - assumption-axis sensitivity (protocol, threshold, replacement, k, null, method, dataset);
+  - re-evaluation under declared alternative thresholds;
+  - structural overclaims (attribution → causal, decodable → used, generated → validated, narrower estimand, untested invariance, missing controls);
+  - per-sample distributions with counterexample identities and caps;
+  - concept audits; coverage;
+  - deterministic report JSON, `verify_report`, and an AUDIT section in the WHY (`bnn.compose(..., audit=report)`).
+- **Trace-level concept re-derivation** (`concepts.verify.verify_*_trace`, `verify_feature_record`): a partial fix of P6-4 (audits work from saved traces).
+- **Documentation and experiments:** Phase 7 literature review, differentiation, plan, report, `docs/audit/`, `examples/phase7_audit.py`, `benchmarks/bench_audit.py`, `experiments/phase7/`, and `docs/roadmap/TRACE3B_FUTURE.md` (a boundary note only).
 - **Phase 6: concepts and concept validation** (`bnn.concepts`, ADR-039 to ADR-043):
   - features: neurons, directions, SAE latents (a tensor-only adapter);
   - train-only discovery (`fit_direction`, `search_neurons`);
