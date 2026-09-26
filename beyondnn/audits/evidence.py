@@ -154,7 +154,6 @@ class EvidenceSet:
         from beyondnn.explain.bundle import _check_source
 
         index: dict[str, tuple[BaseRecord, TraceResult]] = {}
-        canonical: dict[str, str] = {}
         failed: list[tuple[int, Problem]] = []
         included: list[TraceResult] = []
         for position, trace in enumerate(traces):
@@ -163,9 +162,15 @@ class EvidenceSet:
             except Exception as exc:
                 failed.append((position, Problem("integrity_failure", "trace_integrity", str(exc))))
                 continue
-            texts = {r.id: to_json(r) for r in trace.records}
             conflict = next(
-                (rid for rid, t in texts.items() if rid in canonical and canonical[rid] != t), None
+                (
+                    r.id
+                    for r in trace.records
+                    if r.id in index
+                    and index[r.id][0] is not r
+                    and to_json(index[r.id][0]) != to_json(r)
+                ),
+                None,
             )
             if conflict is not None:
                 failed.append(
@@ -181,8 +186,7 @@ class EvidenceSet:
                 continue
             included.append(trace)
             for record in trace.records:
-                if record.id not in canonical:
-                    canonical[record.id] = texts[record.id]
+                if record.id not in index:
                     index[record.id] = (record, trace)
         ev = cls(
             traces=included,
