@@ -670,3 +670,36 @@ Open items are listed in `docs/PHASE_5_5_API_REVIEW.md`.
 **Compatibility:**
 - A Phase-5.5 re-run of 2 MLP samples reproduces 560/560 rows (outcomes and drops).
 - A Phase-6 ground-truth re-run reproduces every outcome and status. One claim id in `J-wrong`'s `unmet` text differs from the committed Phase-6 JSON; it is identical at `25fe462` and at HEAD (pre-existing: generated-label provenance includes the environment).
+
+## 2026-09-27: Phase 7.5 external validation, NLP expansion, API freeze (pre-registered, frozen policy `ee3f91e`)
+
+**Setup:** see `docs/PHASE_7_5_PLAN.md` and `docs/PHASE_7_5_FROZEN_POLICY.md`; results in `experiments/phase7_5/results/`, evaluated by `evaluate75.py` into `hypotheses75.json`.
+
+**External, InterpBench** (18 held-out SIIT models; case 124 re-run after DV-1):
+- PRIMARY: TP 942/942, FP 0/8,840, 18 ambiguous (all non-circuit nodes the trained model uses), 9 INCONCLUSIVE (resample no-ops, case 110).
+- IG top-1 wrong-head selections CONTRADICTED 1,571/1,571; attribution-only IG selection claims UNSUPPORTED 1,960/1,960.
+- Zero ablation FP 13.0%; the count null rejects 98.6% of necessary heads (ALTERNATIVE, predicted).
+- EH1–EH6 held.
+- **Negative finding (analysis time, no rule changed):** EH1/EH2 are largely by construction. PRIMARY uses the ground truth's own resample semantics, and "clear" is defined by agreement with that resample.
+
+**Concepts, Tracr** (held-out case 39): known negatives are never validated (KE1). The known-used variable is **not** validated either (use effect about 0.06 < 0.1; KE2 held as predicted; KE3: SIIT likewise).
+
+**Central held-out** (A/B/C; D pending in this entry, see the report):
+- IG_necessary PRIMARY SUPPORTED: 8/51, 4/51, 14/60, 1/60, 14/40; `alternative_reverses` on 38/41 of them.
+- R ≤ 1 per site. CH7 held; CH8 and CH9 held on A/B/C.
+
+**NLP:**
+- **e-SNLI (BERT-base SNLI, 40):** human necessary 10/40, IG 7/40, random 3/40 (N1 failed); IG − random F1 +0.149, Bonferroni [0.031, 0.270] (N2 held).
+- **OOD:** zero − [MASK] percentile: D −5.5 (N3 failed; reversed), E +1.5 (held).
+- **Shortcuts and padding:** empty-premise accuracy 0.456 (N4 held). Without the attention mask, padding flips D on 13/40; word shuffles keep the SST-2 predictions on 83–94% of shuffles.
+
+**Engineering:**
+- The external-researcher workflow first failed (3 blocking API defects), then passed after the fixes.
+- 24/24 mutations killed.
+- The regression matrix is green: 1014 + 1 / 1035 tests on 3.10 / 3.12 / 3.14 (1015 + 1 / 1036 after the Interval fix).
+- Re-runs of Phase 5.5 / 6 / 7 experiments reproduce.
+- BERT-base evidence costs about 10–19 min and about 225 MB per sample on this CPU.
+
+**Operational:**
+- Model D's 40-sample held-out run takes many hours. The owner chose to keep the frozen N = 40 (no deviation).
+- An earlier ETA estimate was wrong, because the BERT-base per-sample cost was unknown until measured.
