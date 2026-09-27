@@ -151,3 +151,95 @@
 - **Artifact:** `results/performance.json`; `central_*.json` (`audit_seconds`).
 - **Result:** full central audits took 36–68 s for 2,832–4,320 results (460k–877k records), about 10–16 ms per result; `verify_report` costs the same again.
 - **Allowed wording:** the measured times, with the machine and the single-run caveat.
+
+---
+
+# Phase 7.5 entries (held-out, frozen policy `ee3f91e`, deviation DV-1)
+
+- **Sources:** `experiments/phase7_5/results/` (`hypotheses75.json` from `evaluate75.py`; tables in `figure_data/` from `figure_data.py`).
+- **Intervals:** 95% Wilson / bootstrap over samples unless marked Bonferroni (98.75%).
+- **Note on the Phase-7 entries above:** they said "no confidence intervals anywhere". Phase 7.5 adds intervals, but does not re-derive the Phase-7 numbers with them.
+
+### E13. The audit reproduces a known mechanism's interchange results (InterpBench, 18 held-out models)
+
+- **Result:**
+  - PRIMARY SUPPORTED on 942/942 necessary node instances [0.9959, 1] and on 0/8,840 not-necessary instances [0, 0.0004];
+  - 18 ambiguous instances, all non-circuit nodes that the trained model uses.
+- **Counterevidence / limitation:**
+  - **Partly circular.** PRIMARY is the benchmark's own resample semantics, and clear instances are defined by agreement with that resample (`PHASE_7_5_EXTERNAL_VALIDATION.md` §2).
+  - This is agreement with an independent TransformerLens implementation, not discovery.
+- **Allowed wording:** "On 18 held-out InterpBench models, the audit's PRIMARY standings reproduced the benchmark's interchange ground truth on all 9,782 clear node instances; the ground truth and the PRIMARY configuration share the interchange semantics."
+- **Disallowed wording:**
+  - "The audit identifies correct mechanisms with 100% accuracy."
+  - "BeyondNN separates correct from incorrect explanations."
+
+### E14. Attribution-selected wrong heads are contradicted; attribution-only evidence never supports
+
+- **Result:**
+  - IG top-1 selected a known-unnecessary head in 1,571/1,960 (layer, sample) selections; the audit CONTRADICTED 1,571/1,571 [0.9976, 1];
+  - attribution-only audits: 1,960/1,960 UNSUPPORTED.
+- **Why independent of E13's circularity:** which head IG selects is not decided by the ground-truth procedure.
+- **Allowed wording:** "Every IG-selected head that the benchmark marks unnecessary was contradicted by intervention evidence (1,571/1,571)."
+
+### E15. Replacement choice changes the answer on known mechanisms
+
+- **Result** (clear instances, each configuration treated as if it were primary):
+  - zero ablation: FP 13.0% [12.3, 13.7], TP 70.0%;
+  - mean replacement: FP 1.3%, TP 68.5%;
+  - the benchmark's resample semantics: FP 0%, TP 100%;
+  - a count-matched random-head null rejects 98.6% [97.0, 99.4] of known-necessary heads.
+- **Allowed wording:** "On known mechanisms, zero ablation supported 13% of unnecessary nodes; declared roles kept such configurations from deciding the standing."
+- **Disallowed wording:** "Zero ablation is wrong in general" (4-layer, d_model ≤ 64 models only).
+
+### E16. Central held-out: IG support is rare and almost always alternative-sensitive
+
+- **Result:**
+  - IG_necessary PRIMARY SUPPORTED: A/input 8/51, A/net.1 4/51, B/pixels 14/60, B/relu2 1/60, C 14/40 (D: see the report);
+  - PRIMARY-supported samples with `alternative_reverses`: 8/8, 2/4, 13/14, 1/1, 14/14;
+  - R_necessary SUPPORTED ≤ 1 per site.
+- **Hypotheses:** CH7 held; CH8 and CH9 held on A/B/C.
+- **Allowed wording:** "Where IG's top-k was necessary under the pre-registered configuration, a reasonable alternative configuration reversed it in 38 of 41 held-out cases (A/B/C)."
+
+### E17. Concept validation rejects a known-used variable
+
+- **Result:** Tracr / SIIT K+ (the `is_x` variable, used by construction):
+  - encoding supported;
+  - use test contradicted (effect ≈ 0.06 < 0.10);
+  - not validated on dev or held-out.
+  - Known negatives are never validated (KE1).
+- **Allowed wording:** "The frozen concept policy validated no known negative and also failed to validate the known positive."
+- **Disallowed wording:** "Concept validation is externally validated."
+
+### E18. Plausibility vs faithfulness on e-SNLI (BERT-base SNLI, 40 held-out samples)
+
+- **Result:**
+  - IG top-k_h token F1 with annotator 1: 0.34 [0.26, 0.42];
+  - IG minus random F1: +0.149, Bonferroni [0.031, 0.270] (N2 held);
+  - PRIMARY necessity SUPPORTED: human 10/40, IG 7/40, random 3/40. N1 (IG ≥ human) failed; the paired difference −0.075 [−0.225, 0.075].
+- **Limitations:** one annotator (inter-annotator IoU 0.56); hypothesis-only shortcut (E20).
+- **Allowed wording:** "IG agreed with human highlights more than random spans did; human highlights were necessary on 25% of samples."
+- **Disallowed wording:** any use of human highlights as causal ground truth.
+
+### E19. Token replacements: OOD is model-specific
+
+- **Result** (OOD percentile, zero minus [MASK], Bonferroni):
+  - BERT-base SST-2: −5.53 [−7.56, −3.58] (N3 failed: [MASK] is more OOD);
+  - BERT-base SNLI: +1.52 [0.21, 2.94] (held);
+  - [SEP] perturbation moves D's margin more than an interior token (+2.1 [1.5, 2.8]).
+- **Allowed wording:** "Which token replacement is closer to the data distribution differed between two BERT-base fine-tunes."
+
+### E20. Shortcuts and padding
+
+- **Result:**
+  - SNLI empty-premise accuracy 0.456, Bonferroni [0.401, 0.512], vs chance 1/3 (N4 held);
+  - SST-2 predictions survive word shuffles 94% (C) / 82.5% (D);
+  - padding without the attention mask flips D on 13/40 samples; with the mask it is inert (< 1e-7).
+- **Allowed wording:** descriptive, with the probe named as outside BeyondNN's protocols.
+
+### E21. Persistence, API workflow, mutations, cost (Phase 7.5)
+
+- **Result:**
+  - the clean-wheel external-researcher workflow (public API only) passes save → restart → load → audit → verify → WHY with identical output, after 3 blocking API defects were fixed;
+  - 24/24 audit mutations killed;
+  - the audit costs 1–13 s per few-sample setting, while BERT-base evidence generation costs about 10–19 min and about 225 MB per sample.
+- **Allowed wording:** the measured values with the machine caveat.

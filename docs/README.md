@@ -10,6 +10,7 @@
 
 ## Where to start
 
+0. [`PHASE_7_5_REPORT.md`](PHASE_7_5_REPORT.md), [`PHASE_7_5_PLAN.md`](PHASE_7_5_PLAN.md), [`PHASE_7_5_FROZEN_POLICY.md`](PHASE_7_5_FROZEN_POLICY.md), [`PHASE_7_5_EXTERNAL_VALIDATION.md`](PHASE_7_5_EXTERNAL_VALIDATION.md), [`PHASE_7_5_API_REVIEW.md`](PHASE_7_5_API_REVIEW.md), [`API_FREEZE.md`](API_FREEZE.md): external validation, audit refinement and the API freeze; research notes in [`research/PHASE_7_5_LITERATURE.md`](research/PHASE_7_5_LITERATURE.md) and [`research/PHASE_7_5_PAPER_READINESS.md`](research/PHASE_7_5_PAPER_READINESS.md).
 0. [`PHASE_7_REPORT.md`](PHASE_7_REPORT.md), [`PHASE_7_PLAN.md`](PHASE_7_PLAN.md), and [`audit/`](audit/README.md): model-free scientific audits of recorded evidence (standings and findings, no score); research notes in [`research/PHASE_7_LITERATURE.md`](research/PHASE_7_LITERATURE.md), [`research/PHASE_7_DIFFERENTIATION.md`](research/PHASE_7_DIFFERENTIATION.md), [`research/PAPER_EVIDENCE_LEDGER.md`](research/PAPER_EVIDENCE_LEDGER.md); Trace 3B boundary: [`roadmap/TRACE3B_FUTURE.md`](roadmap/TRACE3B_FUTURE.md).
 0. [`PHASE_6_REPORT.md`](PHASE_6_REPORT.md), [`PHASE_6_PLAN.md`](PHASE_6_PLAN.md), and [`concepts/`](concepts/README.md): features, concept hypotheses, and controlled concept validation (decodable ≠ used).
 0. [`PHASE_5_5_REPORT.md`](PHASE_5_5_REPORT.md) and [`PHASE_5_5_API_REVIEW.md`](PHASE_5_5_API_REVIEW.md): faithfulness on realistic trained models.

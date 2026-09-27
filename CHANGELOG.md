@@ -8,6 +8,23 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 7.5: audit refinement, uncertainty, external validation, API freeze** (ADR-048 to ADR-052):
+  - declared configuration roles (`audits.role`; PRIMARY / ALTERNATIVE / STRESS_TEST) with PRIMARY-only standings;
+  - `alternative_reverses` / `stress_test_reverses` / `undeclared_configuration` / `primary_untested` findings;
+  - a `SensitivityProfile` per group; `configuration_level_disagreement` findings;
+  - `audit_plan` v2 (v1 migrates); report format v2;
+  - uncertainty: `audits.wilson` / `bootstrap` / `paired_bootstrap` and `Interval`; per-sample claims carry Wilson intervals;
+  - evidence helpers `audits.sample_id` / `traces_of` / `save_evidence` / `load_evidence`;
+  - `concepts.load_validation` (a WHY and an audit from saved traces); `protocols.PROTOCOL_VERSIONS`;
+  - `interventions.metrics.margin`; named replacements (`faithfulness.replacement(t, name=...)`);
+  - `docs/API_FREEZE.md`.
+- **Experiments:** `experiments/phase7_5/`: InterpBench / Tracr external validation, central A–D, e-SNLI rationales, token probes, the external-researcher workflow, mutations, performance, hypothesis evaluation and figure data.
+
+### Changed
+- **Breaking (ADR-052):** `faithfulness.comprehensiveness`, `sufficiency` and `curve` require `replacement=`; there is no implicit zero replacement.
+- `Interval.describe()` prints non-integer levels as declared (98.75%, not 99%).
+
+### Added (Phase 7 and earlier)
 - **Phase 7: scientific audits** (`bnn.audit`, `bnn.audits`, ADR-044 to ADR-047):
   - a deterministic, model-free audit of recorded traces (or saved trace paths) under a pre-declared `AuditPlan` (record kind `audit_plan` v1);
   - integrity and re-derivation of every result; provenance and scope exclusion;

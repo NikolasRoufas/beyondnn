@@ -37,9 +37,9 @@
 | gap | label | why |
 |---|---|---|
 | G-A1: NLP scope is SST-2 (BERT-tiny, BERT-base) and e-SNLI (BERT-base SNLI), 40 held-out samples each | desirable | an ACL paper would want ≥ 1 more task type (e.g. QA or NER with span rationales) |
-| G-A2: human-rationale comparison. Plausibility and faithfulness are reported separately (N1, N2) | acceptable as designed; see the NLP results in the report | the claim can only be "agreement with annotator 1 and audited necessity differ in X way", never "humans are ground truth" |
-| G-A3: token-replacement OOD. Measured with nativeness labels (N3). The PRIMARY [MASK] replacement is itself a distribution shift for a fine-tuned classifier | acceptable (stated) | no replacement is in-distribution for token removal; the audit reports the dependence instead of hiding it |
-| G-A4: annotation artefacts. The e-SNLI model's hypothesis-only behaviour (N4) is measured, not controlled | desirable | a faithfulness claim about a model that solves NLI from the hypothesis alone concerns the shortcut, not NLI |
+| G-A2: human-rationale comparison. Plausibility and faithfulness are reported separately (N1, N2) | acceptable as designed | IG agrees with annotator 1 more than random does (N2 held: +0.149, Bonferroni [0.031, 0.270]), yet IG is necessary on fewer samples than the human highlight (7 vs 10 of 40; N1 failed; interval includes 0). The claim can only be stated this way, never with humans as ground truth |
+| G-A3: token-replacement OOD. Measured with nativeness labels (N3). The PRIMARY [MASK] replacement is itself a distribution shift for a fine-tuned classifier | acceptable (stated) | no replacement is in-distribution for token removal. N3 failed on BERT-base SST-2: [MASK] is *more* OOD than a zero embedding (−5.5 points), held on SNLI. The audit reports the dependence instead of hiding it |
+| G-A4: annotation artefacts. The e-SNLI model reaches 0.456 accuracy with an empty premise (N4 held; chance 1/3). Measured, not controlled | desirable | a faithfulness claim about a model that solves NLI from the hypothesis alone concerns the shortcut, not NLI |
 | G-A5: G-N1 (circular external validation) applies equally | **must-fix** for any claim that the audit identifies correct explanations | |
 | G-A6: G-N2 applies if concepts are claimed | as NeurIPS | |
 
