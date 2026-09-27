@@ -1,0 +1,2167 @@
+{
+ "audits": {
+  "human": {
+   "human_necessary": {
+    "distribution": {
+     "contradicted": 30,
+     "supported": 10
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      4
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      9
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      30
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      23
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      9
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      4
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.75 (30 of 40; 95% wilson [0.5981, 0.8581] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.25 (10 of 40; 95% wilson [0.1419, 0.4019] over declared samples)"
+    ],
+    "per_sample": [
+     "supported",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   },
+   "human_sufficient": {
+    "distribution": {
+     "contradicted": 35,
+     "supported": 5
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      7
+     ],
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      7
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      8
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      35
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      23
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      9
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      4
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.875 (35 of 40; 95% wilson [0.7389, 0.9454] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.125 (5 of 40; 95% wilson [0.0546, 0.2611] over declared samples)"
+    ],
+    "per_sample": [
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   }
+  },
+  "ig": {
+   "ig_necessary": {
+    "distribution": {
+     "contradicted": 33,
+     "supported": 7
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      8
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      33
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      20
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      5
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      4
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.825 (33 of 40; 95% wilson [0.6805, 0.9125] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.175 (7 of 40; 95% wilson [0.08745, 0.3195] over declared samples)"
+    ],
+    "per_sample": [
+     "contradicted",
+     "supported",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   },
+   "ig_sufficient": {
+    "distribution": {
+     "contradicted": 34,
+     "supported": 6
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      7
+     ],
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      6
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      7
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      34
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      20
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      5
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      4
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.85 (34 of 40; 95% wilson [0.7093, 0.9294] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.15 (6 of 40; 95% wilson [0.07061, 0.2907] over declared samples)"
+    ],
+    "per_sample": [
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   }
+  },
+  "random": {
+   "random_necessary": {
+    "distribution": {
+     "contradicted": 37,
+     "supported": 3
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      2
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      6
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      37
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      9
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      3
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      1
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.925 (37 of 40; 95% wilson [0.8014, 0.9742] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.075 (3 of 40; 95% wilson [0.02584, 0.1986] over declared samples)"
+    ],
+    "per_sample": [
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   },
+   "random_sufficient": {
+    "distribution": {
+     "contradicted": 39,
+     "supported": 1
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      2
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      2
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      39
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      9
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      3
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      1
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.975 (39 of 40; 95% wilson [0.8712, 0.9956] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.025 (1 of 40; 95% wilson [0.004427, 0.1288] over declared samples)"
+    ],
+    "per_sample": [
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   }
+  }
+ },
+ "environment": {
+  "beyondnn_commit": "0fdb44761d80f442b7dd8122723fc686c10490df",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "calibration_accuracy": 0.906,
+  "checkpoint_state_digest": "sha256:3bb11726e89399d5da9e939eed5e29efdb5cc1fc8226c7351877b710a799f27d",
+  "esnli_commit": "7b585a3f077fdea899780eb0473940522ae44a2e",
+  "gold_to_model_label": {
+   "contradiction": 0,
+   "entailment": 1,
+   "neutral": 2
+  },
+  "parameters": 109484547,
+  "repo": "textattack/bert-base-uncased-snli",
+  "revision": "d4ef8a69a50bc95cc074514f4b798c67f572163a"
+ },
+ "n_samples": 40,
+ "plausibility": {
+  "ig_minus_random_f1": "token F1: IG minus random: 0.1486 (n = 40; 95% paired percentile bootstrap of the difference of means [0.05521, 0.2463] over samples, 10000 draws, seed 7501)",
+  "ig_token_f1": "IG top-k_h token F1 vs annotator 1: 0.3425 (n = 40; 95% percentile bootstrap of the mean [0.2643, 0.4222] over samples, 10000 draws, seed 7501)"
+ },
+ "run_seconds": 10230.821817167103,
+ "samples": [
+  {
+   "gold": "contradiction",
+   "index": 0,
+   "k_human": 9,
+   "margin": 8.26994800567627,
+   "n_units": 20,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "supports",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4002498838.jpg#4r1c",
+   "plausibility": {
+    "ig_iou": 0.2,
+    "ig_token_f1": 0.3333333333333333,
+    "inter_annotator_iou": [
+     0.2222222222222222,
+     1.0
+    ],
+    "random_token_f1": 0.3333333333333333
+   },
+   "pred": 0,
+   "sample_id": "sha256:d7ae20459ffb6fc3132c9b03812970a23c809def7345290a5009e6be6df22cb1"
+  },
+  {
+   "gold": "neutral",
+   "index": 1,
+   "k_human": 4,
+   "margin": 2.637258768081665,
+   "n_units": 22,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "supports",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "supports",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "8087311342.jpg#1r1n",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     0.75,
+     1.0
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:87d1a01db51e5527ca9f2e6f9095df58bc11e7e9a87570c53e0f6ba7dde0f349"
+  },
+  {
+   "gold": "neutral",
+   "index": 2,
+   "k_human": 1,
+   "margin": 3.8831872940063477,
+   "n_units": 24,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3222749441.jpg#2r1n",
+   "plausibility": {
+    "ig_iou": 1.0,
+    "ig_token_f1": 1.0,
+    "inter_annotator_iou": [
+     1.0,
+     0.5
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:5a66ead85fbfd71f5b48faec003306995cb54c51247f0d7c97c01113dcbccc22"
+  },
+  {
+   "gold": "contradiction",
+   "index": 3,
+   "k_human": 2,
+   "margin": 3.7963032722473145,
+   "n_units": 54,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "supports",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "supports",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "supports",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "supports",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "supports",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "supports",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "2504010674.jpg#0r1c",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     0.5,
+     0.5
+    ],
+    "random_token_f1": 0.5
+   },
+   "pred": 0,
+   "sample_id": "sha256:f6678853860663e1aed177a16a2688590c50acc049d3b9b8b380b2202abef961"
+  },
+  {
+   "gold": "entailment",
+   "index": 4,
+   "k_human": 9,
+   "margin": 5.397563934326172,
+   "n_units": 25,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "supports",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "supports",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "supports",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4724702832.jpg#0r1e",
+   "plausibility": {
+    "ig_iou": 0.38461538461538464,
+    "ig_token_f1": 0.5555555555555556,
+    "inter_annotator_iou": [
+     0.5555555555555556,
+     1.0
+    ],
+    "random_token_f1": 0.5555555555555556
+   },
+   "pred": 1,
+   "sample_id": "sha256:9521ac8411476f5be8e2e2112873e349c46ca259601f88f8f63e95692a7f7645"
+  },
+  {
+   "gold": "neutral",
+   "index": 5,
+   "k_human": 2,
+   "margin": 3.2368850708007812,
+   "n_units": 35,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "2573830838.jpg#1r1n",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     0.6666666666666666,
+     0.6666666666666666
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:146ae4c9150b7b0e529a0164ec8728f9a58dd7c43da0ca74f772e0af683ae4c8"
+  },
+  {
+   "gold": "contradiction",
+   "index": 6,
+   "k_human": 6,
+   "margin": 6.704876899719238,
+   "n_units": 21,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "supports",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "supports",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4125992235.jpg#1r1c",
+   "plausibility": {
+    "ig_iou": 0.2,
+    "ig_token_f1": 0.3333333333333333,
+    "inter_annotator_iou": [
+     0.8333333333333334,
+     0.8333333333333334
+    ],
+    "random_token_f1": 0.3333333333333333
+   },
+   "pred": 0,
+   "sample_id": "sha256:8b8d49cde2fc4eee36b35ca5312174fc8870d56d2fb6c7a8970ad41060f24dff"
+  },
+  {
+   "gold": "contradiction",
+   "index": 7,
+   "k_human": 8,
+   "margin": 7.327764987945557,
+   "n_units": 31,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "supports",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4455622662.jpg#0r1c",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     0.875,
+     0.625
+    ],
+    "random_token_f1": 0.125
+   },
+   "pred": 0,
+   "sample_id": "sha256:5d9d8c2fa081988181e44201c2002de90c93423eafd29635a74f70fd64e4730f"
+  },
+  {
+   "gold": "entailment",
+   "index": 8,
+   "k_human": 6,
+   "margin": 3.7990283966064453,
+   "n_units": 21,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "supports",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4438007869.jpg#1r1e",
+   "plausibility": {
+    "ig_iou": 0.09090909090909091,
+    "ig_token_f1": 0.16666666666666666,
+    "inter_annotator_iou": [
+     0.2857142857142857,
+     0.2857142857142857
+    ],
+    "random_token_f1": 0.6666666666666666
+   },
+   "pred": 1,
+   "sample_id": "sha256:1d3071f3a9d055f33f05cacae8a8128c902bd4521227ec0c287ad29095f45472"
+  },
+  {
+   "gold": "neutral",
+   "index": 9,
+   "k_human": 2,
+   "margin": 2.9296536445617676,
+   "n_units": 22,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "supports",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "supports",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "19469520.jpg#1r1n",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     1.0,
+     0.6666666666666666
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:1b3205afc2f190bf94d4b42cdd31dce9fc4dfd8e45849f7e76437e11e17534a2"
+  },
+  {
+   "gold": "entailment",
+   "index": 10,
+   "k_human": 9,
+   "margin": 5.010975360870361,
+   "n_units": 29,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "supports",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "supports",
+    "ig|mask|sufficiency": "supports",
+    "ig|pad|comprehensiveness": "supports",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "supports",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "257180093.jpg#1r1e",
+   "plausibility": {
+    "ig_iou": 0.5,
+    "ig_token_f1": 0.6666666666666666,
+    "inter_annotator_iou": [
+     0.3,
+     0.6
+    ],
+    "random_token_f1": 0.3333333333333333
+   },
+   "pred": 1,
+   "sample_id": "sha256:38602029c497dcf003a13d1b3e426088350094b295eb91487dd27976fe783add"
+  },
+  {
+   "gold": "contradiction",
+   "index": 11,
+   "k_human": 5,
+   "margin": 5.975462913513184,
+   "n_units": 18,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "supports",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4717058364.jpg#4r1c",
+   "plausibility": {
+    "ig_iou": 0.42857142857142855,
+    "ig_token_f1": 0.6,
+    "inter_annotator_iou": [
+     0.625,
+     0.625
+    ],
+    "random_token_f1": 0.2
+   },
+   "pred": 0,
+   "sample_id": "sha256:871ca4cb7c154f47916a252e6279472df18159cb54411922be82823a666c0b31"
+  },
+  {
+   "gold": "entailment",
+   "index": 12,
+   "k_human": 4,
+   "margin": 1.654692530632019,
+   "n_units": 23,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3942002204.jpg#3r1n",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     1.0,
+     1.0
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 1,
+   "sample_id": "sha256:c990387d10da54286b1764f28f9d0bd89bfa62c204711988731175cff66fd6e8"
+  },
+  {
+   "gold": "neutral",
+   "index": 13,
+   "k_human": 3,
+   "margin": 6.932782173156738,
+   "n_units": 26,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "supports",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "supports",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3255482333.jpg#2r1n",
+   "plausibility": {
+    "ig_iou": 0.2,
+    "ig_token_f1": 0.3333333333333333,
+    "inter_annotator_iou": [
+     0.3333333333333333,
+     0.3333333333333333
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:c493e182741e89be0de76e0a6ab8c3c4222b334b46250030512793512ad334b5"
+  },
+  {
+   "gold": "contradiction",
+   "index": 14,
+   "k_human": 5,
+   "margin": 7.25093936920166,
+   "n_units": 29,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "supports",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "supports",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "supports",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "supports",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3288928346.jpg#0r1c",
+   "plausibility": {
+    "ig_iou": 0.25,
+    "ig_token_f1": 0.4,
+    "inter_annotator_iou": [
+     0.4,
+     0.4
+    ],
+    "random_token_f1": 0.2
+   },
+   "pred": 0,
+   "sample_id": "sha256:b91118b141a1ce90cc5e7ac20b045b3ae64586a187d4092e4c37e8fb9e856722"
+  },
+  {
+   "gold": "neutral",
+   "index": 15,
+   "k_human": 3,
+   "margin": 0.4625420570373535,
+   "n_units": 19,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "supports",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "supports",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "supports",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3500115252.jpg#3r1n",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     0.3333333333333333,
+     0.3333333333333333
+    ],
+    "random_token_f1": 0.3333333333333333
+   },
+   "pred": 2,
+   "sample_id": "sha256:79756b540b9b7955dfc09629e2822a3449a3fb1bc93b2ed3cf65c40ed68d4cd5"
+  },
+  {
+   "gold": "contradiction",
+   "index": 16,
+   "k_human": 2,
+   "margin": 7.8907856941223145,
+   "n_units": 28,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "5392145976.jpg#0r1c",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     1.0,
+     0.4
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 0,
+   "sample_id": "sha256:092954a01894eea0a54712118d2b2958d7087abb121ddacb4ff48db3f355cd57"
+  },
+  {
+   "gold": "entailment",
+   "index": 17,
+   "k_human": 6,
+   "margin": 4.16292667388916,
+   "n_units": 27,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "supports",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "2711802560.jpg#1r1e",
+   "plausibility": {
+    "ig_iou": 0.09090909090909091,
+    "ig_token_f1": 0.16666666666666666,
+    "inter_annotator_iou": [
+     0.07692307692307693,
+     0.14285714285714285
+    ],
+    "random_token_f1": 0.16666666666666666
+   },
+   "pred": 1,
+   "sample_id": "sha256:6a9c4aa2a182802a42ed913ebc202a543acab9010fc4032b52e3c8d2fd61c566"
+  },
+  {
+   "gold": "entailment",
+   "index": 18,
+   "k_human": 10,
+   "margin": 5.437132358551025,
+   "n_units": 16,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "supports",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "5060860492.jpg#3r1e",
+   "plausibility": {
+    "ig_iou": 0.42857142857142855,
+    "ig_token_f1": 0.6,
+    "inter_annotator_iou": [
+     0.3333333333333333,
+     0.7
+    ],
+    "random_token_f1": 0.6
+   },
+   "pred": 1,
+   "sample_id": "sha256:235a95712af482ccc4d6d60ed21b07a60f0e96aaa8c925aa2bde7b85537d2522"
+  },
+  {
+   "gold": "neutral",
+   "index": 19,
+   "k_human": 2,
+   "margin": 5.945976734161377,
+   "n_units": 38,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "supports",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "supports",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "supports",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "supports"
+   },
+   "pairID": "6734323683.jpg#2r1n",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     0.6666666666666666,
+     1.0
+    ],
+    "random_token_f1": 0.5
+   },
+   "pred": 2,
+   "sample_id": "sha256:44704aa88ed8fe1228bbff6f3fe87e8ad988e8a2ad89436fb034b6b5b689f39c"
+  },
+  {
+   "gold": "entailment",
+   "index": 20,
+   "k_human": 14,
+   "margin": 4.290585041046143,
+   "n_units": 25,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "supports",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3259666643.jpg#3r1e",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     0.29411764705882354,
+     0.6666666666666666
+    ],
+    "random_token_f1": 0.5
+   },
+   "pred": 1,
+   "sample_id": "sha256:7c34e9cbea3d02dd27de27f304335ea9e8f129874c426d44456101645ea03c1a"
+  },
+  {
+   "gold": "contradiction",
+   "index": 21,
+   "k_human": 4,
+   "margin": 9.492427825927734,
+   "n_units": 27,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "supports",
+    "ig|mask|comprehensiveness": "supports",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "supports",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "supports",
+    "ig|zero|sufficiency": "supports",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3421480658.jpg#1r1c",
+   "plausibility": {
+    "ig_iou": 0.6,
+    "ig_token_f1": 0.75,
+    "inter_annotator_iou": [
+     0.5714285714285714,
+     1.0
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 0,
+   "sample_id": "sha256:7d7b88f6dd05037aeae81ec46eac964f0f57a9a77ff83bfe2ce540dd5f425126"
+  },
+  {
+   "gold": "neutral",
+   "index": 22,
+   "k_human": 2,
+   "margin": 6.04871129989624,
+   "n_units": 20,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "supports",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "supports",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "supports",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "supports",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "supports",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "supports"
+   },
+   "pairID": "3344411431.jpg#4r1n",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     0.5,
+     0.4
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:acd91751c1dd013762e58ad17bb79855bf6be3fd3a486cf5ad87accd29828609"
+  },
+  {
+   "gold": "neutral",
+   "index": 23,
+   "k_human": 1,
+   "margin": 2.6884117126464844,
+   "n_units": 28,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "supports",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "supports",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3614881872.jpg#0r1n",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     1.0,
+     1.0
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:14a6e961a79dae4c59b663e0fe3bb0e54a3e42f748f87998b562a14ce8ac71ae"
+  },
+  {
+   "gold": "contradiction",
+   "index": 24,
+   "k_human": 10,
+   "margin": 2.0099077224731445,
+   "n_units": 25,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4447268988.jpg#4r1c",
+   "plausibility": {
+    "ig_iou": 0.42857142857142855,
+    "ig_token_f1": 0.6,
+    "inter_annotator_iou": [
+     0.2,
+     0.18181818181818182
+    ],
+    "random_token_f1": 0.2
+   },
+   "pred": 0,
+   "sample_id": "sha256:58c275987e9825a0588c7b8093a9256b49964fcadf8e41d7ad3a7023da336f97"
+  },
+  {
+   "gold": "contradiction",
+   "index": 25,
+   "k_human": 3,
+   "margin": 4.562196731567383,
+   "n_units": 17,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "supports",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "supports",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "supports",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3882399405.jpg#3r1c",
+   "plausibility": {
+    "ig_iou": 0.2,
+    "ig_token_f1": 0.3333333333333333,
+    "inter_annotator_iou": [
+     1.0,
+     0.2857142857142857
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 0,
+   "sample_id": "sha256:de9e8f953453bc7f40a224f73f4d8c123be403cb842002208ea8636cfd842c53"
+  },
+  {
+   "gold": "entailment",
+   "index": 26,
+   "k_human": 14,
+   "margin": 3.588624954223633,
+   "n_units": 31,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "supports",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "supports",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4443437862.jpg#1r1e",
+   "plausibility": {
+    "ig_iou": 0.2727272727272727,
+    "ig_token_f1": 0.42857142857142855,
+    "inter_annotator_iou": [
+     0.3,
+     0.5217391304347826
+    ],
+    "random_token_f1": 0.42857142857142855
+   },
+   "pred": 1,
+   "sample_id": "sha256:3b3350c9cd630abaf63692e4379a30748bfbb37f1e16e99713e82de93ac804d3"
+  },
+  {
+   "gold": "contradiction",
+   "index": 27,
+   "k_human": 8,
+   "margin": 5.604508399963379,
+   "n_units": 20,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "supports",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "36880708.jpg#4r1c",
+   "plausibility": {
+    "ig_iou": 0.23076923076923078,
+    "ig_token_f1": 0.375,
+    "inter_annotator_iou": [
+     0.875,
+     1.0
+    ],
+    "random_token_f1": 0.25
+   },
+   "pred": 0,
+   "sample_id": "sha256:4097a25e688244da6f7067e83c6e70d0d5edae57725ccea0314b34c98d68e42f"
+  },
+  {
+   "gold": "contradiction",
+   "index": 28,
+   "k_human": 9,
+   "margin": 8.533451080322266,
+   "n_units": 40,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "supports",
+    "human|pad|sufficiency": "supports",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "supports",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4986907081.jpg#0r1c",
+   "plausibility": {
+    "ig_iou": 0.2857142857142857,
+    "ig_token_f1": 0.4444444444444444,
+    "inter_annotator_iou": [
+     1.0,
+     0.3333333333333333
+    ],
+    "random_token_f1": 0.3333333333333333
+   },
+   "pred": 0,
+   "sample_id": "sha256:8899979c62a741c67a6e8629b7fdbbb0eec028e6d3bb6d5ee4ee1e87ede97771"
+  },
+  {
+   "gold": "entailment",
+   "index": 29,
+   "k_human": 3,
+   "margin": 4.390720367431641,
+   "n_units": 31,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "supports",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "supports",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "497122685.jpg#1r1e",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     0.3333333333333333,
+     0.25
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 1,
+   "sample_id": "sha256:25944ce93c082c0a957b4c9079d6f049c9e7a23533a9c15414bf1bfaa25c49e8"
+  },
+  {
+   "gold": "neutral",
+   "index": 30,
+   "k_human": 2,
+   "margin": 3.5997633934020996,
+   "n_units": 17,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4704668708.jpg#3r1n",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     0.5,
+     0.5
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:4917a69ae2d4a3e800582e87e6e2bcdf572d5d21eecff09be3e652d01ec534cd"
+  },
+  {
+   "gold": "contradiction",
+   "index": 31,
+   "k_human": 8,
+   "margin": 8.229254722595215,
+   "n_units": 25,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "supports",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "supports",
+    "ig|mask|sufficiency": "supports",
+    "ig|pad|comprehensiveness": "supports",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3128856481.jpg#3r1c",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     0.375,
+     0.3076923076923077
+    ],
+    "random_token_f1": 0.25
+   },
+   "pred": 0,
+   "sample_id": "sha256:b984a97cbe49b295b2f6b6e687d43931ed20f540e326cf110e0cecd105b01eba"
+  },
+  {
+   "gold": "neutral",
+   "index": 32,
+   "k_human": 3,
+   "margin": 5.278375625610352,
+   "n_units": 26,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "supports",
+    "human|zero|sufficiency": "supports",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4678072371.jpg#3r1n",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     0.4,
+     0.3333333333333333
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:2cf32690aa8444590dc8689cc64ae78308541a96681e3f624904ec1e184a8990"
+  },
+  {
+   "gold": "neutral",
+   "index": 33,
+   "k_human": 6,
+   "margin": 4.665839195251465,
+   "n_units": 28,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "supports",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3522076584.jpg#1r1n",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     0.6666666666666666,
+     0.3333333333333333
+    ],
+    "random_token_f1": 0.16666666666666666
+   },
+   "pred": 2,
+   "sample_id": "sha256:97cf7b0cd883945a62d084b126efe2a1e452557ad7f50cd8694516fc3021f877"
+  },
+  {
+   "gold": "contradiction",
+   "index": 34,
+   "k_human": 2,
+   "margin": 6.030718803405762,
+   "n_units": 24,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "supports",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "504765160.jpg#1r1c",
+   "plausibility": {
+    "ig_iou": 0.3333333333333333,
+    "ig_token_f1": 0.5,
+    "inter_annotator_iou": [
+     1.0,
+     0.4
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 0,
+   "sample_id": "sha256:4d9f4032aeee10d748c3e2b04d4582723406ce75ed43e65791c311416723ad04"
+  },
+  {
+   "gold": "neutral",
+   "index": 35,
+   "k_human": 1,
+   "margin": 2.4148192405700684,
+   "n_units": 48,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "2965189317.jpg#0r1n",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     0.2,
+     0.0
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:cd9a7e45f10128dcd23c469a168fd774acadd0feb3f82b9e9f136cf3043c4057"
+  },
+  {
+   "gold": "neutral",
+   "index": 36,
+   "k_human": 3,
+   "margin": 7.143842697143555,
+   "n_units": 39,
+   "outcomes": {
+    "human|mask|comprehensiveness": "supports",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "supports",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "supports",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "3427118504.jpg#0r1n",
+   "plausibility": {
+    "ig_iou": 0.2,
+    "ig_token_f1": 0.3333333333333333,
+    "inter_annotator_iou": [
+     0.3333333333333333,
+     0.6666666666666666
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 2,
+   "sample_id": "sha256:95820e00a9e914b98e5ce9d6d37546306325ef34b503da7308c3382df776617c"
+  },
+  {
+   "gold": "entailment",
+   "index": 37,
+   "k_human": 9,
+   "margin": 3.552107572555542,
+   "n_units": 21,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "contradicts",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "supports",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "supports"
+   },
+   "pairID": "357924786.jpg#2r1e",
+   "plausibility": {
+    "ig_iou": 0.2857142857142857,
+    "ig_token_f1": 0.4444444444444444,
+    "inter_annotator_iou": [
+     0.3333333333333333,
+     0.21428571428571427
+    ],
+    "random_token_f1": 0.4444444444444444
+   },
+   "pred": 1,
+   "sample_id": "sha256:20ad292d5476330bba40d2f770fd562affd2427758047be2ca7f4457458ac89b"
+  },
+  {
+   "gold": "entailment",
+   "index": 38,
+   "k_human": 3,
+   "margin": 3.3672616481781006,
+   "n_units": 31,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "supports",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "2888386138.jpg#0r1e",
+   "plausibility": {
+    "ig_iou": 0.0,
+    "ig_token_f1": 0.0,
+    "inter_annotator_iou": [
+     0.375,
+     1.0
+    ],
+    "random_token_f1": 0.3333333333333333
+   },
+   "pred": 1,
+   "sample_id": "sha256:53d8a79c0f83adc63a7800cc65cf7b59d5275f0e4d19ea989b767da27f191f44"
+  },
+  {
+   "gold": "entailment",
+   "index": 39,
+   "k_human": 3,
+   "margin": 3.43924880027771,
+   "n_units": 20,
+   "outcomes": {
+    "human|mask|comprehensiveness": "contradicts",
+    "human|mask|sufficiency": "contradicts",
+    "human|pad|comprehensiveness": "contradicts",
+    "human|pad|sufficiency": "contradicts",
+    "human|zero|comprehensiveness": "contradicts",
+    "human|zero|sufficiency": "contradicts",
+    "ig|mask|comprehensiveness": "contradicts",
+    "ig|mask|sufficiency": "contradicts",
+    "ig|pad|comprehensiveness": "contradicts",
+    "ig|pad|sufficiency": "supports",
+    "ig|zero|comprehensiveness": "contradicts",
+    "ig|zero|sufficiency": "contradicts",
+    "random|mask|comprehensiveness": "contradicts",
+    "random|mask|sufficiency": "contradicts",
+    "random|pad|comprehensiveness": "contradicts",
+    "random|pad|sufficiency": "contradicts",
+    "random|zero|comprehensiveness": "contradicts",
+    "random|zero|sufficiency": "contradicts"
+   },
+   "pairID": "4563347566.jpg#3r1e",
+   "plausibility": {
+    "ig_iou": 0.2,
+    "ig_token_f1": 0.3333333333333333,
+    "inter_annotator_iou": [
+     0.3333333333333333,
+     0.4
+    ],
+    "random_token_f1": 0.0
+   },
+   "pred": 1,
+   "sample_id": "sha256:10cdfcf796955837cb2bd2f5dc5cd7ec2d2f7f663540e796df0c7f657703beb9"
+  }
+ ]
+}

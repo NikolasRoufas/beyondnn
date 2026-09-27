@@ -439,3 +439,12 @@ def test_each_claim_uses_its_own_requirement() -> None:
     report = bnn.audit(d.evidence, plan=d.plan)
     assert report.claim("d_necessary").groups[0].verdict == "supported"
     assert report.claim("d_sufficient").groups[0].verdict == "contradicted"
+
+
+def test_interval_description_keeps_a_non_integer_level() -> None:
+    """A Bonferroni level such as 98.75% is shown as declared, not rounded to 99%."""
+    from beyondnn.audits import wilson
+
+    text = wilson(5, 10, quantity="q", unit="samples", level=0.9875).describe()
+    assert "98.75% wilson" in text
+    assert "95% wilson" in wilson(5, 10, quantity="q", unit="samples").describe()

@@ -1,0 +1,2744 @@
+{
+ "environment": {
+  "beyondnn_commit": "0fdb44761d80f442b7dd8122723fc686c10490df",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "leakage": {
+  "examples": [],
+  "samples_exactly_in_train": 0,
+  "sst2_train_rows": 66978
+ },
+ "model": {
+  "checkpoint_state_digest": "sha256:e2b44a0891e8b46f810a7b65d5535a29668789b88924f888cd8657a7f7b826e0",
+  "parameters": 4386178,
+  "repo": "M-FAC/bert-tiny-finetuned-sst2",
+  "revision": "41ad6709ec46b414749b37daf49cf5ca1c7dba7c"
+ },
+ "model_id": "C",
+ "n_reference": 200,
+ "n_samples": 40,
+ "samples": [
+  {
+   "margin": 3.0957393646240234,
+   "padding": {
+    "masked_max_abs_prob_diff": 1.1175870895385742e-08,
+    "unmasked_dmargin": 1.3435955047607422,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.01972675323486328,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.01669788360595703,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.007138729095458984,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.015494108200073242,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.07359971602757771,
+     "dmargin": 1.0130500594774883,
+     "flip": 0.08333333333333333,
+     "kl": 0.23464178635428348,
+     "ood": 82.83333333333333
+    },
+    "mask": {
+     "cos": 0.05159895122051239,
+     "dmargin": 0.763578732808431,
+     "flip": 0.08333333333333333,
+     "kl": 0.20954323325228566,
+     "ood": 81.20833333333333
+    },
+    "pad": {
+     "cos": 0.05131286382675171,
+     "dmargin": 0.7679200371106466,
+     "flip": 0.08333333333333333,
+     "kl": 0.20900062948931009,
+     "ood": 80.875
+    },
+    "unk": {
+     "cos": 0.04990983506043752,
+     "dmargin": 0.747551957766215,
+     "flip": 0.08333333333333333,
+     "kl": 0.2003273143750448,
+     "ood": 80.75
+    },
+    "zero": {
+     "cos": 0.05146231253941854,
+     "dmargin": 0.7515883843104044,
+     "flip": 0.08333333333333333,
+     "kl": 0.20946364759583957,
+     "ood": 80.66666666666667
+    }
+   },
+   "text": "collateral damage finally delivers the goods for schwarzenegger fans . ",
+   "tokens": 14
+  },
+  {
+   "margin": 4.864718437194824,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.0211639404296875,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.07631063461303711,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.023939132690429688,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.025626182556152344,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.026769638061523438,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.013720406426323785,
+     "dmargin": 0.3361709647708469,
+     "flip": 0.0,
+     "kl": 0.0009488022915320471,
+     "ood": 23.97222222222222
+    },
+    "mask": {
+     "cos": 0.005443169011010064,
+     "dmargin": 0.1686380041970147,
+     "flip": 0.0,
+     "kl": 0.0006903318759820346,
+     "ood": 27.61111111111111
+    },
+    "pad": {
+     "cos": 0.005326936642328898,
+     "dmargin": 0.16953734556833902,
+     "flip": 0.0,
+     "kl": 0.0006761898429330257,
+     "ood": 27.36111111111111
+    },
+    "unk": {
+     "cos": 0.005261891418033176,
+     "dmargin": 0.16723603672451443,
+     "flip": 0.0,
+     "kl": 0.0006526993418244981,
+     "ood": 26.583333333333332
+    },
+    "zero": {
+     "cos": 0.005367649926079644,
+     "dmargin": 0.17328812016381157,
+     "flip": 0.0,
+     "kl": 0.0007367067549542602,
+     "ood": 28.305555555555557
+    }
+   },
+   "text": "manages to transcend the sex , drugs and show-tunes plot into something far richer . ",
+   "tokens": 20
+  },
+  {
+   "margin": 4.223649024963379,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.05764579772949219,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.05663585662841797,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.00943756103515625,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.0049800872802734375,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.029963016510009766,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.010632286469141642,
+     "dmargin": 0.16327223512861463,
+     "flip": 0.0,
+     "kl": 0.0003138875051970697,
+     "ood": 27.944444444444443
+    },
+    "mask": {
+     "cos": 0.004813916153377957,
+     "dmargin": 0.1053484943177965,
+     "flip": 0.0,
+     "kl": 0.00040636865631111304,
+     "ood": 31.02777777777778
+    },
+    "pad": {
+     "cos": 0.004740400446785821,
+     "dmargin": 0.10826149251725939,
+     "flip": 0.0,
+     "kl": 0.00039922331294898566,
+     "ood": 31.36111111111111
+    },
+    "unk": {
+     "cos": 0.004801154136657715,
+     "dmargin": 0.10999200079176161,
+     "flip": 0.0,
+     "kl": 0.0004297131419864147,
+     "ood": 30.555555555555557
+    },
+    "zero": {
+     "cos": 0.004728005992041694,
+     "dmargin": 0.13213341765933567,
+     "flip": 0.0,
+     "kl": 0.0004954958684872205,
+     "ood": 25.47222222222222
+    }
+   },
+   "text": "this is a shameless sham , calculated to cash in on the popularity of its stars . ",
+   "tokens": 20
+  },
+  {
+   "margin": 4.732526779174805,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.6457180976867676,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.048842430114746094,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.01277017593383789,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.0029706954956054688,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.05271768569946289,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.006522227078676224,
+     "dmargin": 0.04339975118637085,
+     "flip": 0.0,
+     "kl": 1.6949273344835092e-05,
+     "ood": 64.6875
+    },
+    "mask": {
+     "cos": 0.0025911815464496613,
+     "dmargin": 0.05024251341819763,
+     "flip": 0.0,
+     "kl": 5.252552395518251e-05,
+     "ood": 66.125
+    },
+    "pad": {
+     "cos": 0.0027013756334781647,
+     "dmargin": 0.05194741487503052,
+     "flip": 0.0,
+     "kl": 5.800677708833746e-05,
+     "ood": 66.28125
+    },
+    "unk": {
+     "cos": 0.002975519746541977,
+     "dmargin": 0.07008758187294006,
+     "flip": 0.0,
+     "kl": 8.170546539076895e-05,
+     "ood": 67.78125
+    },
+    "zero": {
+     "cos": 0.0025026835501194,
+     "dmargin": 0.05841580033302307,
+     "flip": 0.0,
+     "kl": 5.966869622398008e-05,
+     "ood": 66.40625
+    }
+   },
+   "text": "trite , banal , cliched , mostly inoffensive . ",
+   "tokens": 18
+  },
+  {
+   "margin": 0.5155421495437622,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.30223536491394043,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.06453970074653625,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.029474377632141113,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.08933311700820923,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.13304412364959717,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.01564829999750311,
+     "dmargin": 0.15405840900811282,
+     "flip": 0.0,
+     "kl": 0.004756532143801451,
+     "ood": 53.68181818181818
+    },
+    "mask": {
+     "cos": 0.008603949438441883,
+     "dmargin": 0.07419527389786461,
+     "flip": 0.0,
+     "kl": 0.002227191247749777,
+     "ood": 50.54545454545455
+    },
+    "pad": {
+     "cos": 0.008774034001610496,
+     "dmargin": 0.07348563318902795,
+     "flip": 0.0,
+     "kl": 0.0020976576250342823,
+     "ood": 49.65909090909091
+    },
+    "unk": {
+     "cos": 0.009091122583909468,
+     "dmargin": 0.07479027726433495,
+     "flip": 0.0,
+     "kl": 0.0023966959098205816,
+     "ood": 49.13636363636363
+    },
+    "zero": {
+     "cos": 0.00878591700033708,
+     "dmargin": 0.07337599044496362,
+     "flip": 0.0,
+     "kl": 0.0019436094841115516,
+     "ood": 50.56818181818182
+    }
+   },
+   "text": "another in-your-face wallow in the lower depths made by people who have never sung those blues . ",
+   "tokens": 24
+  },
+  {
+   "margin": 0.7402334213256836,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 1.59698486328125,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.30644774436950684,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.0887218713760376,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.15648460388183594,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.022710800170898438,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.06474190009267707,
+     "dmargin": 1.093505090788791,
+     "flip": 0.631578947368421,
+     "kl": 0.1850667414990695,
+     "ood": 66.84210526315789
+    },
+    "mask": {
+     "cos": 0.020331784298545437,
+     "dmargin": 0.42747634649276733,
+     "flip": 0.05263157894736842,
+     "kl": 0.07888268360770062,
+     "ood": 80.57894736842105
+    },
+    "pad": {
+     "cos": 0.020265817642211914,
+     "dmargin": 0.4365656783706264,
+     "flip": 0.05263157894736842,
+     "kl": 0.07965853960578036,
+     "ood": 80.23684210526316
+    },
+    "unk": {
+     "cos": 0.0203142291621158,
+     "dmargin": 0.4387387539211072,
+     "flip": 0.05263157894736842,
+     "kl": 0.07886044255849954,
+     "ood": 80.97368421052632
+    },
+    "zero": {
+     "cos": 0.020509512800919383,
+     "dmargin": 0.448387883211437,
+     "flip": 0.05263157894736842,
+     "kl": 0.08048778342230148,
+     "ood": 79.05263157894737
+    }
+   },
+   "text": "not since tom cruise in risky business has an actor made such a strong impression in his underwear . ",
+   "tokens": 21
+  },
+  {
+   "margin": 2.1503243446350098,
+   "padding": {
+    "masked_max_abs_prob_diff": 2.9802322387695312e-08,
+    "unmasked_dmargin": 1.5519359707832336,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.0793299674987793,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.0025534629821777344,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.14002180099487305,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.20407843589782715,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.048056280612945555,
+     "dmargin": 0.5682045340538024,
+     "flip": 0.1,
+     "kl": 0.1662284855148755,
+     "ood": 14.8
+    },
+    "mask": {
+     "cos": 0.04664637446403504,
+     "dmargin": 0.5071617126464844,
+     "flip": 0.1,
+     "kl": 0.20319044822826982,
+     "ood": 16.7
+    },
+    "pad": {
+     "cos": 0.04637617468833923,
+     "dmargin": 0.5076943159103393,
+     "flip": 0.1,
+     "kl": 0.19956721241906053,
+     "ood": 16.4
+    },
+    "unk": {
+     "cos": 0.04710310697555542,
+     "dmargin": 0.4939629316329956,
+     "flip": 0.1,
+     "kl": 0.19418363244185458,
+     "ood": 17.3
+    },
+    "zero": {
+     "cos": 0.04612283706665039,
+     "dmargin": 0.495101261138916,
+     "flip": 0.1,
+     "kl": 0.19896538826578763,
+     "ood": 17.55
+    }
+   },
+   "text": "there 's no emotional pulse to solaris . ",
+   "tokens": 12
+  },
+  {
+   "margin": 4.384260177612305,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.159027099609375,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.06081247329711914,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.009947776794433594,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.025300025939941406,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.042412757873535156,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.012170198417845227,
+     "dmargin": 0.1598670028504871,
+     "flip": 0.0,
+     "kl": 0.0005238930649024301,
+     "ood": 58.69047619047619
+    },
+    "mask": {
+     "cos": 0.005142373698098319,
+     "dmargin": 0.1382082984561012,
+     "flip": 0.0,
+     "kl": 0.0006165987067236399,
+     "ood": 56.666666666666664
+    },
+    "pad": {
+     "cos": 0.005001280988965716,
+     "dmargin": 0.13698193005153111,
+     "flip": 0.0,
+     "kl": 0.0006054770485553447,
+     "ood": 56.357142857142854
+    },
+    "unk": {
+     "cos": 0.005283097426096599,
+     "dmargin": 0.13683409917922246,
+     "flip": 0.0,
+     "kl": 0.0006057752458824931,
+     "ood": 57.023809523809526
+    },
+    "zero": {
+     "cos": 0.005186259746551514,
+     "dmargin": 0.13775994664146787,
+     "flip": 0.0,
+     "kl": 0.0006986780334998565,
+     "ood": 55.142857142857146
+    }
+   },
+   "text": "does paint some memorable images ... , but makhmalbaf keeps her distance from the characters ",
+   "tokens": 23
+  },
+  {
+   "margin": 5.352052688598633,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.13242864608764648,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.0437159538269043,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.00048065185546875,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.0017552375793457031,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.023043155670166016,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.01337343996221369,
+     "dmargin": 0.048268881711092865,
+     "flip": 0.0,
+     "kl": 1.6191712079076254e-05,
+     "ood": 15.318181818181818
+    },
+    "mask": {
+     "cos": 0.0025059309872713957,
+     "dmargin": 0.04333873228593306,
+     "flip": 0.0,
+     "kl": 1.0786738791714676e-05,
+     "ood": 13.5
+    },
+    "pad": {
+     "cos": 0.0024943785233931108,
+     "dmargin": 0.0458199761130593,
+     "flip": 0.0,
+     "kl": 1.2757493839837315e-05,
+     "ood": 13.681818181818182
+    },
+    "unk": {
+     "cos": 0.002692932432348078,
+     "dmargin": 0.04718017578125,
+     "flip": 0.0,
+     "kl": 1.2617045947329395e-05,
+     "ood": 15.636363636363637
+    },
+    "zero": {
+     "cos": 0.002588819373737682,
+     "dmargin": 0.052453257820822975,
+     "flip": 0.0,
+     "kl": 1.5323486360846967e-05,
+     "ood": 13.772727272727273
+    }
+   },
+   "text": "a poignant , artfully crafted meditation on mortality . ",
+   "tokens": 13
+  },
+  {
+   "margin": 3.4915425777435303,
+   "padding": {
+    "masked_max_abs_prob_diff": 7.450580596923828e-09,
+    "unmasked_dmargin": 0.1950671672821045,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.06566548347473145,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.08413863182067871,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.07249808311462402,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.09959697723388672,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.009781172401026675,
+     "dmargin": 0.21884302089088842,
+     "flip": 0.0,
+     "kl": 0.0021242964078402636,
+     "ood": 17.36842105263158
+    },
+    "mask": {
+     "cos": 0.0038265774124547056,
+     "dmargin": 0.1341458747261449,
+     "flip": 0.0,
+     "kl": 0.001575545522332265,
+     "ood": 10.842105263157896
+    },
+    "pad": {
+     "cos": 0.0038626946901020253,
+     "dmargin": 0.1357991946370978,
+     "flip": 0.0,
+     "kl": 0.00154674834821459,
+     "ood": 11.31578947368421
+    },
+    "unk": {
+     "cos": 0.004202736051459061,
+     "dmargin": 0.13845885427374588,
+     "flip": 0.0,
+     "kl": 0.001586324021780839,
+     "ood": 10.81578947368421
+    },
+    "zero": {
+     "cos": 0.0039052869144238925,
+     "dmargin": 0.13393922855979518,
+     "flip": 0.0,
+     "kl": 0.0017972563065612984,
+     "ood": 10.421052631578947
+    }
+   },
+   "text": "dragonfly has no atmosphere , no tension -- nothing but costner , flailing away . ",
+   "tokens": 21
+  },
+  {
+   "margin": 4.135064125061035,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.41098880767822266,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.09997081756591797,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.040581703186035156,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.03244352340698242,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.05094337463378906,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.013561255402035184,
+     "dmargin": 0.38101857238345677,
+     "flip": 0.0,
+     "kl": 0.0016612166331874,
+     "ood": 39.44444444444444
+    },
+    "mask": {
+     "cos": 0.0032095114390055337,
+     "dmargin": 0.17790999677446154,
+     "flip": 0.0,
+     "kl": 0.0006986093455149481,
+     "ood": 38.02777777777778
+    },
+    "pad": {
+     "cos": 0.003139711088604397,
+     "dmargin": 0.17440990606943765,
+     "flip": 0.0,
+     "kl": 0.0006725714760654632,
+     "ood": 36.47222222222222
+    },
+    "unk": {
+     "cos": 0.0039265089564853245,
+     "dmargin": 0.17429558436075845,
+     "flip": 0.0,
+     "kl": 0.0008339956030896348,
+     "ood": 42.80555555555556
+    },
+    "zero": {
+     "cos": 0.003263937102423774,
+     "dmargin": 0.18382157219780815,
+     "flip": 0.0,
+     "kl": 0.0008154046043071301,
+     "ood": 39.69444444444444
+    }
+   },
+   "text": "add yet another hat to a talented head , clooney 's a good director . ",
+   "tokens": 20
+  },
+  {
+   "margin": 2.999774694442749,
+   "padding": {
+    "masked_max_abs_prob_diff": 1.862645149230957e-08,
+    "unmasked_dmargin": 0.31996989250183105,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 1.049041748046875e-05,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.03496432304382324,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.05109453201293945,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.05902099609375,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.010866839634744744,
+     "dmargin": 0.24765163973758095,
+     "flip": 0.0,
+     "kl": 0.0020263678632449897,
+     "ood": 8.368421052631579
+    },
+    "mask": {
+     "cos": 0.00198339161119963,
+     "dmargin": 0.06848902451364618,
+     "flip": 0.0,
+     "kl": 0.00028217324889785804,
+     "ood": 7.394736842105263
+    },
+    "pad": {
+     "cos": 0.001984040988119025,
+     "dmargin": 0.07104113227442692,
+     "flip": 0.0,
+     "kl": 0.00027430280859239007,
+     "ood": 7.342105263157895
+    },
+    "unk": {
+     "cos": 0.0020546411213121915,
+     "dmargin": 0.06527393742611534,
+     "flip": 0.0,
+     "kl": 0.00024554796666626845,
+     "ood": 7.368421052631579
+    },
+    "zero": {
+     "cos": 0.001885307462591874,
+     "dmargin": 0.06417750057421233,
+     "flip": 0.0,
+     "kl": 0.0002441569124225919,
+     "ood": 7.131578947368421
+    }
+   },
+   "text": "taylor appears to have blown his entire budget on soundtrack rights and had nothing left over for jokes . ",
+   "tokens": 21
+  },
+  {
+   "margin": 0.5469928979873657,
+   "padding": {
+    "masked_max_abs_prob_diff": 2.9802322387695312e-08,
+    "unmasked_dmargin": 1.4962080717086792,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.4648147225379944,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.0008997917175292969,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.41955745220184326,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.6849875450134277,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.057778863530409966,
+     "dmargin": 0.7739885151386261,
+     "flip": 0.10526315789473684,
+     "kl": 0.1509849517116029,
+     "ood": 90.73684210526316
+    },
+    "mask": {
+     "cos": 0.03001015123568083,
+     "dmargin": 0.6518451712633434,
+     "flip": 0.10526315789473684,
+     "kl": 0.14082056907691845,
+     "ood": 92.6842105263158
+    },
+    "pad": {
+     "cos": 0.02996963889975297,
+     "dmargin": 0.6544384721078371,
+     "flip": 0.10526315789473684,
+     "kl": 0.14131835420419903,
+     "ood": 92.65789473684211
+    },
+    "unk": {
+     "cos": 0.030073608222760652,
+     "dmargin": 0.6860557229895341,
+     "flip": 0.10526315789473684,
+     "kl": 0.14225036989113218,
+     "ood": 92.1842105263158
+    },
+    "zero": {
+     "cos": 0.0283073343728718,
+     "dmargin": 0.6719491920973125,
+     "flip": 0.15789473684210525,
+     "kl": 0.13627229414046987,
+     "ood": 91.76315789473684
+    }
+   },
+   "text": "bleakly funny , its characters all the more touching for refusing to pity or memorialize themselves . ",
+   "tokens": 21
+  },
+  {
+   "margin": 2.570864200592041,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 1.251380205154419,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.12067365646362305,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.052353858947753906,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.14617443084716797,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.07410454750061035,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.027649624480141535,
+     "dmargin": 0.5315295259157816,
+     "flip": 0.0,
+     "kl": 0.02025500948851307,
+     "ood": 78.72222222222223
+    },
+    "mask": {
+     "cos": 0.008712195687823825,
+     "dmargin": 0.1822555594974094,
+     "flip": 0.0,
+     "kl": 0.012058929317895995,
+     "ood": 72.88888888888889
+    },
+    "pad": {
+     "cos": 0.009137378798590766,
+     "dmargin": 0.1866561770439148,
+     "flip": 0.0,
+     "kl": 0.01358936942577,
+     "ood": 73.02777777777777
+    },
+    "unk": {
+     "cos": 0.011170930332607694,
+     "dmargin": 0.23865829242600334,
+     "flip": 0.0,
+     "kl": 0.017878226845318243,
+     "ood": 76.66666666666667
+    },
+    "zero": {
+     "cos": 0.008230775594711304,
+     "dmargin": 0.1797317067782084,
+     "flip": 0.0,
+     "kl": 0.012679874095030956,
+     "ood": 71.83333333333333
+    }
+   },
+   "text": "comes ... uncomfortably close to coasting in the treads of the bicycle thief . ",
+   "tokens": 20
+  },
+  {
+   "margin": 5.207828044891357,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.013341426849365234,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.06628084182739258,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.009821414947509766,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.03172731399536133,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.039293766021728516,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.010634422302246094,
+     "dmargin": 0.15910266575060392,
+     "flip": 0.0,
+     "kl": 0.00018962063653529376,
+     "ood": 24.55263157894737
+    },
+    "mask": {
+     "cos": 0.007626172743345562,
+     "dmargin": 0.14504262020713404,
+     "flip": 0.0,
+     "kl": 0.0007732963975669056,
+     "ood": 14.342105263157896
+    },
+    "pad": {
+     "cos": 0.007487742524398,
+     "dmargin": 0.14344963274504008,
+     "flip": 0.0,
+     "kl": 0.00074140337899639,
+     "ood": 14.263157894736842
+    },
+    "unk": {
+     "cos": 0.007426512868780839,
+     "dmargin": 0.14351913803502134,
+     "flip": 0.0,
+     "kl": 0.0007569679673667308,
+     "ood": 14.473684210526315
+    },
+    "zero": {
+     "cos": 0.00785064697265625,
+     "dmargin": 0.1512957497646934,
+     "flip": 0.0,
+     "kl": 0.0008799170500424225,
+     "ood": 13.868421052631579
+    }
+   },
+   "text": "chilling , well-acted , and finely directed : david jacobson 's dahmer . ",
+   "tokens": 21
+  },
+  {
+   "margin": 3.5257997512817383,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.9805197715759277,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.09109663963317871,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.07627081871032715,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.02554154396057129,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.020289897918701172,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.01697336926179774,
+     "dmargin": 0.23858324219198787,
+     "flip": 0.0,
+     "kl": 0.0014579773577519089,
+     "ood": 52.14705882352941
+    },
+    "mask": {
+     "cos": 0.005588240483227898,
+     "dmargin": 0.131483793258667,
+     "flip": 0.0,
+     "kl": 0.0009538169404763988,
+     "ood": 60.26470588235294
+    },
+    "pad": {
+     "cos": 0.005636194173027487,
+     "dmargin": 0.1356343942530015,
+     "flip": 0.0,
+     "kl": 0.000957832277944202,
+     "ood": 60.64705882352941
+    },
+    "unk": {
+     "cos": 0.005822935525108786,
+     "dmargin": 0.14008551485398235,
+     "flip": 0.0,
+     "kl": 0.000958780221587992,
+     "ood": 61.23529411764706
+    },
+    "zero": {
+     "cos": 0.0054096439305473774,
+     "dmargin": 0.140731741400326,
+     "flip": 0.0,
+     "kl": 0.0009548629104221404,
+     "ood": 59.76470588235294
+    }
+   },
+   "text": "a string of rehashed sight gags based in insipid vulgarity . ",
+   "tokens": 19
+  },
+  {
+   "margin": 3.977799892425537,
+   "padding": {
+    "masked_max_abs_prob_diff": 3.725290298461914e-09,
+    "unmasked_dmargin": 0.14307665824890137,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.3971724510192871,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.13136720657348633,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.25223588943481445,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.11973047256469727,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.030646318739110775,
+     "dmargin": 0.744488466869701,
+     "flip": 0.0,
+     "kl": 0.011848623398691416,
+     "ood": 87.13636363636364
+    },
+    "mask": {
+     "cos": 0.016379031268033115,
+     "dmargin": 0.3704652352766557,
+     "flip": 0.0,
+     "kl": 0.005517736296910284,
+     "ood": 87.77272727272727
+    },
+    "pad": {
+     "cos": 0.015641895207491787,
+     "dmargin": 0.36768635836514557,
+     "flip": 0.0,
+     "kl": 0.005166894719216295,
+     "ood": 87.63636363636364
+    },
+    "unk": {
+     "cos": 0.017236086455258457,
+     "dmargin": 0.5481645627455278,
+     "flip": 0.0,
+     "kl": 0.006434135657565837,
+     "ood": 87.5909090909091
+    },
+    "zero": {
+     "cos": 0.018047598275271328,
+     "dmargin": 0.552679950540716,
+     "flip": 0.0,
+     "kl": 0.008126127554781058,
+     "ood": 87.5
+    }
+   },
+   "text": "the wild thornberrys movie is a jolly surprise . ",
+   "tokens": 13
+  },
+  {
+   "margin": 3.737419366836548,
+   "padding": {
+    "masked_max_abs_prob_diff": 5.587935447692871e-09,
+    "unmasked_dmargin": 1.845919132232666,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.07561898231506348,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.08413004875183105,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.025483369827270508,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.002878904342651367,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.018265748023986818,
+     "dmargin": 0.265458869934082,
+     "flip": 0.0,
+     "kl": 0.0009012502618134022,
+     "ood": 29.5
+    },
+    "mask": {
+     "cos": 0.006533515453338623,
+     "dmargin": 0.14994423389434813,
+     "flip": 0.0,
+     "kl": 0.0008988650850369595,
+     "ood": 28.2
+    },
+    "pad": {
+     "cos": 0.0072822034358978275,
+     "dmargin": 0.15999395847320558,
+     "flip": 0.0,
+     "kl": 0.0010274590455082943,
+     "ood": 33.8
+    },
+    "unk": {
+     "cos": 0.00944339632987976,
+     "dmargin": 0.20103955268859863,
+     "flip": 0.0,
+     "kl": 0.0012992540840059518,
+     "ood": 31.65
+    },
+    "zero": {
+     "cos": 0.006045204401016235,
+     "dmargin": 0.15276694297790527,
+     "flip": 0.0,
+     "kl": 0.0010541007766732946,
+     "ood": 24.8
+    }
+   },
+   "text": "why make a documentary about these marginal historical figures ? ",
+   "tokens": 12
+  },
+  {
+   "margin": 3.9518001079559326,
+   "padding": {
+    "masked_max_abs_prob_diff": 5.587935447692871e-09,
+    "unmasked_dmargin": 0.7630856037139893,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.08071613311767578,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.09242534637451172,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.16297698020935059,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.38175272941589355,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.03012264476102941,
+     "dmargin": 0.48241302546332865,
+     "flip": 0.058823529411764705,
+     "kl": 0.04574534098098999,
+     "ood": 44.85294117647059
+    },
+    "mask": {
+     "cos": 0.016393388018888587,
+     "dmargin": 0.36818408264833336,
+     "flip": 0.0,
+     "kl": 0.019512629461132747,
+     "ood": 46.38235294117647
+    },
+    "pad": {
+     "cos": 0.016163584064034855,
+     "dmargin": 0.36719413364634795,
+     "flip": 0.0,
+     "kl": 0.019308154550826122,
+     "ood": 46.3235294117647
+    },
+    "unk": {
+     "cos": 0.016392897157108084,
+     "dmargin": 0.37657641663270836,
+     "flip": 0.0,
+     "kl": 0.02144281651571338,
+     "ood": 46.529411764705884
+    },
+    "zero": {
+     "cos": 0.017191452138564167,
+     "dmargin": 0.4102551726733937,
+     "flip": 0.0,
+     "kl": 0.021292927266639547,
+     "ood": 46.76470588235294
+    }
+   },
+   "text": "it 's fascinating to see how bettany and mcdowell play off each other . ",
+   "tokens": 19
+  },
+  {
+   "margin": 3.411656141281128,
+   "padding": {
+    "masked_max_abs_prob_diff": 7.450580596923828e-09,
+    "unmasked_dmargin": 0.0007174015045166016,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.09734320640563965,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.06772923469543457,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.11487174034118652,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.11266517639160156,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.005410657209508559,
+     "dmargin": 0.11470546441919663,
+     "flip": 0.0,
+     "kl": 0.00048565711211481625,
+     "ood": 32.88235294117647
+    },
+    "mask": {
+     "cos": 0.003809210132150089,
+     "dmargin": 0.07482632468728458,
+     "flip": 0.0,
+     "kl": 0.0002594215537315262,
+     "ood": 37.11764705882353
+    },
+    "pad": {
+     "cos": 0.003874365021200741,
+     "dmargin": 0.0744028932908002,
+     "flip": 0.0,
+     "kl": 0.0002584366720839171,
+     "ood": 36.88235294117647
+    },
+    "unk": {
+     "cos": 0.004095210748560289,
+     "dmargin": 0.08868699915268842,
+     "flip": 0.0,
+     "kl": 0.0003074607380660703,
+     "ood": 34.88235294117647
+    },
+    "zero": {
+     "cos": 0.0038354011142955106,
+     "dmargin": 0.09152702724232394,
+     "flip": 0.0,
+     "kl": 0.0003309124825618175,
+     "ood": 34.55882352941177
+    }
+   },
+   "text": "less dizzying than just dizzy , the jaunt is practically over before it begins . ",
+   "tokens": 19
+  },
+  {
+   "margin": 5.090903282165527,
+   "padding": {
+    "masked_max_abs_prob_diff": 2.7939677238464355e-09,
+    "unmasked_dmargin": 1.350715160369873,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.020265579223632812,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.04149293899536133,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.0003452301025390625,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.009256362915039062,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.10572678595781326,
+     "dmargin": 1.1235230267047882,
+     "flip": 0.125,
+     "kl": 0.28855518572891015,
+     "ood": 43.125
+    },
+    "mask": {
+     "cos": 0.1001078337430954,
+     "dmargin": 1.0684263110160828,
+     "flip": 0.125,
+     "kl": 0.31994441146889585,
+     "ood": 25.5
+    },
+    "pad": {
+     "cos": 0.09811406582593918,
+     "dmargin": 1.052214115858078,
+     "flip": 0.125,
+     "kl": 0.30726195997340255,
+     "ood": 26.125
+    },
+    "unk": {
+     "cos": 0.09456425160169601,
+     "dmargin": 1.0262449383735657,
+     "flip": 0.125,
+     "kl": 0.27446487859560875,
+     "ood": 28.375
+    },
+    "zero": {
+     "cos": 0.10143271088600159,
+     "dmargin": 1.0843494832515717,
+     "flip": 0.125,
+     "kl": 0.32399112484563375,
+     "ood": 25.8125
+    }
+   },
+   "text": "good film , but very glum . ",
+   "tokens": 10
+  },
+  {
+   "margin": 3.4912619590759277,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.9752440452575684,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.011597394943237305,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.031160831451416016,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.1124868392944336,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.11228179931640625,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.01906218967939678,
+     "dmargin": 0.40596200290479156,
+     "flip": 0.0,
+     "kl": 0.008065062988622996,
+     "ood": 66.02631578947368
+    },
+    "mask": {
+     "cos": 0.015209320344422994,
+     "dmargin": 0.3543520036496614,
+     "flip": 0.0,
+     "kl": 0.009301619536831583,
+     "ood": 62.71052631578947
+    },
+    "pad": {
+     "cos": 0.0148388241466723,
+     "dmargin": 0.3434100025578549,
+     "flip": 0.0,
+     "kl": 0.008723461282084156,
+     "ood": 62.31578947368421
+    },
+    "unk": {
+     "cos": 0.014681888254065262,
+     "dmargin": 0.3398800523657548,
+     "flip": 0.0,
+     "kl": 0.008469239885590995,
+     "ood": 62.71052631578947
+    },
+    "zero": {
+     "cos": 0.01563369600396407,
+     "dmargin": 0.4066254590686999,
+     "flip": 0.0,
+     "kl": 0.011176575914233629,
+     "ood": 63.578947368421055
+    }
+   },
+   "text": "hardly a masterpiece , but it introduces viewers to a good charitable enterprise and some interesting real people . ",
+   "tokens": 21
+  },
+  {
+   "margin": 0.04926788806915283,
+   "padding": {
+    "masked_max_abs_prob_diff": 2.9802322387695312e-08,
+    "unmasked_dmargin": 0.874945878982544,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 0.4,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.06209743022918701,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.06884998083114624,
+     "flip": 1.0
+    },
+    "sep|mask": {
+     "dmargin": 0.18190085887908936,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.09005475044250488,
+     "flip": 1.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.0400826268725925,
+     "dmargin": 0.4420599275165134,
+     "flip": 0.2222222222222222,
+     "kl": 0.0440118248677916,
+     "ood": 95.66666666666667
+    },
+    "mask": {
+     "cos": 0.012078000439537896,
+     "dmargin": 0.27197308672799003,
+     "flip": 0.4444444444444444,
+     "kl": 0.023211447024045304,
+     "ood": 93.5
+    },
+    "pad": {
+     "cos": 0.01172890928056505,
+     "dmargin": 0.270161681705051,
+     "flip": 0.3333333333333333,
+     "kl": 0.021152814177589283,
+     "ood": 92.5
+    },
+    "unk": {
+     "cos": 0.0155424608124627,
+     "dmargin": 0.3518243696954515,
+     "flip": 0.3333333333333333,
+     "kl": 0.02400540125866731,
+     "ood": 93.5
+    },
+    "zero": {
+     "cos": 0.011782281928592257,
+     "dmargin": 0.2734177178806729,
+     "flip": 0.5555555555555556,
+     "kl": 0.019330940674990416,
+     "ood": 92.88888888888889
+    }
+   },
+   "text": "but it still jingles in the pocket . ",
+   "tokens": 11
+  },
+  {
+   "margin": 0.3263675570487976,
+   "padding": {
+    "masked_max_abs_prob_diff": 1.7881393432617188e-07,
+    "unmasked_dmargin": 2.4245241284370422,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 0.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.4183219075202942,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.168694406747818,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.2249266505241394,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.18858498334884644,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.07098044157028198,
+     "dmargin": 1.205656298995018,
+     "flip": 0.8,
+     "kl": 0.2489849641919136,
+     "ood": 47.4
+    },
+    "mask": {
+     "cos": 0.059329664707183837,
+     "dmargin": 0.9070864498615265,
+     "flip": 0.1,
+     "kl": 0.22247687252238393,
+     "ood": 56.0
+    },
+    "pad": {
+     "cos": 0.06091006398200989,
+     "dmargin": 0.9142000317573548,
+     "flip": 0.1,
+     "kl": 0.2241703606210649,
+     "ood": 55.35
+    },
+    "unk": {
+     "cos": 0.06436327695846558,
+     "dmargin": 0.9807658910751342,
+     "flip": 0.3,
+     "kl": 0.22581667862832547,
+     "ood": 53.2
+    },
+    "zero": {
+     "cos": 0.05769988298416138,
+     "dmargin": 0.8711219429969788,
+     "flip": 0.1,
+     "kl": 0.21771698291413485,
+     "ood": 56.9
+    }
+   },
+   "text": "a good piece of work more often than not . ",
+   "tokens": 12
+  },
+  {
+   "margin": 3.9039807319641113,
+   "padding": {
+    "masked_max_abs_prob_diff": 3.725290298461914e-09,
+    "unmasked_dmargin": 0.2856009006500244,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.09910726547241211,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.0648648738861084,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.06948709487915039,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.09759354591369629,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.038518893718719485,
+     "dmargin": 0.27736725807189944,
+     "flip": 0.0,
+     "kl": 0.0015247203322360293,
+     "ood": 57.75
+    },
+    "mask": {
+     "cos": 0.014968454837799072,
+     "dmargin": 0.31370508670806885,
+     "flip": 0.0,
+     "kl": 0.002783731797535438,
+     "ood": 55.3
+    },
+    "pad": {
+     "cos": 0.014416176080703735,
+     "dmargin": 0.30849809646606446,
+     "flip": 0.0,
+     "kl": 0.0026389794220449403,
+     "ood": 55.5
+    },
+    "unk": {
+     "cos": 0.014634376764297486,
+     "dmargin": 0.3048182725906372,
+     "flip": 0.0,
+     "kl": 0.002851814050518442,
+     "ood": 55.9
+    },
+    "zero": {
+     "cos": 0.0140555739402771,
+     "dmargin": 0.31867759227752684,
+     "flip": 0.0,
+     "kl": 0.002748969366075471,
+     "ood": 52.2
+    }
+   },
+   "text": "i got a headache watching this meaningless downer . ",
+   "tokens": 12
+  },
+  {
+   "margin": 0.3280888795852661,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 1.4811631441116333,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 0.2,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.02363288402557373,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.009025394916534424,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.020736277103424072,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.05247640609741211,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.029441348143986294,
+     "dmargin": 0.5922437948840005,
+     "flip": 0.14285714285714285,
+     "kl": 0.06926964635827712,
+     "ood": 85.5
+    },
+    "mask": {
+     "cos": 0.010571313755852836,
+     "dmargin": 0.3742178465638842,
+     "flip": 0.14285714285714285,
+     "kl": 0.04138514515943825,
+     "ood": 78.96428571428571
+    },
+    "pad": {
+     "cos": 0.009997836181095668,
+     "dmargin": 0.3481632343360356,
+     "flip": 0.14285714285714285,
+     "kl": 0.036548619017204534,
+     "ood": 78.78571428571429
+    },
+    "unk": {
+     "cos": 0.013965057475226266,
+     "dmargin": 0.4321246807064329,
+     "flip": 0.07142857142857142,
+     "kl": 0.04510666944718521,
+     "ood": 81.82142857142857
+    },
+    "zero": {
+     "cos": 0.010464553322110857,
+     "dmargin": 0.3560639704976763,
+     "flip": 0.14285714285714285,
+     "kl": 0.03835337624020342,
+     "ood": 80.71428571428571
+    }
+   },
+   "text": "the film tunes into a grief that could lead a man across centuries . ",
+   "tokens": 16
+  },
+  {
+   "margin": 5.603269577026367,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.01325225830078125,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.020406723022460938,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.012149810791015625,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.017556190490722656,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.02454853057861328,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.008373072743415833,
+     "dmargin": 0.07934989929199218,
+     "flip": 0.0,
+     "kl": 3.27873627156805e-05,
+     "ood": 12.8
+    },
+    "mask": {
+     "cos": 0.0026560574769973755,
+     "dmargin": 0.0350031852722168,
+     "flip": 0.0,
+     "kl": 1.2352264991477569e-05,
+     "ood": 10.45
+    },
+    "pad": {
+     "cos": 0.002590900659561157,
+     "dmargin": 0.03422162532806396,
+     "flip": 0.0,
+     "kl": 1.1747721256938348e-05,
+     "ood": 10.45
+    },
+    "unk": {
+     "cos": 0.002621862292289734,
+     "dmargin": 0.035445451736450195,
+     "flip": 0.0,
+     "kl": 1.2903637332328799e-05,
+     "ood": 11.275
+    },
+    "zero": {
+     "cos": 0.0034439921379089355,
+     "dmargin": 0.050579500198364255,
+     "flip": 0.0,
+     "kl": 3.312007053182242e-05,
+     "ood": 12.2
+    }
+   },
+   "text": "there are some wonderfully fresh moments that smooth the moral stiffness with human kindness and hopefulness . ",
+   "tokens": 22
+  },
+  {
+   "margin": 4.884279251098633,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.0017805099487304688,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.043506622314453125,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.06881046295166016,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.00031280517578125,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.008534431457519531,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.008157649636268615,
+     "dmargin": 0.12849893569946289,
+     "flip": 0.0,
+     "kl": 0.000655303432540677,
+     "ood": 13.675
+    },
+    "mask": {
+     "cos": 0.004412910342216492,
+     "dmargin": 0.10467365980148316,
+     "flip": 0.0,
+     "kl": 0.0006350836343017363,
+     "ood": 14.5
+    },
+    "pad": {
+     "cos": 0.0043960481882095335,
+     "dmargin": 0.10335013866424561,
+     "flip": 0.0,
+     "kl": 0.0006180287639836024,
+     "ood": 14.15
+    },
+    "unk": {
+     "cos": 0.004529243707656861,
+     "dmargin": 0.10483973026275635,
+     "flip": 0.0,
+     "kl": 0.000628633067208284,
+     "ood": 13.975
+    },
+    "zero": {
+     "cos": 0.0043985843658447266,
+     "dmargin": 0.10990476608276367,
+     "flip": 0.0,
+     "kl": 0.0006519397888951062,
+     "ood": 14.7
+    }
+   },
+   "text": "but it 's too long and too convoluted and it ends in a muddle . ",
+   "tokens": 22
+  },
+  {
+   "margin": 3.8941752910614014,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.37665295600891113,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.10614275932312012,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.014255285263061523,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.17469239234924316,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.29779553413391113,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.046830607312066216,
+     "dmargin": 0.8543347673756736,
+     "flip": 0.07142857142857142,
+     "kl": 0.05874000688865116,
+     "ood": 72.07142857142857
+    },
+    "mask": {
+     "cos": 0.019169547728129795,
+     "dmargin": 0.3302379676273891,
+     "flip": 0.0,
+     "kl": 0.008927660058751436,
+     "ood": 65.21428571428571
+    },
+    "pad": {
+     "cos": 0.018421092203685215,
+     "dmargin": 0.32572191102164133,
+     "flip": 0.0,
+     "kl": 0.008605519783616598,
+     "ood": 64.89285714285714
+    },
+    "unk": {
+     "cos": 0.017544635704585483,
+     "dmargin": 0.3114532232284546,
+     "flip": 0.0,
+     "kl": 0.00673358901985921,
+     "ood": 63.642857142857146
+    },
+    "zero": {
+     "cos": 0.018895689930234636,
+     "dmargin": 0.33737543651035856,
+     "flip": 0.0,
+     "kl": 0.009412734868029864,
+     "ood": 64.17857142857143
+    }
+   },
+   "text": "puts a human face on a land most westerners are unfamiliar with . ",
+   "tokens": 16
+  },
+  {
+   "margin": 5.703210830688477,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.0818333625793457,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.0071697235107421875,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.00026798248291015625,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.011975288391113281,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.0174407958984375,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.004840261057803505,
+     "dmargin": 0.01190905821950812,
+     "flip": 0.0,
+     "kl": 6.054597538183627e-07,
+     "ood": 5.973684210526316
+    },
+    "mask": {
+     "cos": 0.0017531702392979672,
+     "dmargin": 0.011914228138170745,
+     "flip": 0.0,
+     "kl": 2.45878507523924e-06,
+     "ood": 4.631578947368421
+    },
+    "pad": {
+     "cos": 0.0017279762970773798,
+     "dmargin": 0.011914504201788651,
+     "flip": 0.0,
+     "kl": 2.4375133546671256e-06,
+     "ood": 4.631578947368421
+    },
+    "unk": {
+     "cos": 0.0017118924542477256,
+     "dmargin": 0.01210165023803711,
+     "flip": 0.0,
+     "kl": 2.299444338704186e-06,
+     "ood": 4.921052631578948
+    },
+    "zero": {
+     "cos": 0.0017848171685871325,
+     "dmargin": 0.014185629392925062,
+     "flip": 0.0,
+     "kl": 2.5556431218750445e-06,
+     "ood": 4.657894736842105
+    }
+   },
+   "text": "a tender , witty , captivating film about friendship , love , memory , trust and loyalty . ",
+   "tokens": 21
+  },
+  {
+   "margin": 4.605607509613037,
+   "padding": {
+    "masked_max_abs_prob_diff": 4.6566128730773926e-09,
+    "unmasked_dmargin": 0.2815089225769043,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.015658855438232422,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.014914989471435547,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.03597307205200195,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.06913185119628906,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.04066774845123291,
+     "dmargin": 0.16480321884155275,
+     "flip": 0.0,
+     "kl": 0.00029381686545093544,
+     "ood": 19.3
+    },
+    "mask": {
+     "cos": 0.009671849012374879,
+     "dmargin": 0.08971805572509765,
+     "flip": 0.0,
+     "kl": 0.0001384983475873014,
+     "ood": 39.55
+    },
+    "pad": {
+     "cos": 0.009681540727615356,
+     "dmargin": 0.09381308555603027,
+     "flip": 0.0,
+     "kl": 0.00012278359645279124,
+     "ood": 38.75
+    },
+    "unk": {
+     "cos": 0.011772328615188598,
+     "dmargin": 0.11952214241027832,
+     "flip": 0.0,
+     "kl": 9.139466274064035e-05,
+     "ood": 32.25
+    },
+    "zero": {
+     "cos": 0.008988827466964722,
+     "dmargin": 0.08487577438354492,
+     "flip": 0.0,
+     "kl": 8.475940085190814e-05,
+     "ood": 38.3
+    }
+   },
+   "text": "it 's also , clearly , great fun . ",
+   "tokens": 12
+  },
+  {
+   "margin": 5.550907611846924,
+   "padding": {
+    "masked_max_abs_prob_diff": 1.862645149230957e-09,
+    "unmasked_dmargin": 0.16128110885620117,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.018926143646240234,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.00023126602172851562,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.018982887268066406,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.0030655860900878906,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.005585485034518772,
+     "dmargin": 0.05791664123535156,
+     "flip": 0.0,
+     "kl": 7.848114263550895e-06,
+     "ood": 8.666666666666666
+    },
+    "mask": {
+     "cos": 0.0032273464732699925,
+     "dmargin": 0.04520479838053385,
+     "flip": 0.0,
+     "kl": 1.0031298895935632e-05,
+     "ood": 9.666666666666666
+    },
+    "pad": {
+     "cos": 0.003151363796657986,
+     "dmargin": 0.04602230919731988,
+     "flip": 0.0,
+     "kl": 1.0815473716421467e-05,
+     "ood": 9.666666666666666
+    },
+    "unk": {
+     "cos": 0.003086825211842855,
+     "dmargin": 0.04362556669447157,
+     "flip": 0.0,
+     "kl": 9.512203986458997e-06,
+     "ood": 11.11111111111111
+    },
+    "zero": {
+     "cos": 0.0031838218371073404,
+     "dmargin": 0.05303308698866102,
+     "flip": 0.0,
+     "kl": 1.4409425805044722e-05,
+     "ood": 9.833333333333334
+    }
+   },
+   "text": "entertains by providing good , lively company . ",
+   "tokens": 11
+  },
+  {
+   "margin": 4.249368667602539,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.02587890625,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.045060157775878906,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.02074432373046875,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.02112865447998047,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.05029010772705078,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.02708338839667184,
+     "dmargin": 0.41871966634477886,
+     "flip": 0.0,
+     "kl": 0.0012327750144842347,
+     "ood": 26.321428571428573
+    },
+    "mask": {
+     "cos": 0.009609686476843697,
+     "dmargin": 0.20524917330060685,
+     "flip": 0.0,
+     "kl": 0.002357522533722139,
+     "ood": 51.392857142857146
+    },
+    "pad": {
+     "cos": 0.009595211063112532,
+     "dmargin": 0.21162734712873185,
+     "flip": 0.0,
+     "kl": 0.0023167363890804283,
+     "ood": 50.82142857142857
+    },
+    "unk": {
+     "cos": 0.009975395032337733,
+     "dmargin": 0.2182788678577968,
+     "flip": 0.0,
+     "kl": 0.0024285972470222206,
+     "ood": 51.07142857142857
+    },
+    "zero": {
+     "cos": 0.009147835629326957,
+     "dmargin": 0.203174318586077,
+     "flip": 0.0,
+     "kl": 0.002247305736481004,
+     "ood": 50.857142857142854
+    }
+   },
+   "text": "the humor is forced and heavy-handed , and occasionally simply unpleasant . ",
+   "tokens": 16
+  },
+  {
+   "margin": 4.091569900512695,
+   "padding": {
+    "masked_max_abs_prob_diff": 1.1920928955078125e-07,
+    "unmasked_dmargin": 0.385007381439209,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.08158540725708008,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.03281736373901367,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.12557148933410645,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.24271345138549805,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.08053568378090858,
+     "dmargin": 0.8770333379507065,
+     "flip": 0.0625,
+     "kl": 0.1605388509524346,
+     "ood": 72.53125
+    },
+    "mask": {
+     "cos": 0.051055192947387695,
+     "dmargin": 0.5012811720371246,
+     "flip": 0.0625,
+     "kl": 0.17781062749998,
+     "ood": 68.625
+    },
+    "pad": {
+     "cos": 0.05094937980175018,
+     "dmargin": 0.5020706355571747,
+     "flip": 0.0625,
+     "kl": 0.17812478649329933,
+     "ood": 68.78125
+    },
+    "unk": {
+     "cos": 0.05025508254766464,
+     "dmargin": 0.4987144023180008,
+     "flip": 0.0625,
+     "kl": 0.17031686330028606,
+     "ood": 70.65625
+    },
+    "zero": {
+     "cos": 0.048857808113098145,
+     "dmargin": 0.48956674337387085,
+     "flip": 0.0625,
+     "kl": 0.1602452077876535,
+     "ood": 68.71875
+    }
+   },
+   "text": "one of the more irritating cartoons you will see this , or any , year . ",
+   "tokens": 18
+  },
+  {
+   "margin": 5.393166542053223,
+   "padding": {
+    "masked_max_abs_prob_diff": 2.3283064365386963e-09,
+    "unmasked_dmargin": 0.034000396728515625,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.03737831115722656,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.0012941360473632812,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.01613903045654297,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.028778076171875,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.003524378726356908,
+     "dmargin": 0.04092050853528475,
+     "flip": 0.0,
+     "kl": 8.642607913076828e-06,
+     "ood": 12.131578947368421
+    },
+    "mask": {
+     "cos": 0.001521088575061999,
+     "dmargin": 0.032682092566239204,
+     "flip": 0.0,
+     "kl": 5.007340931976949e-06,
+     "ood": 13.447368421052632
+    },
+    "pad": {
+     "cos": 0.0014698348547282972,
+     "dmargin": 0.03285872308831466,
+     "flip": 0.0,
+     "kl": 5.1126049871335885e-06,
+     "ood": 13.526315789473685
+    },
+    "unk": {
+     "cos": 0.0014368358411287006,
+     "dmargin": 0.03343243347971063,
+     "flip": 0.0,
+     "kl": 4.965787076415788e-06,
+     "ood": 14.68421052631579
+    },
+    "zero": {
+     "cos": 0.0013955360964724892,
+     "dmargin": 0.04215426194040399,
+     "flip": 0.0,
+     "kl": 9.672427471454476e-06,
+     "ood": 14.236842105263158
+    }
+   },
+   "text": "it provides the grand , intelligent entertainment of a superior cast playing smart people amid a compelling plot . ",
+   "tokens": 21
+  },
+  {
+   "margin": 4.464265823364258,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 0.17895126342773438,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.047393798828125,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.04374504089355469,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.01698780059814453,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.024207592010498047,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.011405609548091888,
+     "dmargin": 0.16336965560913086,
+     "flip": 0.0,
+     "kl": 0.00027423752510458144,
+     "ood": 24.4375
+    },
+    "mask": {
+     "cos": 0.004883281886577606,
+     "dmargin": 0.11493325233459473,
+     "flip": 0.0,
+     "kl": 0.00019876049896083714,
+     "ood": 25.75
+    },
+    "pad": {
+     "cos": 0.004857122898101807,
+     "dmargin": 0.11110347509384155,
+     "flip": 0.0,
+     "kl": 0.00019147936225749618,
+     "ood": 25.9375
+    },
+    "unk": {
+     "cos": 0.005171440541744232,
+     "dmargin": 0.12405288219451904,
+     "flip": 0.0,
+     "kl": 0.00021483615773831843,
+     "ood": 27.25
+    },
+    "zero": {
+     "cos": 0.004778876900672913,
+     "dmargin": 0.12354987859725952,
+     "flip": 0.0,
+     "kl": 0.00020877279212072608,
+     "ood": 25.625
+    }
+   },
+   "text": "too much of the humor falls flat . ",
+   "tokens": 10
+  },
+  {
+   "margin": 4.952975273132324,
+   "padding": {
+    "masked_max_abs_prob_diff": 6.51925802230835e-09,
+    "unmasked_dmargin": 0.14216995239257812,
+    "unmasked_flip": 0.0
+   },
+   "pred": 1,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.011079788208007812,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.017088890075683594,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.02126026153564453,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.05559825897216797,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.01857734223206838,
+     "dmargin": 0.2829711039861043,
+     "flip": 0.0,
+     "kl": 0.0006879344437038526,
+     "ood": 19.25
+    },
+    "mask": {
+     "cos": 0.009925966461499533,
+     "dmargin": 0.24377957979838052,
+     "flip": 0.0,
+     "kl": 0.0013055515504447612,
+     "ood": 25.416666666666668
+    },
+    "pad": {
+     "cos": 0.009377186497052511,
+     "dmargin": 0.23784943421681723,
+     "flip": 0.0,
+     "kl": 0.0011925431970970142,
+     "ood": 24.791666666666668
+    },
+    "unk": {
+     "cos": 0.008865565061569214,
+     "dmargin": 0.23169426123301187,
+     "flip": 0.0,
+     "kl": 0.001031673982652137,
+     "ood": 24.791666666666668
+    },
+    "zero": {
+     "cos": 0.00985191265741984,
+     "dmargin": 0.2630922595659892,
+     "flip": 0.0,
+     "kl": 0.00154713220611787,
+     "ood": 24.5
+    }
+   },
+   "text": "it proves quite compelling as an intense , brooding character study . ",
+   "tokens": 14
+  },
+  {
+   "margin": 4.230261325836182,
+   "padding": {
+    "masked_max_abs_prob_diff": 7.450580596923828e-09,
+    "unmasked_dmargin": 0.4641568660736084,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.02767467498779297,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.0953221321105957,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.0786900520324707,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.10326290130615234,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.02646268265587943,
+     "dmargin": 0.26541536762600854,
+     "flip": 0.0,
+     "kl": 0.006836026731651232,
+     "ood": 70.02380952380952
+    },
+    "mask": {
+     "cos": 0.014630768980298723,
+     "dmargin": 0.2074503330957322,
+     "flip": 0.0,
+     "kl": 0.007124169257232487,
+     "ood": 79.69047619047619
+    },
+    "pad": {
+     "cos": 0.014613506339845202,
+     "dmargin": 0.20857236498878115,
+     "flip": 0.0,
+     "kl": 0.007263498696678046,
+     "ood": 80.38095238095238
+    },
+    "unk": {
+     "cos": 0.013959070046742758,
+     "dmargin": 0.2036829732713245,
+     "flip": 0.0,
+     "kl": 0.006122559095750884,
+     "ood": 79.9047619047619
+    },
+    "zero": {
+     "cos": 0.015327816917782738,
+     "dmargin": 0.21493577389490037,
+     "flip": 0.0,
+     "kl": 0.00871595614721411,
+     "ood": 78.80952380952381
+    }
+   },
+   "text": "a synthesis of cliches and absurdities that seems positively decadent in its cinematic flash and emptiness . ",
+   "tokens": 23
+  },
+  {
+   "margin": 1.423181176185608,
+   "padding": {
+    "masked_max_abs_prob_diff": 0.0,
+    "unmasked_dmargin": 1.0006595253944397,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.09194862842559814,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.06451427936553955,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.11631464958190918,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.1986902952194214,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.019574620506980202,
+     "dmargin": 0.22934915802695535,
+     "flip": 0.0,
+     "kl": 0.009592418326064944,
+     "ood": 52.15909090909091
+    },
+    "mask": {
+     "cos": 0.008381702683188698,
+     "dmargin": 0.1516572047363628,
+     "flip": 0.0,
+     "kl": 0.006783240425813181,
+     "ood": 61.36363636363637
+    },
+    "pad": {
+     "cos": 0.00841139934279702,
+     "dmargin": 0.15220607410777698,
+     "flip": 0.0,
+     "kl": 0.006830049848014658,
+     "ood": 61.18181818181818
+    },
+    "unk": {
+     "cos": 0.008505775169892744,
+     "dmargin": 0.15073018182407727,
+     "flip": 0.0,
+     "kl": 0.00670477285166271,
+     "ood": 61.59090909090909
+    },
+    "zero": {
+     "cos": 0.008164072578603571,
+     "dmargin": 0.14347381754354996,
+     "flip": 0.0,
+     "kl": 0.006532314641596961,
+     "ood": 61.06818181818182
+    }
+   },
+   "text": "if director michael dowse only superficially understands his characters , he does n't hold them in contempt . ",
+   "tokens": 24
+  },
+  {
+   "margin": 4.658073425292969,
+   "padding": {
+    "masked_max_abs_prob_diff": 4.6566128730773926e-09,
+    "unmasked_dmargin": 0.19819259643554688,
+    "unmasked_flip": 0.0
+   },
+   "pred": 0,
+   "shuffle_same_prediction": 1.0,
+   "special": {
+    "cls|mask": {
+     "dmargin": 0.00870513916015625,
+     "flip": 0.0
+    },
+    "cls|zero": {
+     "dmargin": 0.0029397010803222656,
+     "flip": 0.0
+    },
+    "sep|mask": {
+     "dmargin": 0.019739151000976562,
+     "flip": 0.0
+    },
+    "sep|zero": {
+     "dmargin": 0.03885221481323242,
+     "flip": 0.0
+    }
+   },
+   "strategies": {
+    "delete": {
+     "cos": 0.009824071611676897,
+     "dmargin": 0.12761599676949636,
+     "flip": 0.0,
+     "kl": 0.0008269556897825428,
+     "ood": 17.071428571428573
+    },
+    "mask": {
+     "cos": 0.005154303142002651,
+     "dmargin": 0.09767262140909831,
+     "flip": 0.0,
+     "kl": 0.0007577704656709795,
+     "ood": 21.452380952380953
+    },
+    "pad": {
+     "cos": 0.005151195185525077,
+     "dmargin": 0.09754744030180432,
+     "flip": 0.0,
+     "kl": 0.000763387153364463,
+     "ood": 21.833333333333332
+    },
+    "unk": {
+     "cos": 0.00514079559416998,
+     "dmargin": 0.09688252494448707,
+     "flip": 0.0,
+     "kl": 0.0007536304819084416,
+     "ood": 21.023809523809526
+    },
+    "zero": {
+     "cos": 0.005247615632556733,
+     "dmargin": 0.1028222810654413,
+     "flip": 0.0,
+     "kl": 0.0008092530056490519,
+     "ood": 21.857142857142858
+    }
+   },
+   "text": "i thought my own watch had stopped keeping time as i slogged my way through clockstoppers . ",
+   "tokens": 23
+  }
+ ],
+ "summary": {
+  "delete|cos": "delete cos (per-sample mean over positions): 0.02764 (n = 40; 95% percentile bootstrap of the mean [0.02081, 0.03551] over samples, 10000 draws, seed 7502)",
+  "delete|dmargin": "delete dmargin (per-sample mean over positions): 0.3872 (n = 40; 95% percentile bootstrap of the mean [0.2912, 0.4931] over samples, 10000 draws, seed 7502)",
+  "delete|flip": "delete flip (per-sample mean over positions): 0.06008 (n = 40; 95% percentile bootstrap of the mean [0.01894, 0.1162] over samples, 10000 draws, seed 7502)",
+  "delete|kl": "delete kl (per-sample mean over positions): 0.04326 (n = 40; 95% percentile bootstrap of the mean [0.02081, 0.06973] over samples, 10000 draws, seed 7502)",
+  "delete|ood": "delete ood (per-sample mean over positions): 43.41 (n = 40; 95% percentile bootstrap of the mean [35.12, 51.91] over samples, 10000 draws, seed 7502)",
+  "mask|cos": "mask cos (per-sample mean over positions): 0.01525 (n = 40; 95% percentile bootstrap of the mean [0.009798, 0.02195] over samples, 10000 draws, seed 7502)",
+  "mask|dmargin": "mask dmargin (per-sample mean over positions): 0.2548 (n = 40; 95% percentile bootstrap of the mean [0.1851, 0.3353] over samples, 10000 draws, seed 7502)",
+  "mask|flip": "mask flip (per-sample mean over positions): 0.0304 (n = 40; 95% percentile bootstrap of the mean [0.01047, 0.05851] over samples, 10000 draws, seed 7502)",
+  "mask|kl": "mask kl (per-sample mean over positions): 0.0376 (n = 40; 95% percentile bootstrap of the mean [0.01575, 0.06367] over samples, 10000 draws, seed 7502)",
+  "mask|ood": "mask ood (per-sample mean over positions): 44.58 (n = 40; 95% percentile bootstrap of the mean [36.27, 52.96] over samples, 10000 draws, seed 7502)",
+  "ood_delete_minus_mask": "OOD percentile: delete minus mask: -1.166 (n = 40; 95% paired percentile bootstrap of the difference of means [-3.54, 1.116] over samples, 10000 draws, seed 7502)",
+  "ood_pad_minus_mask": "OOD percentile: pad minus mask: -0.00132 (n = 40; 95% paired percentile bootstrap of the difference of means [-0.2534, 0.3449] over samples, 10000 draws, seed 7502)",
+  "ood_zero_minus_mask": "OOD percentile: zero minus mask: -0.4083 (n = 40; 95% paired percentile bootstrap of the difference of means [-0.8506, -0.003873] over samples, 10000 draws, seed 7502)",
+  "pad|cos": "pad cos (per-sample mean over positions): 0.01514 (n = 40; 95% percentile bootstrap of the mean [0.009729, 0.02179] over samples, 10000 draws, seed 7502)",
+  "pad|dmargin": "pad dmargin (per-sample mean over positions): 0.2544 (n = 40; 95% percentile bootstrap of the mean [0.1849, 0.3345] over samples, 10000 draws, seed 7502)",
+  "pad|flip": "pad flip (per-sample mean over positions): 0.02762 (n = 40; 95% percentile bootstrap of the mean [0.0104, 0.05012] over samples, 10000 draws, seed 7502)",
+  "pad|kl": "pad kl (per-sample mean over positions): 0.03709 (n = 40; 95% percentile bootstrap of the mean [0.01552, 0.06278] over samples, 10000 draws, seed 7502)",
+  "pad|ood": "pad ood (per-sample mean over positions): 44.57 (n = 40; 95% percentile bootstrap of the mean [36.31, 52.91] over samples, 10000 draws, seed 7502)",
+  "special_cls|mask_minus_interior": "|delta margin| cls|mask minus mean interior token: -0.167 (n = 40; 95% paired percentile bootstrap of the difference of means [-0.239, -0.1061] over samples, 10000 draws, seed 7502)",
+  "special_cls|zero_minus_interior": "|delta margin| cls|zero minus mean interior token: -0.2239 (n = 40; 95% paired percentile bootstrap of the difference of means [-0.3018, -0.1563] over samples, 10000 draws, seed 7502)",
+  "special_sep|mask_minus_interior": "|delta margin| sep|mask minus mean interior token: -0.178 (n = 40; 95% paired percentile bootstrap of the difference of means [-0.252, -0.1164] over samples, 10000 draws, seed 7502)",
+  "special_sep|zero_minus_interior": "|delta margin| sep|zero minus mean interior token: -0.1672 (n = 40; 95% paired percentile bootstrap of the difference of means [-0.2455, -0.1036] over samples, 10000 draws, seed 7502)",
+  "unk|cos": "unk cos (per-sample mean over positions): 0.01554 (n = 40; 95% percentile bootstrap of the mean [0.01018, 0.02209] over samples, 10000 draws, seed 7502)",
+  "unk|dmargin": "unk dmargin (per-sample mean over positions): 0.2677 (n = 40; 95% percentile bootstrap of the mean [0.1968, 0.3504] over samples, 10000 draws, seed 7502)",
+  "unk|flip": "unk flip (per-sample mean over positions): 0.03084 (n = 40; 95% percentile bootstrap of the mean [0.01077, 0.05658] over samples, 10000 draws, seed 7502)",
+  "unk|kl": "unk kl (per-sample mean over positions): 0.03618 (n = 40; 95% percentile bootstrap of the mean [0.01568, 0.06051] over samples, 10000 draws, seed 7502)",
+  "unk|ood": "unk ood (per-sample mean over positions): 44.89 (n = 40; 95% percentile bootstrap of the mean [36.58, 53.28] over samples, 10000 draws, seed 7502)",
+  "zero|cos": "zero cos (per-sample mean over positions): 0.01514 (n = 40; 95% percentile bootstrap of the mean [0.009715, 0.02185] over samples, 10000 draws, seed 7502)",
+  "zero|dmargin": "zero dmargin (per-sample mean over positions): 0.265 (n = 40; 95% percentile bootstrap of the mean [0.1947, 0.3452] over samples, 10000 draws, seed 7502)",
+  "zero|flip": "zero flip (per-sample mean over positions): 0.03449 (n = 40; 95% percentile bootstrap of the mean [0.011, 0.06888] over samples, 10000 draws, seed 7502)",
+  "zero|kl": "zero kl (per-sample mean over positions): 0.03703 (n = 40; 95% percentile bootstrap of the mean [0.01558, 0.06272] over samples, 10000 draws, seed 7502)",
+  "zero|ood": "zero ood (per-sample mean over positions): 44.17 (n = 40; 95% percentile bootstrap of the mean [35.92, 52.49] over samples, 10000 draws, seed 7502)"
+ }
+}

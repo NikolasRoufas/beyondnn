@@ -1364,10 +1364,110 @@
   }
  },
  "NLP": {
-  "N1": "not_available",
-  "N2": "not_available",
-  "N3": "not_available",
-  "N4": "not_available"
+  "N1": {
+   "all_claims": {
+    "human": {
+     "human_necessary": {
+      "contradicted": 30,
+      "supported": 10
+     },
+     "human_sufficient": {
+      "contradicted": 35,
+      "supported": 5
+     }
+    },
+    "ig": {
+     "ig_necessary": {
+      "contradicted": 33,
+      "supported": 7
+     },
+     "ig_sufficient": {
+      "contradicted": 34,
+      "supported": 6
+     }
+    },
+    "random": {
+     "random_necessary": {
+      "contradicted": 37,
+      "supported": 3
+     },
+     "random_sufficient": {
+      "contradicted": 39,
+      "supported": 1
+     }
+    }
+   },
+   "holds": false,
+   "human_supported": {
+    "estimate": 0.25,
+    "high": 0.4019396142076802,
+    "k": 10,
+    "level": 0.95,
+    "low": 0.14187118639096308,
+    "n": 40,
+    "text": "10/40 = 0.2500 (95.00% Wilson [0.1419, 0.4019])"
+   },
+   "ig_supported": {
+    "estimate": 0.175,
+    "high": 0.31949990331787703,
+    "k": 7,
+    "level": 0.95,
+    "low": 0.08745413746035922,
+    "n": 40,
+    "text": "7/40 = 0.1750 (95.00% Wilson [0.0875, 0.3195])"
+   },
+   "paired_difference_95": {
+    "estimate": -0.07500000000000001,
+    "high": 0.07500000000000001,
+    "level": 0.95,
+    "low": -0.22500000000000003,
+    "text": "PRIMARY SUPPORTED: IG minus human (necessary): -0.075 (n = 40; 95% paired percentile bootstrap of the difference of means [-0.225, 0.075] over samples, 10000 draws, seed 7501)"
+   }
+  },
+  "N2": {
+   "holds": true,
+   "ig_f1_95": "IG top-k_h token F1 vs annotator 1: 0.3425 (n = 40; 95% percentile bootstrap of the mean [0.2643, 0.4222] over samples, 10000 draws, seed 7501)",
+   "paired_difference_bonferroni": {
+    "estimate": 0.14861111111111108,
+    "high": 0.2701432291666669,
+    "level": 0.9875,
+    "low": 0.030797309027777702,
+    "text": "token F1 vs annotator 1: IG minus random: 0.1486 (n = 40; 98.75% paired percentile bootstrap of the difference of means [0.0308, 0.2701] over samples, 10000 draws, seed 7501)"
+   }
+  },
+  "N3-D": {
+   "holds": false,
+   "paired_difference_bonferroni": {
+    "estimate": -5.532044077299986,
+    "high": -3.575046235380116,
+    "level": 0.9875,
+    "low": -7.559565319064601,
+    "text": "OOD percentile zero minus [MASK] (D): -5.532 (n = 40; 98.75% paired percentile bootstrap of the difference of means [-7.56, -3.575] over samples, 10000 draws, seed 7502)"
+   }
+  },
+  "N3-E": {
+   "holds": true,
+   "paired_difference_bonferroni": {
+    "estimate": 1.520981534418958,
+    "high": 2.9403744954160747,
+    "level": 0.9875,
+    "low": 0.20513820613092268,
+    "text": "OOD percentile zero minus [MASK] (E): 1.521 (n = 40; 98.75% paired percentile bootstrap of the difference of means [0.2051, 2.94] over samples, 10000 draws, seed 7502)"
+   }
+  },
+  "N4": {
+   "chance": 0.3333333333333333,
+   "estimate": 0.456,
+   "full": "accuracy (premise + hypothesis): 0.892 (446 of 500; 95% wilson [0.8617, 0.9163] over e-SNLI test rows)",
+   "high": 0.5118347451486144,
+   "holds": true,
+   "k": 228,
+   "level": 0.9875,
+   "low": 0.4012497058298373,
+   "masked": "accuracy ([MASK] premise): 0.462 (231 of 500; 95% wilson [0.4188, 0.5058] over e-SNLI test rows)",
+   "n": 500,
+   "text": "228/500 = 0.4560 (98.75% Wilson [0.4012, 0.5118])"
+  }
  },
  "gate_criteria_\u00a710": {
   "EH1_below_80pct": false,

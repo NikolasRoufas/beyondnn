@@ -1,0 +1,593 @@
+{
+ "audits": {
+  "human": {
+   "human_necessary": {
+    "distribution": {
+     "contradicted": 30,
+     "supported": 10
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      4
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      9
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      30
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      23
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      9
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      4
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.75 (30 of 40; 95% wilson [0.5981, 0.8581] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.25 (10 of 40; 95% wilson [0.1419, 0.4019] over declared samples)"
+    ],
+    "per_sample": [
+     "supported",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   },
+   "human_sufficient": {
+    "distribution": {
+     "contradicted": 35,
+     "supported": 5
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      7
+     ],
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      7
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      8
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      35
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      23
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      9
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      4
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.875 (35 of 40; 95% wilson [0.7389, 0.9454] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.125 (5 of 40; 95% wilson [0.0546, 0.2611] over declared samples)"
+    ],
+    "per_sample": [
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   }
+  },
+  "ig": {
+   "ig_necessary": {
+    "distribution": {
+     "contradicted": 33,
+     "supported": 7
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      8
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      33
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      20
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      5
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      4
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.825 (33 of 40; 95% wilson [0.6805, 0.9125] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.175 (7 of 40; 95% wilson [0.08745, 0.3195] over declared samples)"
+    ],
+    "per_sample": [
+     "contradicted",
+     "supported",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   },
+   "ig_sufficient": {
+    "distribution": {
+     "contradicted": 34,
+     "supported": 6
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      7
+     ],
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      6
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      7
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      34
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      20
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      5
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      4
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.85 (34 of 40; 95% wilson [0.7093, 0.9294] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.15 (6 of 40; 95% wilson [0.07061, 0.2907] over declared samples)"
+    ],
+    "per_sample": [
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   }
+  },
+  "random": {
+   "random_necessary": {
+    "distribution": {
+     "contradicted": 37,
+     "supported": 3
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      2
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      6
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      37
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      9
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      3
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      1
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.925 (37 of 40; 95% wilson [0.8014, 0.9742] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.075 (3 of 40; 95% wilson [0.02584, 0.1986] over declared samples)"
+    ],
+    "per_sample": [
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   },
+   "random_sufficient": {
+    "distribution": {
+     "contradicted": 39,
+     "supported": 1
+    },
+    "findings": [
+     [
+      "assumption_sensitive",
+      "alternative_reverses",
+      2
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      1
+     ],
+     [
+      "assumption_sensitive",
+      "stress_test_reverses",
+      2
+     ],
+     [
+      "counterexample_found",
+      "counterexamples_present",
+      39
+     ],
+     [
+      "protocol_disagreement",
+      "configuration_level_disagreement",
+      9
+     ],
+     [
+      "protocol_disagreement",
+      "necessary_not_sufficient",
+      3
+     ],
+     [
+      "protocol_disagreement",
+      "sufficient_not_necessary",
+      1
+     ]
+    ],
+    "intervals": [
+     "fraction of declared samples CONTRADICTED: 0.975 (39 of 40; 95% wilson [0.8712, 0.9956] over declared samples)",
+     "fraction of declared samples SUPPORTED: 0.025 (1 of 40; 95% wilson [0.004427, 0.1288] over declared samples)"
+    ],
+    "per_sample": [
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "supported",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted",
+     "contradicted"
+    ]
+   }
+  }
+ },
+ "model": {
+  "calibration_accuracy": 0.906,
+  "checkpoint_state_digest": "sha256:3bb11726e89399d5da9e939eed5e29efdb5cc1fc8226c7351877b710a799f27d",
+  "esnli_commit": "7b585a3f077fdea899780eb0473940522ae44a2e",
+  "gold_to_model_label": {
+   "contradiction": 0,
+   "entailment": 1,
+   "neutral": 2
+  },
+  "parameters": 109484547,
+  "repo": "textattack/bert-base-uncased-snli",
+  "revision": "d4ef8a69a50bc95cc074514f4b798c67f572163a"
+ },
+ "n_samples": 40,
+ "plausibility": {
+  "ig_minus_random_f1": "token F1: IG minus random: 0.1486 (n = 40; 95% paired percentile bootstrap of the difference of means [0.05521, 0.2463] over samples, 10000 draws, seed 7501)",
+  "ig_token_f1": "IG top-k_h token F1 vs annotator 1: 0.3425 (n = 40; 95% percentile bootstrap of the mean [0.2643, 0.4222] over samples, 10000 draws, seed 7501)"
+ },
+ "run_seconds": 10230.821817167103
+}

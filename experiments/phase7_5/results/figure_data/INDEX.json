@@ -29,6 +29,11 @@
   "shows": "known-positive / known-negative concepts under the frozen concept policy",
   "source": "results/external_tracr_concepts_{dev,heldout}.json -> cases.<c>.models"
  },
+ "fd7_esnli.json": {
+  "rows": "-",
+  "shows": "plausibility (token F1 vs annotator 1) and faithfulness (audited standings) side by side; never merged",
+  "source": "results/esnli.json"
+ },
  "fd9_performance.csv": {
   "rows": "3",
   "shows": "end-to-end cost per stage (single runs, one machine)",

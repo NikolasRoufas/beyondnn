@@ -50,7 +50,7 @@ class Interval:
         count = f"{self.k} of {self.n}; " if self.k is not None else f"n = {self.n}; "
         rng = f", {self.draws} draws, seed {self.seed}" if self.draws is not None else ""
         return (
-            f"{self.quantity}: {self.estimate:.4g} ({count}{self.level:.0%} {self.method} "
+            f"{self.quantity}: {self.estimate:.4g} ({count}{self.level * 100:g}% {self.method} "
             f"[{self.low:.4g}, {self.high:.4g}] over {self.unit}{rng})"
         )
 
