@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -263,17 +264,13 @@ def nlp_tables() -> None:
         if p is None:
             continue
         for key, v in sorted(p.get("summary", {}).items()):
-            if isinstance(v, dict) and "estimate" in v:
+            m_ = re.search(
+                r": (-?[\d.e+-]+) \(n = (\d+); ([\d.]+)% .*\[(-?[\d.e+-]+), (-?[\d.e+-]+)\]", str(v)
+            )
+            if m_:
+                est, n, level, low, high = m_.groups()
                 rows.append(
-                    [
-                        m,
-                        key,
-                        v.get("estimate"),
-                        v.get("low"),
-                        v.get("high"),
-                        v.get("level"),
-                        v.get("n"),
-                    ]
+                    [m, key, float(est), float(low), float(high), float(level) / 100, int(n)]
                 )
     if rows:
         write(
