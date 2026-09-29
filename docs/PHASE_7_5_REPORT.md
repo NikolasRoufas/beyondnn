@@ -11,7 +11,7 @@
 
 ## 2. Ending commit
 
-⟨D-FINAL: filled at the end⟩. See §52.
+The commit that adds this final section text, titled "Phase 7.5 report: commits, ending commit, git status". It directly follows `6ceb16a` (the gate); see §52.
 
 ## 3. Baseline
 
@@ -462,7 +462,7 @@ One pattern did not apply in the first run (a formatter line split). It was fixe
 
 - At the start: 983 + 1 skipped / 1004.
 - In the matrix (`76c68eb`): 1014 + 1 skipped / 1035, on 3.10 / 3.12 / 3.14.
-- At the end: one more test (`test_interval_description_keeps_a_non_integer_level`): 1015 + 1 / 1036 ⟨confirmed in the final check⟩.
+- At the end: one more test (`test_interval_description_keeps_a_non_integer_level`): 1015 + 1 skipped / 1036, confirmed in the final check on Python 3.12 (with and without Captum) after model D. The full 3.10 / 3.12 / 3.14 matrix ran at `76c68eb`; after it, only the one test and the `Interval.describe` formatting changed..
 
 ## 42. Lint / type / build
 
@@ -560,16 +560,39 @@ No policy was changed after seeing results.
 
 ## 50. Commits
 
-⟨D-FINAL⟩
+23 commits after `0601cde`, all local; the last is the report-completion commit:
+
+- `b1d6345` Phase 7.5 literature review (uncertainty, sensitivity reporting, known-mechanism benchmarks, rationales, token OOD, leakage)
+- `20d4ebc` Audit refinement: configuration roles, sensitivity profiles, configuration-level disagreement, uncertainty intervals (ADR-048, ADR-049); concept validations from saved traces and protocol versions (ADR-050)
+- `1376c01` Builtin margin metric: predicted class vs best other class (ADR-051)
+- `ee3f91e` Phase 7.5 plan and FROZEN evaluation policy, experiment code, development evidence (before any held-out evaluation)
+- `6b05859` Public evidence helpers audits.sample_id / traces_of / save_evidence / load_evidence (found by the external-researcher workflow); workflow script; Phase-7.5 analysis helpers with frozen-policy consistency test
+- `0c20f67` Phase-7.5 tests for profile serialisation, sample-specific roles, per-claim requirements; mutation script
+- `3922927` Lint: mutation script
+- `c7735be` Faithfulness replacements are always declared: no implicit zero (ADR-052; Phase-5.5 F-22, evidence from the InterpBench development cases)
+- `e17ba13` Docs: explicit replacements in protocol examples; audit roles, axis-key grammar, profiles, uncertainty, evidence persistence
+- `32065a4` Phase 7.5 held-out results so far: InterpBench E1 (18 cases; case 124 re-run after deviation DV-1), Tracr concepts E2, central A dev/held-out
+- `42912dd` Phase 7.5: central B/C dev and held-out results, mutation results (24/24 killed), performance harness (small model, external benchmark)
+- `c5f1582` Phase 7.5: hypothesis evaluation (E1/E2/C1), figure-data script and tables, external validation report
+- `745f61a` Phase 7.5: API review, API freeze, re-runs of representative Phase 5.5/6/7 experiments
+- `84e0283` Phase 7.5: N1-N4 evaluation, paper-readiness draft, formatting
+- `76c68eb` Phase 7.5 regression matrix: 1014+1 / 1035 tests on 3.10/3.12/3.14, lint, mypy, build, clean-wheel smokes, external-researcher workflow
+- `0fdb447` Phase 7.5 performance: moderate model D (BERT-base, 2 samples)
+- `2b7e28a` Phase 7.5 NLP held-out results (e-SNLI rationales, token probes C/D/E), N1-N4 evaluation; Interval.describe shows non-integer levels (98.75%) as declared
+- `e835ab1` Phase 7.5 figure data: token-OOD table from probe summaries
+- `e74083d` Phase 7.5 docs: report (model-D sections pending), paper readiness with NLP results, ledger E13-E21, figure candidates F9-F17, changelog, docs index
+- `b0d8447` Experiment log: Phase 7.5 entry (model D pending)
+- `5c75fa2` Phase 7.5 model D held-out (BERT-base SST-2, 40 samples): CH8/CH9 hold with D; IG top-k selects [SEP] on 30/40 (10/11 supports); docs updated
+- `6ceb16a` Phase 7.5 gate: READY FOR PHASE 8 WITH EXPLICIT LIMITATIONS; roadmap
 
 ## 51. Git status
 
-⟨D-FINAL⟩
+Clean after the final commit: no modified or untracked tracked-path files. The git-ignored `experiments/phase7_5/artifacts/` holds the benchmark clones, environments and reports. Nothing was pushed; no remote was contacted.
 
 ## 52. Ending commit and uncommitted work
 
-⟨D-FINAL⟩
+The final report commit (§2), on top of `6ceb16a`.
 
 ## 53. Uncommitted work
 
-⟨D-FINAL⟩
+None. Scratch files (smoke scripts, the regression-matrix script, wheel environments) live outside the repository in the session scratchpad.
