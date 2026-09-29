@@ -528,7 +528,35 @@ No Phase-8 work has been started.
 
 ## 49. Gate
 
-⟨D-FINAL⟩
+**READY FOR PHASE 8 WITH EXPLICIT LIMITATIONS.**
+
+**Applying the frozen §10 criteria:**
+- **NO-GO:** not triggered.
+  - EH2 PRIMARY FP 0% (≤ 10%); EH1 100% (≥ 80%);
+  - no attribution-only claim was SUPPORTED;
+  - KE1 held.
+- **REQUIRES SCIENTIFIC CHANGES:** not triggered.
+  - The save → restart → load → audit → WHY loop passes.
+  - No BLOCKING API defect remains unfixed.
+  - 24/24 mutations were killed.
+- **With explicit limitations**, because predictions failed and scope limits are material:
+  - N1 and N3-D failed;
+  - E1 RQ1/RQ2 are partly circular;
+  - the concept policy rejects the known positive;
+  - D's IG support is largely a [SEP] effect.
+
+No policy was changed after seeing results.
+
+**Publication decision (no acceptance prediction):**
+- **Not ready to write** a framework paper that claims the audit separates correct from incorrect mechanisms, or that concepts are validated.
+- **The evidence supports** a paper that claims the audit:
+  - reproduces known interchange results;
+  - contradicts attribution-selected wrong mechanisms;
+  - refuses attribution-only causal claims;
+  - exposes configuration dependence without a score.
+- **Before claims beyond that:** the must-fix items in §47 (plus G-A7).
+
+**Phase 8:** not started.
 
 ## 50. Commits
 

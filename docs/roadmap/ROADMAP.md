@@ -182,8 +182,21 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 - `bnn.audit(model, dataset, plan) -> AuditReport` with `metadata` (versions, seed, device, config, methods).
 - It uses only tests and metrics that already exist with documentation.
 
-## Phase 7.5: Audit refinement (not started)
-- Scope to be set by the Phase-7 report's §44. Trace 3B is out of scope (`TRACE3B_FUTURE.md`).
+## Phase 7.5: External validation, audit refinement, API freeze: **gate READY FOR PHASE 8 WITH EXPLICIT LIMITATIONS** (2026-09-29; `docs/PHASE_7_5_REPORT.md`, ADR-048 to ADR-052)
+
+**Done:**
+- configuration roles, sensitivity profiles, configuration-level disagreement, uncertainty intervals;
+- evidence persistence and `load_validation`; `metrics.margin`; required replacements;
+- InterpBench / Tracr external validation; central A–D held-out; e-SNLI rationales; token probes;
+- the external-researcher workflow;
+- the API freeze (`docs/API_FREEZE.md`).
+
+**Open (must-fix before the corresponding paper claims; `research/PHASE_7_5_PAPER_READINESS.md`):**
+- external ground truth independent of the PRIMARY intervention (E1 is partly circular);
+- a concept known positive validated without tuning (the frozen policy rejects Tracr `is_x`);
+- declared special-token eligibility (D's IG supports mostly select [SEP]).
+
+Trace 3B stays out of scope.
 
 ## Phase 8: Benchmark
 - Capability and correctness vs nnsight, Captum, TransformerLens, and pyvene on the tiny models, plus runtime and memory.
