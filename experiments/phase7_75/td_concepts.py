@@ -308,7 +308,7 @@ def run_case39() -> dict[str, Any]:
     site = "blocks.0.hook_resid_post"
     labels = list(hl.residual_stream_labels)
     v = torch.zeros(len(labels))
-    v[[i for i, lab in enumerate(labels) if lab.startswith("is_x")][0]] = 1.0  # as Phase 7.5 E2
+    v[next(i for i, lab in enumerate(labels) if lab.startswith("is_x"))] = 1.0  # as Phase 7.5 E2
     out = {"hl": run_model(hl, xs, x_id, None, C.direction(site, v, axis=2, pooling="mean"), None)}
     ll = load_ll("39")
     # LL K+ (as Phase 7.5): the direction fitted on each concept dataset's train split
