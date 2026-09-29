@@ -1,0 +1,835 @@
+{
+ "split": "heldout",
+ "programs": {
+  "cho_c_d": {
+   "program": "cho_c_d",
+   "task": "1.0 x fraction of 'c' so far; 'd' read with coefficient 0",
+   "residual_labels": [
+    "comb_3",
+    "frac_prevs_1",
+    "indices:0",
+    "indices:1",
+    "indices:2",
+    "indices:3",
+    "indices:4",
+    "indices:5",
+    "indices:6",
+    "indices:7",
+    "indices:8",
+    "indices:9",
+    "indices:10",
+    "indices:11",
+    "indices:12",
+    "is_d_5",
+    "is_u_4",
+    "one",
+    "tokens:BOS",
+    "tokens:PAD",
+    "tokens:a",
+    "tokens:b",
+    "tokens:c",
+    "tokens:d",
+    "tokens:e",
+    "tokens:f"
+   ],
+   "n": 400,
+   "rel_min_change": 0.020959553122520447,
+   "train_median_fraction": 0.15384615384615385,
+   "concepts": {
+    "K+": {
+     "known": "positive",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.020959553122520447,
+       "use": "supports",
+       "use_effect": -0.26666662096977234,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.26666662096977234,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      }
+     }
+    },
+    "K0": {
+     "known": "negative",
+     "auroc": 0.41304347826086957,
+     "encoding": {
+      "covariance": "contradicts",
+      "isotropic": "contradicts"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.020959553122520447,
+       "use": "supports",
+       "use_effect": -0.14046820398906004,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.14046820398906004,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    },
+    "K-": {
+     "known": "decodable_unused",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.020959553122520447,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.38,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.38,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    }
+   },
+   "audits": {
+    "rel|strict": {
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     }
+    },
+    "rel|lenient": {
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     }
+    },
+    "abs|strict": {
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     }
+    },
+    "abs|lenient": {
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     }
+    }
+   }
+  },
+  "cho_x_a": {
+   "program": "cho_x_a",
+   "task": "1.0 x fraction of 'x' so far; 'a' read with coefficient 0",
+   "residual_labels": [
+    "comb_3",
+    "frac_prevs_1",
+    "indices:0",
+    "indices:1",
+    "indices:2",
+    "indices:3",
+    "indices:4",
+    "indices:5",
+    "indices:6",
+    "indices:7",
+    "indices:8",
+    "indices:9",
+    "indices:10",
+    "indices:11",
+    "indices:12",
+    "indices:13",
+    "indices:14",
+    "indices:15",
+    "indices:16",
+    "indices:17",
+    "indices:18",
+    "is_d_5",
+    "is_u_4",
+    "one",
+    "tokens:BOS",
+    "tokens:PAD",
+    "tokens:a",
+    "tokens:b",
+    "tokens:c",
+    "tokens:d",
+    "tokens:x"
+   ],
+   "n": 400,
+   "rel_min_change": 0.017038966715335845,
+   "train_median_fraction": 0.21052631578947367,
+   "concepts": {
+    "K+": {
+     "known": "positive",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.017038966715335845,
+       "use": "supports",
+       "use_effect": -0.30421022772789,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.30421022772789,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      }
+     }
+    },
+    "K0": {
+     "known": "negative",
+     "auroc": 0.37209302325581395,
+     "encoding": {
+      "covariance": "contradicts",
+      "isotropic": "contradicts"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.017038966715335845,
+       "use": "supports",
+       "use_effect": -0.18727031765982163,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.18727031765982163,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    },
+    "K-": {
+     "known": "decodable_unused",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.017038966715335845,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.4,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.4,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    }
+   },
+   "audits": {
+    "rel|strict": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "controls_defeat_encoding",
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     }
+    },
+    "rel|lenient": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "controls_defeat_encoding",
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     }
+    },
+    "abs|strict": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "controls_defeat_encoding",
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     }
+    },
+    "abs|lenient": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "controls_defeat_encoding",
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     }
+    }
+   }
+  },
+  "cho_half_e_b": {
+   "program": "cho_half_e_b",
+   "task": "0.5 x fraction of 'e' so far; 'b' read with coefficient 0",
+   "residual_labels": [
+    "comb_3",
+    "frac_prevs_1",
+    "indices:0",
+    "indices:1",
+    "indices:2",
+    "indices:3",
+    "indices:4",
+    "indices:5",
+    "indices:6",
+    "indices:7",
+    "indices:8",
+    "indices:9",
+    "indices:10",
+    "is_d_5",
+    "is_u_4",
+    "one",
+    "tokens:BOS",
+    "tokens:PAD",
+    "tokens:a",
+    "tokens:b",
+    "tokens:c",
+    "tokens:d",
+    "tokens:e"
+   ],
+   "n": 400,
+   "rel_min_change": 0.012348924577236176,
+   "train_median_fraction": 0.18181818181818182,
+   "concepts": {
+    "K+": {
+     "known": "positive",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.012348924577236176,
+       "use": "supports",
+       "use_effect": -0.15686273399521322,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.15686273399521322,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      }
+     }
+    },
+    "K0": {
+     "known": "negative",
+     "auroc": 0.4249512670565302,
+     "encoding": {
+      "covariance": "contradicts",
+      "isotropic": "contradicts"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.012348924577236176,
+       "use": "supports",
+       "use_effect": -0.09728867011634927,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "contradicts",
+       "use_effect": -0.09728867011634927,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    },
+    "K-": {
+     "known": "decodable_unused",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.012348924577236176,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.5,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.5,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    }
+   },
+   "audits": {
+    "rel|strict": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     }
+    },
+    "rel|lenient": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     }
+    },
+    "abs|strict": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     }
+    },
+    "abs|lenient": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     }
+    }
+   }
+  },
+  "cho_b_c": {
+   "program": "cho_b_c",
+   "task": "1.0 x fraction of 'b' so far; 'c' read with coefficient 0",
+   "residual_labels": [
+    "comb_3",
+    "frac_prevs_1",
+    "indices:0",
+    "indices:1",
+    "indices:2",
+    "indices:3",
+    "indices:4",
+    "indices:5",
+    "indices:6",
+    "indices:7",
+    "indices:8",
+    "indices:9",
+    "indices:10",
+    "indices:11",
+    "indices:12",
+    "indices:13",
+    "indices:14",
+    "is_d_5",
+    "is_u_4",
+    "one",
+    "tokens:BOS",
+    "tokens:PAD",
+    "tokens:a",
+    "tokens:b",
+    "tokens:c",
+    "tokens:d",
+    "tokens:e",
+    "tokens:f",
+    "tokens:g",
+    "tokens:h"
+   ],
+   "n": 400,
+   "rel_min_change": 0.017569953203201295,
+   "train_median_fraction": 0.13333333333333333,
+   "concepts": {
+    "K+": {
+     "known": "positive",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.017569953203201295,
+       "use": "supports",
+       "use_effect": -0.2217053438341895,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.2217053438341895,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      }
+     }
+    },
+    "K0": {
+     "known": "negative",
+     "auroc": 0.49094392197840475,
+     "encoding": {
+      "covariance": "contradicts",
+      "isotropic": "contradicts"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.017569953203201295,
+       "use": "supports",
+       "use_effect": -0.12323227682800005,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.12323227682800005,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    },
+    "K-": {
+     "known": "decodable_unused",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.017569953203201295,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.46,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.46,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    }
+   },
+   "audits": {
+    "rel|strict": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     }
+    },
+    "rel|lenient": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     }
+    },
+    "abs|strict": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     }
+    },
+    "abs|lenient": {
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     },
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     }
+    }
+   }
+  }
+ }
+}

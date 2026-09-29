@@ -1,0 +1,257 @@
+{
+ "case": "39",
+ "blind": false,
+ "note": "Phase-7.5 held-out case; its use effect (about 0.06) was known when ADR-055 was chosen",
+ "hl": {
+  "n": 400,
+  "rel_min_change": 0.0049906447529792786,
+  "train_median_fraction": 0.03389830508474576,
+  "concepts": {
+   "K+": {
+    "known": "positive",
+    "auroc": 1.0,
+    "encoding": {
+     "covariance": "supports",
+     "isotropic": "supports"
+    },
+    "rules": {
+     "rel": {
+      "min_change": 0.0049906447529792786,
+      "use": "supports",
+      "use_effect": -0.06225378911655683,
+      "use_superiority": 1.0,
+      "validation": {
+       "covariance": "validated_concept",
+       "isotropic": "validated_concept"
+      }
+     },
+     "abs": {
+      "min_change": 0.1,
+      "use": "contradicts",
+      "use_effect": -0.06225378911655683,
+      "use_superiority": 1.0,
+      "validation": {
+       "covariance": "proposed_concept",
+       "isotropic": "proposed_concept"
+      }
+     }
+    }
+   },
+   "K0": {
+    "known": "negative",
+    "auroc": 0.5287013356067064,
+    "encoding": {
+     "covariance": "contradicts",
+     "isotropic": "contradicts"
+    },
+    "rules": {
+     "rel": {
+      "min_change": 0.0049906447529792786,
+      "use": "supports",
+      "use_effect": -0.04054389079557914,
+      "use_superiority": 1.0,
+      "validation": {
+       "covariance": "proposed_concept",
+       "isotropic": "proposed_concept"
+      }
+     },
+     "abs": {
+      "min_change": 0.1,
+      "use": "contradicts",
+      "use_effect": -0.04054389079557914,
+      "use_superiority": 1.0,
+      "validation": {
+       "covariance": "proposed_concept",
+       "isotropic": "proposed_concept"
+      }
+     }
+    }
+   }
+  },
+  "audits": {
+   "rel|strict": {
+    "K0": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexample_heavy",
+      "feature_encodes_several_concepts"
+     ]
+    },
+    "K+": {
+     "standing": "supported",
+     "findings": []
+    }
+   },
+   "rel|lenient": {
+    "K0": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexample_heavy",
+      "feature_encodes_several_concepts"
+     ]
+    },
+    "K+": {
+     "standing": "supported",
+     "findings": []
+    }
+   },
+   "abs|strict": {
+    "K0": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexample_heavy",
+      "feature_encodes_several_concepts"
+     ]
+    },
+    "K+": {
+     "standing": "unsupported",
+     "findings": [
+      "decodable_not_used"
+     ]
+    }
+   },
+   "abs|lenient": {
+    "K0": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexample_heavy",
+      "feature_encodes_several_concepts"
+     ]
+    },
+    "K+": {
+     "standing": "unsupported",
+     "findings": [
+      "decodable_not_used"
+     ]
+    }
+   }
+  }
+ },
+ "ll": {
+  "n": 400,
+  "rel_min_change": 0.004939615726470947,
+  "train_median_fraction": 0.03389830508474576,
+  "concepts": {
+   "K+": {
+    "known": "positive",
+    "auroc": 0.9906674208144797,
+    "encoding": {
+     "covariance": "supports",
+     "isotropic": "supports"
+    },
+    "rules": {
+     "rel": {
+      "min_change": 0.004939615726470947,
+      "use": "supports",
+      "use_effect": -0.06383278041791457,
+      "use_superiority": 1.0,
+      "validation": {
+       "covariance": "validated_concept",
+       "isotropic": "validated_concept"
+      }
+     },
+     "abs": {
+      "min_change": 0.1,
+      "use": "contradicts",
+      "use_effect": -0.06383278041791457,
+      "use_superiority": 1.0,
+      "validation": {
+       "covariance": "proposed_concept",
+       "isotropic": "proposed_concept"
+      }
+     }
+    }
+   },
+   "K0": {
+    "known": "negative",
+    "auroc": 0.4816709292412617,
+    "encoding": {
+     "covariance": "contradicts",
+     "isotropic": "contradicts"
+    },
+    "rules": {
+     "rel": {
+      "min_change": 0.004939615726470947,
+      "use": "contradicts",
+      "use_effect": -0.001091279409022308,
+      "use_superiority": 0.28,
+      "validation": {
+       "covariance": "proposed_concept",
+       "isotropic": "proposed_concept"
+      }
+     },
+     "abs": {
+      "min_change": 0.1,
+      "use": "contradicts",
+      "use_effect": -0.001091279409022308,
+      "use_superiority": 0.28,
+      "validation": {
+       "covariance": "proposed_concept",
+       "isotropic": "proposed_concept"
+      }
+     }
+    }
+   }
+  },
+  "audits": {
+   "rel|strict": {
+    "K+": {
+     "standing": "supported",
+     "findings": [
+      "counterexamples_present"
+     ]
+    },
+    "K0": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexample_heavy"
+     ]
+    }
+   },
+   "rel|lenient": {
+    "K+": {
+     "standing": "supported",
+     "findings": [
+      "counterexamples_present"
+     ]
+    },
+    "K0": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexample_heavy"
+     ]
+    }
+   },
+   "abs|strict": {
+    "K+": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexamples_present",
+      "decodable_not_used"
+     ]
+    },
+    "K0": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexample_heavy"
+     ]
+    }
+   },
+   "abs|lenient": {
+    "K+": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexamples_present",
+      "decodable_not_used"
+     ]
+    },
+    "K0": {
+     "standing": "unsupported",
+     "findings": [
+      "counterexample_heavy"
+     ]
+    }
+   }
+  }
+ }
+}
