@@ -194,11 +194,13 @@
 ### E16. Central held-out: IG support is rare and almost always alternative-sensitive
 
 - **Result:**
-  - IG_necessary PRIMARY SUPPORTED: A/input 8/51, A/net.1 4/51, B/pixels 14/60, B/relu2 1/60, C 14/40 (D: see the report);
-  - PRIMARY-supported samples with `alternative_reverses`: 8/8, 2/4, 13/14, 1/1, 14/14;
-  - R_necessary SUPPORTED ≤ 1 per site.
-- **Hypotheses:** CH7 held; CH8 and CH9 held on A/B/C.
-- **Allowed wording:** "Where IG's top-k was necessary under the pre-registered configuration, a reasonable alternative configuration reversed it in 38 of 41 held-out cases (A/B/C)."
+  - IG_necessary PRIMARY SUPPORTED: A/input 8/51, A/net.1 4/51, B/pixels 14/60, B/relu2 1/60, C 14/40, D 11/40;
+  - PRIMARY-supported samples with `alternative_reverses`: 8/8, 2/4, 13/14, 1/1, 14/14, 11/11;
+  - R_necessary SUPPORTED ≤ 1 per site (D 1/40).
+- **Hypotheses:** CH7 held; CH8 and CH9 held at every site, D included.
+- **Counterevidence:** on D, 10 of the 11 IG supports select [SEP] (30/40 selections include it), so D's support is largely a special-token effect.
+- **Allowed wording:** "Where IG's top-k was necessary under the pre-registered configuration, a reasonable alternative configuration reversed it in 49 of 52 held-out cases (A/B/C/D)."
+- **Disallowed wording:** any token-level necessity claim on D without excluding special tokens.
 
 ### E17. Concept validation rejects a known-used variable
 

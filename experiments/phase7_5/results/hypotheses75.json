@@ -14,11 +14,11 @@
    ]
   },
   "CH8": {
-   "D_included": false,
+   "D_included": true,
    "holds": true
   },
   "CH9": {
-   "D_included": false,
+   "D_included": true,
    "holds": true
   },
   "sites": {
@@ -376,6 +376,79 @@
      "low": 0.0,
      "n": 40,
      "text": "0/40 = 0.0000 (95.00% Wilson [0.0000, 0.0876])"
+    }
+   },
+   "D/tokens": {
+    "all_claims": {
+     "g_necessary": {
+      "contradicted": 35,
+      "supported": 5
+     },
+     "g_sufficient": {
+      "contradicted": 39,
+      "supported": 1
+     },
+     "ig_necessary": {
+      "contradicted": 29,
+      "supported": 11
+     },
+     "ig_sufficient": {
+      "contradicted": 30,
+      "supported": 10
+     },
+     "r_necessary": {
+      "contradicted": 39,
+      "supported": 1
+     },
+     "r_sufficient": {
+      "contradicted": 39,
+      "supported": 1
+     }
+    },
+    "ig_configuration_level_disagreement": {
+     "estimate": 0.825,
+     "high": 0.9125458625396408,
+     "k": 33,
+     "level": 0.95,
+     "low": 0.6805000966821229,
+     "n": 40,
+     "text": "33/40 = 0.8250 (95.00% Wilson [0.6805, 0.9125])"
+    },
+    "ig_necessary_distribution": {
+     "contradicted": 29,
+     "supported": 11
+    },
+    "ig_supported": {
+     "estimate": 0.275,
+     "high": 0.4283495580621056,
+     "k": 11,
+     "level": 0.95,
+     "low": 0.16108016247667345,
+     "n": 40,
+     "text": "11/40 = 0.2750 (95.00% Wilson [0.1611, 0.4283])"
+    },
+    "ig_supported_with_alternative_reverses": {
+     "estimate": 1.0,
+     "high": 1.0,
+     "k": 11,
+     "level": 0.95,
+     "low": 0.7411670330319684,
+     "n": 11,
+     "text": "11/11 = 1.0000 (95.00% Wilson [0.7412, 1.0000])"
+    },
+    "n": 40,
+    "r_necessary_distribution": {
+     "contradicted": 39,
+     "supported": 1
+    },
+    "r_supported": {
+     "estimate": 0.025,
+     "high": 0.12881368963474085,
+     "k": 1,
+     "level": 0.95,
+     "low": 0.0044268315026814165,
+     "n": 40,
+     "text": "1/40 = 0.0250 (95.00% Wilson [0.0044, 0.1288])"
     }
    }
   }

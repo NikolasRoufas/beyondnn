@@ -40,12 +40,14 @@
 | G-A2: human-rationale comparison. Plausibility and faithfulness are reported separately (N1, N2) | acceptable as designed | IG agrees with annotator 1 more than random does (N2 held: +0.149, Bonferroni [0.031, 0.270]), yet IG is necessary on fewer samples than the human highlight (7 vs 10 of 40; N1 failed; interval includes 0). The claim can only be stated this way, never with humans as ground truth |
 | G-A3: token-replacement OOD. Measured with nativeness labels (N3). The PRIMARY [MASK] replacement is itself a distribution shift for a fine-tuned classifier | acceptable (stated) | no replacement is in-distribution for token removal. N3 failed on BERT-base SST-2: [MASK] is *more* OOD than a zero embedding (−5.5 points), held on SNLI. The audit reports the dependence instead of hiding it |
 | G-A4: annotation artefacts. The e-SNLI model reaches 0.456 accuracy with an empty premise (N4 held; chance 1/3). Measured, not controlled | desirable | a faithfulness claim about a model that solves NLI from the hypothesis alone concerns the shortcut, not NLI |
+| G-A7: on BERT-base SST-2 (D), IG top-k includes [SEP] on 30/40 samples and 10/11 PRIMARY supports; [SEP] perturbation moves D's margin more than an interior token | **must-fix** for any token-level claim on D | the necessity is then about a special token, not about words; special-token eligibility must be declared and D's supports re-examined |
 | G-A5: G-N1 (circular external validation) applies equally | **must-fix** for any claim that the audit identifies correct explanations | |
 | G-A6: G-N2 applies if concepts are claimed | as NeurIPS | |
 
 ## 4. Must-fix before a framework paper, summarised
 
 1. **(G-N1 / G-A5):** an external validation whose ground truth is not the PRIMARY intervention, or else the paper's claim must be narrowed to "the audit reproduces a known mechanism's intervention results and exposes configuration dependence", without "separates correct from incorrect mechanisms".
-2. **(G-N2):** either a concept known-positive that the frozen concept policy validates on a *new* held-out case (no tuning), or concept validation is not a headline claim.
+2. **(G-A7):** declare special-token eligibility before any token-level claim on BERT-base.
+3. **(G-N2):** either a concept known-positive that the frozen concept policy validates on a *new* held-out case (no tuning), or concept validation is not a headline claim.
 
 Everything else is desirable or acceptable when stated plainly.

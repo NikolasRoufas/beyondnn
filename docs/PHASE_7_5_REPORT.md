@@ -92,7 +92,7 @@ Per sample, the finding is emitted when two configurations that share every othe
 | B/pixels | 54/60 (90%) |
 | B/relu2 | 34/60 (57%) |
 | C/tokens | 37/40 (93%) |
-| D | ⟨D⟩ |
+| D/tokens | 33/40 (82.5%) |
 
 On e-SNLI, random_necessary carries it on 9/40 samples.
 
@@ -187,9 +187,25 @@ This is the most important limitation of the phase (§42, §46).
 - 40 SST-2 validation samples of 8–24 WordPieces, correctly classified, seeded order;
 - label mapping fixed on 200 calibration rows only.
 
-**Results:** ⟨D: IG / R PRIMARY SUPPORTED, alternative reversals, disagreement, CH8 / CH9 including D⟩.
+- **Calibration agreement:** 0.915 (identity mapping).
+- **Eligible pool:** 299 samples.
+- **Results:** 2,736 results, 0 excluded, `verify_report` passed.
 
-**Cost:** about 10–19 min of evidence generation per sample on this CPU (§35).
+**Results (PRIMARY):**
+- **IG_necessary** SUPPORTED on 11/40 = 0.275 [0.16, 0.43]. All 11 carry `alternative_reverses`.
+- **R_necessary** SUPPORTED on 1/40 = 0.025 [0.004, 0.13].
+- **G_necessary** SUPPORTED on 5/40.
+- **Configuration-level disagreement** on 33/40 IG samples.
+- **CH8 and CH9 hold with D included.**
+
+**Special-token finding (qualitative, not pre-registered):**
+- IG's PRIMARY top-k (p = 10%) includes **[SEP] on 30/40 D samples**, including **10 of the 11 PRIMARY-supported** samples. [CLS] is never selected.
+- On C (BERT-tiny) neither is ever selected.
+- The token probe shows that perturbing [SEP] moves D's margin more than an interior token (§23).
+- **So on D, IG's "necessary" support is largely a special-token effect, not evidence about content words.**
+- The frozen policy did not declare whether special tokens are eligible units. This is recorded as a limitation and a Phase-8 requirement (§43, §48); nothing was changed after seeing it.
+
+**Cost:** about 10–19 min of evidence generation per sample on this CPU (§38). The script's timer reports 42,550 s for 40 samples, but the run was paused (SIGSTOP) for about 2 days at the owner's request; this timer does not cleanly separate the pause, so it is an upper bound of about 18 min per sample.
 
 ## 19. NLP task 1: sentiment (SST-2; C held-out, D held-out)
 
@@ -260,7 +276,7 @@ Paired |Δmargin| of perturbing [CLS] / [SEP] minus the mean interior token (95%
 - **[CLS]:** always less influential than interior tokens (C: −0.17 / −0.22; D: −0.48 / −0.57; E: −0.68 / −0.85, for [MASK] / zero).
 - **[SEP]:** on D (BERT-base SST-2), perturbing [SEP] shifts the margin **more** than an interior token: +2.12 [1.47, 2.82] with [MASK], +1.84 [1.20, 2.51] with zero. On C and E it shifts it less.
 
-**Consequence:** on D, a removal test whose selection included [SEP] would measure the special-token effect. Phase 7 found that the IG top-k never selected [CLS] / [SEP] on C; D's selections are ⟨D⟩.
+**Consequence:** on D, a removal test whose selection included [SEP] would measure the special-token effect. Phase 7 found that the IG top-k never selected [CLS] / [SEP] on C. On D it selects [SEP] on 30/40 samples (§18), so this consequence is realised.
 
 ## 24. Padding and leakage
 
@@ -300,8 +316,8 @@ Paired |Δmargin| of perturbing [CLS] / [SEP] minus the mean interior token (95%
 | KE1, KE2 | held |
 | KE3 (descriptive) | SIIT K+ is not validated under either null (use test fails) |
 | CH7 | held (3/3 qualifying sites) |
-| CH8 | ⟨D⟩ (held on A/B/C) |
-| CH9 | ⟨D⟩ (held on A/B/C) |
+| CH8 | held (A/B/C and D: R ≤ 1 sample per site; D 1/40) |
+| CH9 | held (A/B/C and D) |
 | N1 | **failed** |
 | N2 | held |
 | N3 | **failed on D**, held on E |
@@ -352,13 +368,13 @@ So the concept policy has **no demonstrated external true positive** (G-N2).
 | B/pixels | 14/60 = 0.23 [0.14, 0.35] | 1/60 | 13/14 |
 | B/relu2 | 1/60 = 0.02 [0.003, 0.09] | 0/60 | 1/1 |
 | C/tokens | 14/40 = 0.35 [0.22, 0.50] | 0/40 | 14/14 |
-| D/tokens | ⟨D⟩ | ⟨D⟩ | ⟨D⟩ |
+| D/tokens | 11/40 = 0.28 [0.16, 0.43] | 1/40 | 11/11 (10/11 selections include [SEP]) |
 
 **Development** (IG_necessary SUPPORTED): A/input 5/60, A/net.1 1/60, B/pixels 20/60, B/relu2 4/60, C 8/40.
 
 **Hypotheses:**
 - CH7 held (A/input, B/pixels, C/tokens: ≥ 20%; in fact 93–100%).
-- CH8 (R ≤ 5% everywhere) and CH9 (IG ≥ R everywhere) held on A/B/C; D is ⟨D⟩.
+- CH8 (R ≤ 5% everywhere) and CH9 (IG ≥ R everywhere) held at every site, D included.
 
 **Also recorded:**
 - No results were excluded; `verify_report` passed on every report.
@@ -467,6 +483,7 @@ ruff check and format: clean; mypy --strict with and without Captum: clean (112 
 7. Padding is not evaluated inside BeyondNN protocols. The direct probe shows D is mask-sensitive (13/40 flips without the mask).
 8. The count null is over-restrictive on small multi-head models.
 9. Human rationales are one annotator (inter-annotator IoU 0.56).
+10. On D, IG top-k includes [SEP] on 30/40 samples, and 10/11 of its PRIMARY supports include it. The policy did not declare special-token eligibility.
 
 ## 44. Engineering limitations
 
@@ -504,7 +521,8 @@ Phase 8 must:
 - keep the API freeze (changes only via ADR);
 - address or explicitly narrow must-fix 1 and 2 before any paper text claims them;
 - keep Trace 3B separate;
-- resolve RB-1 to RB-3 before any public release.
+- resolve RB-1 to RB-3 before any public release;
+- declare whether special tokens ([CLS] / [SEP]) are eligible units in any token-level selection claim, and re-examine D's IG supports with them excluded, before stating any token-level result on BERT-base (§18).
 
 No Phase-8 work has been started.
 

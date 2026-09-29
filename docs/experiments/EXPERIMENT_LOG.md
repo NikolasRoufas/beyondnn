@@ -703,3 +703,10 @@ Open items are listed in `docs/PHASE_5_5_API_REVIEW.md`.
 **Operational:**
 - Model D's 40-sample held-out run takes many hours. The owner chose to keep the frozen N = 40 (no deviation).
 - An earlier ETA estimate was wrong, because the BERT-base per-sample cost was unknown until measured.
+
+## 2026-09-29: Phase 7.5 model D held-out (BERT-base SST-2, 40 samples; frozen N kept)
+
+- **Run:** paused (SIGSTOP) for about 2 days at the owner's request, then resumed; completed with 2,736 results, 0 excluded, `verify_report` passed.
+- **Standings:** IG_necessary PRIMARY SUPPORTED 11/40 [0.16, 0.43], all 11 with `alternative_reverses`; R 1/40; G 5/40; configuration-level disagreement 33/40.
+- **Hypotheses:** CH8 and CH9 hold with D.
+- **Negative finding (qualitative):** IG top-k includes [SEP] on 30/40 samples and on 10/11 PRIMARY supports; C never selects special tokens. With the [SEP] probe (+2.1 margin shift vs interior tokens), D's IG necessity is largely a special-token effect. The policy did not declare special-token eligibility; nothing was changed.

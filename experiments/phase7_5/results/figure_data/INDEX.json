@@ -15,12 +15,12 @@
   "source": "results/hypotheses75.json -> E1.RQ3"
  },
  "fd4_central_primary_supported.csv": {
-  "rows": "20",
+  "rows": "24",
   "shows": "PRIMARY-supported samples (IG vs R), alternative reversals and configuration-level disagreement per held-out site, with 95% Wilson intervals",
   "source": "results/hypotheses75.json -> C1.sites"
  },
  "fd5_central_profiles_per_sample.csv": {
-  "rows": "786",
+  "rows": "906",
   "shows": "per-sample sensitivity profiles by role (supporting / tested configurations); descriptive, not a score",
   "source": "results/central75_<M>_heldout.json -> settings.<site>.audit.<claim>.per_sample"
  },
