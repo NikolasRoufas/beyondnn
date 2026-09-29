@@ -60,3 +60,16 @@ These do not block the freeze, because each has a workaround that keeps records 
 - F-9: two `sample_id` entry points.
 - F-10: evidence size.
 - The open Phase-5.5 items listed in `PHASE_7_5_API_REVIEW.md` §2.
+
+## Phase 7.75 additions under the freeze (additive; ADRs 053–055)
+
+- **Eligibility:** `faithfulness.ranking` / `top_k` / `units` take `eligible=` and `eligibility=`; `audits.selection(..., eligibility=)`.
+- **Record versions:** `evidence_selection` v3 (v2 migrates); `audit_plan` v3 (v2 migrates).
+- **New finding codes:** `eligibility_mismatch`, `control_criterion_unattainable`, `effect_without_competitive_advantage`.
+- **Concept criteria:** policy only (ADR-055). `min_change` is declared in target units, derived from the train-split SD of the clean target; no API change.
+- **Rejected:**
+  - a control-role ontology (negative / competitive / stress);
+  - a model-native / OOD field on replacements;
+  - automatic special-token filtering.
+
+  The reasons are in `docs/PHASE_7_75_SCIENTIFIC_FIXES.md`.

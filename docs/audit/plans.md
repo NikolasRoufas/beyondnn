@@ -119,3 +119,27 @@ report = bnn.audit(AU.load_evidence("evidence/"), plan=plan)
 validation = bnn.concepts.load_validation(AU.load_evidence("evidence/"))  # for the WHY
 sid = AU.sample_id(x)                          # the recorded identity of an input
 ```
+
+## Unit eligibility (ADR-053)
+
+A token-level claim must say which units it is about. "The top-k tokens" and "the top-k *content* tokens" are different claims:
+
+```python
+content = [i for i, t in enumerate(input_ids[0].tolist()) if t not in tok.all_special_ids]
+sel = F.top_k(attr, k=2, eligible=content, eligibility="content_tokens")   # ranks content only
+AU.selection("bert.embeddings.word_embeddings", method="integrated_gradients", k=None,
+             eligibility="content_tokens")                                 # the claim
+```
+
+- **Supplying the mask:** the caller supplies the eligible units. Nothing is removed silently, and an all-units claim (`eligibility=None`) still includes [CLS] / [SEP].
+- **Rankings, random selections and controls** use only the eligible units.
+- **Matching:** evidence counts only for the claim with the same eligibility. Near-misses are reported as `eligibility_mismatch`.
+
+## Controls whose criterion cannot be met (ADR-054)
+
+- **Unattainable criteria:** random control sets are drawn from all (eligible) units, so some can equal the selection and tie with it. If, given the drawn sets, the declared `min_fraction_below` / `min_fraction_above` was unattainable, a CONTRADICTS is uninformative. The audit counts it as INCONCLUSIVE and adds `control_criterion_unattainable`.
+- **Competitive-only failure:** a PRIMARY CONTRADICTS that met its effect threshold and failed only the control criterion gets `effect_without_competitive_advantage`. The effect is present; random unit sets do as well.
+
+## Reading reports
+
+`report.claims` is ordered by claim name, not by plan order. Use `report.claim(name)`.

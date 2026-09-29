@@ -8,6 +8,14 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Phase 7.75: scientific fixes** (ADR-053 to ADR-055):
+  - declared unit eligibility for selections, controls and selection claims (`eligible=` / `eligibility=`; `evidence_selection` v3, `audit_plan` v3, with migrations);
+  - the audit treats unattainable control criteria as inconclusive (`control_criterion_unattainable`);
+  - the audit distinguishes competitive-only failure (`effect_without_competitive_advantage`) and never uses evidence of another eligibility (`eligibility_mismatch`);
+  - concept `min_change` is declared in target units (policy);
+  - experiments in `experiments/phase7_75/` (TD programs with program-defined truth, concept calibration, D1/D2 and C1/C2, InterpBench re-audit, NLI stratification).
+
+### Added (Phase 7.5)
 - **Phase 7.5: audit refinement, uncertainty, external validation, API freeze** (ADR-048 to ADR-052):
   - declared configuration roles (`audits.role`; PRIMARY / ALTERNATIVE / STRESS_TEST) with PRIMARY-only standings;
   - `alternative_reverses` / `stress_test_reverses` / `undeclared_configuration` / `primary_untested` findings;
