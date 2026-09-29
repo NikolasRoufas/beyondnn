@@ -179,7 +179,7 @@ def test_frozen_td_split_and_plan_agree() -> None:
         assert f"`{h}`" in plan  # every held-out program was declared in the frozen plan
     concepts = (ROOT / "experiments" / "phase7_75" / "td_concepts.py").read_text()
     assert '"dev": {"cdev_a_b"' in concepts
-    assert "C_REL = 0.2" in concepts
+    assert re.search(r"^C_REL = 0\.2$", concepts, re.M)  # the code constant, not a docstring
 
 
 def test_td_roles_are_the_frozen_e1_roles() -> None:

@@ -145,8 +145,11 @@ MUTATIONS = [
         "{ ",
     ),
 ]
+ONLY = set(sys.argv[3].split("|")) if len(sys.argv) > 3 else None
 rows = []
 for name, rel, old, new in MUTATIONS:
+    if ONLY and name not in ONLY:
+        continue
     p = ROOT / rel
     src = p.read_text()
     if old not in src:

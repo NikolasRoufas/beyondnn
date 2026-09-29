@@ -278,3 +278,30 @@ def test_competitive_failure_is_not_a_failure_of_the_effect() -> None:
     assert group.standing.value == "contradicted"
     assert "effect_without_competitive_advantage" in {f.code for f in group.findings}
     assert "control_criterion_unattainable" not in {f.code for f in group.findings}
+
+
+def test_replacement_identity_reaches_the_audit_axis() -> None:
+    model = Tokens().eval()
+    attr = _attr(model)
+    rep = F.replacement(torch.zeros(1, 6), name="mask_embedding")
+    assert rep.identity()["name"] == "mask_embedding"
+    test = F.comprehensiveness(target=SEL, min_drop=0.5, replacement=rep, statement="s")
+    r = F.run(model, X, test=test, selection=F.top_k(attr, k=1), attributions=[attr])
+    report = bnn.audit([r, attr], plan=_plan(model, AU.sample_id(X), None))
+    (group,) = report.claims[0].groups
+    (entry,) = group.tests
+    assert dict(entry.axes)["replacement"].startswith("tensor/mask_embedding:")
+
+
+def test_audit_plan_v2_selection_claims_migrate_to_all_units() -> None:
+    from beyondnn.schema import from_dict, to_dict
+    from beyondnn.schema.codec import _expected_id
+
+    plan = _plan(Tokens().eval(), AU.sample_id(X), "content_tokens")
+    env = to_dict(plan)
+    data = env["data"]
+    for c in data["claims"]:
+        del c["selection"]["eligibility"]
+    env |= {"record_version": 2, "id": _expected_id("audit_plan", 2, data)}
+    migrated = from_dict(env)
+    assert migrated.claims[0].selection.eligibility is None  # v2 claims were about every unit
