@@ -1,0 +1,5 @@
+Phase 7.75 external-researcher workflow (clean wheel built at a5fd344; python 3.12 venv with only the wheel + numpy; public API only)
+reload ok {'claim': {'contradicted': 2, 'supported': 8}, 'eligible_claim': {'contradicted': 8, 'supported': 2}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True} same as before: True
+Phase-7.5 workflow on the same wheel:
+{"claim": {"contradicted": 2, "supported": 8}, "concept": "unsupported", "validation": "proposed_concept", "why_has_audit": true, "why_has_concepts": true}
+Note: a first version of this script read report.claims[0] / [1]; reports list claims sorted by name, not in plan order, so the two claims were swapped. Fixed by report.claim(name). Recorded as an API documentation finding (PHASE_7_75_SCIENTIFIC_FIXES.md).
