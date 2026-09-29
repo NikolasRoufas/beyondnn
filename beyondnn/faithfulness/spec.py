@@ -65,6 +65,13 @@ class Selection:
     target: MetricSpec | None = None
     unit_axes: tuple[int, ...] | None = None
     unit_reduction: str | None = None
+    eligible: tuple[int, ...] | None = None
+    eligibility: str | None = None
+
+    @property
+    def population(self) -> tuple[int, ...]:
+        """The units ranked and sampled for controls: the eligible ones, or all (ADR-053)."""
+        return tuple(range(self.n_units)) if self.eligible is None else self.eligible
 
     @property
     def is_input(self) -> bool:
@@ -80,6 +87,32 @@ class Selection:
         if k is not None and not 1 <= k <= len(self.order):
             raise FaithfulnessError(f"k={k} must be in [1, {len(self.order)}]")
         return replace(self, k=k)
+
+
+def _eligibility(
+    eligible: tuple[int, ...] | list[int] | None, eligibility: str | None, n_units: int
+) -> tuple[tuple[int, ...] | None, str | None]:
+    """Validate a declared unit eligibility (ADR-053): both or neither; a name token."""
+    if (eligible is None) != (eligibility is None):
+        raise FaithfulnessError(
+            "declare eligible units together with their eligibility name, e.g. "
+            "eligible=content_positions, eligibility='content_tokens' (ADR-053)"
+        )
+    if eligible is None:
+        return None, None
+    units_ = tuple(sorted(set(eligible)))
+    if len(units_) != len(tuple(eligible)) or not units_:
+        raise FaithfulnessError("eligible units are distinct and non-empty")
+    if any(not isinstance(u, int) or isinstance(u, bool) or not 0 <= u < n_units for u in units_):
+        raise FaithfulnessError(f"eligible units must be ints in [0, {n_units})")
+    assert eligibility is not None
+    if (
+        not eligibility
+        or not eligibility[0].isalpha()
+        or not eligibility.replace("_", "").isalnum()
+    ):
+        raise FaithfulnessError("eligibility is a name token (letters, digits, _)")
+    return units_, eligibility.lower()
 
 
 def unit_scores(
@@ -122,20 +155,29 @@ def ranking(
     by: str = "abs",
     unit_axes: tuple[int, ...] | None = None,
     reduce: str | None = None,
+    eligible: tuple[int, ...] | list[int] | None = None,
+    eligibility: str | None = None,
 ) -> Selection:
     """The full ranking of the attributed units (descending |score| or signed score;
-    ties broken by lower index), e.g. for curves."""
+    ties broken by lower index), e.g. for curves. With declared ``eligible`` units and
+    their ``eligibility`` name (ADR-053), only eligible units are ranked (and controls
+    are drawn from them); nothing is excluded silently."""
     if not isinstance(result, AttributionResult):
         raise TypeError("ranking() takes an AttributionResult")
     scores = unit_scores(result.value, unit_axes, reduce)
     axes = check_axes(unit_axes)
+    allowed, name = _eligibility(eligible, eligibility, len(scores))
+    order = rank_order(scores, by=by)
+    if allowed is not None:
+        keep = set(allowed)
+        order = tuple(u for u in order if u in keep)
     record = result.record
     return Selection(
         site=record.site,
         call_index=record.call_index,
         source=SelectionSource.ATTRIBUTION,
         rule="abs_desc" if by == "abs" else "signed_desc",
-        order=rank_order(scores, by=by),
+        order=order,
         n_units=len(scores),
         k=None,
         sample_id=record.sample_id,
@@ -146,6 +188,8 @@ def ranking(
         # the declared reduction is recorded whenever unit axes are declared, even when
         # each unit is one element: the scores were computed with it (ADR-034)
         unit_reduction=reduce if axes is not None else None,
+        eligible=allowed,
+        eligibility=name,
     )
 
 
@@ -156,9 +200,19 @@ def top_k(
     by: str = "abs",
     unit_axes: tuple[int, ...] | None = None,
     reduce: str | None = None,
+    eligible: tuple[int, ...] | list[int] | None = None,
+    eligibility: str | None = None,
 ) -> Selection:
-    """The top-``k`` units of an attribution (see :func:`ranking`)."""
-    return ranking(result, by=by, unit_axes=unit_axes, reduce=reduce).with_k(k)
+    """The top-``k`` units of an attribution (see :func:`ranking`), among the declared
+    ``eligible`` units if given (ADR-053)."""
+    return ranking(
+        result,
+        by=by,
+        unit_axes=unit_axes,
+        reduce=reduce,
+        eligible=eligible,
+        eligibility=eligibility,
+    ).with_k(k)
 
 
 def units(
@@ -169,8 +223,11 @@ def units(
     call_index: int = 0,
     output_path: str = "",
     unit_axes: tuple[int, ...] | None = None,
+    eligible: tuple[int, ...] | list[int] | None = None,
+    eligibility: str | None = None,
 ) -> Selection:
-    """A declared set of units. ``site`` is a module path, or an ``attribution.input(i)``
+    """A declared set of units (within the declared ``eligible`` units, if any; ADR-053).
+    ``site`` is a module path, or an ``attribution.input(i)``
     / ``attribution.layer(...)`` spec; ``n_units`` is the number of units: the size of the
     last dimension, or, with declared ``unit_axes``, the size of their row-major sub-grid
     (ADR-034)."""
@@ -190,6 +247,9 @@ def units(
         axes = check_axes(unit_axes)
     except UnitError as exc:
         raise FaithfulnessError(str(exc)) from None
+    allowed, name = _eligibility(eligible, eligibility, n_units)
+    if allowed is not None and not set(chosen) <= set(allowed):
+        raise FaithfulnessError(f"declared units {chosen} are not all eligible ({name})")
     return Selection(
         where,
         call_index,
@@ -199,6 +259,8 @@ def units(
         n_units,
         len(chosen),
         unit_axes=axes,
+        eligible=allowed,
+        eligibility=name,
     )
 
 

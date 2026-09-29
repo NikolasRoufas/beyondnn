@@ -519,6 +519,8 @@ def test_phase5_claims_and_selections_migrate_without_invented_axes(tmp_path: Pa
     def v1_selection(data: dict[str, Any]) -> None:
         data.pop("unit_axes")
         data.pop("unit_reduction")
+        data.pop("eligible")  # added in evidence_selection v3 (ADR-053)
+        data.pop("eligibility")
 
     trace = _forge(tmp_path, r.trace, "claim", v1_claim, version=1)
     trace = _forge(tmp_path, trace, "evidence_selection", v1_selection, version=1)

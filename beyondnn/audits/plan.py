@@ -71,10 +71,14 @@ def _target(target: Any) -> TargetSpec:
     raise TypeError("target must be a TargetSpec or an interventions metric")
 
 
-def selection(site: str | Site, *, method: str, k: int | None) -> SelectionSubject:
+def selection(
+    site: str | Site, *, method: str, k: int | None, eligibility: str | None = None
+) -> SelectionSubject:
     """The units ``method`` (an attribution method name, or ``"declared"``) selects at
-    ``site`` on each sample; ``k=None`` means any k (k then becomes an assumption axis)."""
-    return SelectionSubject(site=_site(site), method=method, k=k)
+    ``site`` on each sample; ``k=None`` means any k (k then becomes an assumption axis).
+    ``eligibility``: the declared unit eligibility (ADR-053), e.g. ``"content_tokens"``;
+    ``None`` means every unit, special tokens included."""
+    return SelectionSubject(site=_site(site), method=method, k=k, eligibility=eligibility)
 
 
 def role(axis: str, pattern: str, role: str, *, sample: str | None = None) -> RoleRule:

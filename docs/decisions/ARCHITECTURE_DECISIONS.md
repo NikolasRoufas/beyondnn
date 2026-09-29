@@ -1532,3 +1532,75 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 **Consequences:**
 - A breaking change before v0.1. 22 test, benchmark and Phase-5.5 script call sites now pass `F.zero()` explicitly.
 - Recorded identities and results are unchanged (zero was the default).
+
+## ADR-053: Declared unit eligibility for selections and selection claims
+
+- **Date:** 2026-09-29
+- **Status:** Accepted for Phase 7.75 (scientific fix under the API freeze; additive).
+
+**Context:**
+- Phase 7.5, model D (BERT-base SST-2): IG top-k contained [SEP] on 30/40 samples and on 10/11 PRIMARY-supported necessity samples. A direct probe showed that [SEP] perturbation moves D's margin more than an interior token does.
+- "The top-k tokens are necessary" therefore mixed two claims:
+  - "the most important tokens, model-control tokens included";
+  - "the most important lexical/content tokens".
+- Nothing in a selection, a control draw or an audit plan recorded which one was meant, and random controls were always drawn from every position.
+
+**Decision:**
+- **Runtime selections:** `faithfulness.ranking` / `top_k` / `units` take optional `eligible=` units and an `eligibility=` name (e.g. `"content_tokens"`), declared together by the caller. Nothing BERT-specific lives in the framework: the caller supplies the mask (e.g. from the tokenizer's special ids).
+- **Rankings** order only eligible units. Declared units must be eligible. Count- and magnitude-matched **controls are drawn from the eligible units only**. Curves refuse eligibility-restricted rankings.
+- **Selection records:** `EvidenceSelection` v3 adds `eligible` / `eligibility`, with a v2 → v3 migration (`None`: every unit). The claim-test spec records `eligible` / `eligibility` in `params` only when declared, so specs without eligibility are unchanged. Re-derivation (rankings, control sets) uses the eligible population.
+- **Audit plans:** `audits.selection(..., eligibility=)`; `SelectionSubject.eligibility`; `audit_plan` v3 with a v2 → v3 migration (`None`).
+- **Matching:** an all-units claim and an eligible-units claim are different claims.
+  - Evidence counts only for the claim with the same eligibility.
+  - Evidence that matches except for eligibility yields a QUALIFYING `eligibility_mismatch` finding. It is never used silently.
+  - A spec whose declared eligibility differs from its selection's is an integrity failure.
+- **Special tokens are never removed automatically.** An all-units claim still includes them.
+
+**Consequences:**
+- Additive: every existing call and record means what it meant before, with new selection ids after the version bump (as ADR-034).
+- Phase-7.5 evidence remains valid for the all-units claim.
+
+## ADR-054: The audit treats unattainable control criteria as uninformative, and separates "effect present, not competitive" from "no effect"
+
+- **Date:** 2026-09-29
+- **Status:** Accepted for Phase 7.75 (scientific fix; audit semantics only, no evidence format change).
+
+**Context:**
+- Phase 7.5, EH4: the count-matched null rejected 98.6% of known-necessary InterpBench heads.
+- **Diagnosis** (independent of any outcome): `uniform_subsets` draws random sets from *all* units, including the selected set. A draw identical to the selection ties with it, and ties never count as "below".
+  - For one head among 4 at a layer, about 25% of draws are the selected head itself.
+  - The maximum attainable fraction below is then about 0.75 < 0.95. The criterion was unmeetable by any model, yet the audit reported CONTRADICTS.
+- **Development confirmation:** on InterpBench dev case 7, all 32 count-null tests of known-necessary heads are unattainable by this criterion.
+- The request (§23) also requires that failure against a *competitive* control is never equated with failure of the causal effect itself.
+
+**Decision:**
+- **Attainability:** for each faithfulness result with controls, the audit computes the fraction of control sets identical to the selected set, from the recorded intervention units. The maximum attainable fraction is `1 - identical / n_controls`.
+  - If that is below the declared `min_fraction_below` / `min_fraction_above`, a CONTRADICTS outcome is **INCONCLUSIVE** for standings, profiles and verdicts (also for re-evaluations under alternative criteria).
+  - The group gets a QUALIFYING `control_criterion_unattainable` finding.
+- **Competitive failure:** a PRIMARY CONTRADICTS whose declared absolute effect criterion *was* met, and which failed only its control criterion, keeps the standing (the claim was declared "beyond controls"). It gets a QUALIFYING `effect_without_competitive_advantage` finding: the effect is present, and matched random sets do as well.
+- **No new control ontology** (negative / competitive / stress) is introduced. The declared controls are all competitive, and this finding says exactly what their failure means.
+
+**Consequences:**
+- Recorded evidence and faithfulness outcomes are unchanged; only audit reports change.
+- Phase-7.5 audit reports stay as recorded (immutable). Affected audits are re-run in Phase 7.75, and the changes are listed in `PHASE_7_75_SCIENTIFIC_FIXES.md`.
+
+## ADR-055: Concept use criteria are declared in the target's own scale
+
+- **Date:** 2026-09-29
+- **Status:** Accepted for Phase 7.75 (policy decision; no API change).
+
+**Context:**
+- Phase 7.5 rejected the known-used Tracr variable (case 39): use effect about 0.06 < `min_change` 0.1.
+- Case 39's target is a *fraction* whose train-split values are small, so the absolute 0.1 was barely attainable on that target's scale.
+- Phase 6 used `min_change` 0.25 and Phase 7.5 used 0.1, with no scale argument for either.
+- **Calibration** on constructed models (`experiments/phase7_75/concept_calibration.py`; no Tracr or held-out model): rescaling the output by 0.01–100 changes the absolute rule's verdict for the same used concept, both ways.
+
+**Decision:**
+- **Rule:** `concepts.use_criteria(min_change=...)` stays the API. Every Phase-7.75 (and later) concept policy declares `min_change` **in target units, derived before the use test**: `min_change = 0.2 × SD(clean target over the concept dataset's train split)`.
+- **Why 0.2:** Cohen's conventional "small" standardised effect. The use test's claim is *use*, not *strong use*, and specificity is carried by the mandatory control criterion (≥ 95% beyond random directions). The value is chosen from the literature convention and the calibration grid, **not** from any Tracr result.
+- **Operational meaning:** in the calibration, uses with weight ≥ 0.5 relative to unit background variation are validated; weight ≤ 0.25 is not.
+- **The derivation is recorded** with each result (the train SD and the resulting `min_change`).
+
+**Consequences:**
+- The Phase-7.5 concept results remain as recorded under the absolute rule, and both rules are reported in Phase 7.75.
+- The Phase-7.5 held-out case 39 cannot confirm this rule, because its effect was known when the rule was chosen. Confirmation uses new held-out TD programs.

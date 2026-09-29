@@ -362,12 +362,14 @@ def _selection_record(
         target=selection.target,
         unit_axes=selection.unit_axes,
         unit_reduction=selection.unit_reduction,
+        eligible=selection.eligible,
+        eligibility=selection.eligibility,
         provenance_id=provenance.id,
     )
 
 
 def _tie_at_boundary(selection: Selection) -> bool:
-    if selection.scores is None or selection.k is None or selection.k >= selection.n_units:
+    if selection.scores is None or selection.k is None or selection.k >= len(selection.order):
         return False
     key = [abs(s) if selection.rule == "abs_desc" else s for s in selection.scores]
     return key[selection.order[selection.k - 1]] == key[selection.order[selection.k]]
@@ -437,6 +439,12 @@ def _spec(
                 "controls": declared_controls,
                 "unit_axes": None if selection.unit_axes is None else list(selection.unit_axes),
             }
+            # ADR-053: recorded only when declared, so specs without eligibility are unchanged
+            | (
+                {}
+                if selection.eligible is None
+                else {"eligible": list(selection.eligible), "eligibility": selection.eligibility}
+            )
         ),
     )
 
@@ -449,10 +457,12 @@ def _plan(
     if retain and selection.k == selection.n_units:
         raise FaithfulnessError("retaining every unit is vacuous: sufficiency is undefined here")
     control_sets: list[tuple[int, ...]] = []
+    population = selection.population
     if test.controls is not None:
-        if selection.k == selection.n_units:
+        if selection.k == len(population):
             raise FaithfulnessError(
-                "matched random controls are degenerate when the selection covers every unit"
+                "matched random controls are degenerate when the selection covers every "
+                "eligible unit"
             )
         if test.controls.match == "magnitude":
             if magnitudes is None:
@@ -463,10 +473,15 @@ def _plan(
                 test.controls.n,
                 test.controls.seed,
                 test.controls.strata,
+                None if selection.eligible is None else population,
             )
         else:
             control_sets = uniform_subsets(
-                selection.n_units, selection.k, test.controls.n, test.controls.seed
+                selection.n_units,
+                selection.k,
+                test.controls.n,
+                test.controls.seed,
+                None if selection.eligible is None else population,
             )
     specs = [_intervention(selection, selection.selected, retain, test.replacement)]
     specs += [_intervention(selection, s, retain, test.replacement) for s in control_sets]
@@ -827,6 +842,11 @@ def curve(
         raise ValueError("mode must be 'remove' or 'retain'")
     if not isinstance(ranking, Selection) or ranking.source is SelectionSource.DECLARED:
         raise TypeError("ranking must come from faithfulness.ranking(...)")
+    if ranking.eligible is not None:
+        raise FaithfulnessError(
+            "curves over an eligibility-restricted ranking are not supported (ADR-053); "
+            "use claim tests (comprehensiveness / sufficiency) with top_k(..., eligible=...)"
+        )
     if not isinstance(replacement, Replacement):
         raise TypeError(
             "declare the curve's replacement explicitly (faithfulness.zero() or replacement())"

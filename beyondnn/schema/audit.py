@@ -125,15 +125,22 @@ class Invariance(Value):
 @dataclass(frozen=True, slots=True, kw_only=True)
 class SelectionSubject(Value):
     """The units a method selects on each sample: ``method`` is an attribution method
-    name, or ``"declared"`` for declared/random unit sets. ``k=None``: any k."""
+    name, or ``"declared"`` for declared/random unit sets. ``k=None``: any k.
+    ``eligibility`` (ADR-053): the declared unit eligibility the claim is about (e.g.
+    ``"content_tokens"``); ``None``: every unit. Evidence must declare the same."""
 
     site: Site
     method: str
     k: int | None = None
+    eligibility: str | None = None
 
     def _validate(self) -> None:
         require(bool(self.method.strip()), "SelectionSubject.method must be non-empty")
         require(self.k is None or self.k >= 1, "SelectionSubject.k must be >= 1")
+        require(
+            self.eligibility is None or bool(_NAME_RE.match(self.eligibility)),
+            "SelectionSubject.eligibility is a name token",
+        )
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -310,7 +317,7 @@ class CounterexampleRule(Value):
             require(cap is None or 0.0 <= cap <= 1.0, "counterexample caps are in [0, 1]")
 
 
-@record_kind("audit_plan", version=2)
+@record_kind("audit_plan", version=3)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class AuditPlan(BaseRecord):
     """Everything an audit is about and requires, declared before it runs (plan §28).
@@ -390,3 +397,14 @@ def _audit_plan_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
         "claims": [c | {"roles": []} for c in data["claims"]],
         "concepts": [c | {"roles": []} for c in data["concepts"]],
     }
+
+
+@register_migration("audit_plan", 2)
+def _audit_plan_v2_to_v3(data: dict[str, Any]) -> dict[str, Any]:
+    """v2 selection claims were about every unit (ADR-053): ``eligibility=None``."""
+
+    def claim(c: dict[str, Any]) -> dict[str, Any]:
+        sel = c.get("selection")
+        return c if sel is None else c | {"selection": sel | {"eligibility": None}}
+
+    return data | {"claims": [claim(c) for c in data["claims"]]}

@@ -11,7 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Iterable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from fnmatch import fnmatchcase
 from itertools import combinations
 from typing import Any
@@ -241,7 +241,14 @@ class _Auditor:
 
     # ------------------------------------------------------------------ claims
 
-    def _structure(self, c: AuditedClaim, e: ResultEntry, *, method_known: bool = True) -> bool:
+    def _structure(
+        self,
+        c: AuditedClaim,
+        e: ResultEntry,
+        *,
+        method_known: bool = True,
+        eligibility_checked: bool = True,
+    ) -> bool:
         claim = e.claim
         if claim.relation is not c.relation or claim.target != _target_for(c, e.sample):
             return False
@@ -251,6 +258,9 @@ class _Auditor:
         assert sel is not None
         s = e.selection
         if s is None or s.site != sel.site or (sel.k is not None and s.k != sel.k):
+            return False
+        # ADR-053: an all-units claim and an eligible-units claim are different claims
+        if eligibility_checked and s.eligibility != sel.eligibility:
             return False
         if method_known and e.method != sel.method:
             return False
@@ -347,6 +357,28 @@ class _Auditor:
         narrower: list[ResultEntry] = []
         excluded: dict[str | None, list[ResultEntry]] = {}
         claim_level: list[Finding] = []
+        if c.selection is not None:
+            other = sorted(
+                {
+                    str(e.selection.eligibility)
+                    for e in self.ev.results
+                    if e.selection is not None
+                    and e.selection.eligibility != c.selection.eligibility
+                    and self._structure(c, e, eligibility_checked=False)
+                }
+            )
+            if other:
+                claim_level.append(
+                    _f(
+                        K.SCOPE_MISMATCH,
+                        "eligibility_mismatch",
+                        S.QUALIFYING,
+                        c.name,
+                        f"evidence about the same selection under another unit eligibility "
+                        f"({', '.join(other)}; the claim declares "
+                        f"{c.selection.eligibility or 'every unit'}) was not used (ADR-053)",
+                    )
+                )
         for e in self.ev.results:
             unresolved = e.problem is not None and e.problem.code == "selection_source_not_supplied"
             if not self._structure(c, e, method_known=not unresolved):
@@ -446,8 +478,52 @@ class _Auditor:
             [e for e in matched if role_of.get(id(e)) == PRIMARY] if declared else list(matched)
         )
         verdict, missing = derive_verdict(
-            c.relation, requirement.policy, [ResultRef.to(e.result) for e in primary_entries]
+            c.relation,
+            requirement.policy,
+            # ADR-054: an unattainable control criterion makes a CONTRADICTS uninformative
+            [replace(ResultRef.to(e.result), outcome=e.outcome) for e in primary_entries],
         )
+        unattainable = [
+            e
+            for e in matched
+            if e.result.outcome is Outcome.CONTRADICTS and e.control_unattainable()
+        ]
+        if unattainable:
+            worst = min(e.max_control_fraction or 0.0 for e in unattainable)
+            findings.append(
+                _f(
+                    K.INCONCLUSIVE_EVIDENCE,
+                    "control_criterion_unattainable",
+                    S.QUALIFYING,
+                    name,
+                    f"{len(unattainable)} result(s) could not meet their control criterion by "
+                    "construction (control sets identical to the selection tie with it; at "
+                    f"most {worst:.3g} of controls could be beaten); treated as inconclusive, "
+                    "not as contradicting (ADR-054)",
+                    records=tuple(sorted(e.id for e in unattainable)),
+                    samples=samples,
+                )
+            )
+        competitive = [
+            e
+            for e in primary_entries
+            if e.outcome is Outcome.CONTRADICTS and e.absolute_criterion_met and e.controlled
+        ]
+        if competitive:
+            findings.append(
+                _f(
+                    K.CONTRADICTION,
+                    "effect_without_competitive_advantage",
+                    S.QUALIFYING,
+                    name,
+                    f"{len(competitive)} PRIMARY result(s) met the declared effect threshold but "
+                    "not the control criterion: the effect is present, but matched random unit "
+                    "sets do as well; this contradicts the claim as declared (beyond controls), "
+                    "not the existence of the effect (ADR-054)",
+                    records=tuple(sorted(e.id for e in competitive)),
+                    samples=samples,
+                )
+            )
         tests = [
             TestEntry(
                 cf.entry.id,

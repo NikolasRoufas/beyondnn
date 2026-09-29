@@ -67,13 +67,20 @@ def _generator(seed: int) -> torch.Generator:
     return torch.Generator().manual_seed(seed)
 
 
-def uniform_subsets(n_units: int, k: int, draws: int, seed: int) -> list[tuple[int, ...]]:
+def uniform_subsets(
+    n_units: int, k: int, draws: int, seed: int, population: Sequence[int] | None = None
+) -> list[tuple[int, ...]]:
     """``draws`` subsets of size ``k``, uniform without replacement, from a local seeded
-    generator (never the global RNG). Returned sorted."""
-    if not 1 <= k <= n_units:
-        raise ValueError(f"k={k} must be in [1, {n_units}]")
+    generator (never the global RNG). Returned sorted. ``population``: the eligible units
+    drawn from (ADR-053; default every unit, with identical draws as before)."""
+    pool = list(range(n_units)) if population is None else list(population)
+    if not 1 <= k <= len(pool):
+        raise ValueError(f"k={k} must be in [1, {len(pool)}]")
     g = _generator(seed)
-    return [tuple(sorted(torch.randperm(n_units, generator=g)[:k].tolist())) for _ in range(draws)]
+    return [
+        tuple(sorted(pool[i] for i in torch.randperm(len(pool), generator=g)[:k].tolist()))
+        for _ in range(draws)
+    ]
 
 
 def uniform_permutations(n_units: int, draws: int, seed: int) -> list[tuple[int, ...]]:
@@ -138,12 +145,25 @@ def magnitude_strata(magnitudes: Sequence[float], strata: int) -> list[list[int]
 
 
 def stratified_subsets(
-    magnitudes: Sequence[float], selected: Sequence[int], draws: int, seed: int, strata: int
+    magnitudes: Sequence[float],
+    selected: Sequence[int],
+    draws: int,
+    seed: int,
+    strata: int,
+    population: Sequence[int] | None = None,
 ) -> list[tuple[int, ...]]:
     """``draws`` random sets matched to ``selected`` by perturbation-magnitude stratum
     (ADR-035): each selected unit is replaced by a uniform draw, without replacement,
-    from its own stratum. Local seeded generator; returned sorted."""
-    groups = magnitude_strata(magnitudes, strata)
+    from its own stratum. Local seeded generator; returned sorted. ``population``: the
+    eligible units the strata are formed from (ADR-053; default every unit)."""
+    if population is None:
+        groups = magnitude_strata(magnitudes, strata)
+    else:
+        pool = list(population)
+        groups = [
+            [pool[i] for i in grp]
+            for grp in magnitude_strata([magnitudes[u] for u in pool], strata)
+        ]
     where = {u: i for i, g in enumerate(groups) for u in g}
     need: dict[int, int] = {}
     for u in selected:

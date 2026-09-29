@@ -57,7 +57,7 @@ class SelectionSource(Enum):
     RANDOM = "random"
 
 
-@record_kind("evidence_selection", version=2)
+@record_kind("evidence_selection", version=3)
 @dataclass(frozen=True, slots=True, kw_only=True)
 class EvidenceSelection(BaseRecord):
     """An ordered selection of units (last-dimension indices) of one site.
@@ -68,6 +68,10 @@ class EvidenceSelection(BaseRecord):
     ``scores`` they ranked (by unit index) and the id of the source
     ``AttributionRecord`` (which may live in another trace; composition verifies it).
     Ties are broken by lower unit index.
+
+    ``eligible`` / ``eligibility`` (ADR-053): the units the claim is about, declared by
+    the caller with a name (e.g. ``"content_tokens"``). With them, a ranking orders only
+    the eligible units and random controls are drawn from them; ``None`` means every unit.
     """
 
     REQUIRES_PROVENANCE: ClassVar[bool] = True
@@ -86,6 +90,13 @@ class EvidenceSelection(BaseRecord):
     target: MetricSpec | None = None
     unit_axes: tuple[int, ...] | None = None
     unit_reduction: str | None = None
+    eligible: tuple[int, ...] | None = None
+    eligibility: str | None = None
+
+    @property
+    def population(self) -> tuple[int, ...]:
+        """The units a ranking orders and controls are drawn from (ADR-053)."""
+        return tuple(range(self.n_units)) if self.eligible is None else self.eligible
 
     @property
     def selected(self) -> tuple[int, ...]:
@@ -109,11 +120,31 @@ class EvidenceSelection(BaseRecord):
         )
         require(len(set(self.order)) == len(self.order), "order has duplicate units")
         require(all(0 <= u < self.n_units for u in self.order), "order has out-of-range units")
+        require(
+            (self.eligible is None) == (self.eligibility is None),
+            "eligible units and their eligibility name are declared together (ADR-053)",
+        )
+        if self.eligible is not None:
+            assert self.eligibility is not None
+            require(bool(_NAME_RE.match(self.eligibility)), "eligibility is a name token")
+            require(
+                len(self.eligible) >= 1
+                and list(self.eligible) == sorted(set(self.eligible))
+                and all(0 <= u < self.n_units for u in self.eligible),
+                "eligible units are sorted, unique and in range",
+            )
+            require(
+                set(self.order) <= set(self.eligible),
+                "a selection orders only eligible units (ADR-053)",
+            )
         if self.source is SelectionSource.DECLARED:
             require(len(self.order) >= 1, "a declared selection names at least one unit")
             require(self.k == len(self.order), "a declared selection selects all its units")
         else:
-            require(len(self.order) == self.n_units, "a ranking orders every unit")
+            require(
+                len(self.order) == len(self.population),
+                "a ranking orders every unit (every eligible unit when declared; ADR-053)",
+            )
         if self.k is not None:
             require(1 <= self.k <= len(self.order), "k must be in [1, number of ranked units]")
         if self.source is SelectionSource.ATTRIBUTION:
@@ -212,3 +243,11 @@ def _selection_v1_to_v2(data: dict[str, Any]) -> dict[str, Any]:
     if "unit_axes" in data or "unit_reduction" in data:
         raise ValueError("an evidence_selection v1 payload cannot contain unit axes")
     return data | {"unit_axes": None, "unit_reduction": None}
+
+
+@register_migration("evidence_selection", 2)
+def _selection_v2_to_v3(data: dict[str, Any]) -> dict[str, Any]:
+    """v2 selections were about every unit (ADR-053)."""
+    if "eligible" in data or "eligibility" in data:
+        raise ValueError("an evidence_selection v2 payload cannot declare eligibility")
+    return data | {"eligible": None, "eligibility": None}

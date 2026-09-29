@@ -92,13 +92,29 @@ class ResultEntry:
     method: str | None = None
     problem: Problem | None = None
     exclusion: Problem | None = None  # plan-relative (provenance / scope), set by the engine
+    # ADR-054: the highest fraction of controls the selection could beat or match, given
+    # control sets identical to the selection (which tie by construction); None: no controls
+    max_control_fraction: float | None = None
+    absolute_criterion_met: bool | None = None
 
     @property
     def id(self) -> str:
         return self.result.id
 
+    def control_unattainable(self, criteria: Any = None) -> bool:
+        """Whether the declared control criterion could not be met by any model (ADR-054)."""
+        if self.max_control_fraction is None:
+            return False
+        crit = self.spec.criteria if criteria is None else criteria
+        need = crit.get("min_fraction_below", crit.get("min_fraction_above"))
+        return isinstance(need, (int, float)) and self.max_control_fraction < float(need)
+
     @property
     def outcome(self) -> Outcome:
+        """The recorded outcome, except that a CONTRADICTS whose control criterion was
+        unattainable by construction is uninformative: INCONCLUSIVE (ADR-054)."""
+        if self.result.outcome is Outcome.CONTRADICTS and self.control_unattainable():
+            return Outcome.INCONCLUSIVE
         return self.result.outcome
 
     @property
@@ -255,6 +271,7 @@ class EvidenceSet:
         protocol = spec.protocol
         if protocol in (COMPREHENSIVENESS, SUFFICIENCY):
             self._selection(entry)
+            self._control_attainability(entry)
         if entry.problem is None:
             entry.problem = self._rederive(entry, claim_ids, concept_checked)
         entry.axes = self._axes(entry)
@@ -293,6 +310,35 @@ class EvidenceSet:
             )
         return origin.model.state_digest, origin.declared_model, None
 
+    def _control_attainability(self, entry: ResultEntry) -> None:
+        """ADR-054: control sets identical to the selected set tie with it by construction,
+        so a selection can beat at most the non-identical fraction of its controls."""
+        stats = entry.result.statistics
+        controls = stats.get("control_effects")
+        main = stats.get("selected_effect")
+        if not isinstance(controls, tuple) or not controls or not isinstance(main, str):
+            return
+        try:
+            units = [self._effect_units(str(i)) for i in (main, *controls)]
+        except (KeyError, AssertionError):
+            return  # unresolvable evidence is reported by re-derivation
+        identical = sum(1 for u in units[1:] if u == units[0])
+        entry.max_control_fraction = 1.0 - identical / len(units[1:])
+        drop = stats.get("drop")
+        crit = entry.spec.criteria
+        if isinstance(drop, (int, float)):
+            if "min_drop" in crit:
+                entry.absolute_criterion_met = float(drop) >= float(crit["min_drop"])  # type: ignore[arg-type]
+            elif "max_drop" in crit:
+                entry.absolute_criterion_met = float(drop) <= float(crit["max_drop"])  # type: ignore[arg-type]
+
+    def _effect_units(self, effect_id: str) -> tuple[int, ...] | None:
+        effect = self.index[effect_id][0]
+        assert isinstance(effect, CausalEffect)
+        record = self.index[effect.interventions[0].record_id][0]
+        assert isinstance(record, InterventionRecord)
+        return record.units
+
     def _selection(self, entry: ResultEntry) -> None:
         from beyondnn.faithfulness.verify import verify_selection
 
@@ -308,6 +354,16 @@ class EvidenceSet:
             return
         selection = found[0]
         entry.selection = selection
+        declared = entry.spec.params.get("eligible")
+        if (None if declared is None else tuple(declared)) != selection.eligible or (  # type: ignore[arg-type]
+            entry.spec.params.get("eligibility") != selection.eligibility
+        ):
+            entry.problem = Problem(
+                "integrity_failure",
+                "eligibility_mismatch",
+                f"{entry.id}: the test's declared eligible units differ from its selection's",
+            )
+            return
         if selection.source is SelectionSource.ATTRIBUTION:
             source = self.index.get(selection.source_record or "")
             if source is None:
@@ -499,7 +555,22 @@ class EvidenceSet:
         key = (entry.id, repr(alternative))
         if key in self._alternatives:
             return self._alternatives[key]
-        self._alternatives[key] = outcome = self._reevaluate(entry, alternative)
+        outcome = self._reevaluate(entry, alternative)
+        if outcome is Outcome.CONTRADICTS and alternative.protocol in (
+            COMPREHENSIVENESS,
+            SUFFICIENCY,
+        ):
+            criteria = entry.spec.criteria.to_plain()
+            current = criteria.get(alternative.key)
+            if isinstance(current, (int, float)) and not isinstance(current, bool):
+                criteria[alternative.key] = (
+                    float(current) * alternative.factor
+                    if alternative.factor is not None
+                    else alternative.value
+                )
+            if entry.control_unattainable(criteria):
+                outcome = Outcome.INCONCLUSIVE  # ADR-054
+        self._alternatives[key] = outcome
         return outcome
 
     def _reevaluate(self, entry: ResultEntry, alt: AlternativeCriteria) -> Outcome | None:

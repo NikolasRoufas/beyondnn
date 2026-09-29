@@ -128,6 +128,8 @@ def verify_claim_result(result: ClaimTestResult, lookup: Lookup) -> None:
     if isinstance(declared, Mapping) and controls:
         n_units, k = _int(spec.params["n_units"]), _int(spec.params["k"])
         n, seed = _int(declared["n"]), _int(declared["seed"])
+        eligible = spec.params.get("eligible")  # ADR-053: only recorded when declared
+        population = None if not isinstance(eligible, tuple) else [_int(u) for u in eligible]
         if declared.get("strategy") == "perturbation_magnitude_stratified_same_site_same_size":
             recorded = declared.get("magnitudes")
             if not isinstance(recorded, tuple) or len(recorded) != n_units:
@@ -135,10 +137,10 @@ def verify_claim_result(result: ClaimTestResult, lookup: Lookup) -> None:
             magnitudes = [float(m) for m in recorded if isinstance(m, (int, float))]
             _check_magnitudes(magnitudes, trace, primary, main)
             expected = stratified_subsets(
-                magnitudes, main.units or (), n, seed, _int(declared["strata"])
+                magnitudes, main.units or (), n, seed, _int(declared["strata"]), population
             )
         else:
-            expected = uniform_subsets(n_units, k, n, seed)
+            expected = uniform_subsets(n_units, k, n, seed, population)
         got = [records[c.interventions[0].record_id].units for c in controls]
         if got != expected:
             raise VerificationError(f"{result.id}: controls do not match the declared seed")
@@ -233,7 +235,8 @@ def verify_selection(selection: EvidenceSelection, lookup: Lookup) -> None:
         or (record.site, record.call_index) != (selection.site, selection.call_index)
         or record.target != selection.target
         or tuple(scores) != selection.scores
-        or rank_order(scores, by=by) != selection.order
+        or tuple(u for u in rank_order(scores, by=by) if u in set(selection.population))
+        != selection.order
     ):
         raise VerificationError(f"{selection.id} does not re-derive from {record.id}")
 
