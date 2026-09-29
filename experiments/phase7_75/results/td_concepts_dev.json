@@ -1,0 +1,209 @@
+{
+ "split": "dev",
+ "programs": {
+  "cdev_a_b": {
+   "program": "cdev_a_b",
+   "task": "1.0 x fraction of 'a' so far; 'b' read with coefficient 0",
+   "residual_labels": [
+    "comb_3",
+    "frac_prevs_1",
+    "indices:0",
+    "indices:1",
+    "indices:2",
+    "indices:3",
+    "indices:4",
+    "indices:5",
+    "indices:6",
+    "indices:7",
+    "indices:8",
+    "is_d_5",
+    "is_u_4",
+    "one",
+    "tokens:BOS",
+    "tokens:PAD",
+    "tokens:a",
+    "tokens:b",
+    "tokens:c",
+    "tokens:d",
+    "tokens:e"
+   ],
+   "n": 400,
+   "rel_min_change": 0.028874713182449344,
+   "train_median_fraction": 0.2222222222222222,
+   "concepts": {
+    "K+": {
+     "known": "positive",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.028874713182449344,
+       "use": "supports",
+       "use_effect": -0.36363637357047107,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.36363637357047107,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "validated_concept",
+        "isotropic": "validated_concept"
+       }
+      }
+     }
+    },
+    "K0": {
+     "known": "negative",
+     "auroc": 0.6142490372272144,
+     "encoding": {
+      "covariance": "contradicts",
+      "isotropic": "contradicts"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.028874713182449344,
+       "use": "supports",
+       "use_effect": -0.22514620325283,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "supports",
+       "use_effect": -0.22514620325283,
+       "use_superiority": 1.0,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    },
+    "K-": {
+     "known": "decodable_unused",
+     "auroc": 1.0,
+     "encoding": {
+      "covariance": "supports",
+      "isotropic": "supports"
+     },
+     "rules": {
+      "rel": {
+       "min_change": 0.028874713182449344,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.64,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      },
+      "abs": {
+       "min_change": 0.1,
+       "use": "contradicts",
+       "use_effect": 0.0,
+       "use_superiority": 0.64,
+       "validation": {
+        "covariance": "proposed_concept",
+        "isotropic": "proposed_concept"
+       }
+      }
+     }
+    }
+   },
+   "audits": {
+    "rel|strict": {
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "controls_defeat_encoding",
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     }
+    },
+    "rel|lenient": {
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "controls_defeat_encoding",
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     }
+    },
+    "abs|strict": {
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "controls_defeat_encoding",
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     }
+    },
+    "abs|lenient": {
+     "K+": {
+      "standing": "supported",
+      "findings": []
+     },
+     "K-": {
+      "standing": "unsupported",
+      "findings": [
+       "decodable_not_used"
+      ]
+     },
+     "K0": {
+      "standing": "unsupported",
+      "findings": [
+       "controls_defeat_encoding",
+       "counterexample_heavy",
+       "feature_encodes_several_concepts"
+      ]
+     }
+    }
+   }
+  }
+ }
+}

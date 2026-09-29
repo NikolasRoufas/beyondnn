@@ -1,0 +1,1600 @@
+{
+ "c_rel": 0.2,
+ "abs": 0.1,
+ "grid": [
+  {
+   "w": 0.0,
+   "s": 0.01,
+   "rel_min_change": 0.0019671175628900527,
+   "used": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.0019671175628900527,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.0019671175628900527,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.0019671175628900527,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.0,
+   "s": 0.1,
+   "rel_min_change": 0.01967117637395859,
+   "used": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.01967117637395859,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.01967117637395859,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.01967117637395859,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.0,
+   "s": 1.0,
+   "rel_min_change": 0.19671176671981813,
+   "used": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.19671176671981813,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.19671176671981813,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.19671176671981813,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.0,
+   "s": 10.0,
+   "rel_min_change": 1.9671176910400392,
+   "used": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 1.9671176910400392,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 1.9671176910400392,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 1.9671176910400392,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.0,
+   "s": 100.0,
+   "rel_min_change": 19.67117614746094,
+   "used": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 19.67117614746094,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 19.67117614746094,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 19.67117614746094,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.1,
+   "s": 0.01,
+   "rel_min_change": 0.001981445588171482,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.0007649274162499101,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -0.0007649274162499101,
+     "min_change": 0.001981445588171482,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.001981445588171482,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 4.6106303251986756e-05,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 4.6106303251986756e-05,
+     "min_change": 0.001981445588171482,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.1,
+   "s": 0.1,
+   "rel_min_change": 0.019814456999301913,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.007649273770785302,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -0.007649273770785302,
+     "min_change": 0.019814456999301913,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.019814456999301913,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.00046106340874410285,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.00046106340874410285,
+     "min_change": 0.019814456999301913,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.1,
+   "s": 1.0,
+   "rel_min_change": 0.19814456701278688,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.07649273972730247,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -0.07649273972730247,
+     "min_change": 0.19814456701278688,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.19814456701278688,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.004610634368342044,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.004610634368342044,
+     "min_change": 0.19814456701278688,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.1,
+   "s": 10.0,
+   "rel_min_change": 1.9814456939697267,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -0.7649274179521872,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -0.7649274179521872,
+     "min_change": 1.9814456939697267,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 1.9814456939697267,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.04610636222354147,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.04610636222354147,
+     "min_change": 1.9814456939697267,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.1,
+   "s": 100.0,
+   "rel_min_change": 19.814456176757815,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -7.649274032943103,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -7.649274032943103,
+     "min_change": 19.814456176757815,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 19.814456176757815,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.46106344578641184,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.46106344578641184,
+     "min_change": 19.814456176757815,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.25,
+   "s": 0.01,
+   "rel_min_change": 0.0020414218306541443,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.0019123183100585878,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -0.0019123183100585878,
+     "min_change": 0.0020414218306541443,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.0020414218306541443,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.00011526594187855378,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.00011526594187855378,
+     "min_change": 0.0020414218306541443,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.25,
+   "s": 0.1,
+   "rel_min_change": 0.020414219796657564,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.019123183845183623,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -0.019123183845183623,
+     "min_change": 0.020414219796657564,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.020414219796657564,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0011526591654963728,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0011526591654963728,
+     "min_change": 0.020414219796657564,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.25,
+   "s": 1.0,
+   "rel_min_change": 0.2041421890258789,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -0.19123183787629314,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -0.19123183787629314,
+     "min_change": 0.2041421890258789,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.2041421890258789,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.011526593489813084,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.011526593489813084,
+     "min_change": 0.2041421890258789,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.25,
+   "s": 10.0,
+   "rel_min_change": 2.041421890258789,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -1.9123183653062703,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -1.9123183653062703,
+     "min_change": 2.041421890258789,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 2.041421890258789,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.1152659280727921,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.1152659280727921,
+     "min_change": 2.041421890258789,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.25,
+   "s": 100.0,
+   "rel_min_change": 20.414219665527344,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -19.123183854988643,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": -19.123183854988643,
+     "min_change": 20.414219665527344,
+     "validation": "proposed_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 20.414219665527344,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 1.1526591317372377,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 1.1526591317372377,
+     "min_change": 20.414219665527344,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.5,
+   "s": 0.01,
+   "rel_min_change": 0.002233077213168144,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.0038246367242821605,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -0.0038246367242821605,
+     "min_change": 0.002233077213168144,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.002233077213168144,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.00023053193055009902,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.00023053193055009902,
+     "min_change": 0.002233077213168144,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.5,
+   "s": 0.1,
+   "rel_min_change": 0.022330774366855623,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.038246368583082696,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -0.038246368583082696,
+     "min_change": 0.022330774366855623,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.022330774366855623,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.002305318821997256,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.002305318821997256,
+     "min_change": 0.022330774366855623,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.5,
+   "s": 1.0,
+   "rel_min_change": 0.22330772876739502,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -0.3824636802001267,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -0.3824636802001267,
+     "min_change": 0.22330772876739502,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.22330772876739502,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.02305318987692884,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.02305318987692884,
+     "min_change": 0.22330772876739502,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.5,
+   "s": 10.0,
+   "rel_min_change": 2.2330772399902346,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -3.824636796299292,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -3.824636796299292,
+     "min_change": 2.2330772399902346,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 2.2330772399902346,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.23053185703504955,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.23053185703504955,
+     "min_change": 2.2330772399902346,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 0.5,
+   "s": 100.0,
+   "rel_min_change": 22.33077392578125,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -38.24636758590231,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -38.24636758590231,
+     "min_change": 22.33077392578125,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 22.33077392578125,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 2.305319182825892,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 2.305319182825892,
+     "min_change": 22.33077392578125,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 1.0,
+   "s": 0.01,
+   "rel_min_change": 0.0028616836294531826,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.007649273374319856,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -0.007649273374319856,
+     "min_change": 0.0028616836294531826,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.0028616836294531826,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.00046106367555305984,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.00046106367555305984,
+     "min_change": 0.0028616836294531826,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 1.0,
+   "s": 0.1,
+   "rel_min_change": 0.028616836667060854,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.07649273725704062,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -0.07649273725704062,
+     "min_change": 0.028616836667060854,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.028616836667060854,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.004610637010740943,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.004610637010740943,
+     "min_change": 0.028616836667060854,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 1.0,
+   "s": 1.0,
+   "rel_min_change": 0.28616836071014407,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -0.7649273591078057,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -0.7649273591078057,
+     "min_change": 0.28616836071014407,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.28616836071014407,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.04610637151714665,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.04610637151714665,
+     "min_change": 0.28616836071014407,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 1.0,
+   "s": 10.0,
+   "rel_min_change": 2.8616836547851565,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -7.649273612669536,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -7.649273612669536,
+     "min_change": 2.8616836547851565,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 2.8616836547851565,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.4610636801343788,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.4610636801343788,
+     "min_change": 2.8616836547851565,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 1.0,
+   "s": 100.0,
+   "rel_min_change": 28.616836547851562,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -76.4927352557377,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -76.4927352557377,
+     "min_change": 28.616836547851562,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 28.616836547851562,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 4.610637439268358,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 4.610637439268358,
+     "min_change": 28.616836547851562,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 4.0,
+   "s": 0.01,
+   "rel_min_change": 0.008438049256801606,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": -0.030597093697294013,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -0.030597093697294013,
+     "min_change": 0.008438049256801606,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.008438049256801606,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0018442549727409273,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0018442549727409273,
+     "min_change": 0.008438049256801606,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 4.0,
+   "s": 0.1,
+   "rel_min_change": 0.0843804955482483,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -0.30597094864090335,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -0.30597094864090335,
+     "min_change": 0.0843804955482483,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.0843804955482483,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.018442551373390303,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.018442551373390303,
+     "min_change": 0.0843804955482483,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 4.0,
+   "s": 1.0,
+   "rel_min_change": 0.8438049316406251,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -3.0597094367733417,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -3.0597094367733417,
+     "min_change": 0.8438049316406251,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.8438049316406251,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.1844255070665098,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.1844255070665098,
+     "min_change": 0.8438049316406251,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 4.0,
+   "s": 10.0,
+   "rel_min_change": 8.43804931640625,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -30.59709446010541,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -30.59709446010541,
+     "min_change": 8.43804931640625,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 8.43804931640625,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 1.844254891974119,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 1.844254891974119,
+     "min_change": 8.43804931640625,
+     "validation": "proposed_concept"
+    }
+   }
+  },
+  {
+   "w": 4.0,
+   "s": 100.0,
+   "rel_min_change": 84.3804931640625,
+   "used": {
+    "truth": "used",
+    "encoding": "supports",
+    "abs": {
+     "use": "supports",
+     "effect": -305.97094330739003,
+     "min_change": 0.1,
+     "validation": "validated_concept"
+    },
+    "rel": {
+     "use": "supports",
+     "effect": -305.97094330739003,
+     "min_change": 84.3804931640625,
+     "validation": "validated_concept"
+    }
+   },
+   "decodable_unused": {
+    "truth": "not_used",
+    "encoding": "supports",
+    "abs": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 0.0,
+     "min_change": 84.3804931640625,
+     "validation": "proposed_concept"
+    }
+   },
+   "negative": {
+    "truth": "not_used",
+    "encoding": "contradicts",
+    "abs": {
+     "use": "contradicts",
+     "effect": 18.442550130941896,
+     "min_change": 0.1,
+     "validation": "proposed_concept"
+    },
+    "rel": {
+     "use": "contradicts",
+     "effect": 18.442550130941896,
+     "min_change": 84.3804931640625,
+     "validation": "proposed_concept"
+    }
+   }
+  }
+ ],
+ "scale_invariant": {
+  "abs": false,
+  "rel": true
+ }
+}
