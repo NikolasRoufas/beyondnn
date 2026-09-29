@@ -1,0 +1,293 @@
+{
+ "request": "Phase 7.75 request \u00a732",
+ "first_run": [
+  {
+   "mutation": "special tokens silently included despite content-token policy",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_audit_never_mixes_eligibilities - assert ..."
+   ]
+  },
+  {
+   "mutation": "special tokens silently included in the ranking",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_special_token_eligible_vs_ineligible - as..."
+   ]
+  },
+  {
+   "mutation": "special tokens silently removed despite all-token policy",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_special_token_eligible_vs_ineligible - as..."
+   ]
+  },
+  {
+   "mutation": "controls drawn from ineligible units",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_padding_excluded_from_selections_and_controls"
+   ]
+  },
+  {
+   "mutation": "independence flag dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_same_operation_ground_truth_is_not_independent"
+   ]
+  },
+  {
+   "mutation": "same-operation ground truth treated as independent",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_same_operation_ground_truth_is_not_independent"
+   ]
+  },
+  {
+   "mutation": "concept threshold tuned (C_REL changed)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_concept_threshold_uses_train_values_only"
+   ]
+  },
+  {
+   "mutation": "concept threshold tuned in the experiment",
+   "result": "SURVIVED",
+   "by": []
+  },
+  {
+   "mutation": "known-positive result used during calibration",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_concept_threshold_uses_train_values_only"
+   ]
+  },
+  {
+   "mutation": "competitive-control failure promoted to causal contradiction (unattainable ignored)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_overly_strict_competitive_control_is_inconclusive_not_contradicting"
+   ]
+  },
+  {
+   "mutation": "attainability computed without identical control sets",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_overly_strict_competitive_control_is_inconclusive_not_contradicting"
+   ]
+  },
+  {
+   "mutation": "effect-without-competitive-advantage finding dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_competitive_failure_is_not_a_failure_of_the_effect"
+   ]
+  },
+  {
+   "mutation": "zero stress test promoted to PRIMARY",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_td_roles_are_the_frozen_e1_roles"
+   ]
+  },
+  {
+   "mutation": "replacement identity lost (name dropped)",
+   "result": "SURVIVED",
+   "by": []
+  },
+  {
+   "mutation": "OOD (stress-test) reversal finding ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_stress_test_reversal_is_context_only - Va..."
+   ]
+  },
+  {
+   "mutation": "selection v2 -> v3 migration drops eligibility",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_unit_axes.py::test_phase5_claims_and_selections_migrate_without_invented_axes"
+   ]
+  },
+  {
+   "mutation": "audit plan v2 -> v3 migration drops eligibility",
+   "result": "SURVIVED",
+   "by": []
+  },
+  {
+   "mutation": "shortcut stratification removes samples",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_shortcut_stratification_removes_no_sample"
+   ]
+  },
+  {
+   "mutation": "Phase-7.5 artifacts overwritten",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_immutable.py::test_phase75_results_are_unchanged - ..."
+   ]
+  }
+ ],
+ "rerun_after_added_tests": [
+  {
+   "mutation": "concept threshold tuned in the experiment",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_frozen_td_split_and_plan_agree"
+   ]
+  },
+  {
+   "mutation": "replacement identity lost (name dropped)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_replacement_identity_reaches_the_audit_axis"
+   ]
+  },
+  {
+   "mutation": "audit plan v2 -> v3 migration drops eligibility",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_audit_plan_v2_selection_claims_migrate_to_all_units"
+   ]
+  }
+ ],
+ "final": [
+  {
+   "mutation": "special tokens silently included despite content-token policy",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_audit_never_mixes_eligibilities - assert ..."
+   ]
+  },
+  {
+   "mutation": "special tokens silently included in the ranking",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_special_token_eligible_vs_ineligible - as..."
+   ]
+  },
+  {
+   "mutation": "special tokens silently removed despite all-token policy",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_special_token_eligible_vs_ineligible - as..."
+   ]
+  },
+  {
+   "mutation": "controls drawn from ineligible units",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_padding_excluded_from_selections_and_controls"
+   ]
+  },
+  {
+   "mutation": "independence flag dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_same_operation_ground_truth_is_not_independent"
+   ]
+  },
+  {
+   "mutation": "same-operation ground truth treated as independent",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_same_operation_ground_truth_is_not_independent"
+   ]
+  },
+  {
+   "mutation": "concept threshold tuned (C_REL changed)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_concept_threshold_uses_train_values_only"
+   ]
+  },
+  {
+   "mutation": "concept threshold tuned in the experiment",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_frozen_td_split_and_plan_agree"
+   ]
+  },
+  {
+   "mutation": "known-positive result used during calibration",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_concept_threshold_uses_train_values_only"
+   ]
+  },
+  {
+   "mutation": "competitive-control failure promoted to causal contradiction (unattainable ignored)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_overly_strict_competitive_control_is_inconclusive_not_contradicting"
+   ]
+  },
+  {
+   "mutation": "attainability computed without identical control sets",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_overly_strict_competitive_control_is_inconclusive_not_contradicting"
+   ]
+  },
+  {
+   "mutation": "effect-without-competitive-advantage finding dropped",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_competitive_failure_is_not_a_failure_of_the_effect"
+   ]
+  },
+  {
+   "mutation": "zero stress test promoted to PRIMARY",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_td_roles_are_the_frozen_e1_roles"
+   ]
+  },
+  {
+   "mutation": "replacement identity lost (name dropped)",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_replacement_identity_reaches_the_audit_axis"
+   ]
+  },
+  {
+   "mutation": "OOD (stress-test) reversal finding ignored",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_audit_75.py::test_stress_test_reversal_is_context_only - Va..."
+   ]
+  },
+  {
+   "mutation": "selection v2 -> v3 migration drops eligibility",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_unit_axes.py::test_phase5_claims_and_selections_migrate_without_invented_axes"
+   ]
+  },
+  {
+   "mutation": "audit plan v2 -> v3 migration drops eligibility",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775.py::test_audit_plan_v2_selection_claims_migrate_to_all_units"
+   ]
+  },
+  {
+   "mutation": "shortcut stratification removes samples",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase775_analysis.py::test_shortcut_stratification_removes_no_sample"
+   ]
+  },
+  {
+   "mutation": "Phase-7.5 artifacts overwritten",
+   "result": "killed",
+   "by": [
+    "FAILED tests/test_phase75_immutable.py::test_phase75_results_are_unchanged - ..."
+   ]
+  }
+ ],
+ "killed": 19,
+ "total": 19,
+ "note": "3 survived the first run (vacuous docstring match; replacement name not checked at the audit axis; v2 plan migration of selection claims untested); 3 tests added; all 3 killed on re-run. No code change was needed."
+}
