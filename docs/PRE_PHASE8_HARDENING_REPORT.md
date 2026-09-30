@@ -14,7 +14,7 @@
 
 ## 2. Ending HEAD
 
-⟨END⟩
+The commit that adds this final text ("Pre-Phase-8 hardening report: final status"), directly after the commits listed in §18.
 
 ## 3. Golden workflow result
 
@@ -222,7 +222,19 @@ The baseline was 1038 + 1 / 1059. The +32 tests are the golden workflow (6) and 
 
 ## 18. Git status
 
-⟨STATUS⟩
+Clean after the final commit.
+
+9 local commits after `32cd645` (no attribution trailers):
+
+- `3c0e7b0` Permanent golden scientific-workflow test (eligibility, roles, replacement identity, provenance, fresh-process reload, WHY); named claim lookup test; Phase-7.5 workflow uses named lookup (single claim: behaviour unchanged)
+- `3bffb8a` Migration matrix test: every registered migration from each old version to current keeps its documented old meaning; current records round-trip
+- `d8d1e21` Trace load errors name the trace directory (one corrupt trace among many must be identifiable); regression test
+- `c7a7c5c` Audit reports record their producer (BeyondNN version, audit semantics; ADR-056); provenance-completeness and report-format tests; README status corrected
+- `b4fb7c0` Pre-Phase-8 invariants (each mapped to its permanent tests); public API inventory in API_FREEZE; roadmap Phase 8 scope corrected
+- `030d813` Pre-Phase-8 targeted mutation script
+- `1ed537a` Error-message probe; pre-Phase-8 hardening report draft
+- `b045f64` Pre-Phase-8 hardening: regression matrix (1070+1 / 1091 on 3.10/3.12/3.14), mutations (Phase 7.75 19/19, Phase 7.5 24/24, targeted 4/4), report
+- (this commit) Pre-Phase-8 hardening report: final status
 
 ## 19. Pushed / published status
 
