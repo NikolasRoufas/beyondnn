@@ -170,3 +170,12 @@ For the 40 e-SNLI samples, record whether the SNLI model predicts the same label
 ## Deviations
 
 (None at the freeze.)
+
+### DV-1 (2026-09-30; seen: no D1 / D2 outcome: all six shard processes were lost before writing any result)
+
+- **Original rule (§5):** D1 and D2 run in 3 shards each (samples i::3).
+- **Problem:** the machine crashed about 2.5 h into the six shard processes, and a shard writes its result only at its end, so everything was lost. Earlier, a queued A/B/C lane was stopped by the system for low memory.
+- **Reason for the change:** crash tolerance and memory; nothing about the results.
+- **Replacement rule:** D1 and D2 run in **10 shards each (samples i::10, 4 samples per shard)**, from a resumable queue (`artifacts/queueD.sh`) that skips shards whose result file exists, 4 processes at a time. B, C1 and C2 run afterwards, one at a time.
+- **Why the result is unaffected:** per-sample standings depend only on that sample's evidence (instance scope), so the partition of samples into shards is irrelevant; samples, seeds and all parameters are unchanged.
+- **Status:** confirmatory results unchanged in definition; merged exactly as planned.
