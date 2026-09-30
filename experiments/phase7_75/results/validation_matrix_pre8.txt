@@ -1,0 +1,33 @@
+# Pre-Phase-8 regression matrix (2026-10-01)
+== py3.10 no-captum
+1070 passed, 1 skipped in 136.14s (0:02:16)
+== py3.10 --extra captum
+1091 passed in 145.95s (0:02:25)
+== py3.12 no-captum
+1070 passed, 1 skipped in 115.18s (0:01:55)
+== py3.12 --extra captum
+1091 passed in 118.87s (0:01:58)
+== py3.14 no-captum
+1070 passed, 1 skipped in 124.10s (0:02:04)
+== py3.14 --extra captum
+1091 passed in 123.43s (0:02:03)
+== ruff
+All checks passed!
+169 files already formatted
+== mypy (no captum)
+Success: no issues found in 117 source files
+== mypy (captum)
+Success: no issues found in 117 source files
+== build
+Successfully built experiments/phase7_75/artifacts/wheelcheck/dist/beyondnn-0.0.0.dev0.tar.gz
+Successfully built experiments/phase7_75/artifacts/wheelcheck/dist/beyondnn-0.0.0.dev0-py3-none-any.whl
+== clean wheel (python 3.12; wheel + numpy only)
+7 README examples OK
+example phase4_redundant_path.py: OK
+example phase6_concepts.py: OK
+example phase7_audit.py: OK
+run ok {'claim': {'contradicted': 2, 'supported': 8}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True}
+reload ok {'claim': {'contradicted': 2, 'supported': 8}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True} same as before: True
+run ok {'claim': {'contradicted': 2, 'supported': 8}, 'eligible_claim': {'contradicted': 8, 'supported': 2}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True}
+reload ok {'claim': {'contradicted': 2, 'supported': 8}, 'eligible_claim': {'contradicted': 8, 'supported': 2}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True} same as before: True
+VALIDATE775_DONE

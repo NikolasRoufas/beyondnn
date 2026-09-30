@@ -1,0 +1,350 @@
+{
+ "pre8": {
+  "killed": 4,
+  "total": 4,
+  "rows": [
+   {
+    "mutation": "report producer dropped",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_golden_workflow.py::test_provenance_is_complete_for_the_golden_workflow"
+    ]
+   },
+   {
+    "mutation": "verify compares the producer too (old reports unverifiable)",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_golden_workflow.py::test_report_format_2_still_loads_and_mismatch_names_the_semantics"
+    ]
+   },
+   {
+    "mutation": "trace load error does not name the trace",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_golden_workflow.py::test_corrupt_saved_evidence_is_refused_and_names_the_trace"
+    ]
+   },
+   {
+    "mutation": "migration invents eligibility for old selections",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_migration_matrix.py::test_old_version_migrates_to_current_with_its_old_meaning[evidence_selection-2]"
+    ]
+   }
+  ]
+ },
+ "phase7_75": {
+  "killed": 19,
+  "total": 19,
+  "rows": [
+   {
+    "mutation": "special tokens silently included despite content-token policy",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_audit_never_mixes_eligibilities - assert ..."
+    ]
+   },
+   {
+    "mutation": "special tokens silently included in the ranking",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_special_token_eligible_vs_ineligible - as..."
+    ]
+   },
+   {
+    "mutation": "special tokens silently removed despite all-token policy",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_special_token_eligible_vs_ineligible - as..."
+    ]
+   },
+   {
+    "mutation": "controls drawn from ineligible units",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_padding_excluded_from_selections_and_controls"
+    ]
+   },
+   {
+    "mutation": "independence flag dropped",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775_analysis.py::test_same_operation_ground_truth_is_not_independent"
+    ]
+   },
+   {
+    "mutation": "same-operation ground truth treated as independent",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775_analysis.py::test_same_operation_ground_truth_is_not_independent"
+    ]
+   },
+   {
+    "mutation": "concept threshold tuned (C_REL changed)",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775_analysis.py::test_concept_threshold_uses_train_values_only"
+    ]
+   },
+   {
+    "mutation": "concept threshold tuned in the experiment",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775_analysis.py::test_frozen_td_split_and_plan_agree"
+    ]
+   },
+   {
+    "mutation": "known-positive result used during calibration",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775_analysis.py::test_concept_threshold_uses_train_values_only"
+    ]
+   },
+   {
+    "mutation": "competitive-control failure promoted to causal contradiction (unattainable ignored)",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_overly_strict_competitive_control_is_inconclusive_not_contradicting"
+    ]
+   },
+   {
+    "mutation": "attainability computed without identical control sets",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_overly_strict_competitive_control_is_inconclusive_not_contradicting"
+    ]
+   },
+   {
+    "mutation": "effect-without-competitive-advantage finding dropped",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_competitive_failure_is_not_a_failure_of_the_effect"
+    ]
+   },
+   {
+    "mutation": "zero stress test promoted to PRIMARY",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775_analysis.py::test_td_roles_are_the_frozen_e1_roles"
+    ]
+   },
+   {
+    "mutation": "replacement identity lost (name dropped)",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_replacement_identity_reaches_the_audit_axis"
+    ]
+   },
+   {
+    "mutation": "OOD (stress-test) reversal finding ignored",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_stress_test_reversal_is_context_only - Va..."
+    ]
+   },
+   {
+    "mutation": "selection v2 -> v3 migration drops eligibility",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_unit_axes.py::test_phase5_claims_and_selections_migrate_without_invented_axes"
+    ]
+   },
+   {
+    "mutation": "audit plan v2 -> v3 migration drops eligibility",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775.py::test_audit_plan_v2_selection_claims_migrate_to_all_units"
+    ]
+   },
+   {
+    "mutation": "shortcut stratification removes samples",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase775_analysis.py::test_shortcut_stratification_removes_no_sample"
+    ]
+   },
+   {
+    "mutation": "Phase-7.5 artifacts overwritten",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_immutable.py::test_phase75_results_are_unchanged - ..."
+    ]
+   }
+  ]
+ },
+ "phase7_5": {
+  "killed": 24,
+  "total": 24,
+  "rows": [
+   {
+    "mutation": "configuration count changed",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_sensitivity_profile_exposes_raw_structure"
+    ]
+   },
+   {
+    "mutation": "support profile omits a contradiction",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_sensitivity_profile_exposes_raw_structure"
+    ]
+   },
+   {
+    "mutation": "PRIMARY changed to STRESS_TEST (role order)",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+    ]
+   },
+   {
+    "mutation": "standing uses every role, not PRIMARY",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+    ]
+   },
+   {
+    "mutation": "alternative reversal not reported",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_primary_configuration_decides_and_alternative_reversal_is_reported"
+    ]
+   },
+   {
+    "mutation": "sample-specific role rules applied to every sample",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_sample_specific_role_rules_apply_only_to_their_sample"
+    ]
+   },
+   {
+    "mutation": "configuration-level disagreement dropped",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_configuration_level_disagreement_survives_a_summary_standing"
+    ]
+   },
+   {
+    "mutation": "wrong requirement attached to a claim",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_configuration_level_disagreement_survives_a_summary_standing"
+    ]
+   },
+   {
+    "mutation": "uncertainty resamples the wrong unit (unpaired)",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_bootstrap_is_seeded_recorded_and_paired"
+    ]
+   },
+   {
+    "mutation": "bootstrap seed ignored",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_bootstrap_is_seeded_recorded_and_paired"
+    ]
+   },
+   {
+    "mutation": "Wilson level ignored",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_wilson_interval_matches_reference_values"
+    ]
+   },
+   {
+    "mutation": "claim intervals dropped",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_per_sample_claims_carry_wilson_intervals"
+    ]
+   },
+   {
+    "mutation": "audit profile serialised incorrectly",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_profile_is_serialised_with_the_report - T..."
+    ]
+   },
+   {
+    "mutation": "saved evidence changes the result",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_public_evidence_helpers_round_trip - beyo..."
+    ]
+   },
+   {
+    "mutation": "wrong checkpoint accepted",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit.py::test_scenario_matches_preregistration[J] - Assert..."
+    ]
+   },
+   {
+    "mutation": "unsupported protocol version accepted",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_audit_75.py::test_unsupported_protocol_version_is_excluded"
+    ]
+   },
+   {
+    "mutation": "held-out case used as development case",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_analysis.py::test_development_cases_match_the_frozen_policy"
+    ]
+   },
+   {
+    "mutation": "external ground truth mislabelled",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+    ]
+   },
+   {
+    "mutation": "false-positive count dropped",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+    ]
+   },
+   {
+    "mutation": "false-negative count dropped",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+    ]
+   },
+   {
+    "mutation": "benchmark scope mixed (unreliable cases kept)",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_analysis.py::test_reliable_rows_excludes_unreliable_and_failed_cases"
+    ]
+   },
+   {
+    "mutation": "ambiguous instances counted as clear",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_analysis.py::test_confusion_counts_and_ambiguity - ..."
+    ]
+   },
+   {
+    "mutation": "token perturbation mislabelled",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_analysis.py::test_perturbation_nativeness_labels - ..."
+    ]
+   },
+   {
+    "mutation": "human rationale treated as causal ground truth",
+    "result": "killed",
+    "by": [
+     "FAILED tests/test_phase75_analysis.py::test_plausibility_is_never_ground_truth"
+    ]
+   }
+  ]
+ },
+ "run_at": "HEAD after the hardening changes (pre-Phase-8 pass)"
+}

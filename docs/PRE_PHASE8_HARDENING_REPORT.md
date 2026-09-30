@@ -178,15 +178,30 @@ The mapping is in `docs/PRE_PHASE8_INVARIANTS.md`. No duplicate tests were added
 
 ## 12. Tests
 
-⟨TESTS⟩
+`experiments/phase7_75/results/validation_matrix_pre8.txt`: **1070 passed + 1 skipped** without Captum, and **1091 passed** with Captum, on Python **3.10 / 3.12 / 3.14**.
+
+The baseline was 1038 + 1 / 1059. The +32 tests are the golden workflow (6) and the migration matrix (26).
 
 ## 13. Mutations
 
-⟨MUTATIONS⟩
+`experiments/phase7_75/results/mutations_pre8.json`, all run at HEAD after the changes:
+
+| suite | killed |
+|---|---|
+| Phase 7.75 | **19/19** (still holds) |
+| Phase 7.5 | **24/24** |
+| new targeted mutations | **4/4**: report producer dropped; `verify_report` comparing the producer; trace load error not naming the trace; migration inventing eligibility for old selections |
 
 ## 14. Lint / mypy / build / clean wheel
 
-⟨LINT⟩
+- ruff check and format: clean (169 files);
+- mypy --strict: clean, with and without Captum (117 files);
+- build: sdist and wheel.
+- **Clean wheel** (Python 3.12, wheel + numpy only): 7 README examples OK; `examples/` 3/3 OK.
+- **Researcher workflows:**
+  - Phase 7.5: run and reload, `same as before: True`;
+  - Phase 7.75 (with eligibility): run and reload, `same as before: True`.
+- **Golden invariant workflow:** in the test suite, with a fresh-process reload.
 
 ## 15. Was scientific evidence invalidated?
 
@@ -200,7 +215,10 @@ The mapping is in `docs/PRE_PHASE8_INVARIANTS.md`. No duplicate tests were added
 
 ## 17. Gate
 
-⟨GATE⟩
+**PRE-PHASE-8 HARDENING COMPLETE.**
+- The final framework invariants are listed in `docs/PRE_PHASE8_INVARIANTS.md` and protected by permanent tests and mutations.
+- No framework correctness issue remains open.
+- No scientific result needs regeneration.
 
 ## 18. Git status
 
