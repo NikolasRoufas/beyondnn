@@ -295,3 +295,19 @@ def test_named_claim_lookup_is_independent_of_plan_order(tmp_path: Path) -> None
     assert (
         [c.name for c in a.claims] == [c.name for c in b.claims] == sorted(c.name for c in a.claims)
     )
+
+
+def test_corrupt_saved_evidence_is_refused_and_names_the_trace(tmp_path: Path) -> None:
+    import pytest
+
+    from beyondnn.core.persistence import TracePersistenceError
+
+    build(tmp_path)
+    paths = AU.load_evidence(tmp_path / "evidence")
+    bad = paths[3]
+    doc = bad / "trace.json"
+    doc.write_text(doc.read_text().replace('"', "'", 1))
+    plan = bnn.schema.from_json((tmp_path / "plan.json").read_text())
+    assert isinstance(plan, bnn.schema.AuditPlan)
+    with pytest.raises(TracePersistenceError, match=str(bad.name)):
+        bnn.audit(paths, plan=plan)  # refused: never audited without the corrupt trace

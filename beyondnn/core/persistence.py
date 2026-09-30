@@ -185,10 +185,20 @@ def _check_tensor(ref: TensorRef, tensor: torch.Tensor) -> None:
 
 
 def load_trace(path: str | os.PathLike[str]) -> TraceResult:
-    """Load and fully re-validate a trace saved with ``TraceResult.save``."""
+    """Load and fully re-validate a trace saved with ``TraceResult.save``.
+
+    Every refusal names the trace directory it concerns (one bad trace among many saved
+    ones must be identifiable)."""
     directory = Path(path)
     if not directory.is_dir():
         raise TracePersistenceError(f"{directory} is not a trace directory")
+    try:
+        return _load_trace(directory)
+    except TracePersistenceError as exc:
+        raise TracePersistenceError(f"{directory}: {exc}") from exc
+
+
+def _load_trace(directory: Path) -> TraceResult:
     document_path = _owned_file(directory, TRACE_JSON)
     if not document_path.is_file():
         raise TracePersistenceError(f"{TRACE_JSON} is missing (incomplete or not a trace)")
