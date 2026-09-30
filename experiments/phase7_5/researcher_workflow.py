@@ -204,7 +204,7 @@ def run(outdir: Path) -> None:
     (outdir / "run.json").write_text(
         json.dumps(
             {
-                "claim": dict(report.claims[0].distribution),
+                "claim": dict(report.claim("ig_top2_necessary").distribution),
                 "concept": report.concepts[0].standing.value,
                 "validation": validation.semantic_status.value,
                 "why_has_audit": "AUDIT" in text,
@@ -229,7 +229,7 @@ def reload(outdir: Path) -> None:
     text = why.render()
     before = json.loads((outdir / "run.json").read_text())
     after = {
-        "claim": dict(report.claims[0].distribution),
+        "claim": dict(report.claim("ig_top2_necessary").distribution),
         "concept": report.concepts[0].standing.value,
         "validation": validation.semantic_status.value,
         "why_has_audit": "AUDIT" in text,
