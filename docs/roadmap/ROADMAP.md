@@ -214,7 +214,13 @@ Trace 3B stays out of scope.
 
 **Phase 8 must stay boring:** packaging, CI, docs, release metadata, reproducibility. No methodology changes.
 
-## Phase 8: Benchmark
+## Phase 8: Release engineering (not started; awaits approval)
+
+- **Scope (Phase 7.75 request §43; `docs/PRE_PHASE8_INVARIANTS.md`):** packaging, CI, GitHub, documentation polish, security / contributing / code of conduct, release metadata, TestPyPI / PyPI, `uv` lock, reproducibility instructions, benchmark scripts.
+- **No scientific methodology changes.**
+- The earlier "Benchmark" scope below is not part of Phase 8 unless re-approved.
+
+### Earlier plan (superseded scope): Benchmark
 - Capability and correctness vs nnsight, Captum, TransformerLens, and pyvene on the tiny models, plus runtime and memory.
 - Ease of use is assessed through task scripts and reported qualitatively.
 

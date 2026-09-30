@@ -73,3 +73,25 @@ These do not block the freeze, because each has a workaround that keeps records 
   - automatic special-token filtering.
 
   The reasons are in `docs/PHASE_7_75_SCIENTIFIC_FIXES.md`.
+
+## Public API inventory (pre-Phase-8 hardening, 2026-10-01)
+
+- **FROZEN PUBLIC:** names, signatures and semantics change only by ADR; breaking changes only to fix a blocking defect.
+- **PUBLIC BUT EXPERIMENTAL:** importable and tested, but with known, documented gaps; may change with an ADR before v1.
+- **INTERNAL:** never import it; no compatibility promise.
+
+| surface | class | notes |
+|---|---|---|
+| `beyondnn`: `trace`, `recording`, `TraceResult`, `load_trace`, `instrument`, `compose`, `intervene`, `attribute`, `audit`, `EstimandScope`, `EvidenceStatus`, `Outcome`, `Relation`, `Verdict` | FROZEN PUBLIC | |
+| `beyondnn.schema` (`__all__`) | FROZEN PUBLIC | record kinds / versions and migrations: `tests/test_migration_matrix.py` |
+| `beyondnn.attribution` (`__all__`) | FROZEN PUBLIC | the Captum adapter is an optional extra with the same API |
+| `beyondnn.interventions` (`__all__`, `metrics.*`) | FROZEN PUBLIC | |
+| `beyondnn.faithfulness`: `comprehensiveness`, `sufficiency`, `run`, `top_k`, `ranking`, `units`, `replacement`, `zero`, `controls`, `selector`, `fixed`, `evaluate`, policies | FROZEN PUBLIC | `replacement=` required (ADR-052); eligibility (ADR-053) |
+| `beyondnn.faithfulness`: `curve`, `run_dataset` | PUBLIC BUT EXPERIMENTAL | 5.5-F-7 / F-8 / F-10 (one target; no `model_kwargs`; no declared-ranking curves); curves refuse eligibility |
+| `beyondnn.faithfulness`: `stability`, `method_agreement`, `ig_step_sensitivity`, `baseline_sensitivity` | PUBLIC BUT EXPERIMENTAL | diagnostic protocol results; never decide a claim; 5.5-F-12 |
+| `beyondnn.concepts` (`__all__`) except `sae_feature` | FROZEN PUBLIC | `min_change` declared in target units (ADR-055, policy) |
+| `beyondnn.concepts.sae_feature` | PUBLIC BUT EXPERIMENTAL | tensor-only SAE adapter (ADR-041) |
+| `beyondnn.audits` (`__all__`) | FROZEN PUBLIC | `report.claims` order is by name and carries no meaning: use `report.claim(name)`; report format 3 (ADR-056) |
+| `beyondnn.explain` (`__all__`) | FROZEN PUBLIC | `render()` wording is not frozen |
+| `beyondnn.protocols.PROTOCOL_VERSIONS`, `PROTOCOLS` | FROZEN PUBLIC (read-only) | |
+| `beyondnn._testing`, `beyondnn.core.*`, `beyondnn.faithfulness.stats`, `beyondnn.audits.engine` / `.evidence`, `beyondnn.schema.codec._*`, `beyondnn.schema.base._*` | INTERNAL | tests may use them; users must not |
