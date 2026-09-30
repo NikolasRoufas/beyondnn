@@ -1,0 +1,1359 @@
+{
+ "eligibility": "all",
+ "environment": {
+  "beyondnn_commit": "b40707086b81e61c408e1229b53a61c12dbf42a0",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "calibration_agreement": 0.915,
+  "checkpoint_state_digest": "sha256:4ed723c354fceca21b3f288f3be2554c78ab73fb9c6fa81d83978ba81c21b349",
+  "eligible": 299,
+  "label_mapping": "identity",
+  "parameters": 109483778,
+  "repo": "textattack/bert-base-uncased-SST-2",
+  "revision": "95f0f6f859b35c8ff0863ae3cd4e2dbc702c0ae2"
+ },
+ "policy": "docs/PHASE_7_75_PLAN.md \u00a75-\u00a76 (Phase-7.5 central design; ADR-053/054)",
+ "settings": {
+  "tokens": {
+   "audit": {
+    "g_necessary": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "inconclusive_evidence",
+       "control_criterion_unattainable",
+       3
+      ],
+      [
+       "inconclusive_evidence",
+       "inconclusive_results",
+       3
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       3
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       2
+      ]
+     ],
+     "distribution": {
+      "contradicted": 3,
+      "inconclusive": 1
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.75 (3 of 4; 95% wilson [0.3006, 0.9544] over declared samples)",
+      "fraction of declared samples INCONCLUSIVE: 0.25 (1 of 4; 95% wilson [0.04559, 0.6994] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results",
+        "stress_test_reverses"
+       ],
+       "index": 541,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         23
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         3
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 751,
+       "outcomes": [
+        [
+         "alternative",
+         "inconclusive",
+         11
+        ],
+        [
+         "primary",
+         "inconclusive",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         2
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         12
+        ],
+        [
+         "stress_test",
+         "supports",
+         4
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [
+        "k",
+        "threshold"
+       ],
+       "standing": "inconclusive",
+       "tested": 30
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses"
+       ],
+       "index": 659,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         15
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         19
+        ],
+        [
+         "stress_test",
+         "supports",
+         8
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "control_criterion_unattainable",
+        "inconclusive_results",
+        "stress_test_reverses"
+       ],
+       "index": 445,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         6
+        ],
+        [
+         "alternative",
+         "supports",
+         2
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         19
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         6
+        ],
+        [
+         "stress_test",
+         "supports",
+         2
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+null",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      }
+     ]
+    },
+    "g_sufficient": {
+     "claim_findings": [
+      [
+       "inconclusive_evidence",
+       "control_criterion_unattainable",
+       2
+      ],
+      [
+       "inconclusive_evidence",
+       "inconclusive_results",
+       2
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       3
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       2
+      ]
+     ],
+     "distribution": {
+      "contradicted": 3,
+      "inconclusive": 1
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.75 (3 of 4; 95% wilson [0.3006, 0.9544] over declared samples)",
+      "fraction of declared samples INCONCLUSIVE: 0.25 (1 of 4; 95% wilson [0.04559, 0.6994] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [],
+       "index": 541,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 751,
+       "outcomes": [
+        [
+         "alternative",
+         "inconclusive",
+         7
+        ],
+        [
+         "primary",
+         "inconclusive",
+         1
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         10
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "inconclusive",
+       "tested": 18
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement"
+       ],
+       "index": 659,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "configuration_level_disagreement",
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 445,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         5
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      }
+     ]
+    },
+    "ig_necessary": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "contradiction",
+       "effect_without_competitive_advantage",
+       1
+      ],
+      [
+       "inconclusive_evidence",
+       "control_criterion_unattainable",
+       3
+      ],
+      [
+       "inconclusive_evidence",
+       "inconclusive_results",
+       3
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       2
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       2
+      ],
+      [
+       "protocol_disagreement",
+       "sufficient_not_necessary",
+       1
+      ]
+     ],
+     "distribution": {
+      "contradicted": 2,
+      "inconclusive": 1,
+      "supported": 1
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.5 (2 of 4; 95% wilson [0.15, 0.85] over declared samples)",
+      "fraction of declared samples INCONCLUSIVE: 0.25 (1 of 4; 95% wilson [0.04559, 0.6994] over declared samples)",
+      "fraction of declared samples SUPPORTED: 0.25 (1 of 4; 95% wilson [0.04559, 0.6994] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "control_criterion_unattainable",
+        "inconclusive_results",
+        "stress_test_reverses"
+       ],
+       "index": 541,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         6
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         8
+        ],
+        [
+         "alternative",
+         "supports",
+         3
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         9
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         7
+        ],
+        [
+         "stress_test",
+         "supports",
+         11
+        ]
+       ],
+       "reversal_axes": [
+        "k",
+        "threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 751,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         7
+        ],
+        [
+         "primary",
+         "inconclusive",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         9
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         7
+        ],
+        [
+         "stress_test",
+         "supports",
+         2
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [
+        "null",
+        "threshold"
+       ],
+       "standing": "inconclusive",
+       "tested": 30
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "effect_without_competitive_advantage",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 659,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         13
+        ],
+        [
+         "alternative",
+         "supports",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ],
+        [
+         "stress_test",
+         "supports",
+         12
+        ]
+       ],
+       "reversal_axes": [
+        "null,replacement",
+        "replacement"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 445,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         6
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         21
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         6
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      }
+     ]
+    },
+    "ig_sufficient": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "alternative_reverses",
+       1
+      ],
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       2
+      ],
+      [
+       "inconclusive_evidence",
+       "control_criterion_unattainable",
+       3
+      ],
+      [
+       "inconclusive_evidence",
+       "inconclusive_results",
+       3
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       1
+      ],
+      [
+       "protocol_disagreement",
+       "configuration_level_disagreement",
+       2
+      ],
+      [
+       "protocol_disagreement",
+       "sufficient_not_necessary",
+       1
+      ]
+     ],
+     "distribution": {
+      "contradicted": 1,
+      "inconclusive": 1,
+      "supported": 2
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 0.25 (1 of 4; 95% wilson [0.04559, 0.6994] over declared samples)",
+      "fraction of declared samples INCONCLUSIVE: 0.25 (1 of 4; 95% wilson [0.04559, 0.6994] over declared samples)",
+      "fraction of declared samples SUPPORTED: 0.5 (2 of 4; 95% wilson [0.15, 0.85] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "control_criterion_unattainable",
+        "inconclusive_results",
+        "stress_test_reverses"
+       ],
+       "index": 541,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         4
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         3
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         5
+        ],
+        [
+         "stress_test",
+         "supports",
+         7
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+threshold",
+        "k,replacement,threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement",
+        "threshold"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 751,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         4
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         3
+        ],
+        [
+         "primary",
+         "inconclusive",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         5
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         5
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "inconclusive",
+       "tested": 18
+      },
+      {
+       "codes": [
+        "alternative_reverses",
+        "configuration_level_disagreement",
+        "stress_test_reverses",
+        "sufficient_not_necessary"
+       ],
+       "index": 659,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         2
+        ],
+        [
+         "alternative",
+         "supports",
+         9
+        ],
+        [
+         "primary",
+         "supports",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "supports",
+         14
+        ]
+       ],
+       "reversal_axes": [
+        "combined:k+threshold",
+        "k"
+       ],
+       "sensitive_axes": [
+        "k",
+        "replacement"
+       ],
+       "standing": "supported",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 445,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         5
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      }
+     ]
+    },
+    "r_necessary": {
+     "claim_findings": [
+      [
+       "assumption_sensitive",
+       "stress_test_reverses",
+       1
+      ],
+      [
+       "inconclusive_evidence",
+       "control_criterion_unattainable",
+       3
+      ],
+      [
+       "inconclusive_evidence",
+       "inconclusive_results",
+       3
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       4
+      ]
+     ],
+     "distribution": {
+      "contradicted": 4
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 1 (4 of 4; 95% wilson [0.5101, 1] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 541,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         8
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         20
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         7
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 751,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         16
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         2
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 30
+      },
+      {
+       "codes": [
+        "stress_test_reverses"
+       ],
+       "index": 659,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         17
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         26
+        ],
+        [
+         "stress_test",
+         "supports",
+         1
+        ]
+       ],
+       "reversal_axes": [
+        "combined:null+threshold"
+       ],
+       "sensitive_axes": [
+        "k",
+        "null",
+        "threshold"
+       ],
+       "standing": "contradicted",
+       "tested": 45
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 445,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         9
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         8
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         20
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         7
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 45
+      }
+     ]
+    },
+    "r_sufficient": {
+     "claim_findings": [
+      [
+       "inconclusive_evidence",
+       "control_criterion_unattainable",
+       2
+      ],
+      [
+       "inconclusive_evidence",
+       "inconclusive_results",
+       2
+      ],
+      [
+       "counterexample_found",
+       "counterexamples_present",
+       4
+      ]
+     ],
+     "distribution": {
+      "contradicted": 4
+     },
+     "intervals": [
+      "fraction of declared samples CONTRADICTED: 1 (4 of 4; 95% wilson [0.5101, 1] over declared samples)"
+     ],
+     "per_sample": [
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 541,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         5
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [],
+       "index": 751,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 18
+      },
+      {
+       "codes": [],
+       "index": 659,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         11
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         15
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      },
+      {
+       "codes": [
+        "control_criterion_unattainable",
+        "inconclusive_results"
+       ],
+       "index": 445,
+       "outcomes": [
+        [
+         "alternative",
+         "contradicts",
+         7
+        ],
+        [
+         "alternative",
+         "inconclusive",
+         4
+        ],
+        [
+         "primary",
+         "contradicts",
+         1
+        ],
+        [
+         "stress_test",
+         "contradicts",
+         10
+        ],
+        [
+         "stress_test",
+         "inconclusive",
+         5
+        ]
+       ],
+       "reversal_axes": [],
+       "sensitive_axes": [],
+       "standing": "contradicted",
+       "tested": 27
+      }
+     ]
+    }
+   },
+   "audit_seconds": 5.974273625000933,
+   "n_results": 264,
+   "n_samples": 4,
+   "plan_id": "audit_plan:cc48c5d714642876c81843310fe5f7ec",
+   "results_excluded": 0,
+   "run_seconds": 4977.965399249999,
+   "samples": [
+    {
+     "index": 445,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 4
+     },
+     "margin": 7.590383529663086,
+     "n_units": 18,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 1.6783733367919922,
+      "k": 2,
+      "outcome": "contradicts",
+      "units": [
+       14,
+       17
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:ed93fd45785915644882e156cb5614bc50bef64b32863cbd7cded2374007b002",
+     "text": "even in its most tedious scenes , russian ark is mesmerizing . "
+    },
+    {
+     "index": 541,
+     "ks": {
+      "0.05": 1,
+      "0.1": 2,
+      "0.2": 3
+     },
+     "margin": 8.33899974822998,
+     "n_units": 12,
+     "pred": 1,
+     "primary_single_configuration": {
+      "drop": 4.837858438491821,
+      "k": 2,
+      "outcome": "supports",
+      "units": [
+       3,
+       11
+      ]
+     },
+     "runner_up": 0,
+     "sample_id": "sha256:5a6a110a2e62546f959c0982fca1f3b00027a1e8ad13baaf2b567c3204241276",
+     "text": "the most compelling wiseman epic of recent years . "
+    },
+    {
+     "index": 659,
+     "ks": {
+      "0.05": 2,
+      "0.1": 3,
+      "0.2": 5
+     },
+     "margin": 1.6731725931167603,
+     "n_units": 23,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 1.2315643876791,
+      "k": 3,
+      "outcome": "contradicts",
+      "units": [
+       15,
+       18,
+       22
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:ec5c5abfcb2fc0982ff1536df349cbec13061dbc4ec6891e99e803e8f7ab68e0",
+     "text": "chabrol has taken promising material for a black comedy and turned it instead into a somber chamber drama . "
+    },
+    {
+     "index": 751,
+     "ks": {
+      "0.05": 1,
+      "0.1": 1,
+      "0.2": 2
+     },
+     "margin": 6.961665153503418,
+     "n_units": 10,
+     "pred": 0,
+     "primary_single_configuration": {
+      "drop": 3.1769580841064453,
+      "k": 1,
+      "outcome": "contradicts",
+      "units": [
+       9
+      ]
+     },
+     "runner_up": 1,
+     "sample_id": "sha256:d0b9ec0659d3346b9c43977d7f331ba0e4683796537892e040e457b60ed24f31",
+     "text": "one long string of cliches . "
+    }
+   ],
+   "verify_report": "passed"
+  }
+ },
+ "shard": "8/10",
+ "split": "heldout"
+}

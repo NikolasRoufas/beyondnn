@@ -587,21 +587,361 @@
    "ig_supported": 4,
    "n": 51
   },
+  "B/pixels/all": {
+   "distributions": {
+    "g_necessary": {
+     "contradicted": 23,
+     "supported": 37
+    },
+    "g_sufficient": {
+     "contradicted": 37,
+     "supported": 23
+    },
+    "ig_necessary": {
+     "contradicted": 46,
+     "supported": 14
+    },
+    "ig_sufficient": {
+     "contradicted": 52,
+     "supported": 8
+    },
+    "r_necessary": {
+     "contradicted": 59,
+     "supported": 1
+    },
+    "r_sufficient": {
+     "contradicted": 60
+    }
+   },
+   "g_supported": 37,
+   "ig_configuration_level_disagreement": 54,
+   "ig_control_unattainable": 0,
+   "ig_effect_without_competitive_advantage": 9,
+   "ig_supported": {
+    "estimate": 0.23333333333333334,
+    "high": 0.3543627037760195,
+    "k": 14,
+    "low": 0.1443956173664283,
+    "n": 60,
+    "text": "14/60 = 0.2333 [95% Wilson 0.1444, 0.3544]"
+   },
+   "ig_supported_alternative_reverses": "13/14",
+   "n": 60,
+   "r_supported": {
+    "estimate": 0.016666666666666666,
+    "high": 0.08855129727590058,
+    "k": 1,
+    "low": 0.0029481597947862495,
+    "n": 60,
+    "text": "1/60 = 0.0167 [95% Wilson 0.0029, 0.0886]"
+   },
+   "results_excluded": 0
+  },
   "B/pixels/phase7_5": {
    "ig_supported": 14,
    "n": 60
+  },
+  "B/relu2/all": {
+   "distributions": {
+    "g_necessary": {
+     "contradicted": 59,
+     "supported": 1
+    },
+    "g_sufficient": {
+     "contradicted": 59,
+     "supported": 1
+    },
+    "ig_necessary": {
+     "contradicted": 57,
+     "inconclusive": 2,
+     "supported": 1
+    },
+    "ig_sufficient": {
+     "contradicted": 56,
+     "inconclusive": 2,
+     "supported": 2
+    },
+    "r_necessary": {
+     "contradicted": 60
+    },
+    "r_sufficient": {
+     "contradicted": 59,
+     "supported": 1
+    }
+   },
+   "g_supported": 1,
+   "ig_configuration_level_disagreement": 32,
+   "ig_control_unattainable": 60,
+   "ig_effect_without_competitive_advantage": 2,
+   "ig_supported": {
+    "estimate": 0.016666666666666666,
+    "high": 0.08855129727590058,
+    "k": 1,
+    "low": 0.0029481597947862495,
+    "n": 60,
+    "text": "1/60 = 0.0167 [95% Wilson 0.0029, 0.0886]"
+   },
+   "ig_supported_alternative_reverses": "1/1",
+   "n": 60,
+   "r_supported": {
+    "estimate": 0.0,
+    "high": 0.06017185214208982,
+    "k": 0,
+    "low": 0.0,
+    "n": 60,
+    "text": "0/60 = 0.0000 [95% Wilson 0.0000, 0.0602]"
+   },
+   "results_excluded": 0
   },
   "B/relu2/phase7_5": {
    "ig_supported": 1,
    "n": 60
   },
+  "C/tokens/all": {
+   "distributions": {
+    "g_necessary": {
+     "contradicted": 25,
+     "inconclusive": 5,
+     "supported": 10
+    },
+    "g_sufficient": {
+     "contradicted": 28,
+     "inconclusive": 5,
+     "supported": 7
+    },
+    "ig_necessary": {
+     "contradicted": 21,
+     "inconclusive": 5,
+     "supported": 14
+    },
+    "ig_sufficient": {
+     "contradicted": 20,
+     "inconclusive": 5,
+     "supported": 15
+    },
+    "r_necessary": {
+     "contradicted": 36,
+     "inconclusive": 4
+    },
+    "r_sufficient": {
+     "contradicted": 35,
+     "inconclusive": 4,
+     "supported": 1
+    }
+   },
+   "g_supported": 10,
+   "ig_configuration_level_disagreement": 33,
+   "ig_control_unattainable": 31,
+   "ig_effect_without_competitive_advantage": 3,
+   "ig_supported": {
+    "estimate": 0.35,
+    "high": 0.504941191627423,
+    "k": 14,
+    "low": 0.22134528873176296,
+    "n": 40,
+    "text": "14/40 = 0.3500 [95% Wilson 0.2213, 0.5049]"
+   },
+   "ig_supported_alternative_reverses": "13/14",
+   "n": 40,
+   "r_supported": {
+    "estimate": 0.0,
+    "high": 0.0876216011972866,
+    "k": 0,
+    "low": 0.0,
+    "n": 40,
+    "text": "0/40 = 0.0000 [95% Wilson 0.0000, 0.0876]"
+   },
+   "results_excluded": 0
+  },
+  "C/tokens/content_tokens": {
+   "distributions": {
+    "g_necessary": {
+     "contradicted": 26,
+     "inconclusive": 5,
+     "supported": 9
+    },
+    "g_sufficient": {
+     "contradicted": 29,
+     "inconclusive": 5,
+     "supported": 6
+    },
+    "ig_necessary": {
+     "contradicted": 23,
+     "inconclusive": 6,
+     "supported": 11
+    },
+    "ig_sufficient": {
+     "contradicted": 21,
+     "inconclusive": 6,
+     "supported": 13
+    },
+    "r_necessary": {
+     "contradicted": 34,
+     "inconclusive": 4,
+     "supported": 2
+    },
+    "r_sufficient": {
+     "contradicted": 32,
+     "inconclusive": 4,
+     "supported": 4
+    }
+   },
+   "g_supported": 9,
+   "ig_configuration_level_disagreement": 32,
+   "ig_control_unattainable": 37,
+   "ig_effect_without_competitive_advantage": 4,
+   "ig_supported": {
+    "estimate": 0.275,
+    "high": 0.4283495580621056,
+    "k": 11,
+    "low": 0.16108016247667345,
+    "n": 40,
+    "text": "11/40 = 0.2750 [95% Wilson 0.1611, 0.4283]"
+   },
+   "ig_supported_alternative_reverses": "10/11",
+   "n": 40,
+   "r_supported": {
+    "estimate": 0.05,
+    "high": 0.16503877369140957,
+    "k": 2,
+    "low": 0.013820667386148358,
+    "n": 40,
+    "text": "2/40 = 0.0500 [95% Wilson 0.0138, 0.1650]"
+   },
+   "results_excluded": 0
+  },
   "C/tokens/phase7_5": {
    "ig_supported": 14,
    "n": 40
   },
+  "D/tokens/all": {
+   "distributions": {
+    "g_necessary": {
+     "contradicted": 29,
+     "inconclusive": 6,
+     "supported": 5
+    },
+    "g_sufficient": {
+     "contradicted": 33,
+     "inconclusive": 6,
+     "supported": 1
+    },
+    "ig_necessary": {
+     "contradicted": 23,
+     "inconclusive": 6,
+     "supported": 11
+    },
+    "ig_sufficient": {
+     "contradicted": 24,
+     "inconclusive": 6,
+     "supported": 10
+    },
+    "r_necessary": {
+     "contradicted": 34,
+     "inconclusive": 5,
+     "supported": 1
+    },
+    "r_sufficient": {
+     "contradicted": 34,
+     "inconclusive": 5,
+     "supported": 1
+    }
+   },
+   "g_supported": 5,
+   "ig_configuration_level_disagreement": 33,
+   "ig_control_unattainable": 32,
+   "ig_effect_without_competitive_advantage": 6,
+   "ig_supported": {
+    "estimate": 0.275,
+    "high": 0.4283495580621056,
+    "k": 11,
+    "low": 0.16108016247667345,
+    "n": 40,
+    "text": "11/40 = 0.2750 [95% Wilson 0.1611, 0.4283]"
+   },
+   "ig_supported_alternative_reverses": "11/11",
+   "n": 40,
+   "r_supported": {
+    "estimate": 0.025,
+    "high": 0.12881368963474085,
+    "k": 1,
+    "low": 0.0044268315026814165,
+    "n": 40,
+    "text": "1/40 = 0.0250 [95% Wilson 0.0044, 0.1288]"
+   },
+   "results_excluded": 0
+  },
+  "D/tokens/content_tokens": {
+   "distributions": {
+    "g_necessary": {
+     "contradicted": 27,
+     "inconclusive": 10,
+     "supported": 3
+    },
+    "g_sufficient": {
+     "contradicted": 29,
+     "inconclusive": 10,
+     "supported": 1
+    },
+    "ig_necessary": {
+     "contradicted": 24,
+     "inconclusive": 10,
+     "supported": 6
+    },
+    "ig_sufficient": {
+     "contradicted": 27,
+     "inconclusive": 10,
+     "supported": 3
+    },
+    "r_necessary": {
+     "contradicted": 29,
+     "inconclusive": 9,
+     "supported": 2
+    },
+    "r_sufficient": {
+     "contradicted": 31,
+     "inconclusive": 9
+    }
+   },
+   "g_supported": 3,
+   "ig_configuration_level_disagreement": 20,
+   "ig_control_unattainable": 37,
+   "ig_effect_without_competitive_advantage": 2,
+   "ig_supported": {
+    "estimate": 0.15,
+    "high": 0.290723243664897,
+    "k": 6,
+    "low": 0.07061187717320358,
+    "n": 40,
+    "text": "6/40 = 0.1500 [95% Wilson 0.0706, 0.2907]"
+   },
+   "ig_supported_alternative_reverses": "6/6",
+   "n": 40,
+   "r_supported": {
+    "estimate": 0.05,
+    "high": 0.16503877369140957,
+    "k": 2,
+    "low": 0.013820667386148358,
+    "n": 40,
+    "text": "2/40 = 0.0500 [95% Wilson 0.0138, 0.1650]"
+   },
+   "results_excluded": 0
+  },
   "D/tokens/phase7_5": {
    "ig_supported": 11,
    "n": 40
+  },
+  "SX1": {
+   "d1": 11,
+   "d2": 6,
+   "holds": true
+  },
+  "SX2": {
+   "holds": true,
+   "reversed": "6/6"
+  },
+  "SX3": {
+   "holds": true
   }
  },
  "concepts": {
@@ -1372,5 +1712,18 @@
   "policy": "docs/PHASE_7_75_PLAN.md \u00a78 (analysis only; no sample removed)"
  },
  "policy": "docs/PHASE_7_75_PLAN.md (frozen at b355129)",
- "special_tokens": {}
+ "special_tokens": {
+  "all": {
+   "ig_supported": 11,
+   "ig_supported_with_special_token": 10,
+   "n": 40,
+   "primary_selections_with_special_token": 30
+  },
+  "content_tokens": {
+   "ig_supported": 6,
+   "ig_supported_with_special_token": 0,
+   "n": 40,
+   "primary_selections_with_special_token": 0
+  }
+ }
 }
