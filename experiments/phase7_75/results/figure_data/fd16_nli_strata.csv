@@ -1,0 +1,7 @@
+selection,stratum,supported,n
+human,empty_premise_same_prediction,5,17
+human,needs_premise,5,23
+ig,empty_premise_same_prediction,5,17
+ig,needs_premise,2,23
+random,empty_premise_same_prediction,1,17
+random,needs_premise,2,23

@@ -1,0 +1,13 @@
+concept,known,encoding_cov,use_rel,use_effect,rel_min_change,validation_rel_cov,validation_abs_cov,audit_rel_strict
+cho_b_c/K+,positive,supports,supports,-0.2217,0.0176,validated_concept,validated_concept,supported
+cho_b_c/K-,decodable_unused,supports,contradicts,0.0,0.0176,proposed_concept,proposed_concept,unsupported
+cho_b_c/K0,negative,contradicts,supports,-0.1232,0.0176,proposed_concept,proposed_concept,unsupported
+cho_c_d/K+,positive,supports,supports,-0.2667,0.021,validated_concept,validated_concept,supported
+cho_c_d/K-,decodable_unused,supports,contradicts,0.0,0.021,proposed_concept,proposed_concept,unsupported
+cho_c_d/K0,negative,contradicts,supports,-0.1405,0.021,proposed_concept,proposed_concept,unsupported
+cho_half_e_b/K+,positive,supports,supports,-0.1569,0.0123,validated_concept,validated_concept,supported
+cho_half_e_b/K-,decodable_unused,supports,contradicts,0.0,0.0123,proposed_concept,proposed_concept,unsupported
+cho_half_e_b/K0,negative,contradicts,supports,-0.0973,0.0123,proposed_concept,proposed_concept,unsupported
+cho_x_a/K+,positive,supports,supports,-0.3042,0.017,validated_concept,validated_concept,supported
+cho_x_a/K-,decodable_unused,supports,contradicts,0.0,0.017,proposed_concept,proposed_concept,unsupported
+cho_x_a/K0,negative,contradicts,supports,-0.1873,0.017,proposed_concept,proposed_concept,unsupported

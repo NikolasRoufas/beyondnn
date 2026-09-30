@@ -1,0 +1,7 @@
+claims,truth,supported,contradicted,unsupported,inconclusive,other
+node,empty,0,0,0,120,0
+node,known_false,0,400,0,0,0
+node,known_true,591,169,0,0,0
+ig_selection,empty,0,0,0,0,0
+ig_selection,known_false,0,57,0,0,0
+ig_selection,known_true,146,37,0,0,0

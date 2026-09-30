@@ -1,0 +1,13 @@
+configuration,supports_on_used,used,supports_on_decoy,decoy,supports_on_empty,empty
+tensor/mean|none|min_dropx0.5,760,760,0,400,0,0
+tensor/mean|none|min_dropx1.5,0,760,0,400,0,0
+tensor/mean|none|recorded,586,760,0,400,0,120
+tensor/resample|count|min_dropx0.5,0,280,0,200,0,0
+tensor/resample|count|min_dropx1.5,0,280,0,200,0,0
+tensor/resample|count|recorded,0,280,0,200,0,80
+tensor/resample|none|min_dropx0.5,591,760,0,400,0,0
+tensor/resample|none|min_dropx1.5,591,760,0,400,0,0
+tensor/resample|none|recorded,591,760,0,400,0,120
+zero|none|min_dropx0.5,760,760,400,400,0,0
+zero|none|min_dropx1.5,0,760,0,400,0,0
+zero|none|recorded,760,760,400,400,0,120

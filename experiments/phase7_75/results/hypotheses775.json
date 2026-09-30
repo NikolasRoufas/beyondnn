@@ -480,9 +480,108 @@
   "truth_source": "program source + weight structure"
  },
  "central": {
+  "A/input/all": {
+   "distributions": {
+    "g_necessary": {
+     "contradicted": 50,
+     "supported": 1
+    },
+    "g_sufficient": {
+     "contradicted": 49,
+     "supported": 2
+    },
+    "ig_necessary": {
+     "contradicted": 43,
+     "supported": 8
+    },
+    "ig_sufficient": {
+     "contradicted": 39,
+     "supported": 12
+    },
+    "r_necessary": {
+     "contradicted": 50,
+     "supported": 1
+    },
+    "r_sufficient": {
+     "contradicted": 50,
+     "supported": 1
+    }
+   },
+   "g_supported": 1,
+   "ig_configuration_level_disagreement": 48,
+   "ig_control_unattainable": 14,
+   "ig_effect_without_competitive_advantage": 1,
+   "ig_supported": {
+    "estimate": 0.1568627450980392,
+    "high": 0.2801044677298776,
+    "k": 8,
+    "low": 0.08169223220048707,
+    "n": 51,
+    "text": "8/51 = 0.1569 [95% Wilson 0.0817, 0.2801]"
+   },
+   "ig_supported_alternative_reverses": "7/8",
+   "n": 51,
+   "r_supported": {
+    "estimate": 0.0196078431372549,
+    "high": 0.10304568726144969,
+    "k": 1,
+    "low": 0.0034696926410608467,
+    "n": 51,
+    "text": "1/51 = 0.0196 [95% Wilson 0.0035, 0.1030]"
+   },
+   "results_excluded": 0
+  },
   "A/input/phase7_5": {
    "ig_supported": 8,
    "n": 51
+  },
+  "A/net.1/all": {
+   "distributions": {
+    "g_necessary": {
+     "contradicted": 51
+    },
+    "g_sufficient": {
+     "contradicted": 48,
+     "supported": 3
+    },
+    "ig_necessary": {
+     "contradicted": 47,
+     "supported": 4
+    },
+    "ig_sufficient": {
+     "contradicted": 38,
+     "supported": 13
+    },
+    "r_necessary": {
+     "contradicted": 51
+    },
+    "r_sufficient": {
+     "contradicted": 51
+    }
+   },
+   "g_supported": 0,
+   "ig_configuration_level_disagreement": 41,
+   "ig_control_unattainable": 0,
+   "ig_effect_without_competitive_advantage": 0,
+   "ig_supported": {
+    "estimate": 0.0784313725490196,
+    "high": 0.18499946312595883,
+    "k": 4,
+    "low": 0.03092219678848919,
+    "n": 51,
+    "text": "4/51 = 0.0784 [95% Wilson 0.0309, 0.1850]"
+   },
+   "ig_supported_alternative_reverses": "2/4",
+   "n": 51,
+   "r_supported": {
+    "estimate": 0.0,
+    "high": 0.07004661989853138,
+    "k": 0,
+    "low": 0.0,
+    "n": 51,
+    "text": "0/51 = 0.0000 [95% Wilson 0.0000, 0.0700]"
+   },
+   "results_excluded": 0
   },
   "A/net.1/phase7_5": {
    "ig_supported": 4,

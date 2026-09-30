@@ -1,0 +1,37 @@
+{
+ "fd10_td_truth_table.csv": {
+  "rows": "6",
+  "shows": "every truth x PRIMARY-standing cell on the held-out TD programs (program-defined truth)",
+  "source": "hypotheses775.json -> TD.node_truth_table / selection_truth_table"
+ },
+ "fd11_td_components.csv": {
+  "rows": "32",
+  "shows": "per component: samples PRIMARY-SUPPORTED (mechanism-level view)",
+  "source": "hypotheses775.json -> TD.components"
+ },
+ "fd12_td_per_configuration.csv": {
+  "rows": "12",
+  "shows": "each configuration as if it were the only one, under program-defined truth (zero ablation supports every decoy)",
+  "source": "hypotheses775.json -> TD.per_configuration"
+ },
+ "fd13_td_concepts.csv": {
+  "rows": "12",
+  "shows": "known used / decodable-unused / negative concepts under the frozen relative rule (and the absolute 0.1 for comparison)",
+  "source": "hypotheses775.json -> concepts.table"
+ },
+ "fd14_concept_calibration.csv": {
+  "rows": "90",
+  "shows": "constructed models: the absolute rule changes with output scale, the relative rule does not",
+  "source": "concept_calibration.json -> grid"
+ },
+ "fd15_central_775.csv": {
+  "rows": "2",
+  "shows": "central held-out re-runs under ADR-053/054 (all units vs content tokens)",
+  "source": "hypotheses775.json -> central"
+ },
+ "fd16_nli_strata.csv": {
+  "rows": "6",
+  "shows": "e-SNLI necessity supports by empty-premise predictability (analysis only)",
+  "source": "nli_strata.json"
+ }
+}
