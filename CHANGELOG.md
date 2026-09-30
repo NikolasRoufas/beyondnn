@@ -7,6 +7,25 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+Pre-release (`0.0.0.dev0`, not yet on PyPI).
+- **Public API:** frozen ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)).
+- **Development history:** entries below the release-preparation section record the pre-registered development stages (see [`docs/README.md`](docs/README.md#development-history)), including negative results.
+
+### Public release preparation
+- **Documentation:**
+  - README rewritten for external users: concepts, installation, quickstart, end-to-end example, validation (scoped) and limitations;
+  - documentation index reorganised by topic;
+  - `docs/REPRODUCIBILITY.md` and `experiments/README.md` added.
+- **Examples:** numbered public-API examples `01_quickstart.py` … `07_save_reload.py`, all executed by the test suite. The earlier examples were renamed: `phase4_redundant_path.py` → `03_intervention.py`, `phase6_concepts.py` → `05_concepts.py`, `phase7_audit.py` → `06_audit.py`.
+- **Packaging:**
+  - project URLs, author, classifiers;
+  - a `dev` dependency group for `uv sync`;
+  - `uv.lock`;
+  - the wheel contains only the `beyondnn` package;
+  - the sdist include list is anchored.
+- **Community files:** `CONTRIBUTING.md` (uv workflow, scientific rules, invariants, migrations), `SECURITY.md` (GitHub private vulnerability reporting), Code of Conduct contact route, `CITATION.cff` (software).
+- **GitHub:** CI (tests on Python 3.10 / 3.12 / 3.14, a Captum job, lint, mypy, build and clean-wheel checks), a manual build-only release workflow, issue and PR templates, Dependabot.
+
 ### Changed (pre-Phase-8 hardening)
 - **Audit reports (format 3)** record their `producer` (BeyondNN version, audit semantics; ADR-056). Format 2 still loads. `verify_report` compares scientific content and names a semantics difference.
 - **Trace load errors** name the trace directory.

@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use BeyondNN in your research, please cite the software as below."
+type: software
+title: "BeyondNN: auditable interpretability evidence for PyTorch"
+abstract: >-
+  BeyondNN turns claims about neural-network computation into structured,
+  provenance-aware, testable objects and audits them against recorded evidence:
+  epistemic status for every record, declared claims, controlled interventions with
+  explicit replacements, configuration roles, and deterministic, re-derivable audits
+  without a global score.
+authors:
+  - family-names: Roufas
+    given-names: Nikolaos
+version: 0.0.0.dev0
+license: Apache-2.0
+repository-code: "https://github.com/NikolasRoufas/beyondnn"
+url: "https://github.com/NikolasRoufas/beyondnn"
+keywords:
+  - interpretability
+  - pytorch
+  - mechanistic interpretability
+  - provenance
+  - causal interventions
+  - research software

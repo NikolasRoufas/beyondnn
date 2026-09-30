@@ -2,17 +2,21 @@
 
 ## Supported versions
 
-BeyondNN has not been released. There are no supported versions yet.
+BeyondNN is pre-release software (`0.0.x`, not yet on PyPI). Security fixes are made on the `main` branch only.
 
 ## Reporting a vulnerability
 
-Please do **not** open a public issue for security problems. Report them privately to
-**[INSERT SECURITY CONTACT]**, or via GitHub private vulnerability reporting once the repository is public.
+Please do **not** open a public issue for a security problem.
 
-## Known security-relevant design points
+Report it privately through GitHub:
+1. Go to **Security → Report a vulnerability** in this repository (GitHub private vulnerability reporting).
+2. Describe the issue, the affected version or commit, and how to reproduce it.
 
-- **Loading traces.** Tensor sidecar files are loaded with `torch.load(weights_only=True)`, so
-  loading a trace never executes pickled code. Do not load traces with `weights_only=False`.
-- **Untrusted models.** Tracing executes the model's `forward`. BeyondNN does not sandbox model code.
-- **Generated text.** Optional LLM-generated summaries (a future feature) are untrusted content and are
-  always labelled `GENERATED`.
+Reports are visible only to the maintainers. You should receive an acknowledgement within a week.
+
+## Security-relevant design points
+
+- **Loading traces.** Tensor sidecar files are loaded with `torch.load(weights_only=True)`, so loading a trace never executes pickled code. Saved traces and reports are plain JSON plus that tensor file. Do not load traces with `weights_only=False`.
+- **Integrity is not authenticity.** Record ids are content hashes, and loading re-validates every record, so accidental corruption and inconsistent edits are refused. A hash is not a signature: anyone who can write a trace can write a self-consistent one. Treat evidence from untrusted sources accordingly.
+- **Untrusted models.** Tracing and interventions execute the model's `forward`. BeyondNN does not sandbox model code.
+- **Generated text.** Any model- or template-generated label is untrusted content and is always labelled `GENERATED`.
