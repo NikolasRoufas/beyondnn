@@ -11,7 +11,7 @@
 
 ## 2. Ending HEAD
 
-⟨FINAL⟩
+The commit that adds this final section text ("Phase 7.75 report: final commits and status"), directly after `8e93f2a`.
 
 ## 3. Baseline tests
 
@@ -463,11 +463,29 @@ No policy was changed after seeing held-out results. DV-1 was procedural and out
 
 ## 52. Commits
 
-⟨COMMITS⟩
+18 local commits after `7ec2493`, the last being the report-completion commit. No Claude attribution trailers (owner's rule).
+
+- `920f1cc` Declared unit eligibility (ADR-053); unattainable control criteria are inconclusive and competitive-only failures are distinguished (ADR-054); concept min_change in target scale (ADR-055)
+- `b355129` Phase 7.75 FROZEN plan, independent-ground-truth review, experiment code (TD programs, concepts, central re-runs, InterpBench re-audit), development evidence; Phase-7.5 results pinned (before any held-out Phase-7.75 run)
+- `fbb2cf0` Phase 7.75 adversarial tests (eligibility, control attainability, competitive failure, persistence, known concepts, independence), analysis helpers, mutation script, NLI shortcut stratification
+- `a5fd344` Phase 7.75 held-out TD (independent program-defined truth): TD1-TD8 hold; evaluation script
+- `3bd906f` Phase 7.75 external-researcher workflow with declared unit eligibility: passes from a clean wheel, identical after restart
+- `83db388` Docs: unit eligibility, unattainable controls, competitive-only failure, report claim order; API-freeze additions; changelog
+- `a62f301` Phase 7.75 scientific-fixes record (changes, justifications, affected evidence, re-runs)
+- `b5478b4` Tests closing three surviving Phase-7.75 mutations (experiment threshold constant, replacement name in the audit axis, audit-plan v2 selection migration)
+- `9f08859` Phase 7.75 mutations: 19/19 killed (3 after added tests)
+- `6560d86` Phase 7.75 held-out concepts (KC1, KC2 hold), case-39 re-run (not blind; label lookup fixed as in Phase 7.5), InterpBench re-audit under ADR-054 (PRIMARY unchanged; count null unattainable)
+- `7002ec3` Lint: td_concepts label lookup
+- `a156d7e` Phase 7.75 deviation DV-1 (crash: D shards re-partitioned into 10 resumable shards; no outcome seen); central A held-out re-run under ADR-054
+- `8d59f4b` Phase 7.75 figure-data script and tables (TD, concepts, calibration, central, NLI strata)
+- `bfdba15` Phase 7.75: central B, C1, C2 held-out re-runs; regression matrix (1038+1 / 1059 on 3.10/3.12/3.14); typing fixes in the new tests
+- `b407070` Phase 7.75 report draft (model-D sections, gate and claims pending)
+- `bb303eb` Phase 7.75 model D held-out: D1 (all tokens) and D2 (content tokens), 10+10 shards merged; audit benchmark baseline vs HEAD
+- `8e93f2a` Phase 7.75 docs: report sections for D1/D2, claims and gate; final paper-claim freeze in the ledger; paper readiness; figure candidates; roadmap; experiment log; docs index
 
 ## 53. Git status
 
-⟨STATUS⟩
+Clean after the final commit. Git-ignored `experiments/phase7_75/artifacts/` holds logs, reports, queue scripts and the wheel-check environment.
 
 ## 54. Pushed / published status
 
