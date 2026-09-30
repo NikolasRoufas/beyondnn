@@ -198,6 +198,22 @@ Detailed plan: [`PHASE_1_PLAN.md`](PHASE_1_PLAN.md) (milestones M1.0–M1.10).
 
 Trace 3B stays out of scope.
 
+## Phase 7.75: Scientific problem resolution and evidence freeze: **gate SCIENTIFICALLY READY FOR PHASE 8 WITH PAPER LIMITATIONS** (2026-09-30; `docs/PHASE_7_75_REPORT.md`, ADR-053 to ADR-055)
+
+**Done:**
+- independent known-mechanism benchmark (TD: Tracr programs with program-defined truth; 0/400 decoys supported);
+- declared unit eligibility (content vs all tokens);
+- unattainable control criteria are inconclusive; competitive-only failures flagged;
+- scale-relative concept use threshold (4/4 held-out positives, 0/8 negatives);
+- D1 / D2, C1 / C2; InterpBench and central re-audits;
+- final paper-claim freeze (`research/PAPER_EVIDENCE_LEDGER.md`).
+
+**Paper limitations:**
+- Claims F and G hold only with qualifiers (compiled programs; programs with known use).
+- There is no independent truth on trained models.
+
+**Phase 8 must stay boring:** packaging, CI, docs, release metadata, reproducibility. No methodology changes.
+
 ## Phase 8: Benchmark
 - Capability and correctness vs nnsight, Captum, TransformerLens, and pyvene on the tiny models, plus runtime and memory.
 - Ease of use is assessed through task scripts and reported qualitatively.

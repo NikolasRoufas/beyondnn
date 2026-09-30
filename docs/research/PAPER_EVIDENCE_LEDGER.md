@@ -245,3 +245,105 @@
   - 24/24 audit mutations killed;
   - the audit costs 1–13 s per few-sample setting, while BERT-base evidence generation costs about 10–19 min and about 225 MB per sample.
 - **Allowed wording:** the measured values with the machine caveat.
+
+---
+
+# Final paper-claim freeze (Phase 7.75)
+
+- **Labels are documentation labels, not audit standings:** SUPPORTED FOR PAPER / SUPPORTED WITH REQUIRED QUALIFIER / EXPLORATORY ONLY / REJECTED.
+- **Sources:** `experiments/phase7_75/results/hypotheses775.json` (computed by `evaluate775.py`) and the Phase-7 / 7.5 entries above.
+- **Intervals:** 95% Wilson unless marked.
+
+## Claim A: interpretability conclusions change materially under scientifically reasonable intervention and control choices
+
+- **Label:** SUPPORTED FOR PAPER.
+- **Allowed wording:** "Across six held-out model sites (MLP, CNN, BERT-tiny, BERT-base), 47 of the 52 samples on which IG's top-k was PRIMARY-supported as necessary were reversed by at least one pre-declared reasonable alternative configuration."
+- **Disallowed wording:**
+  - "explanations are arbitrary";
+  - "most published attribution results are wrong".
+- **Sources:**
+  - central 7.75 re-runs (A/input 7/8, A/net.1 2/4, B/pixels 13/14, B/relu2 1/1, C 13/14, D1 11/11);
+  - D2 6/6; C2 10/11;
+  - TD: zero vs resample give opposite answers on every decoy (400/400);
+  - InterpBench per-configuration TP/FP (Phase 7.5).
+- **Counterevidence:** the alternatives were declared by us. A different declared set could reverse fewer, and CH7 uses our role declarations.
+- **Scope:** 6 sites, 40–60 held-out samples each; single seeds and checkpoints.
+- **Uncertainty:** per-site Wilson intervals are wide (e.g. D1 support 11/40 [0.16, 0.43]).
+
+## Claim B: attribution evidence alone is insufficient to establish causal necessity
+
+- **Label:** SUPPORTED FOR PAPER.
+- **Allowed wording:**
+  - "Attribution-only evidence was never accepted for a causal claim (UNSUPPORTED on every such claim: 280 central, 1,960 InterpBench and 240 TD selection claims)."
+  - "Where independent truth exists, IG selected a decoy head in 57 of 240 selections and a wrong InterpBench head in 1,571 of 1,960. The audit contradicted every one of them when intervention evidence was supplied."
+- **Disallowed wording:** "IG is wrong 80% of the time" (the rate depends on the benchmark).
+- **Counterevidence:** none observed.
+- **Scope:** the IG / gradient configurations used.
+
+## Claim C: explicit claim / evidence typing catches unsupported causal inferences
+
+- **Label:** SUPPORTED WITH REQUIRED QUALIFIER.
+- **Qualifier:** "for the evidence types BeyondNN records, on pre-registered scenarios and external benchmarks".
+- **Allowed wording:** "The audit refused attribution-to-causal, decodability-to-use and generated-label-to-validation inferences in every pre-registered scenario (14/14 + tamper), and never used evidence about a different unit eligibility for a claim (tested; mutation-killed)."
+- **Disallowed wording:** "catches all unsupported inferences".
+- **Counterevidence:** the scenarios were written by us. External cases cover only the attribution → causal and decodable → use types.
+
+## Claim D: provenance-bound auditing reproduces evidence after save / restart / load
+
+- **Label:** SUPPORTED FOR PAPER.
+- **Allowed wording:** "Audits re-derived from saved traces in a fresh process, from a clean wheel and with the public API only, were identical to the in-process audits, including declared unit eligibility; `verify_report` passed on every Phase-7.5 / 7.75 report."
+- **Disallowed wording:** "bit-identical across hardware" (not tested).
+- **Scope:** one machine; Python 3.10 / 3.12 / 3.14.
+
+## Claim E: configuration-sensitive results are surfaced without a global score
+
+- **Label:** SUPPORTED FOR PAPER (design claim, demonstrated).
+- **Allowed wording:** "Standings come from pre-declared PRIMARY configurations; every other configuration's disagreement is reported as a typed finding with its axis, and per-sample sensitivity profiles list raw counts. No aggregate score exists in the API (ADR-007)."
+- **Disallowed wording:** "BeyondNN quantifies robustness".
+- **Counterevidence:** role declarations drive what counts as a reversal (see Claim A).
+
+## Claim F: BeyondNN distinguishes correct and incorrect mechanism claims under independently defined ground truth
+
+- **Label:** SUPPORTED WITH REQUIRED QUALIFIER.
+- **Qualifier:** "on compiled Tracr programs with program-defined truth".
+- **Allowed wording:** "On 8 held-out compiled programs whose ground truth comes from the program text and weights (not from any intervention), the audit's PRIMARY standing supported 0 of 400 decoy-component instances, including 0/160 decoys that are exact copies of the used variable and 0/57 decoys selected by IG. It supported every used component on 28–38 of 40 samples (591/760 instances, 77.8% [74.7, 80.6])."
+- **Disallowed wording:**
+  - "BeyondNN identifies correct mechanisms in trained models";
+  - "100% accuracy";
+  - any use of the InterpBench 942/942 as independent validation (it is an implementation-consistency check).
+- **Counterevidence:**
+  - 169/760 known-true instances were CONTRADICTED: single resample counterfactuals that did not change the used value;
+  - zero ablation supported all 400 decoys (it is a STRESS_TEST here).
+- **Scope:** 1–2 layers, ≤ 3 heads, one-hot variables.
+
+## Claim G: concept validation distinguishes decodability from causal use
+
+- **Label:** SUPPORTED WITH REQUIRED QUALIFIER.
+- **Qualifier:** "on constructed and compiled programs with known use, under a use threshold stated in the target's scale (ADR-055)".
+- **Allowed wording:** "Under the frozen scale-relative criterion, all 4 held-out known-used concepts were validated, and none of 4 decodable-but-unused and 4 permuted-label concepts was. On constructed models, the verdict of an absolute threshold changed with the output's scale while the relative criterion's did not."
+- **Disallowed wording:**
+  - "concept validation is externally validated on trained models";
+  - "the Tracr case-39 concept is validated" as confirmatory evidence (case 39 was not blind).
+- **Counterevidence:**
+  - on the held-out TD programs the absolute rule would also have validated the positives (effects 0.16–0.30), so they do not discriminate between the rules;
+  - Phase 7.5's absolute rule rejected the known positive.
+
+## ACL-facing claims
+
+- **Special tokens: SUPPORTED WITH REQUIRED QUALIFIER.**
+  - **Allowed:** "On BERT-base SST-2, 10 of the 11 samples where IG's top tokens were necessary included [SEP]. When the claim is restricted to content tokens (declared, not silently filtered), IG is supported on 6/40 [0.07, 0.29], and 3 of the 11 all-token supports survive."
+  - **Qualifier:** one model; 40 samples.
+- **Plausibility vs faithfulness: SUPPORTED WITH REQUIRED QUALIFIER.**
+  - **Allowed:** "IG agreed with annotator-1 highlights more than random spans did (F1 +0.149, Bonferroni [0.031, 0.270]), yet the human highlight was necessary on more samples than IG's selection (10 vs 7 of 40; paired difference −0.075 [−0.225, 0.075])."
+  - **Qualifier:** one annotator; one NLI model; n = 40.
+- **Token-replacement OOD is model-dependent: SUPPORTED WITH REQUIRED QUALIFIER.**
+  - **Allowed:** "Which of zero and [MASK] was more out-of-distribution reversed between two BERT-base fine-tunes."
+  - **Qualifier:** two models.
+- **NLI shortcut stratification: EXPLORATORY ONLY.** IG's 7 supports: 5 in the 17 empty-premise-predictable samples, 2 in the 23 others.
+
+## Rejected claims
+
+- "BeyondNN identifies correct mechanisms in trained models" (no independent truth on trained models).
+- "Zero ablation is invalid" (it is a stress test whose FP rate depends on the encoding: 100% on one-hot TD, 13% on InterpBench).
+- "The count-matched null shows necessary heads are not better than random" (the criterion was unattainable; ADR-054).
+- "A universal safe token replacement exists".

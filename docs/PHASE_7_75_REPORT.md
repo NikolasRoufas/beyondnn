@@ -191,15 +191,52 @@ Under program-defined truth, the audit's PRIMARY standing:
 
 ## 22. All-token D result (D1)
 
-⟨D1⟩
+`central775_D_heldout_all.json`: 40 samples, 2,736 results, 0 excluded, `verify_report` passed in all 10 shards.
+
+**IG_necessary:**
+- PRIMARY SUPPORTED on **11/40 = 0.275 [0.16, 0.43]**, the same 11 samples as Phase 7.5;
+- `alternative_reverses` on **11/11**;
+- configuration-level disagreement on 33/40;
+- **6 samples** moved from CONTRADICTED to INCONCLUSIVE (`control_criterion_unattainable`);
+- `effect_without_competitive_advantage` on 6.
+
+**Other claims:** R_necessary 1/40; G_necessary 5/40.
+
+**Special tokens:** [SEP] (or [CLS]) is in the PRIMARY IG selection on **30/40** samples, and on **10 of the 11** supported ones.
 
 ## 23. Content-token D result (D2)
 
-⟨D2⟩
+`central775_D_heldout_content_tokens.json`: 40 samples, 0 excluded, `verify_report` passed in all 10 shards.
+
+**Eligibility:** eligible positions exclude [CLS] and [SEP]. There is no padding, since every run uses batch 1.
+
+**IG_necessary:**
+- PRIMARY SUPPORTED on **6/40 = 0.15 [0.07, 0.29]**;
+- `alternative_reverses` on **6/6**;
+- configuration-level disagreement on 20/40;
+- 10 samples INCONCLUSIVE: with k = 1 content token, the control criterion is often unattainable.
+
+**Other claims:** R_necessary 2/40 [0.014, 0.165]; G_necessary 3/40.
+
+**Hypotheses:** SX1 held (6 ≤ 11); SX2 held (6/6 ≥ 20%); SX3 held (IG 6 ≥ R 2).
+
+**Selected units:** sentiment-bearing words ("loved", "compelling", "painful", "superior", "well", "hole", "somber", …).
 
 ## 24. How many original D supports survive
 
-⟨D-SURVIVE⟩
+**3 of the 11** D1 IG supports survive as content-token supports (samples 330, 363, 373).
+
+| fate of the other 8 D1 supports under D2 | samples |
+|---|---|
+| CONTRADICTED (e.g. "unable" + "get" in place of "unable" + [SEP]) | 5 |
+| INCONCLUSIVE (a single content token, unattainable control) | 3 |
+
+D2 also has **3 new** supports (382, 659, 681), with different k and controls.
+
+**Reading:**
+- Most of the Phase-7.5 BERT-base "necessary top tokens" result depended on [SEP].
+- The model's causal dependence under this test is concentrated in model-control tokens more than in lexical evidence.
+- For content tokens alone, the support rate is 0.15, and every support is reversed by a reasonable alternative.
 
 **BERT-tiny (C) for comparison:**
 - C1 (all tokens): IG_necessary SUPPORTED 14/40; no special token in any PRIMARY selection.
@@ -237,7 +274,7 @@ Zero is not invalid globally. It is an aggressive stress test whose false-positi
 **ADR-054; no new ontology:**
 - an unattainable control criterion yields INCONCLUSIVE plus `control_criterion_unattainable`;
 - a PRIMARY contradiction that met its effect threshold and failed only the control yields `effect_without_competitive_advantage`. The standing stays CONTRADICTED for the claim as declared (beyond controls), and the report says the effect itself was present.
-- Held-out IG_necessary samples with that finding: A/input 1, B/pixels 9, B/relu2 2, C/tokens 3 (⟨D-COMP⟩).
+- Held-out IG_necessary samples with that finding: A/input 1, B/pixels 9, B/relu2 2, C/tokens 3 (D1 6, D2 2).
 
 ## 29. e-SNLI rationale result (preserved)
 
@@ -270,7 +307,7 @@ Phase-7.5 design, new audit; all units.
 | B/pixels | 14 → 14 | 13/14 → 13/14 | 0 |
 | B/relu2 | 1 → 1 | 1/1 → 1/1 | 2 (CONTRADICTED → INCONCLUSIVE) |
 | C/tokens | 14 → 14 | 14/14 → 13/14 | 5 (CONTRADICTED → INCONCLUSIVE) |
-| D/tokens (D1) | ⟨D-ROW⟩ | | |
+| D/tokens (D1) | 11 → 11 | 11/11 → 11/11 | 6 (CONTRADICTED → INCONCLUSIVE) | | |
 
 One alternative reversal on A/input and one on C/tokens disappeared, because the reversing configuration's control criterion was unattainable.
 
@@ -283,7 +320,7 @@ One alternative reversal on A/input and one on C/tokens disappeared, because the
 
 ## 34. Which remained valid
 
-- Every PRIMARY SUPPORTED standing of Phase 7.5 (InterpBench and central A–C; D: ⟨D-VALID⟩).
+- Every PRIMARY SUPPORTED standing of Phase 7.5 (InterpBench and central A–C; D: identical 11 supported samples in D1).
 - The configuration-sensitivity story (§32).
 - Attribution-only → UNSUPPORTED.
 - IG-selected wrong heads → CONTRADICTED.
@@ -323,7 +360,7 @@ No signature was removed or changed.
 ## 39. Performance
 
 - **Audit:** the new checks add one pass over recorded control units.
-- **Full held-out central audits:** A/input 52 s → ⟨PERF⟩ for the same 3,672 results (see `central775_*` `audit_seconds`).
+- **Full held-out central audits:** A/input 52 s → 118.6 s under heavy machine contention (not comparable). A clean benchmark (`benchmarks/bench_audit.py`, baseline `7ec2493` vs HEAD, idle machine; `results/performance/`) gives audit time within about 1% (e.g. 186.0 vs 188.2 ms for 48 results) and identical report bytes for the same 3,672 results (see `central775_*` `audit_seconds`).
 - **Report and evidence sizes:** unchanged in kind. Evidence specs grow by the eligible-unit list only when eligibility is declared.
 - **No large performance experiment was re-run.**
 
@@ -352,7 +389,7 @@ Also: a single resample counterfactual misses 22% of known-true instances (§12)
 
 ## 44. Strongest counterexample
 
-⟨D-COUNTER⟩
+**BERT-base SST-2:** 8 of the 11 Phase-7.5 samples where IG's top tokens were "necessary" lose that support once the claim is about content tokens. The Phase-7.5 headline for the moderate model was mostly a statement about [SEP].
 
 ## 45. Final paper evidence ledger
 
@@ -368,11 +405,34 @@ See `docs/research/PHASE_7_75_PAPER_READINESS.md` §3.
 
 ## 48. Paper claims now allowed
 
-⟨CLAIMS-ALLOWED⟩
+Exact wording is in the ledger.
+
+| claim | label |
+|---|---|
+| A: configuration choices change conclusions | SUPPORTED FOR PAPER |
+| B: attribution alone is insufficient | SUPPORTED FOR PAPER |
+| C: claim / evidence typing catches unsupported inferences | SUPPORTED WITH REQUIRED QUALIFIER |
+| D: save / restart / load reproducibility | SUPPORTED FOR PAPER |
+| E: sensitivity surfaced without a score | SUPPORTED FOR PAPER |
+| F: distinguishes correct and incorrect mechanisms | SUPPORTED WITH REQUIRED QUALIFIER ("on compiled Tracr programs with program-defined truth") |
+| G: concept validation separates decodability from use | SUPPORTED WITH REQUIRED QUALIFIER ("on programs with known use; scale-relative criterion") |
+
+**ACL-facing claims:**
+- special tokens: qualified;
+- plausibility vs faithfulness: qualified;
+- replacement OOD model-dependence: qualified;
+- NLI shortcut stratification: exploratory only.
 
 ## 49. Paper claims still disallowed
 
-⟨CLAIMS-DISALLOWED⟩
+- "BeyondNN identifies correct mechanisms in trained models".
+- Any use of InterpBench 942/942 or 0/8,840 as independent validation.
+- "Zero ablation is invalid".
+- "The count null shows heads are not better than random".
+- "A universal safe replacement exists".
+- "The case-39 concept is validated" as confirmatory evidence.
+- "BERT-base's necessary tokens are sentiment words", without the [SEP] qualification.
+- Any score, confidence or accuracy number for the audit.
 
 ## 50. Phase 8 requirements
 
@@ -385,7 +445,21 @@ Phase 8 is packaging, CI, documentation polish, security / contributing / code-o
 
 ## 51. Gate
 
-⟨GATE⟩
+**SCIENTIFICALLY READY FOR PHASE 8 WITH PAPER LIMITATIONS.**
+
+**Applying the frozen criteria (plan §9):**
+- **NO-GO: not triggered.**
+  - TD decoy FP 0% (≤ 10%);
+  - KC2 held;
+  - no attribution-only claim was SUPPORTED.
+- **REQUIRES FURTHER SCIENTIFIC VALIDATION: not triggered.**
+  - Claims A–E rest on non-circular evidence: configuration reversals, attribution-only refusals, scenario suites, save / reload.
+  - Save / reload passes; 19/19 mutations are killed.
+- **Why "with paper limitations":**
+  - Claims F and G are supported only with qualifiers: compiled programs with program-defined truth; programs with known use, with held-out programs that did not discriminate between threshold rules.
+  - Claim F on trained models remains unestablished.
+
+No policy was changed after seeing held-out results. DV-1 was procedural and outcome-blind.
 
 ## 52. Commits
 

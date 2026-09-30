@@ -710,3 +710,36 @@ Open items are listed in `docs/PHASE_5_5_API_REVIEW.md`.
 - **Standings:** IG_necessary PRIMARY SUPPORTED 11/40 [0.16, 0.43], all 11 with `alternative_reverses`; R 1/40; G 5/40; configuration-level disagreement 33/40.
 - **Hypotheses:** CH8 and CH9 hold with D.
 - **Negative finding (qualitative):** IG top-k includes [SEP] on 30/40 samples and on 10/11 PRIMARY supports; C never selects special tokens. With the [SEP] probe (+2.1 margin shift vs interior tokens), D's IG necessity is largely a special-token effect. The policy did not declare special-token eligibility; nothing was changed.
+
+## 2026-09-29 to 2026-09-30: Phase 7.75 scientific problem resolution (frozen plan `b355129`; deviation DV-1)
+
+**TD** (8 held-out compiled Tracr programs; truth from the program text and weights):
+- PRIMARY supported 0/400 decoy instances (0/160 correlated, 0/57 IG-selected) and 591/760 used-component instances; every used component was supported on 28–38 of 40 samples.
+- Zero ablation supported all 400 decoys.
+- Agreement with TransformerLens: 1,160/1,160.
+
+**Concepts:**
+- Calibration shows the absolute 0.1 rule is scale-dependent and the relative one (0.2 × train SD) is not.
+- Held-out: 4/4 K+ validated, 0/8 K− / K0. The absolute rule would also have validated the held-out K+.
+- Case 39 (not blind): K+ validated under the relative rule only.
+
+**Count null:** unattainable on small unit counts (ties with the selection itself). InterpBench re-audit: 0 PRIMARY changes; 425/431 count tests on necessary heads are now inconclusive.
+
+**Central** (new audit): every PRIMARY support is unchanged. CONTRADICTED → INCONCLUSIVE on B/relu2 (2), C (5) and D1 (6).
+
+**D2 (content tokens):** IG 6/40 (6/6 reversed); 3 of D1's 11 supports survive. D1: special token in 30/40 selections and in 10/11 supports.
+
+**C2 (content tokens):** IG 11/40 (a subset of C1's 14).
+
+**NLI:** 17/40 samples are empty-premise-predictable; IG's supports are 5 there vs 2 elsewhere (exploratory).
+
+**Engineering:**
+- 19/19 mutations killed, after 3 added tests;
+- regression matrix 1038 + 1 / 1059;
+- audit time unchanged within about 1%.
+
+**Operational (negative events, kept):**
+- a machine crash lost six D shard processes (DV-1: re-partitioned into resumable shards);
+- a low-memory stop of the A/B/C lane;
+- a case-39 label-lookup bug fixed before any result;
+- a workflow script that read `report.claims` by position (claims are ordered by name).
