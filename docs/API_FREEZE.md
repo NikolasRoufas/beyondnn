@@ -31,7 +31,7 @@
 **Versioned formats:**
 - `SCHEMA_VERSION` "0.1";
 - trace persistence `FORMAT_VERSION` 1;
-- audit report `REPORT_FORMAT_VERSION` 2;
+- audit report `REPORT_FORMAT_VERSION` 3 (reads 2; `producer` block, ADR-056);
 - protocol versions: all 1 (`protocols.PROTOCOL_VERSIONS`).
 
 **Audit semantics:**

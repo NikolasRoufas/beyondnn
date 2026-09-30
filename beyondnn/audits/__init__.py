@@ -145,12 +145,25 @@ def verify_report(
     stored = json.loads(json.dumps(stored))
     fresh = audit(evidence, plan=plan)
     expected = json.loads(fresh.to_json())
-    if stored != expected:
-        paths = list(_diff(stored, expected, "$"))
+    # the scientific content must match exactly; who produced it is reported, not compared
+    envelope = ("producer", "format_version")
+    content = {k: v for k, v in stored.items() if k not in envelope}
+    if content != {k: v for k, v in expected.items() if k not in envelope}:
+        paths = list(_diff(content, {k: v for k, v in expected.items() if k not in envelope}, "$"))
+        produced = (stored.get("producer") or {}).get("audit_semantics")
+        note = (
+            ""
+            if produced == expected["producer"]["audit_semantics"]
+            else f"; the stored report was produced under audit semantics "
+            f"{produced if produced is not None else '<= 2 (not recorded)'}, this BeyondNN "
+            f"applies {expected['producer']['audit_semantics']}, so a difference may be a "
+            "change of audit rules rather than of evidence"
+        )
         raise AuditMismatchError(
             f"the stored report differs from the re-derived audit at {len(paths)} path(s): "
             + ", ".join(paths[:12])
             + (" ..." if len(paths) > 12 else "")
+            + note
         )
     return fresh
 

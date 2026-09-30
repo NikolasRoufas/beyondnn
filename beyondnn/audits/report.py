@@ -44,7 +44,14 @@ __all__ = [
 ]
 
 REPORT_FORMAT = "beyondnn.audit_report"
-REPORT_FORMAT_VERSION = 2
+REPORT_FORMAT_VERSION = 3
+#: Report format versions :func:`load_report` reads (2: before the ``producer`` block).
+READABLE_REPORT_FORMATS = (2, 3)
+#: The audit rules a report was produced under. The same evidence can be audited
+#: differently under different semantics, so every report records them:
+#: 1 = Phase 7 (ADR-044 to ADR-047); 2 = + configuration roles, profiles, intervals
+#: (ADR-048, ADR-049); 3 = + unit eligibility and control attainability (ADR-053, ADR-054).
+AUDIT_SEMANTICS = 3
 
 
 class Standing(Enum):
@@ -422,6 +429,7 @@ class AuditReport:
         return {
             "format": REPORT_FORMAT,
             "format_version": REPORT_FORMAT_VERSION,
+            "producer": _producer(),
             "plan": to_dict(self.plan),
             "plan_id": self.plan.id,
             "evidence": _plain(self.evidence),
@@ -468,11 +476,19 @@ def load_report(path: str | os.PathLike[str]) -> dict[str, Any]:
     document = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(document, dict) or document.get("format") != REPORT_FORMAT:
         raise ValueError(f"{path} is not a BeyondNN audit report")
-    if document.get("format_version") != REPORT_FORMAT_VERSION:
+    if document.get("format_version") not in READABLE_REPORT_FORMATS:
         raise ValueError(
-            f"unsupported audit report format_version {document.get('format_version')!r}"
+            f"unsupported audit report format_version {document.get('format_version')!r} "
+            f"(this BeyondNN reads {list(READABLE_REPORT_FORMATS)})"
         )
     return document
+
+
+def _producer() -> dict[str, Any]:
+    """Which BeyondNN, under which audit semantics, produced a report."""
+    from beyondnn import __version__
+
+    return {"beyondnn_version": __version__, "audit_semantics": AUDIT_SEMANTICS}
 
 
 def _plain(value: Any) -> Any:

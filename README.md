@@ -1,6 +1,6 @@
 # BeyondNN
 
-> **Status: pre-alpha, Phase 6 (concepts and concept validation) implemented (local only, not released).**
+> **Status: pre-alpha, Phases 1–7.75 implemented (local only, not released). The public API is frozen for release preparation ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)); the scientific invariants any change must keep are in [`docs/PRE_PHASE8_INVARIANTS.md`](docs/PRE_PHASE8_INVARIANTS.md).**
 >
 > Implemented:
 > - the trace schema, provenance, trace recording and persistence;
@@ -9,9 +9,10 @@
 > - gradient, input × gradient, and Integrated Gradients attribution (native, and through Captum) with ATTRIBUTED records;
 > - a structured WHY that composes measured, attributed, and interventional evidence and declared claim tests without merging them;
 > - faithfulness *protocols* (comprehensiveness, sufficiency, removal/retention curves, stability, counterexamples) with matched random controls. There is no faithfulness score;
-> - concepts: features (neurons, directions, SAE latents), proposals, and controlled validation that keeps *decodable* (ENCODES) and *used* (intervention) separate. There is no concept score.
+> - concepts: features (neurons, directions, SAE latents), proposals, and controlled validation that keeps *decodable* (ENCODES) and *used* (intervention) separate. There is no concept score;
+> - model-free scientific audits of recorded evidence under a pre-declared plan: standings and typed findings, declared configuration roles (PRIMARY / ALTERNATIVE / STRESS_TEST), declared unit eligibility, uncertainty intervals. There is no audit score.
 >
-> See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md), [`docs/PHASE_4_REPORT.md`](docs/PHASE_4_REPORT.md), and [`docs/PHASE_5_REPORT.md`](docs/PHASE_5_REPORT.md), [`docs/PHASE_5_5_REPORT.md`](docs/PHASE_5_5_REPORT.md), and [`docs/PHASE_6_REPORT.md`](docs/PHASE_6_REPORT.md).
+> See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md), [`docs/PHASE_4_REPORT.md`](docs/PHASE_4_REPORT.md), and [`docs/PHASE_5_REPORT.md`](docs/PHASE_5_REPORT.md), [`docs/PHASE_5_5_REPORT.md`](docs/PHASE_5_5_REPORT.md), [`docs/PHASE_6_REPORT.md`](docs/PHASE_6_REPORT.md), [`docs/PHASE_7_REPORT.md`](docs/PHASE_7_REPORT.md), [`docs/PHASE_7_5_REPORT.md`](docs/PHASE_7_5_REPORT.md), and [`docs/PHASE_7_75_REPORT.md`](docs/PHASE_7_75_REPORT.md).
 
 BeyondNN is an interpretability evidence framework for PyTorch.
 

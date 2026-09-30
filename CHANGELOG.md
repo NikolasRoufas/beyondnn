@@ -7,6 +7,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed (pre-Phase-8 hardening)
+- **Audit reports (format 3)** record their `producer` (BeyondNN version, audit semantics; ADR-056). Format 2 still loads. `verify_report` compares scientific content and names a semantics difference.
+- **Trace load errors** name the trace directory.
+
+### Added (pre-Phase-8 hardening)
+- A permanent golden scientific-workflow test, a migration-matrix test, provenance-completeness and named-claim-lookup tests.
+- `docs/PRE_PHASE8_INVARIANTS.md`.
+
 ### Added
 - **Phase 7.75: scientific fixes** (ADR-053 to ADR-055):
   - declared unit eligibility for selections, controls and selection claims (`eligible=` / `eligibility=`; `evidence_selection` v3, `audit_plan` v3, with migrations);

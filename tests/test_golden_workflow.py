@@ -311,3 +311,73 @@ def test_corrupt_saved_evidence_is_refused_and_names_the_trace(tmp_path: Path) -
     assert isinstance(plan, bnn.schema.AuditPlan)
     with pytest.raises(TracePersistenceError, match=str(bad.name)):
         bnn.audit(paths, plan=plan)  # refused: never audited without the corrupt trace
+
+
+def test_provenance_is_complete_for_the_golden_workflow(tmp_path: Path) -> None:
+    """Every provenance item a reader needs is recoverable from the saved artifacts."""
+    from beyondnn.protocols import PROTOCOL_VERSIONS
+
+    build(tmp_path)
+    report = AU.load_report(tmp_path / "report.json")
+    plan = bnn.schema.from_json((tmp_path / "plan.json").read_text())
+    assert isinstance(plan, bnn.schema.AuditPlan)
+    # the report: its producer, format, plan identity and evidence identity
+    assert report["producer"] == {"beyondnn_version": bnn.__version__, "audit_semantics": 3}
+    assert report["format_version"] == 3
+    assert report["plan_id"] == plan.id
+    assert report["evidence"]["digest"].startswith("sha256:")
+    seen: set[str] = set()
+    for path in AU.load_evidence(tmp_path / "evidence"):
+        doc = json.loads((path / "trace.json").read_text())
+        assert doc["schema_version"] == bnn.schema.SCHEMA_VERSION  # schema version
+        t = bnn.load_trace(path)
+        for rec in t.records:
+            origin = t.origin(rec) if rec.provenance_id is not None else None
+            if origin is not None:
+                assert origin.environment.beyondnn_version == bnn.__version__  # version
+                assert origin.model.state_digest == plan.checkpoint  # checkpoint
+            if isinstance(rec, bnn.schema.ClaimTestSpec):
+                assert rec.protocol_version == PROTOCOL_VERSIONS[rec.protocol]  # protocol version
+                params = rec.params.to_plain()
+                if rec.protocol == "comprehensiveness":
+                    assert params["replacement"]["name"] in ("train_mean", "extreme")  # identity
+                    assert params["replacement"]["digest"].startswith("sha256:")
+                    assert set(params["controls"]) >= {"n", "seed", "strategy"}  # controls + seed
+                    seen.add("spec")
+            if (
+                isinstance(rec, bnn.schema.Claim)
+                and rec.estimand.sample_id is not None
+                and rec.relation is bnn.Relation.NECESSARY_FOR
+            ):
+                assert rec.estimand.sample_id in plan.samples  # sample identity
+                targets = {t.sample: t.target for c in plan.claims for t in c.sample_targets}
+                assert rec.target == targets[rec.estimand.sample_id]  # target
+                seen.add("claim")
+            if isinstance(rec, bnn.schema.ConceptValidation):
+                assert rec.dataset.record_id in plan.datasets  # dataset identity
+                assert rec.model_state_digest == plan.checkpoint
+                seen.add("dataset")
+            if isinstance(rec, bnn.schema.EvidenceSelection) and rec.eligibility is not None:
+                seen.add("eligibility")  # eligibility declaration
+    assert seen >= {"spec", "claim", "dataset", "eligibility"}
+    roles = {
+        t["role"] for c in report["claims"] for g in c["groups"] for t in g["tests"]
+    }  # configuration role
+    assert roles == {"primary", "stress_test"}
+
+
+def test_report_format_2_still_loads_and_mismatch_names_the_semantics(tmp_path: Path) -> None:
+    import pytest
+
+    build(tmp_path)
+    doc = AU.load_report(tmp_path / "report.json")
+    old = {k: v for k, v in doc.items() if k != "producer"} | {"format_version": 2}
+    (tmp_path / "old.json").write_text(json.dumps(old))
+    assert AU.load_report(tmp_path / "old.json")["format_version"] == 2
+    plan = bnn.schema.from_json((tmp_path / "plan.json").read_text())
+    assert isinstance(plan, bnn.schema.AuditPlan)
+    paths = AU.load_evidence(tmp_path / "evidence")
+    AU.verify_report(old, paths, plan)  # same scientific content: verifies
+    old["claims"][0]["groups"][0]["standing"] = "contradicted"
+    with pytest.raises(AU.AuditMismatchError, match="audit semantics"):
+        AU.verify_report(old, paths, plan)

@@ -1604,3 +1604,23 @@ Parameter and buffer *value* changes remain allowed; they get per-pass provenanc
 **Consequences:**
 - The Phase-7.5 concept results remain as recorded under the absolute rule, and both rules are reported in Phase 7.75.
 - The Phase-7.5 held-out case 39 cannot confirm this rule, because its effect was known when the rule was chosen. Confirmation uses new held-out TD programs.
+
+## ADR-056: Audit reports record their producer (BeyondNN version and audit semantics)
+
+- **Date:** 2026-10-01
+- **Status:** Accepted in the pre-Phase-8 hardening pass (provenance fix; additive).
+
+**Context:**
+- The same evidence can be audited differently under different audit rules. Phase-7.5 and Phase-7.75 audits of identical evidence differ where ADR-054 turned unattainable-control contradictions into INCONCLUSIVE.
+- Saved evidence records the BeyondNN version that *recorded* it, but a saved report did not record which BeyondNN, under which audit rules, *produced* it. A report therefore could not be attributed to its rules: a loss of provenance.
+
+**Decision:**
+- **Report format 3** adds `producer = {"beyondnn_version", "audit_semantics"}`.
+  - `audits.report.AUDIT_SEMANTICS` numbers the audit rules: 1 = ADR-044–047; 2 = + ADR-048/049; 3 = + ADR-053/054.
+  - It is bumped only when the same evidence and plan can yield a different report.
+- **`load_report`** reads formats 2 and 3.
+- **`verify_report`** compares the scientific content exactly and ignores `producer` / `format_version`. On a mismatch, it says when the stored report was produced under other audit semantics, so a difference may be a change of rules rather than of evidence. It never corrects the stored report.
+
+**Consequences:**
+- Report JSON gains one block. Phase-7.5 / 7.75 reports (format 2) still load.
+- No evidence, record or audit outcome changes.

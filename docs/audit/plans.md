@@ -142,4 +142,6 @@ AU.selection("bert.embeddings.word_embeddings", method="integrated_gradients", k
 
 ## Reading reports
 
-`report.claims` is ordered by claim name, not by plan order. Use `report.claim(name)`.
+`report.claims` is ordered by claim name, not by plan order: the order carries no meaning. Use `report.claim(name)`.
+
+Every saved report (format 3) records its `producer`: the BeyondNN version and the `audit_semantics` it was produced under (ADR-056). The same evidence can be audited differently under different audit rules. `verify_report` compares the scientific content and names a semantics difference when there is one.
