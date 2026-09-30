@@ -1,6 +1,6 @@
-"""Phase 6: concepts that are decodable are not necessarily used.
+"""Concepts that are decodable are not necessarily used.
 
-Run: python examples/phase6_concepts.py
+Run: python examples/05_concepts.py
 
 A hand-built model (``ConceptToy``) copies x0 and x1 into its hidden layer; the output
 uses h0 = x0 but ignores h1 = x1. Both concepts are perfectly *decodable*; only one is
@@ -16,9 +16,67 @@ label that stays proposed, and concept evidence in the structured WHY.
 from __future__ import annotations
 
 import torch
+from torch import nn
 
 import beyondnn as bnn
-from beyondnn._testing.concept_models import ConceptToy, concept_inputs
+
+
+class _Hidden(nn.Module):
+    """h0 = x0, h1 = x1 (feeds no output), h2 = x2 + x3, h3 = x2 - x3, h4 = h5 = x4,
+    h6 = x6, h7 = x7 + x8, h8 / h9 = relu(x9) gated by the sign of x10, h10 = x10, h11 = x11."""
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x0, x1, x2, x3, x4, _x5, x6, x7, x8, x9, x10, x11 = x.unbind(dim=1)
+        pos = torch.relu(x9)
+        h = [
+            x0,
+            x1,
+            x2 + x3,
+            x2 - x3,
+            x4,
+            x4,
+            x6,
+            x7 + x8,
+            pos * (x10 > 0).to(x.dtype),
+            pos * (x10 <= 0).to(x.dtype),
+            x10,
+            x11,
+        ]
+        return torch.stack(h, dim=1)
+
+
+class _Readout(nn.Module):
+    """y0 = 3*h0, y1 = h2 + h3, y2 = max(h4, h5), y3 = h6, y4 = h7, y5 = h8 + h9."""
+
+    def forward(self, h: torch.Tensor) -> torch.Tensor:
+        y = [
+            3.0 * h[:, 0],
+            h[:, 2] + h[:, 3],
+            torch.maximum(h[:, 4], h[:, 5]),
+            h[:, 6],
+            h[:, 7],
+            h[:, 8] + h[:, 9],
+        ]
+        return torch.stack(y, dim=1)
+
+
+class ConceptToy(nn.Module):
+    """A hand-built model whose concept use is known exactly (hidden -> readout)."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.hidden = _Hidden()
+        self.readout = _Readout()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        out: torch.Tensor = self.readout(self.hidden(x))
+        return out
+
+
+def concept_inputs(n: int, *, seed: int) -> torch.Tensor:
+    """``n`` inputs x ~ N(0, I_12) from a local generator."""
+    return torch.randn(n, 12, generator=torch.Generator().manual_seed(seed))
+
 
 C, iv = bnn.concepts, bnn.interventions
 

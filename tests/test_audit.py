@@ -729,7 +729,7 @@ def test_per_sample_targets_match_each_samples_own_target() -> None:
 def test_flagship_example() -> None:
     import importlib.util
 
-    path = Path(__file__).resolve().parents[1] / "examples" / "phase7_audit.py"
+    path = Path(__file__).resolve().parents[1] / "examples" / "06_audit.py"
     spec = importlib.util.spec_from_file_location("phase7_audit", path)
     assert spec is not None
     assert spec.loader is not None

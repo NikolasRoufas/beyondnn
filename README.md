@@ -1,162 +1,74 @@
 # BeyondNN
 
-> **Status: pre-alpha, Phases 1–7.75 implemented (local only, not released). The public API is frozen for release preparation ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)); the scientific invariants any change must keep are in [`docs/PRE_PHASE8_INVARIANTS.md`](docs/PRE_PHASE8_INVARIANTS.md).**
->
-> Implemented:
-> - the trace schema, provenance, trace recording and persistence;
-> - a minimal INPUT → WHY → OUTPUT view (WHY = measured evidence);
-> - controlled activation interventions with INTERVENTIONAL effect records;
-> - gradient, input × gradient, and Integrated Gradients attribution (native, and through Captum) with ATTRIBUTED records;
-> - a structured WHY that composes measured, attributed, and interventional evidence and declared claim tests without merging them;
-> - faithfulness *protocols* (comprehensiveness, sufficiency, removal/retention curves, stability, counterexamples) with matched random controls. There is no faithfulness score;
-> - concepts: features (neurons, directions, SAE latents), proposals, and controlled validation that keeps *decodable* (ENCODES) and *used* (intervention) separate. There is no concept score;
-> - model-free scientific audits of recorded evidence under a pre-declared plan: standings and typed findings, declared configuration roles (PRIMARY / ALTERNATIVE / STRESS_TEST), declared unit eligibility, uncertainty intervals. There is no audit score.
->
-> See [`docs/PHASE_1_REPORT.md`](docs/PHASE_1_REPORT.md), [`docs/PHASE_2_REPORT.md`](docs/PHASE_2_REPORT.md), [`docs/PHASE_3_REPORT.md`](docs/PHASE_3_REPORT.md), [`docs/PHASE_4_REPORT.md`](docs/PHASE_4_REPORT.md), and [`docs/PHASE_5_REPORT.md`](docs/PHASE_5_REPORT.md), [`docs/PHASE_5_5_REPORT.md`](docs/PHASE_5_5_REPORT.md), [`docs/PHASE_6_REPORT.md`](docs/PHASE_6_REPORT.md), [`docs/PHASE_7_REPORT.md`](docs/PHASE_7_REPORT.md), [`docs/PHASE_7_5_REPORT.md`](docs/PHASE_7_5_REPORT.md), and [`docs/PHASE_7_75_REPORT.md`](docs/PHASE_7_75_REPORT.md).
+**Auditable interpretability evidence for PyTorch.**
 
-BeyondNN is an interpretability evidence framework for PyTorch.
+[![CI](https://github.com/NikolasRoufas/beyondnn/actions/workflows/ci.yml/badge.svg)](https://github.com/NikolasRoufas/beyondnn/actions/workflows/ci.yml)
+![Python 3.10 | 3.12 | 3.14](https://img.shields.io/badge/python-3.10%20%7C%203.12%20%7C%203.14-blue)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 
-It turns claims about neural-network computation into structured, provenance-aware, testable objects. Today it provides:
-- structured traces;
-- provenance;
-- explicit epistemic status;
-- controlled interventions whose effects are recorded as INTERVENTIONAL evidence;
-- method-relative attributions recorded as ATTRIBUTED evidence (never as causes);
-- threshold claim tests that must be declared before they run;
-- one structured WHY view that keeps each kind of evidence separate.
+BeyondNN turns claims about neural-network computation into structured, provenance-aware, testable objects, and audits them against the evidence you actually recorded.
 
-BeyondNN does not assume that an attribution, a probe, a generated explanation, or a readable feature is automatically a faithful explanation of model computation. The schema labels every result with how it was obtained:
-- observed or measured;
-- attributed;
-- interventional or estimated causal;
-- validated concept;
-- generated.
+> **Status:** pre-alpha research software (`0.0.0.dev0`), not yet on PyPI. The public API is frozen for the first release ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)).
 
-**Today BeyondNN produces observed, measured, attributed, and (from controlled interventions) interventional evidence only.** The other statuses exist in the schema for later phases.
+## Why BeyondNN exists
 
-BeyondNN builds on PyTorch and is meant to work *alongside* Captum, nnsight, TransformerLens, and SAELens, not to replace them.
+Interpretability methods answer different questions, and the answers are easy to conflate:
 
-## What works today (pre-alpha, local only)
+- **An attribution** says a method assigned relevance to a unit. It is not a causal effect.
+- **A decodable feature** says a probe can read something from an activation. It does not mean the model *uses* it.
+- **A salient component** is not necessarily *necessary*: a redundant path can make its removal harmless.
+- **An intervention result** depends on the replacement used. Zeroing, mean-ablation and resampling can give different answers.
+- **A readable label** is not a validated concept.
 
-Trace recording and a minimal INPUT → WHY → OUTPUT view are implemented, with structured, provenance-bearing, validated records.
+BeyondNN keeps these distinctions explicit:
+- every piece of evidence carries its epistemic status and full provenance;
+- every claim is declared before it is tested;
+- an audit states what the recorded evidence establishes about each claim, under which assumptions, and what it does not establish.
 
-```python
-# runnable example (executed by tests/test_readme.py)
-import torch
-from torch import nn
+It never produces a single "explanation quality" score.
 
-import beyondnn as bnn
-
-
-class TinyNet(nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-        self.encoder = nn.Sequential(nn.Linear(4, 8), nn.ReLU())
-        self.head = nn.Linear(8, 2)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.head(self.encoder(x))
-
-
-torch.manual_seed(0)
-model = TinyNet()
-x = torch.randn(3, 4)
-
-handle = bnn.instrument(model)          # a handle referencing the original model; nothing is modified
-response = handle.explain(x, sites=["encoder.*", "head"])
-
-print(response.input)                   # OBSERVED root input
-print(response.why.activations)         # MEASURED internal states, in execution order
-print(response.why.limitations)         # what this does NOT cover, as structured records
-print(response.output)                  # OBSERVED root output
-print(response.render())                # deterministic text view of the same records
-
-trace = bnn.trace(model, x, sites=["head"], retention="cpu")   # the underlying evidence
-print(trace.activation("head"), trace.origin(trace.activation("head")).model)
+```mermaid
+flowchart TD
+    A[Model execution] --> B["Measurements<br/>OBSERVED / MEASURED"]
+    B --> C["Evidence<br/>ATTRIBUTED / INTERVENTIONAL / VALIDATED_CONCEPT"]
+    C --> D["Declared claims<br/>necessary_for, sufficient_for, encodes, ..."]
+    D --> E["Tests: interventions, replacements, controls<br/>PRIMARY / ALTERNATIVE / STRESS_TEST"]
+    E --> F["Audit<br/>standings + typed findings, no score"]
+    F --> G["WHY<br/>recorded evidence, kept separate"]
 ```
 
-> **In Phase 1, `WHY` is measured internal evidence, not a causal or attributed explanation.** It answers
-> "what internal evidence was measured while this output was produced?". It does not answer "which
-> internal state caused the output?". No activation is ranked, called important, or treated as a reason.
-> Every explanation carries the `NO_ATTRIBUTION`, `NO_CAUSAL_EVIDENCE` and `NO_CLAIMS_TESTED` limitations.
+| Not the same thing | |
+|---|---|
+| measurement | ≠ claim |
+| attribution | ≠ causal effect |
+| decodability | ≠ causal use |
+| generated label | ≠ validated concept |
 
-- **Recording several passes:** `bnn.recording(model, sites=[...])` records several forward passes in a `with` block. `ctx.result` is only available after a clean exit.
-- **Retention:** `summary` (default: metadata and summary statistics), `cpu` (detached CPU copies), or `none`.
-- **Honest limits:** every trace states its limits. For example, `FUNCTIONAL_OPS_UNOBSERVED`: module hooks cannot see functional operations or residual additions.
-- **Persistence:** `trace.save("run1/")` and `bnn.load_trace("run1/")` persist traces as `trace.json` plus an optional `tensors.pt`. The sidecar is only ever read with `weights_only=True`, and everything is re-validated on load.
-- **Refusals:** public tracing refuses models that carry forward hooks not installed by BeyondNN, and models whose tensors span several devices. Only CPU is verified in Phase 1.
+## Installation
 
-## Controlled interventions (Phase 2)
+BeyondNN needs Python ≥ 3.10 and PyTorch ≥ 2.3. It is tested on Python 3.10, 3.12 and 3.14 (CPU).
 
-```python
-# runnable example (executed by tests/test_readme.py)
-import torch
-from torch import nn
+**From source, with [uv](https://docs.astral.sh/uv/):**
 
-import beyondnn as bnn
-
-iv = bnn.interventions
-
-
-class TwoPaths(nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-        self.a = nn.Linear(2, 1)
-        self.b = nn.Linear(2, 1)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.a(x) + self.b(x)
-
-
-torch.manual_seed(0)
-model = TwoPaths().eval()                  # comparisons are refused in training mode
-x = torch.tensor([[1.0, 2.0]])
-
-result = bnn.intervene(model, x, intervention=iv.zero("a"), metric=iv.metrics.select([0, 0]))
-print(result.baseline_value, result.intervention_value, result.value)   # value = intervention - baseline
-print(result.effect.status, result.effect.estimand.scope)               # INTERVENTIONAL, INSTANCE
-print([lim.code for lim in result.limitations])                         # e.g. ZERO_ABLATION_MAY_BE_OOD
+```bash
+git clone https://github.com/NikolasRoufas/beyondnn.git
+cd beyondnn
+uv sync                      # creates .venv with the locked dev environment
+uv run python -c "import beyondnn; print(beyondnn.__version__)"
 ```
 
-- **What it runs:** `bnn.intervene` records a CLEAN baseline pass and an INTERVENTION pass of the same input in one trace. Activations in the intervened pass stay **MEASURED**; only the metric difference is **INTERVENTIONAL**.
-- **Scope of the effect:** it is scoped to exactly the input(s) compared. It is not a claim that `a` is necessary in general: a redundant path can make ablation look small, and other inputs can behave differently.
-- **Claims:** they are decided only by a threshold test declared in advance (`iv.threshold_spec`, `iv.make_claim`, `claims=[...]`). Sufficiency can be assessed only by the Phase-5 `sufficiency` protocol, and only in its declared, site-relative sense.
-- **Refusals:** comparisons are refused if randomness is consumed, the model state changes between passes, or the intervention does not apply.
+**With pip, from GitHub:**
 
-## Attribution (Phase 3)
-
-```python
-# runnable example (executed by tests/test_readme.py)
-import torch
-from torch import nn
-
-import beyondnn as bnn
-
-A, iv = bnn.attribution, bnn.interventions
-
-torch.manual_seed(0)
-model = nn.Sequential(nn.Linear(2, 3), nn.Tanh(), nn.Linear(3, 1)).eval()
-x = torch.tensor([[1.0, -2.0]])
-
-result = bnn.attribute(
-    model,
-    x,
-    target=iv.metrics.select([0, 0]),                  # one explicit scalar; outputs are never summed
-    method=A.integrated_gradients(baseline=A.zero_baseline(), n_steps=64),  # the baseline is a choice
-)
-print(result.value)                  # raw attribution tensor, same shape as x
-print(result.record.status)          # EvidenceStatus.ATTRIBUTED (never interventional)
-print(result.completeness_delta)     # sum(attr) - (F(x) - F(baseline)): a numerical diagnostic
-print([lim.code for lim in result.limitations])   # ATTRIBUTION_BASELINE_ASSUMPTION, ...
+```bash
+pip install "beyondnn @ git+https://github.com/NikolasRoufas/beyondnn.git"
+pip install "beyondnn[captum] @ git+https://github.com/NikolasRoufas/beyondnn.git"   # optional Captum adapter
 ```
 
-- **What it answers:** "under method A (configuration C, baseline B), for target T on this input, what score was assigned to each input element?" It does not answer what caused the output.
-- **Attribution is not necessity:** on a model with two redundant paths, one path receives substantial attribution, yet ablating it leaves the output unchanged (see the Phase 3 report). Attribution cannot support NECESSARY_FOR or SUFFICIENT_FOR claims; only ATTRIBUTED_TO, under a declared `attribution_threshold` test.
-- **Other methods:** `A.gradient()` and `A.input_x_gradient()` are separate methods. Captum implementations are available through `beyondnn.attribution.captum` (optional: `pip install beyondnn[captum]`, Captum 0.9.x).
-- **Token models:** integer token ids are refused. `at=A.layer("token_embedding")` attributes to embedding dimensions per position, not to token ids. Any per-token score comes only from an explicit `reductions=[A.reduce("sum", (-1,))]`.
-- **Refusals:** training mode; foreign forward or backward hooks; alias paths; RNG use; and any change to model state, gradients, or caller tensors.
+`import beyondnn` does not import torch. The tracing API loads torch lazily.
 
-## The full progression: one structured WHY (Phase 4)
+## Five-minute quickstart
+
+A model with two redundant paths: `y = p(x) + q(x)`, where `p` and `q` both compute `x0`. Attribution credits `p`, but removing `p` does not remove `y`.
 
 ```python
 # runnable example (executed by tests/test_readme.py)
@@ -164,14 +76,11 @@ import torch
 from torch import nn
 
 import beyondnn as bnn
-from beyondnn.schema import InterventionOperation, Relation
 
-A, iv = bnn.attribution, bnn.interventions
+A, iv, AU = bnn.attribution, bnn.interventions, bnn.audits
 
 
-class TwoEqualPaths(nn.Module):
-    """y = p(x) + q(x), where p and q both compute x0: two redundant paths."""
-
+class Redundant(nn.Module):
     def __init__(self) -> None:
         super().__init__()
         self.p = nn.Linear(2, 1, bias=False)
@@ -184,46 +93,58 @@ class TwoEqualPaths(nn.Module):
         return self.p(x) + self.q(x)
 
 
-handle = bnn.instrument(TwoEqualPaths().eval())
-x = torch.tensor([[3.0, 5.0]])
-target = iv.metrics.select([0, 0])
+model, x = Redundant().eval(), torch.tensor([[3.0, 5.0]])
+target = iv.metrics.select([0, 0])  # one explicit scalar target; outputs are never summed
 
-# 1. Measure (OBSERVED + MEASURED).
-trace = handle.trace(x, sites=["p", "q"])
-
-# 2. Attribute, with a claim declared before running (ATTRIBUTED).
+# 1. Evidence: an attribution (ATTRIBUTED) and a controlled intervention (INTERVENTIONAL),
+#    each with the claim it tests declared before it runs
 ig = A.integrated_gradients(baseline=A.zero_baseline(), n_steps=16)
 credit = A.make_claim(A.layer("p"), target, x, statement="p receives attribution for y")
-attr = handle.attribute(
-    x, target=target, method=ig, at=A.layer("p"),
-    claims=[(credit, A.threshold_spec(ig, at=A.layer("p"), min_abs_attribution=2.0))],
-)
+attribution = bnn.attribute(model, x, target=target, at=A.layer("p"), method=ig, claims=[
+    (credit, A.threshold_spec(ig, at=A.layer("p"), min_abs_attribution=2.0))])
+claim = iv.make_claim(iv.zero("p"), target, bnn.Relation.NECESSARY_FOR, x,
+                      statement="p is necessary for y")
+effect = bnn.intervene(model, x, intervention=iv.zero("p"), metric=target, claims=[
+    (claim, iv.threshold_spec(operation=bnn.schema.InterventionOperation.ZERO, min_effect=6.0))])
+print(attribution.record.status, effect.effect.status, effect.value)
 
-# 3. Intervene, with a causal claim declared before running (INTERVENTIONAL).
-necessary = iv.make_claim(iv.zero("p"), target, Relation.NECESSARY_FOR, x,
-                          statement="p is necessary for y")
-effect = handle.intervene(
-    x, intervention=iv.zero("p"), metric=target,
-    claims=[(necessary, iv.threshold_spec(operation=InterventionOperation.ZERO, min_effect=6.0))],
-)
+# 2. A plan, declared before the audit
+plan = AU.plan(
+    name="quickstart", checkpoint=AU.checkpoint_of(model), declared_model=None,
+    samples=[AU.sample_id(x)], datasets=[], concepts=[], naive_auroc=None,
+    claims=[AU.claim("p_necessary", statement="p is necessary for y", relation="necessary_for",
+                     target=target, scope="instance", requirement="intervention",
+                     subject=bnn.schema.Subject(site=bnn.schema.Site(module="p")))],
+    requirements=[AU.requirement("intervention", policy=iv.INTERVENTION_POLICY, controls=False)],
+    counterexamples=AU.counterexample_rule(max_counterexample_fraction=None,
+                                           max_false_positive_rate=None,
+                                           max_false_negative_rate=None))
 
-# 4. Compose (runs nothing; refuses evidence about another model, input, or target).
-response = bnn.compose(trace, attributions=[attr], interventions=[effect],
-                       policies=[A.ATTRIBUTION_POLICY, iv.INTERVENTION_POLICY])
-print(response.render())
-for claim in response.why.claims:
-    print(claim.claim.statement, "->", [a.verdict.value for a in claim.assessments])
-print(response.why.coverage.faithfulness_evaluated)          # False: never evaluated here
+# 3. Audit: attribution alone cannot support a causal claim; the intervention contradicts it
+for evidence in ([attribution], [attribution, effect]):
+    audited = bnn.audit(evidence, plan=plan).claim("p_necessary")
+    print(dict(audited.distribution), sorted(f.code for f in audited.findings))
+
+# 4. WHY: the recorded evidence, kept separate, with the audit attached
+report = bnn.audit([attribution, effect], plan=plan)
+why = bnn.compose(bnn.trace(model, x, sites=["p", "q"]), attributions=[attribution],
+                  interventions=[effect], audit=report)
+print(why.render())
 ```
 
-- **Measured evidence** says what was observed internally.
-- **Attribution** says what a method assigned credit to (here, `p` receives 3.0).
-- **An intervention** says what changed under a controlled manipulation (zeroing `p` changes `y` by −3.0, yet `y` stays 3.0: by construction, `q` computes the same value).
-- **Claims** say what was explicitly tested: "p ATTRIBUTED_TO y" is *supported*; "p NECESSARY_FOR y" is *contradicted*.
+Output (abridged):
 
-**WHY keeps these statements separate.** It never combines them into one score and never generates a claim. It states what was not evaluated: faithfulness, comprehensiveness, sufficiency, and concepts. Evidence about a different model, declared model, input, or target is refused, not merged.
+```text
+EvidenceStatus.ATTRIBUTED EvidenceStatus.INTERVENTIONAL -3.0
+{'unsupported': 1} ['attribution_is_not_intervention']
+{'contradicted': 1} ['attribution_intervention_disagree', 'counterexamples_present']
+```
 
-## Faithfulness tests (Phase 5)
+Attribution-only evidence leaves the causal claim **UNSUPPORTED**, not supported. The intervention **CONTRADICTS** "p is necessary": zeroing `p` changes `y` by −3.0, but `y` does not go away, because `q` computes the same value.
+
+## A realistic end-to-end example
+
+A token-level claim with **declared unit eligibility**, **explicit named replacements** in declared **roles**, and **matched random controls**. Position 0 plays a model-control token (like `[CLS]`) that the model relies on heavily.
 
 ```python
 # runnable example (executed by tests/test_readme.py)
@@ -232,129 +153,364 @@ from torch import nn
 
 import beyondnn as bnn
 
-A, F, iv = bnn.attribution, bnn.faithfulness, bnn.interventions
+A, F, iv, AU = bnn.attribution, bnn.faithfulness, bnn.interventions, bnn.audits
 
 
-class Saturated(nn.Module):
-    """y = tanh(4 x0) + 0.2 x1: x0 dominates y at x0 = 3, but its gradient is ~0."""
+class TokenModel(nn.Module):
+    """Logit = 4*e0 + 2*e3 + 1*e5 over 8 positions of a 1-d 'embedding'; position 0 is special."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.embed = nn.Identity()
+        self.register_buffer("w", torch.tensor([4.0, 0, 0, 2.0, 0, 1.0, 0, 0]))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return (torch.tanh(4 * x[:, 0]) + 0.2 * x[:, 1]).unsqueeze(1)
+        return torch.stack([torch.zeros(len(x)), (self.embed(x) * self.w).sum(-1)], dim=1)
 
 
-model, x = Saturated().eval(), torch.tensor([[3.0, 1.0]])
-target = iv.metrics.select([0, 0])
-gradient = A.attribute(model, x, target=target, method=A.gradient())
-integrated = A.attribute(model, x, target=target,
-                         method=A.integrated_gradients(baseline=A.zero_baseline(), n_steps=64))
+model = TokenModel().eval()
+samples = [torch.ones(1, 8) + 0.1 * i for i in range(3)]
+content = tuple(range(1, 8))  # declared by the caller: every position except the special one
+mean = F.replacement(torch.full((1, 8), 0.05), name="train_mean")    # a named replacement
+extreme = F.replacement(torch.full((1, 8), 10.0), name="extreme")    # deliberately extreme
 
-# The same declared test for both rankings: does removing the top-1 unit drop y by >= 0.5?
-test = F.comprehensiveness(target=target, min_drop=0.5, replacement=F.zero(),
-                           statement="the top-ranked input unit is necessary for y")
-for name, attribution in (("gradient", gradient), ("integrated gradients", integrated)):
-    result = F.run(model, x, test=test, selection=F.top_k(attribution, k=1))
-    print(name, result.claim.subject.units, result.outcome.value, round(result.drop, 3))
-# gradient (1,) contradicts 0.2               <- a plausible ranking that misses x0
-# integrated gradients (0,) supports 1.0
+results, attributions, targets = [], [], {}
+for i, x in enumerate(samples):
+    target = iv.metrics.margin([0, 1])  # predicted class minus the best other class
+    attr = bnn.attribute(model, x, target=target, at=A.layer("embed"),
+                         method=A.integrated_gradients(baseline=A.zero_baseline(), n_steps=16))
+    attributions.append(attr)
+    targets[AU.sample_id(x)] = target
+    selection = F.top_k(attr, k=2, eligible=content, eligibility="content_tokens")
+    for replacement in (mean, extreme):
+        test = F.comprehensiveness(target=target, min_drop=0.3 * float(target(model(x))),
+                                   replacement=replacement,
+                                   controls=F.controls(20, seed=i), min_fraction_below=0.9,
+                                   statement="the top-2 content tokens are necessary")
+        results.append(F.run(model, x, test=test, selection=selection, attributions=[attr]))
+
+plan = AU.plan(
+    name="content_tokens", checkpoint=AU.checkpoint_of(model), declared_model=None,
+    samples=list(targets), datasets=[], concepts=[], naive_auroc=None,
+    claims=[AU.claim(
+        "top2_content_necessary", statement="the IG top-2 content tokens are necessary",
+        relation="necessary_for", target=None, sample_targets=targets, scope="instance",
+        requirement="necessity",
+        selection=AU.selection("embed", method="integrated_gradients", k=2,
+                               eligibility="content_tokens"),
+        roles=[AU.role("replacement", "tensor/train_mean:*", "primary"),
+               AU.role("replacement", "tensor/extreme:*", "stress_test")])],
+    requirements=[AU.requirement("necessity", policy=F.COMPREHENSIVENESS_POLICY, controls=True)],
+    counterexamples=AU.counterexample_rule(max_counterexample_fraction=None,
+                                           max_false_positive_rate=None,
+                                           max_false_negative_rate=None))
+
+report = bnn.audit([*results, *attributions], plan=plan)
+claim = report.claim("top2_content_necessary")  # look claims up by name
+print(dict(claim.distribution))
+print(sorted({f.code for g in claim.groups for f in g.findings}))
+print(claim.groups[0].profile.describe())
+print(results[0].selection.eligibility, results[0].selection.selected)
 ```
 
-- **What a result means:** "the claim passed `comprehensiveness/v1` under zero replacement on this input". It does not mean "the explanation is faithful".
-- **Where the results go:** into the structured WHY (`bnn.compose(..., faithfulness=[...])`), next to the attribution and intervention evidence, with their limitations, controls, and the list of protocols that were **not** run.
-- **Protocol documentation:** [`docs/protocols/`](docs/protocols/README.md).
+Output (abridged):
 
-## Concepts (Phase 6)
+```text
+{'supported': 3}
+['stress_test_reverses']
+1 of 2 tested configurations SUPPORT (primary 1 of 1, stress_test 0 of 1)
+content_tokens (3, 5)
+```
+
+- **Selection:** the special position 0 is never selected, because the *claim* is about content tokens.
+- **Replacements and roles:** the PRIMARY (train-mean) replacement decides the standing. The extreme STRESS_TEST replacement reverses the result; that is visible as `stress_test_reverses` and in the profile, but it does not rewrite the PRIMARY conclusion.
+- **Controls:** random 2-token sets are drawn from content tokens only.
+
+## Core concepts
+
+### Evidence statuses
+
+Every record states how it was obtained. The status says what it *can* justify.
+
+| status | meaning | can justify | cannot justify |
+|---|---|---|---|
+| `OBSERVED` | a value that crossed the model boundary unchanged (inputs, outputs) | what went in and came out | anything internal |
+| `MEASURED` | internal state read directly (e.g. a module output) | what the state was | why the output happened |
+| `ATTRIBUTED` | a method-relative relevance score (gradient, integrated gradients, …) | "method M assigned relevance r to unit u for target T" | necessity, sufficiency, causal use |
+| `INTERVENTIONAL` | the directly measured effect of a declared intervention on the declared inputs | "under this intervention and replacement, on these inputs, the target changed by Δ" | population claims; other replacements |
+| `ESTIMATED_CAUSAL` | an approximation of an interventional or population quantity | reserved in the schema; no current protocol produces it | — |
+| `VALIDATED_CONCEPT` | an activation of a concept that passed a declared validation protocol | "the concept met the declared encoding and use criteria, in this scope" | universal semantic truth |
+| `GENERATED` | produced by a model, LLM or template | nothing: it is never scientific evidence | validation of anything |
+
+### Claims and scope
+
+A claim is a first-class, declared object:
+- a **relation**: `necessary_for`, `sufficient_for`, `attributed_to`, `encodes`, `decreases`, …;
+- a **subject**: a site, units or a feature, or the units a method selects;
+- a **target** metric;
+- an **estimand scope**: `instance` (one sample), `finite_sample` (an exact set) or `population`.
+
+Evidence is matched to a claim by structure: the same relation, target, subject or selection, eligibility, checkpoint and samples.
+
+Examples:
+- "these units are necessary for this prediction" is a `necessary_for` claim on a selection, instance scope.
+- "this direction encodes concept X" is an `encodes` claim with a dataset scope.
+- "this concept is causally used" is a use claim (`decreases` / `increases`) with a declared intervention.
+
+### Audit standings
+
+An audit is deterministic and model-free. It re-derives every recorded result and classifies each declared claim:
+
+| standing | meaning |
+|---|---|
+| `SUPPORTED` | the required evidence supports the claim under the plan, with no disagreement and no overclaim finding |
+| `CONTRADICTED` | the required evidence contradicts the claim |
+| `UNSUPPORTED` | evidence exists, but it **cannot establish the claim as stated** (e.g. only attribution for a causal claim; decodability without use; a generated label; a narrower scope) |
+| `INCONCLUSIVE` | the evidence does not decide (e.g. a no-op intervention, or a control criterion that could not be met) |
+| `ASSUMPTION_SENSITIVE` | decisive results disagree, and every disagreement is explained by a recorded assumption |
+| `MIXED` | decisive results disagree without a recorded explanation |
+| `NOT_EVALUATED` | no in-scope evidence |
+
+**UNSUPPORTED is not a weak CONTRADICTED.**
+- CONTRADICTED means the right kind of evidence was recorded and it went against the claim.
+- UNSUPPORTED means the recorded evidence is of the wrong kind or scope to decide it.
+
+Standings are not confidence levels. There is **no global score**: every standing comes with typed findings (for example `attribution_is_not_intervention`, `stress_test_reverses`, `control_criterion_unattainable`).
+
+### Configuration roles
+
+Many conclusions depend on choices: the replacement, k, the null, the threshold. A plan declares each configuration's role *before* the audit:
+
+- **PRIMARY:** the pre-registered analysis. **Only PRIMARY configurations decide the standing.**
+- **ALTERNATIVE:** another reasonable choice. A reversal is reported as `alternative_reverses`, a qualifying finding.
+- **STRESS_TEST:** a deliberately extreme choice. A reversal is reported as `stress_test_reverses`, an informational finding.
+
+Alternatives and stress tests never silently rewrite the PRIMARY conclusion. They stay visible in each group's `SensitivityProfile`: raw counts, not a robustness score.
+
+```python
+roles = [AU.role("replacement", "tensor/train_mean:*", "primary"),
+         AU.role("replacement", "tensor/pad_embedding:*", "alternative"),
+         AU.role("replacement", "zero", "stress_test")]
+```
+
+### Unit eligibility
+
+"The top-k tokens" and "the top-k *content* tokens" are different claims. **Eligibility is part of the claim.**
+
+```python
+content = [i for i, t in enumerate(input_ids[0].tolist()) if t not in tokenizer.all_special_ids]
+selection = F.top_k(attribution, k=2, eligible=content, eligibility="content_tokens")
+AU.selection(site, method="integrated_gradients", k=None, eligibility="content_tokens")
+```
+
+- **Scope of an eligibility:** rankings, random selections and matched controls use only the eligible units. Evidence about one eligibility is never used for a claim about another (`eligibility_mismatch`).
+- **Nothing is filtered automatically.** An all-units claim (`eligibility=None`) includes special tokens, because a model may genuinely depend on them.
+
+### Replacements
+
+Every intervention states what replaces the removed units. **There is no implicit zero.**
+- `F.zero()`: explicit zeros.
+- `F.replacement(tensor, name=...)`: any tensor of the site's shape, e.g. a training mean, another sample's activation (a resample), or a `[MASK]` / `[PAD]` embedding.
+
+The name and a content digest are recorded and appear in the audit's assumption axes (`tensor/train_mean:…`).
+
+BeyondNN does not assume a universal safe replacement. Different replacements can reach different conclusions, and the audit reports it.
+
+### Controls
+
+- **What they are:** faithfulness tests can require matched random controls: random unit sets of the same size, or the same perturbation magnitude, at the same site.
+- **Unattainable criteria:** if the declared control criterion could not be met by any model (for example, too few distinct alternative units), a failing result is INCONCLUSIVE, never a contradiction (`control_criterion_unattainable`).
+- **Competitive-only failure:** if the effect is present but random sets do as well, the finding says exactly that (`effect_without_competitive_advantage`).
+
+### Provenance
+
+Every record is bound to:
+- the model **checkpoint** (a full state digest) and optional declared model configuration;
+- the **sample** (an exact input identity) and the concept **dataset**;
+- the **target** metric, the **protocol** and its version, the **replacement** identity, the declared **eligibility** and the control configuration with its **seed**;
+- the software environment: BeyondNN, torch and Python versions.
+
+Records are content-addressed and versioned, with tested migrations for older versions. Reports record the plan's identity and the BeyondNN version and audit rules that produced them.
+
+**Evidence never silently counts** if it comes from another checkpoint (`other_checkpoint`), another sample (`sample_out_of_scope`) or another dataset scope. It is excluded, and the exclusion is reported.
+
+### Save, reload, verify
+
+Saved evidence is independently re-auditable:
+
+```python
+# runnable example (executed by tests/test_readme.py)
+import tempfile
+from pathlib import Path
+
+import torch
+from torch import nn
+
+import beyondnn as bnn
+
+A, F, iv, AU = bnn.attribution, bnn.faithfulness, bnn.interventions, bnn.audits
+model = nn.Sequential(nn.Linear(4, 2)).eval()
+with torch.no_grad():
+    model[0].weight.copy_(torch.tensor([[0.0, 0, 0, 0], [3.0, 1.0, 0, 0]]))
+    model[0].bias.zero_()
+x = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+target = iv.metrics.margin([0, 1])
+attr = bnn.attribute(model, x, target=target, method=A.gradient())
+test = F.comprehensiveness(target=target, min_drop=1.0, replacement=F.zero(),
+                           statement="the top-1 input is necessary")
+result = F.run(model, x, test=test, selection=F.top_k(attr, k=1), attributions=[attr])
+plan = AU.plan(
+    name="persisted", checkpoint=AU.checkpoint_of(model), declared_model=None,
+    samples=[AU.sample_id(x)], datasets=[], concepts=[], naive_auroc=None,
+    claims=[AU.claim("top1_necessary", statement="the top-1 input is necessary",
+                     relation="necessary_for", target=target, scope="instance",
+                     requirement="necessity",
+                     selection=AU.selection("input", method="gradient", k=1))],
+    requirements=[AU.requirement("necessity", policy=F.COMPREHENSIVENESS_POLICY, controls=False)],
+    counterexamples=AU.counterexample_rule(max_counterexample_fraction=None,
+                                           max_false_positive_rate=None,
+                                           max_false_negative_rate=None))
+report = bnn.audit([result, attr], plan=plan)
+
+out = Path(tempfile.mkdtemp())
+AU.save_evidence([result, attr], out / "evidence")      # exactly the traces the audit ingested
+(out / "plan.json").write_text(bnn.schema.to_json(plan))
+report.save(out / "report.json")
+
+# ... later, in a fresh Python process:
+plan2 = bnn.schema.from_json((out / "plan.json").read_text())
+paths = AU.load_evidence(out / "evidence")               # every record is re-validated on load
+again = bnn.audit(paths, plan=plan2, model=model)         # refuses any other checkpoint
+AU.verify_report(AU.load_report(out / "report.json"), paths, plan2)  # re-derives; never corrects
+print(dict(again.claim("top1_necessary").distribution))
+```
+
+The permanent test `tests/test_golden_workflow.py` runs the full save → fresh process → load → verify → audit → WHY loop.
+
+### Concepts: decodable versus used
+
+A concept hypothesis moves through `UNLABELED_FEATURE` → `PROPOSED_CONCEPT` → `VALIDATED_CONCEPT`.
+- **Validation requires both:** an encoding test (decodable above random-direction and label-permutation controls) *and* a declared use test (an intervention changes the target beyond controls).
+- **Decodable but unused** stays PROPOSED. **Generated labels** stay GENERATED and are never upgraded automatically.
 
 ```python
 # runnable example (executed by tests/test_readme.py)
 import torch
+from torch import nn
 
 import beyondnn as bnn
-from beyondnn._testing.concept_models import ConceptToy, concept_inputs
 
 C, iv = bnn.concepts, bnn.interventions
-model, x = ConceptToy().eval(), concept_inputs(200, seed=0)  # output uses h0 = x0; h1 = x1 is unused
+
+
+class Toy(nn.Module):
+    """hidden = x (6 units); output = 3*h0: h0 is used, h1 is decodable but never read."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.hidden = nn.Identity()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return 3.0 * self.hidden(x)[:, :1]
+
+
+model = Toy().eval()
+x = torch.randn(200, 6, generator=torch.Generator().manual_seed(0))
 splits = ["train"] * 100 + ["val"] * 40 + ["test"] * 60
-data = C.dataset([x[i : i + 1] for i in range(200)], (x[:, 1] > 0).long().tolist(), splits,
-                 name="toy x1", label_source="x1 > 0")
-concept = C.propose(C.neuron("hidden", 1), label="x1 is positive", definition="x1 > 0")  # PROPOSED
-encoding = C.encoding_test(model, concept, data, criteria=C.encoding_criteria(min_fraction_below=0.95),
-                           controls=[C.random_neurons(50, seed=1), C.label_permutation(50, seed=2)])
-use = C.use_test(model, concept, data, target=iv.metrics.select([0, 0]), relation="decreases",
-                 intervention=C.remove(C.zero()),  # the intervention is always declared
-                 controls=[C.random_neurons(20, seed=3)],
-                 criteria=C.use_criteria(min_change=0.25, min_fraction_beyond_controls=0.9))
-validation = C.validate(concept, encoding=encoding, use=[use])
-print(encoding.outcome.value, use.outcome.value, validation.semantic_status.value)
-# supports contradicts proposed_concept     <- decodable, but not used: never "validated"
+train_sd = float(model(x[:100]).std())  # declare min_change in the target's own scale
+for unit in (0, 1):
+    data = C.dataset([x[i : i + 1] for i in range(200)], (x[:, unit] > 0).long().tolist(), splits,
+                     name=f"x{unit} positive", label_source=f"x{unit} > 0")
+    concept = C.propose(C.neuron("hidden", unit), label=f"x{unit} is positive",
+                        definition=f"x{unit} > 0")
+    encoding = C.encoding_test(model, concept, data,
+                               criteria=C.encoding_criteria(min_fraction_below=0.8),
+                               controls=[C.random_neurons(5, seed=1), C.label_permutation(50, seed=2)])
+    use = C.use_test(model, concept, data, target=iv.metrics.select([0, 0]), relation="decreases",
+                     intervention=C.remove(C.zero()), controls=[C.random_neurons(5, seed=3)],
+                     criteria=C.use_criteria(min_change=0.2 * train_sd,
+                                             min_fraction_beyond_controls=0.8))
+    validation = C.validate(concept, encoding=encoding, use=[use])
+    print(unit, encoding.outcome.value, use.outcome.value, validation.semantic_status.value)
 ```
 
-- **What VALIDATED_CONCEPT would mean:** encoding *and* use claims supported above declared controls, with counterexamples recorded, *within the recorded scope* (checkpoint, site, dataset split, intervention, target). It never means "the model understands C".
-- **Where the results go:** into the structured WHY (`bnn.compose(trace, concepts=[validation])`), as dataset-scoped context with the encoding and use outcomes on separate lines.
-- **Documentation:** [`docs/concepts/`](docs/concepts/README.md); the flagship example is `examples/phase6_concepts.py`.
-
-## Audits (Phase 7)
-
-```python
-# runnable example (executed by tests/test_readme.py)
-import torch
-
-import beyondnn as bnn
-from beyondnn._testing.causal_models import Redundant
-from beyondnn.core.samples import sample_id
-from beyondnn.schema import InterventionOperation, Relation, Site, Subject
-
-A, iv, AU = bnn.attribution, bnn.interventions, bnn.audits
-model, x = Redundant().eval(), torch.tensor([[3.0, 5.0]])  # y = p(x) + q(x), with p = q = x0
-target = iv.metrics.select([0, 0])
-ig = A.integrated_gradients(baseline=A.zero_baseline(), n_steps=16)
-credit = A.make_claim(A.layer("p"), target, x, statement="p receives attribution for y")
-attribution = A.attribute(model, x, target=target, method=ig, at=A.layer("p"),
-                          claims=[(credit, A.threshold_spec(ig, at=A.layer("p"), min_abs_attribution=2.0))])
-necessary = iv.make_claim(iv.zero("p"), target, Relation.NECESSARY_FOR, x, statement="p is necessary for y")
-effect = bnn.intervene(model, x, intervention=iv.zero("p"), metric=target,
-                       claims=[(necessary, iv.threshold_spec(operation=InterventionOperation.ZERO,
-                                                             min_effect=6.0))])
-
-plan = AU.plan(  # declared before auditing; every field is explicit
-    name="redundant_path", checkpoint=AU.checkpoint_of(model), declared_model=None,
-    samples=[sample_id(x)], datasets=[], concepts=[], naive_auroc=None,
-    claims=[AU.claim("p_necessary", statement="p is necessary for y", relation="necessary_for",
-                     target=target, scope="instance", requirement="intervention",
-                     subject=Subject(site=Site(module="p")))],
-    requirements=[AU.requirement("intervention", policy=iv.INTERVENTION_POLICY, controls=False)],
-    counterexamples=AU.counterexample_rule(max_counterexample_fraction=None,
-                                           max_false_positive_rate=None, max_false_negative_rate=None))
-for evidence in ([attribution], [attribution, effect]):
-    audited = bnn.audit(evidence, plan=plan).claim("p_necessary")
-    print(dict(audited.distribution), sorted(f.code for f in audited.findings))
-# {'unsupported': 1} ['attribution_is_not_intervention']       <- attribution only
-# {'contradicted': 1} ['attribution_intervention_disagree', 'counterexamples_present']
+```text
+0 supports supports validated_concept
+1 supports contradicts proposed_concept
 ```
 
-- **What an audit is:** a deterministic, model-free classification of the declared claims from recorded, **re-derived**, in-scope evidence. The standings are SUPPORTED, CONTRADICTED, MIXED, ASSUMPTION_SENSITIVE, INCONCLUSIVE, UNSUPPORTED and NOT_EVALUATED, each with the findings behind it.
-- **What an audit never does:** compute a score, resolve a contradiction, or say that an explanation is trustworthy. Missing evidence is NOT_EVALUATED.
-- **What it reports:**
-  - structural overclaims (attribution → causal, decodable → used, generated → validated, instance → population, one replacement / k / threshold / null → universal);
-  - sensitivity to each assumption;
-  - per-sample distributions with counterexample identities;
-  - evidence that is excluded for provenance or scope.
-- **Persistence:** audits run on saved traces too (`bnn.audit([path, ...], plan=plan)`), and `bnn.audits.verify_report` re-derives a stored report.
-- **WHY integration:** `bnn.compose(trace, audit=report)` adds an AUDIT section.
-- **Documentation:** [`docs/audit/`](docs/audit/README.md).
+Unit 1 is decodable but not used, so it is never "validated".
 
-## Still proposed (not implemented)
+`VALIDATED_CONCEPT` means the declared criteria were met within the recorded scope (checkpoint, site, dataset split, intervention, target). It does not mean the model "understands" the concept.
 
-There is no single "explanation confidence" percentage. BeyondNN reports component evidence until an aggregate has been validated.
+### WHY
+
+`bnn.compose(trace, attributions=..., interventions=..., faithfulness=..., concepts=..., audit=...)` assembles recorded evidence into one structured view:
+- **It runs nothing:** it only arranges records that already exist.
+- **It never merges evidence kinds** into a narrative or a score.
+- **It refuses** evidence about another model, input or target.
+- **It lists what was not evaluated.**
+
+`response.render()` gives a deterministic text view with sections for measurements, attributions, interventions, faithfulness, concepts and the audit. The first example above prints one.
+
+## Examples
+
+Runnable scripts in [`examples/`](examples/). Each one runs in CI.
+
+| script | shows |
+|---|---|
+| [`01_quickstart.py`](examples/01_quickstart.py) | trace → evidence → claim → audit → WHY |
+| [`02_attribution.py`](examples/02_attribution.py) | attribution as ATTRIBUTED evidence; baselines; completeness |
+| [`03_intervention.py`](examples/03_intervention.py) | controlled interventions on a redundant path |
+| [`04_faithfulness.py`](examples/04_faithfulness.py) | comprehensiveness with explicit replacements, controls and eligibility |
+| [`05_concepts.py`](examples/05_concepts.py) | concept proposal, encoding and use tests, validation |
+| [`06_audit.py`](examples/06_audit.py) | audit plans, roles, standings and findings |
+| [`07_save_reload.py`](examples/07_save_reload.py) | save evidence, reload, re-audit, verify |
+
+## Where BeyondNN fits
+
+BeyondNN is meant to be used *alongside* existing tools:
+
+| tool | role |
+|---|---|
+| PyTorch | execution and autograd substrate |
+| Captum | attribution methods (BeyondNN has an optional Captum adapter) |
+| NNsight, TransformerLens, pyvene | model tracing, patching and mechanistic analysis |
+| Quantus | explanation-quality metrics |
+| **BeyondNN** | provenance-aware records of evidence, declared claims, and an audit of what the evidence establishes |
+
+## Validation (scoped)
+
+The framework was evaluated with pre-registered, held-out experiments. The headline observations, with their scope (details and exact wording in [`docs/research/PAPER_EVIDENCE_LEDGER.md`](docs/research/PAPER_EVIDENCE_LEDGER.md)):
+
+- **Independent ground truth (compiled programs only).** On 8 held-out compiled Tracr programs, whose ground truth comes from the program text and weights (not from an intervention):
+  - the audit supported 0 of 400 decoy-component instances, including 0 of 160 decoys that are exact copies of the used variable;
+  - it supported every used component on most samples (591 of 760 instances).
+  - This does not establish mechanism identification in trained models.
+- **Attribution-only causal claims are refused.** They were UNSUPPORTED everywhere they were tested. IG-selected wrong components were contradicted when intervention evidence existed.
+- **Configuration sensitivity is real.** On six held-out sites (MLP, CNN, BERT-tiny, BERT-base), 47 of the 52 samples where the top-k attribution units were supported as necessary were reversed by a pre-declared reasonable alternative.
+- **Save / reload / re-audit** gives identical conclusions from saved evidence, from a clean install.
+
+## Limitations
+
+- **Independent mechanism ground truth** is currently available only for small compiled (Tracr) models. On trained models, the evidence is configuration sensitivity without ground truth.
+- **Intervention conclusions depend on the replacement.** Zero ablation supported every decoy in the compiled benchmark. No replacement is universally safe.
+- **A single counterfactual per sample** can miss a genuinely necessary component (22% of known-true instances in the compiled benchmark).
+- **A standing is scoped** to its declared checkpoint, samples, target, eligibility and configurations.
+- **Concept validation** is validation under declared criteria in a recorded scope, not universal semantic truth. Its use threshold is declared in the target's scale.
+- **Coverage:** CPU-verified; PyTorch models with module-level sites (functional operations are not hookable). Larger models make evidence collection expensive in time and disk.
+- **There is no universal explanation-quality score, by design.**
 
 ## Documentation
 
-Start at [`docs/README.md`](docs/README.md). Key documents:
+Start at [`docs/README.md`](docs/README.md): guides for tracing, attribution, interventions, faithfulness protocols, concepts, audits and provenance, plus [reproducibility](docs/REPRODUCIBILITY.md) and the research record.
 
-- [Architecture proposal](docs/design/ARCHITECTURE_PROPOSAL.md)
-- [Trace schema](docs/design/TRACE_SCHEMA_PROPOSAL.md)
-- [What "interpretable" means here](docs/design/INTERPRETABILITY_DEFINITION.md)
-- [Ecosystem audit](docs/research/ECOSYSTEM_AUDIT.md) and [differentiation](docs/research/DIFFERENTIATION.md)
-- [Architecture decisions](docs/decisions/ARCHITECTURE_DECISIONS.md)
+## Contributing, security, citation
+
+- **Contributing:** [`CONTRIBUTING.md`](CONTRIBUTING.md) covers setup, tests, the API freeze and the scientific invariants that ordinary changes must not break ([`docs/PRE_PHASE8_INVARIANTS.md`](docs/PRE_PHASE8_INVARIANTS.md)).
+- **Security:** [`SECURITY.md`](SECURITY.md). Report privately via GitHub security advisories.
+- **Code of conduct:** [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+- **Citation:** [`CITATION.cff`](CITATION.cff) (the software; no paper yet).
 
 ## License
 

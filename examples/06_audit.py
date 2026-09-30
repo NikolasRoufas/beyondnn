@@ -1,6 +1,6 @@
-"""Phase-7 flagship example: one declared claim, audited over a body of evidence.
+"""One declared claim, audited over a body of evidence.
 
-Run: ``python examples/phase7_audit.py``. On ``y = tanh(4 x0) + 0.2 x1`` at x = (3, 1):
+Run: ``python examples/06_audit.py``. On ``y = tanh(4 x0) + 0.2 x1`` at x = (3, 1):
 
 * the gradient ranks x1 first (tanh is saturated at x0 = 3), integrated gradients x0;
 * each ranking's top-1 unit is tested for necessity (comprehensiveness) under two
@@ -19,7 +19,6 @@ import torch
 from torch import nn
 
 import beyondnn as bnn
-from beyondnn.core.samples import sample_id
 
 A, F, AU, iv = bnn.attribution, bnn.faithfulness, bnn.audits, bnn.interventions
 
@@ -73,7 +72,7 @@ def build() -> tuple[bnn.audits.AuditReport, bnn.audits.AuditReport, str]:
         name="saturated_top1",
         checkpoint=AU.checkpoint_of(model),
         declared_model=None,
-        samples=[sample_id(x)],
+        samples=[AU.sample_id(x)],
         datasets=[],
         claims=claims,
         requirements=[

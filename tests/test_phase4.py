@@ -571,7 +571,7 @@ def test_rendered_text_makes_no_unlicensed_statements() -> None:
 def test_the_phase_4_example_script_runs() -> None:
     import importlib.util
 
-    path = Path(__file__).resolve().parents[1] / "examples" / "phase4_redundant_path.py"
+    path = Path(__file__).resolve().parents[1] / "examples" / "03_intervention.py"
     spec = importlib.util.spec_from_file_location("phase4_example", path)
     assert spec is not None
     assert spec.loader is not None

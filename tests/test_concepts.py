@@ -646,7 +646,7 @@ def test_the_flagship_example_runs_and_keeps_the_claims_apart(
 ) -> None:
     import runpy
 
-    path = Path(__file__).resolve().parents[1] / "examples" / "phase6_concepts.py"
+    path = Path(__file__).resolve().parents[1] / "examples" / "05_concepts.py"
     runpy.run_path(str(path), run_name="__main__")
     out = capsys.readouterr().out
     assert "USE CLAIM (decreases, remove with zero reference): CONTRADICTED" in out
