@@ -117,7 +117,8 @@ class _Cal(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         h = self.hidden(x)
-        return (2.0 * h[:, 0] + h[:, 2]).unsqueeze(1)
+        out: torch.Tensor = (2.0 * h[:, 0] + h[:, 2]).unsqueeze(1)
+        return out
 
 
 @pytest.mark.parametrize(
@@ -139,7 +140,7 @@ def test_known_concept_positive_unused_and_negative(
         train_y = model(x[:120])[:, 0].tolist()
     mc = AN.rel_min_change(train_y)
     data = C.dataset(
-        list(x.split(1)),
+        [x[i : i + 1] for i in range(n)],
         labels_of(x).long().tolist(),
         splits,
         name=name,

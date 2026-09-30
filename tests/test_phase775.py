@@ -13,7 +13,14 @@ from torch import nn
 
 import beyondnn as bnn
 from beyondnn.faithfulness.spec import FaithfulnessError
-from beyondnn.schema import EvidenceSelection, SchemaError, from_json, to_json
+from beyondnn.schema import (
+    AuditPlan,
+    EvidenceSelection,
+    InterventionRecord,
+    SchemaError,
+    from_json,
+    to_json,
+)
 
 A, F, AU, iv = bnn.attribution, bnn.faithfulness, bnn.audits, bnn.interventions
 SEL = iv.metrics.select([0, 0])
@@ -28,7 +35,8 @@ class Tokens(nn.Module):
         self.w = torch.tensor([5.0, 1.0, 0.5, 0.2, 0.1, 6.0])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return (self.emb(x) * self.w).sum(-1, keepdim=True)
+        out: torch.Tensor = (self.emb(x) * self.w).sum(-1, keepdim=True)
+        return out
 
 
 CONTENT = (1, 2, 3, 4)
@@ -81,7 +89,7 @@ def test_padding_excluded_from_selections_and_controls() -> None:
     control_units = {
         rec.units
         for rec in r.trace.records
-        if type(rec).__name__ == "InterventionRecord" and rec.units != sel.selected
+        if isinstance(rec, InterventionRecord) and rec.units != sel.selected
     }
     assert control_units
     assert all(set(u) <= set(padded) for u in control_units if u)
@@ -177,6 +185,7 @@ def test_eligibility_survives_save_and_reload(tmp_path: Path) -> None:
     reloaded = from_json((tmp_path / "plan.json").read_text())
     assert reloaded == plan
     live = bnn.audit([*results, *attrs], plan=plan)
+    assert isinstance(reloaded, AuditPlan)
     again = bnn.audit(AU.load_evidence(tmp_path / "ev"), plan=reloaded)
     assert again.to_json() == live.to_json()
     assert len(paths) == 3
@@ -193,7 +202,8 @@ class Heads(nn.Module):
         self.site = nn.Identity()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.site(x)[:, :1] * 2.0
+        out: torch.Tensor = self.site(x)[:, :1] * 2.0
+        return out
 
 
 def _control_plan(model: nn.Module, sid: str) -> Any:
@@ -253,7 +263,8 @@ class EqualHeads(nn.Module):
         self.site = nn.Identity()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.site(x).sum(-1, keepdim=True) * 2.0
+        out: torch.Tensor = self.site(x).sum(-1, keepdim=True) * 2.0
+        return out
 
 
 def test_competitive_failure_is_not_a_failure_of_the_effect() -> None:
@@ -304,4 +315,7 @@ def test_audit_plan_v2_selection_claims_migrate_to_all_units() -> None:
         del c["selection"]["eligibility"]
     env |= {"record_version": 2, "id": _expected_id("audit_plan", 2, data)}
     migrated = from_dict(env)
-    assert migrated.claims[0].selection.eligibility is None  # v2 claims were about every unit
+    assert isinstance(migrated, AuditPlan)
+    selection = migrated.claims[0].selection
+    assert selection is not None
+    assert selection.eligibility is None  # v2 claims were about every unit

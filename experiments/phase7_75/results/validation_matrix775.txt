@@ -1,0 +1,39 @@
+# Phase 7.75 regression matrix (run at 8d59f4b + working tree, 2026-09-30)
+== py3.10 no-captum
+1038 passed, 1 skipped in 204.62s (0:03:24)
+== py3.10 --extra captum
+1059 passed in 248.24s (0:04:08)
+== py3.12 no-captum
+1038 passed, 1 skipped in 181.51s (0:03:01)
+== py3.12 --extra captum
+1059 passed in 173.56s (0:02:53)
+== py3.14 no-captum
+1038 passed, 1 skipped in 197.71s (0:03:17)
+== py3.14 --extra captum
+1059 passed in 220.20s (0:03:40)
+== ruff
+All checks passed!
+165 files already formatted
+== mypy (no captum)
+Found 9 errors in 2 files (checked 115 source files)
+== mypy (captum)
+Found 9 errors in 2 files (checked 115 source files)
+== build
+Successfully built experiments/phase7_75/artifacts/wheelcheck/dist/beyondnn-0.0.0.dev0.tar.gz
+Successfully built experiments/phase7_75/artifacts/wheelcheck/dist/beyondnn-0.0.0.dev0-py3-none-any.whl
+== clean wheel (python 3.12; wheel + numpy only)
+7 README examples OK
+example phase4_redundant_path.py: OK
+example phase6_concepts.py: OK
+example phase7_audit.py: OK
+run ok {'claim': {'contradicted': 2, 'supported': 8}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True}
+reload ok {'claim': {'contradicted': 2, 'supported': 8}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True} same as before: True
+run ok {'claim': {'contradicted': 2, 'supported': 8}, 'eligible_claim': {'contradicted': 8, 'supported': 2}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True}
+reload ok {'claim': {'contradicted': 2, 'supported': 8}, 'eligible_claim': {'contradicted': 8, 'supported': 2}, 'concept': 'unsupported', 'validation': 'proposed_concept', 'why_has_audit': True, 'why_has_concepts': True} same as before: True
+VALIDATE775_DONE
+
+## note
+mypy reported 9 errors, all in the two new Phase-7.75 test files (missing annotations / narrowing); fixed afterwards without behaviour change:
+Success: no issues found in 115 source files
+Success: no issues found in 115 source files
+The clean-wheel checks use the repo's README blocks, examples/ and both researcher workflows: the per-phase smoke scripts of earlier phases lived in a session scratch folder that the 2026-09-29 crash wiped (they were never repo content).
