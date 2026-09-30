@@ -1,38 +1,98 @@
 # BeyondNN documentation
 
-| Folder | What belongs here | Rule |
+New to BeyondNN? Read the [project README](../README.md) first (installation, a five-minute quickstart, the core concepts), then run the [examples](../examples/). The pages below go deeper.
+
+## Getting started
+
+- [README](../README.md): what BeyondNN is, installation, quickstart, the end-to-end example.
+- [Examples](../examples/): numbered, runnable scripts (`01_quickstart.py` … `07_save_reload.py`).
+- [Reproducibility](REPRODUCIBILITY.md): environments, tests, and how to re-run the research experiments.
+
+## Core concepts
+
+- [What "interpretable" means here](design/INTERPRETABILITY_DEFINITION.md): the vocabulary (observed, measured, attributed, interventional, …) and what each status can justify.
+- [Architecture](design/ARCHITECTURE_PROPOSAL.md): the Measurement → Claim → Test → Evidence → Assessment → WHY pipeline.
+- [Semantic status of concepts](concepts/semantic_status.md): UNLABELED_FEATURE → PROPOSED_CONCEPT → VALIDATED_CONCEPT; GENERATED labels.
+
+## Tracing and evidence
+
+- [Trace schema](design/TRACE_SCHEMA_PROPOSAL.md): record kinds, epistemic status, identity and versioning.
+- README sections: [evidence statuses](../README.md#evidence-statuses), [provenance](../README.md#provenance).
+
+## Attribution and interventions
+
+- README: [five-minute quickstart](../README.md#five-minute-quickstart) (attribution vs intervention on a redundant path), [replacements](../README.md#replacements).
+- Examples: [`02_attribution.py`](../examples/02_attribution.py), [`03_intervention.py`](../examples/03_intervention.py).
+
+## Faithfulness protocols
+
+- [Protocol reference](protocols/README.md): comprehensiveness, sufficiency, curves, stability, counterexamples, diagnostics. Each page says what the protocol can and cannot support.
+- README: [controls](../README.md#controls), [unit eligibility](../README.md#unit-eligibility).
+
+## Concepts
+
+- [Concepts guide](concepts/README.md): features, datasets, proposals, encoding and use tests, validation.
+- [Features](concepts/features.md), [controls](concepts/controls.md), [validation](concepts/validation.md).
+
+## Auditing
+
+- [Audits](audit/README.md): what an audit does, and never does.
+- [Writing an audit plan](audit/plans.md): claims, requirements, configuration roles, eligibility, sensitivity profiles, uncertainty, persistence, reading reports.
+- [Taxonomy](audit/taxonomy.md): standings, finding kinds, codes, severities.
+
+## WHY
+
+- README: [WHY](../README.md#why). `bnn.compose(...)` arranges recorded evidence and never generates a narrative.
+
+## Persistence and provenance
+
+- README: [save, reload, verify](../README.md#save-reload-verify).
+- [Audit plans: persisting evidence](audit/plans.md#persisting-evidence).
+
+## API and stability
+
+- [API freeze and public API inventory](API_FREEZE.md): what is frozen, experimental or internal.
+- [Scientific invariants](PRE_PHASE8_INVARIANTS.md): the invariants a change must keep, each mapped to the tests that protect it.
+- [Architecture decisions (ADRs)](decisions/ARCHITECTURE_DECISIONS.md): what is settled, and why.
+
+## Research validation
+
+- [Paper evidence ledger](research/PAPER_EVIDENCE_LEDGER.md): every validated claim, with allowed and disallowed wording, scope and counterevidence.
+- [Independent ground truth](research/PHASE_7_75_INDEPENDENT_GROUND_TRUTH.md): why compiled Tracr programs with program-defined truth were used.
+- [Paper readiness](research/PHASE_7_75_PAPER_READINESS.md): the remaining gaps, stated plainly.
+- [Ecosystem audit](research/ECOSYSTEM_AUDIT.md) and [differentiation](research/DIFFERENTIATION.md).
+
+## Development history
+
+BeyondNN was built in pre-registered phases; each has a plan and a go/no-go report. These are kept as the research record: negative results and deviations included, never rewritten.
+
+| phase | subject | documents |
 |---|---|---|
-| [`design/`](design/) | How BeyondNN works: architecture, the trace/claim schema, definitions of terms | Living documents. Change them via PR. Significant changes need an ADR. |
-| [`research/`](research/) | Why BeyondNN exists and what it must answer: ecosystem audit, differentiation, research questions | Update when the ecosystem or the evidence changes, and date the change. |
-| [`roadmap/`](roadmap/) | What gets built, and when: the roadmap, per-phase plans, and `PHASE_<N>_REPORT.md` go/no-go reports | A phase starts only after the previous report's go decision. |
-| [`experiments/`](experiments/) | What was run and what happened | **Append-only.** Negative results stay. |
-| [`decisions/`](decisions/) | Architecture Decision Records | **Append-only.** Supersede, never rewrite. |
+| 1 | tracing, schema, provenance | [report](PHASE_1_REPORT.md), [plan](roadmap/PHASE_1_PLAN.md) |
+| 2 | controlled interventions | [plan](PHASE_2_PLAN.md), [report](PHASE_2_REPORT.md) |
+| 3 | attribution | [plan](PHASE_3_PLAN.md), [report](PHASE_3_REPORT.md) |
+| 4 | structured WHY | [plan](PHASE_4_PLAN.md), [report](PHASE_4_REPORT.md) |
+| 5 | faithfulness protocols | [plan](PHASE_5_PLAN.md), [report](PHASE_5_REPORT.md) |
+| 5.5 | faithfulness on trained models | [plan](PHASE_5_5_PLAN.md), [report](PHASE_5_5_REPORT.md), [API review](PHASE_5_5_API_REVIEW.md) |
+| 6 | concepts | [plan](PHASE_6_PLAN.md), [report](PHASE_6_REPORT.md) |
+| 7 | audits | [plan](PHASE_7_PLAN.md), [report](PHASE_7_REPORT.md) |
+| 7.5 | external validation, uncertainty, API freeze | [plan](PHASE_7_5_PLAN.md), [frozen policy](PHASE_7_5_FROZEN_POLICY.md), [report](PHASE_7_5_REPORT.md), [external validation](PHASE_7_5_EXTERNAL_VALIDATION.md), [API review](PHASE_7_5_API_REVIEW.md) |
+| 7.75 | scientific fixes, independent ground truth, evidence freeze | [plan (frozen)](PHASE_7_75_PLAN.md), [scientific fixes](PHASE_7_75_SCIENTIFIC_FIXES.md), [report](PHASE_7_75_REPORT.md) |
+| pre-release | framework invariants and API hardening | [report](PRE_PHASE8_HARDENING_REPORT.md) |
+| 8 | public release | [report](PHASE_8_REPORT.md) |
 
-## Where to start
+**Other records:**
+- [Roadmap](roadmap/ROADMAP.md).
+- [Experiment log](experiments/EXPERIMENT_LOG.md): append-only.
+- Literature reviews and design notes in [`research/`](research/).
+- The Trace 3B boundary note: [roadmap/TRACE3B_FUTURE.md](roadmap/TRACE3B_FUTURE.md).
 
-0. [`PHASE_7_75_REPORT.md`](PHASE_7_75_REPORT.md), [`PHASE_7_75_PLAN.md`](PHASE_7_75_PLAN.md) (frozen), [`PHASE_7_75_SCIENTIFIC_FIXES.md`](PHASE_7_75_SCIENTIFIC_FIXES.md): scientific fixes and the final evidence freeze; research notes in [`research/PHASE_7_75_INDEPENDENT_GROUND_TRUTH.md`](research/PHASE_7_75_INDEPENDENT_GROUND_TRUTH.md) and [`research/PHASE_7_75_PAPER_READINESS.md`](research/PHASE_7_75_PAPER_READINESS.md).
-0. [`PHASE_7_5_REPORT.md`](PHASE_7_5_REPORT.md), [`PHASE_7_5_PLAN.md`](PHASE_7_5_PLAN.md), [`PHASE_7_5_FROZEN_POLICY.md`](PHASE_7_5_FROZEN_POLICY.md), [`PHASE_7_5_EXTERNAL_VALIDATION.md`](PHASE_7_5_EXTERNAL_VALIDATION.md), [`PHASE_7_5_API_REVIEW.md`](PHASE_7_5_API_REVIEW.md), [`API_FREEZE.md`](API_FREEZE.md): external validation, audit refinement and the API freeze; research notes in [`research/PHASE_7_5_LITERATURE.md`](research/PHASE_7_5_LITERATURE.md) and [`research/PHASE_7_5_PAPER_READINESS.md`](research/PHASE_7_5_PAPER_READINESS.md).
-0. [`PHASE_7_REPORT.md`](PHASE_7_REPORT.md), [`PHASE_7_PLAN.md`](PHASE_7_PLAN.md), and [`audit/`](audit/README.md): model-free scientific audits of recorded evidence (standings and findings, no score); research notes in [`research/PHASE_7_LITERATURE.md`](research/PHASE_7_LITERATURE.md), [`research/PHASE_7_DIFFERENTIATION.md`](research/PHASE_7_DIFFERENTIATION.md), [`research/PAPER_EVIDENCE_LEDGER.md`](research/PAPER_EVIDENCE_LEDGER.md); Trace 3B boundary: [`roadmap/TRACE3B_FUTURE.md`](roadmap/TRACE3B_FUTURE.md).
-0. [`PHASE_6_REPORT.md`](PHASE_6_REPORT.md), [`PHASE_6_PLAN.md`](PHASE_6_PLAN.md), and [`concepts/`](concepts/README.md): features, concept hypotheses, and controlled concept validation (decodable ≠ used).
-0. [`PHASE_5_5_REPORT.md`](PHASE_5_5_REPORT.md) and [`PHASE_5_5_API_REVIEW.md`](PHASE_5_5_API_REVIEW.md): faithfulness on realistic trained models.
-0. [`PHASE_5_REPORT.md`](PHASE_5_REPORT.md), [`PHASE_5_PLAN.md`](PHASE_5_PLAN.md), and [`protocols/`](protocols/README.md): faithfulness protocols, controls, and what each can and cannot support.
-0. [`PHASE_4_REPORT.md`](PHASE_4_REPORT.md) and [`PHASE_4_PLAN.md`](PHASE_4_PLAN.md): the structured WHY; how evidence is composed without being merged.
-0. [`PHASE_3_REPORT.md`](PHASE_3_REPORT.md) and [`PHASE_3_PLAN.md`](PHASE_3_PLAN.md): attribution (ATTRIBUTED evidence), Captum integration, and why attribution is not causation.
-0. [`PHASE_2_REPORT.md`](PHASE_2_REPORT.md) and [`PHASE_2_PLAN.md`](PHASE_2_PLAN.md): causal interventions, with their guarantees and limits.
-0. [`PHASE_1_REPORT.md`](PHASE_1_REPORT.md): what exists now, its guarantees and limits, and the Phase 1 gate decision.
+## Documentation rules
 
-1. [`research/DIFFERENTIATION.md`](research/DIFFERENTIATION.md): why the project exists, and its limits.
-2. [`design/INTERPRETABILITY_DEFINITION.md`](design/INTERPRETABILITY_DEFINITION.md): the vocabulary (observed, measured, attributed, interventional, …).
-3. [`design/ARCHITECTURE_PROPOSAL.md`](design/ARCHITECTURE_PROPOSAL.md): the Measurement → Claim → Test → Evidence → Assessment → WHY pipeline, and the API.
-4. [`design/TRACE_SCHEMA_PROPOSAL.md`](design/TRACE_SCHEMA_PROPOSAL.md): the exact record types.
-5. [`decisions/ARCHITECTURE_DECISIONS.md`](decisions/ARCHITECTURE_DECISIONS.md): what is settled and why.
-6. [`roadmap/PHASE_1_PLAN.md`](roadmap/PHASE_1_PLAN.md): what gets built first.
-
-## Release blockers
-
-Items marked `BLOCKS_PUBLIC_RELEASE` are tracked in [`roadmap/ROADMAP.md`](roadmap/ROADMAP.md#release-blockers-blocks_public_release).
-
-## Future additions
-
-Per-test and per-metric reference pages (definition, implementation, interpretation, limitations) will live
-in `design/tests/` once Phase 2 introduces the first claim tests. They are not created until then.
+| folder | contents | rule |
+|---|---|---|
+| `design/` | how BeyondNN works | living; significant changes need an ADR |
+| `research/` | why it exists; validation evidence | dated updates |
+| `decisions/` | ADRs | append-only; supersede, never rewrite |
+| `experiments/` | what was run and what happened | append-only; negative results stay |
+| `PHASE_*` reports | the development record | historical; not edited after their gate |

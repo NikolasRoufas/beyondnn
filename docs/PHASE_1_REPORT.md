@@ -193,7 +193,7 @@ Environment: Python 3.14.3, torch 2.12.0, Darwin arm64, 4 torch threads; warm-up
 1. **Per-record hashing overhead** grows with the number of records. Fingerprinting per pass scales with model bytes. Neither has been measured on large models.
 2. **Private torch internals are relied upon:** `_non_persistent_buffers_set`, `_global_forward(_pre)_hooks`, and hook dicts. There are compatibility tests on torch 2.12 and 2.14 only.
 3. **CI has never run on GitHub** (release blocker RB-3). Only local multi-version runs exist.
-4. **The first three commits** carry a Claude co-author trailer (left unchanged at the owner's request).
+4. **The first three commits** carry a co-author trailer; history was left unchanged at the owner's request.
 
 ## 17. Deferred work
 

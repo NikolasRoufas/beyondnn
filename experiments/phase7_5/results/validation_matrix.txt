@@ -22,8 +22,8 @@ Success: no issues found in 112 source files
 == mypy (captum)
 Success: no issues found in 112 source files
 == build
-Successfully built /private/tmp/claude-501/-Users-nikolasroufas/bc562b42-f87a-43ef-a959-a6b16bc26158/scratchpad/dist75c/beyondnn-0.0.0.dev0.tar.gz
-Successfully built /private/tmp/claude-501/-Users-nikolasroufas/bc562b42-f87a-43ef-a959-a6b16bc26158/scratchpad/dist75c/beyondnn-0.0.0.dev0-py3-none-any.whl
+Successfully built <scratch>/dist75c/beyondnn-0.0.0.dev0.tar.gz
+Successfully built <scratch>/dist75c/beyondnn-0.0.0.dev0-py3-none-any.whl
 == clean wheel (none)
 phase-1 smoke OK
 phase-2 smoke OK: effect 4.0 interventional

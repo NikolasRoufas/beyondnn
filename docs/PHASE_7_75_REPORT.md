@@ -463,7 +463,7 @@ No policy was changed after seeing held-out results. DV-1 was procedural and out
 
 ## 52. Commits
 
-18 local commits after `7ec2493`, the last being the report-completion commit. No Claude attribution trailers (owner's rule).
+18 local commits after `7ec2493`, the last being the report-completion commit. No attribution trailers.
 
 - `920f1cc` Declared unit eligibility (ADR-053); unattainable control criteria are inconclusive and competitive-only failures are distinguished (ADR-054); concept min_change in target scale (ADR-055)
 - `b355129` Phase 7.75 FROZEN plan, independent-ground-truth review, experiment code (TD programs, concepts, central re-runs, InterpBench re-audit), development evidence; Phase-7.5 results pinned (before any held-out Phase-7.75 run)

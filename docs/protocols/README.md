@@ -1,4 +1,4 @@
-# Faithfulness protocols (Phase 5)
+# Faithfulness protocols
 
 Each page covers:
 - the definition and formal quantity;

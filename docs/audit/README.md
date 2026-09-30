@@ -1,4 +1,4 @@
-# Scientific audits (Phase 7)
+# Scientific audits
 
 `bnn.audit(evidence, plan=plan) -> AuditReport` classifies the claims and concepts that an `AuditPlan` declares, using the evidence that was recorded, re-derived, and is in scope. Decisions: ADR-044 to ADR-047. Pre-registration: `docs/PHASE_7_PLAN.md`.
 

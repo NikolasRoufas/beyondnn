@@ -1,4 +1,4 @@
-# Concepts (Phase 6)
+# Concepts
 
 Phase 6 makes semantic claims about neural representations explicit, provenance-aware, testable, controlled and causally scoped. It does not make it easy to attach names to neurons.
 
