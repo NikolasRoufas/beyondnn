@@ -4,36 +4,80 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
+    name: Lint and types
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install "ruff>=0.16"
-      - run: ruff check .
-      - run: ruff format --check .
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
 
   test:
+    name: Tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.12", "3.14"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install CPU-only torch
-        run: pip install torch --index-url https://download.pytorch.org/whl/cpu
-      - name: Install package
-        run: pip install -e ".[dev]"
-      - run: mypy
-      - run: pytest
+          enable-cache: true
+      - run: uv sync --locked
+      # the whole suite, including the golden workflow, migration matrix, README and examples
+      - run: uv run pytest -q -W error
+
+  captum:
+    name: Tests with the Captum extra (Python 3.12)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked --extra captum
+      - run: uv run pytest -q -W error
+
+  package:
+    name: Build and clean-wheel check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv build
+      - name: Install the wheel into a clean environment (no source checkout on the path)
+        run: |
+          uv venv /tmp/wheel-env
+          uv pip install --python /tmp/wheel-env/bin/python numpy dist/*.whl \
+            --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple
+      - name: Run every example against the installed wheel
+        run: |
+          for f in examples/*.py; do
+            echo "::group::$f"
+            /tmp/wheel-env/bin/python "$f" > /dev/null
+            echo "::endgroup::"
+          done
+      - name: The wheel contains only the package
+        run: |
+          python -c "import sys, zipfile, glob; names = zipfile.ZipFile(glob.glob('dist/*.whl')[0]).namelist(); bad = [n for n in names if not n.startswith(('beyondnn/', 'beyondnn-'))]; print(len(names), 'files'); sys.exit(1 if bad else 0)"

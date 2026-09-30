@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest a capability or an improvement.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do, and what is missing?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: >-
+        What would you like BeyondNN to do? If it involves a new metric, test or claim type,
+        say what it can and cannot justify (see CONTRIBUTING.md, scientific rules).
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

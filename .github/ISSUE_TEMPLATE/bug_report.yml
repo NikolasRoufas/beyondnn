@@ -1,0 +1,33 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The actual behaviour, including the full error message or output.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The smallest script (a tiny model is ideal) that shows the problem.
+      render: python
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: BeyondNN (`beyondnn.__version__` or commit), Python, PyTorch, OS; Captum if used.
+      placeholder: "beyondnn 0.0.0.dev0 (abc1234), Python 3.12, torch 2.14, macOS"
+    validations:
+      required: true
