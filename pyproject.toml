@@ -5,18 +5,31 @@ build-backend = "hatchling.build"
 [project]
 name = "beyondnn"
 dynamic = ["version"]
-description = "An interpretability evidence framework for PyTorch: structured traces, provenance, interventions, and testable claims."
+description = "Auditable interpretability evidence for PyTorch: provenance-aware traces, declared claims, controlled interventions, and audits."
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
-authors = [{ name = "BeyondNN contributors" }]
-keywords = ["interpretability", "pytorch", "causal", "mechanistic-interpretability", "provenance"]
+authors = [{ name = "Nikolaos Roufas" }]
+keywords = [
+    "interpretability",
+    "pytorch",
+    "causal",
+    "mechanistic-interpretability",
+    "provenance",
+    "audit",
+]
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Typing :: Typed",
 ]
@@ -30,31 +43,44 @@ dev = [
     "ruff>=0.16",
     "mypy>=1.11",
     "pre-commit>=3.7",
+    "numpy",  # silences torch's "Failed to initialize NumPy" warning in tests (-W error)
 ]
 # Adapter extras are added only when an adapter exists. Captum: verified 0.9.x (ADR-030).
 captum = ["captum>=0.9,<0.10"]
+
+[project.urls]
+Homepage = "https://github.com/NikolasRoufas/beyondnn"
+Source = "https://github.com/NikolasRoufas/beyondnn"
+Documentation = "https://github.com/NikolasRoufas/beyondnn/tree/main/docs"
+Issues = "https://github.com/NikolasRoufas/beyondnn/issues"
+Changelog = "https://github.com/NikolasRoufas/beyondnn/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+# Installed by `uv sync` (PEP 735); pip users use the `dev` extra instead.
+dev = [
+    "pytest>=8",
+    "ruff>=0.16",
+    "mypy>=1.11",
+    "pre-commit>=3.7",
+    "numpy",
+]
 
 [tool.hatch.version]
 path = "beyondnn/__init__.py"
 
 [tool.hatch.build.targets.wheel]
-files = ["beyondnn", "tests"]
-
-[[tool.mypy.overrides]]
-# Captum is an optional dependency without complete type information.
-module = ["captum", "captum.*"]
-ignore_missing_imports = true
-follow_imports = "skip"
-
-[[tool.mypy.overrides]]
-# numpy arrives with Captum; its stubs use syntax newer than python_version = 3.10.
-# BeyondNN does not use numpy directly.
-module = ["numpy", "numpy.*"]
-follow_imports = "skip"
-follow_imports_for_stubs = true
+packages = ["beyondnn"]
 
 [tool.hatch.build.targets.sdist]
-include = ["beyondnn", "tests", "examples", "README.md", "LICENSE", "CHANGELOG.md"]
+include = [  # anchored: an unanchored "README.md" would match every README in the tree
+    "/beyondnn",
+    "/tests",
+    "/examples",
+    "/README.md",
+    "/LICENSE",
+    "/CHANGELOG.md",
+    "/CITATION.cff",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -89,3 +115,12 @@ follow_imports = "skip"
 module = ["numpy", "numpy.*"]
 follow_imports = "skip"
 follow_imports_for_stubs = true
+
+[[tool.uv.index]]
+# CPU-only torch wheels on Linux for `uv sync` (BeyondNN is CPU-verified; keeps CI small).
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
