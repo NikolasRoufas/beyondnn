@@ -9,7 +9,7 @@
 
 ## 2. Ending HEAD
 
-The release commit **`885e3ec`** carries tag **`v0.1.0`** (annotated tag object `e075f0a`). It is followed only by the commit that adds this report's final status (§29).
+The release commit **`885e3ec`** carries tag **`v0.1.0`** (annotated tag object `e075f0a`). It is followed only by documentation commits: `30eed60` (this report's release status) and the post-release documentation commit (§27). Neither changes the package; PyPI 0.1.0 was built from the tag.
 
 ## 3. Repository cleanup
 
@@ -259,7 +259,7 @@ The repository existed, private and empty, before the first push.
 
 ## 23. Post-push verification
 
-Verified through the public GitHub API:
+Verified through the public GitHub API immediately after the release push (the state before PyPI publication; §27 records what changed afterwards):
 - **Repository:** public; licence detected (Apache-2.0); community profile health 100% (README, licence, code of conduct, contributing, PR template; the issue templates are YAML forms).
 - **Release files on `main`:** `.github/workflows/publish.yml` and `docs/release/PYPI_RELEASE.md`.
 - **Workflows:** CI, Release build, and **Publish to PyPI**, which is active and has **0 runs**. It was never triggered, including after the tag push, which confirms it is manual-only.
@@ -270,7 +270,7 @@ Verified through the public GitHub API:
 
 **PyPI release preparation:**
 - **Version:** 0.1.0 (single source, `beyondnn/__init__.py`); CHANGELOG `[0.1.0] - 2026-10-01`.
-- **Text:** README "PyPI publication is pending"; `CITATION.cff` version 0.1.0.
+- **Text:** README "PyPI publication is pending" (replaced after publication, §27); `CITATION.cff` version 0.1.0.
 - **Workflow:** `.github/workflows/publish.yml`, manual (`workflow_dispatch`) with a required `tag` input. It checks out exactly that tag, verifies tag == `v` + version, then runs `uv build`, `twine check --strict` and a wheel-contents check, and publishes with `pypa/gh-action-pypi-publish@release/v1` (OIDC) in environment `pypi`. `id-token: write` is on the publish job only, and there are no credentials.
 - **Static checks:** YAML valid; actionlint clean on all workflows.
 - **Distributions:** `beyondnn-0.1.0-py3-none-any.whl` and `beyondnn-0.1.0.tar.gz`, both passing `twine check --strict`.
@@ -295,33 +295,61 @@ Verified through the public GitHub API:
 
 ## 27. PyPI status
 
-**Not published** (not authorized in this phase). The package is PyPI-ready: metadata, an sdist and wheel that pass `twine check` in the release workflow, and a manual build workflow. Trusted publishing is to be configured before the first release.
+**Published.** History: during the release preparation, publication was not authorized, so the gate was first "v0.1.0 READY FOR PYPI PUBLICATION". The owner then configured the Trusted Publisher and the release was completed:
+
+| step | record |
+|---|---|
+| GitHub release | [`v0.1.0`](https://github.com/NikolasRoufas/beyondnn/releases/tag/v0.1.0), published 2026-10-01 by the owner |
+| publish run | *Publish to PyPI*, run 36848327802, manually dispatched with tag `v0.1.0`; both jobs (build and verify; publish) succeeded |
+| PyPI files | `beyondnn-0.1.0-py3-none-any.whl` and `beyondnn-0.1.0.tar.gz`, uploaded 2026-10-01 at 10:19 UTC; 0.1.0 is the only and latest version |
+| authentication | Trusted Publishing (GitHub OIDC); no long-lived PyPI credential is stored in the repository, workflows or GitHub |
+| provenance | the files in the PyPI wheel's `beyondnn/` package are identical to `git archive v0.1.0 beyondnn` |
+
+**Clean install verification from PyPI** (new virtual environment outside the repository, Python 3.14, macOS, `pip install --no-cache-dir beyondnn==0.1.0`):
+- `beyondnn.__version__` is `0.1.0`, imported from the virtual environment's `site-packages`, not from the repository;
+- the README's runnable examples and all seven `examples/*.py` pass against the installed package.
+
+**Post-release documentation** (commit after `30eed60`, no package change and no version bump):
+- README: PyPI is the primary installation path; PyPI badge;
+- CHANGELOG: release-state wording;
+- `docs/release/PYPI_RELEASE.md`: generic procedure for `vX.Y.Z` plus a released-versions record;
+- ROADMAP: release blockers RB-1 to RB-3 marked resolved.
+
+The PyPI project page shows the README as uploaded in 0.1.0 (it still says "PyPI publication is pending"). PyPI files are immutable, so this is corrected with the next release, not by re-uploading.
+
+**Repository settings after publication:**
+- private vulnerability reporting **enabled**;
+- `main` has no branch protection or ruleset (owner action, §29);
+- the `pypi` environment has no required reviewers (optional, §29).
 
 ## 28. Gate
 
-**PHASE 8 COMPLETE — v0.1.0 READY FOR PYPI PUBLICATION.**
+**PHASE 8 COMPLETE — BEYONDNN v0.1.0 RELEASE COMPLETE.** This supersedes the earlier gate, "v0.1.0 READY FOR PYPI PUBLICATION".
 
 | item | status |
 |---|---|
-| GitHub | PUBLIC |
+| Repository | PUBLIC |
 | GitHub CI | GREEN |
-| release | v0.1.0 |
-| tag | created (`v0.1.0` → `885e3ec`) |
-| GitHub release | not created (owner action; §28) |
-| PyPI workflow | prepared (manual only) |
-| Trusted Publisher | requires owner configuration on PyPI |
-| PyPI publication | NOT PERFORMED |
+| Release | v0.1.0 (tag `v0.1.0` → `885e3ec`) |
+| GitHub release | PUBLISHED |
+| PyPI package | beyondnn |
+| PyPI version | 0.1.0 |
+| PyPI publication | COMPLETE |
+| PyPI install verification | PASS |
+| Trusted Publishing | GitHub OIDC |
+| Long-lived PyPI credential required | NO |
 | Scientific invariants changed | NO |
 | Scientific evidence invalidated | NO |
-| Experiment reruns | NONE |
+| Experiment reruns required | NO |
+| Phase 8 | COMPLETE |
+
+The first GitHub CI run failed on Linux because of a test fixture that relied on exact float32 ties; the diagnosis and fix are in §15. That fix changed no scientific semantics.
 
 ## 29. Git status
 
 Clean; `main` equals `origin/main`. No PyPI credentials or GitHub secrets exist.
 
 **Remaining owner actions:**
-1. Enable private vulnerability reporting (*Settings → Code security*).
+1. Protect `main` against force pushes and deletion (*Settings → Rules → Rulesets*).
 2. Optionally add yourself as a required reviewer on the `pypi` environment.
-3. Protect `main` against force pushes and deletion (*Settings → Rules*).
-4. Create the GitHub release `v0.1.0` from the tag, attaching the wheel and sdist.
-5. Configure the PyPI Trusted Publisher and run *Publish to PyPI* with `v0.1.0` (`docs/release/PYPI_RELEASE.md`).
+3. If a PyPI API token was ever created for this account, revoke it (*PyPI → Account settings → API tokens*); publication does not need one.

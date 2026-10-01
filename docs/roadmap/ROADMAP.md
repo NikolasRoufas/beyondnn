@@ -238,15 +238,15 @@ Trace 3B stays out of scope.
 - **Implementation revision in provenance** (from the M1.2 review). The FULL fingerprint does not hash Python code (ADR-020). Investigate an optional, caller-supplied `implementation_revision` / code revision / repository commit / model revision for reproducibility. Automatic source hashing is out of scope. There is no schema change until implementation evidence shows it is needed.
   - **Evidence from M1.3:** `TinyTransformer(n_heads=2)` and `n_heads=4` with the same seed have identical FULL fingerprints but compute different functions, because `n_heads` is a plain Python attribute and parameter shapes are unchanged. Plain constructor hyperparameters are therefore also outside v1 identity. Candidate remedies: a caller-declared model config or revision in provenance, or an opt-in declared-hyperparameter hook. This needs a decision before evidence from differently configured models is compared.
 
-## Release blockers (`BLOCKS_PUBLIC_RELEASE`)
+## Release blockers (`BLOCKS_PUBLIC_RELEASE`): all resolved
 
-These don't block local development. BeyondNN must not be published (public repo, PyPI) until every item is resolved.
+These had to be resolved before BeyondNN was published (public repository, PyPI). All were resolved for v0.1.0 (2026-10-01).
 
-| ID | Item | Where | Resolution needed |
-|---|---|---|---|
-| RB-1 | Code of Conduct enforcement contact is `[INSERT CONTACT METHOD]` | `CODE_OF_CONDUCT.md` | The project owner chooses a public project contact. Never use a personal address without explicit consent. |
-| RB-2 | Security contact is `[INSERT SECURITY CONTACT]` | `SECURITY.md` | Same as RB-1, or enable GitHub private vulnerability reporting. |
-| RB-3 | CI has never run on GitHub | `.github/workflows/ci.yml` | Push to a private remote first, and confirm the matrix is green. |
+| ID | Item | Resolution |
+|---|---|---|
+| RB-1 | Code of Conduct enforcement contact | `CODE_OF_CONDUCT.md` points to the maintainer through GitHub private reporting (no personal address). |
+| RB-2 | Security contact | `SECURITY.md` uses GitHub private vulnerability reporting, which is enabled on the repository. |
+| RB-3 | CI had never run on GitHub | CI runs on every push and pull request; green on Linux for Python 3.10, 3.12 and 3.14 (`docs/PHASE_8_REPORT.md`). |
 
 ## Explicitly not planned
 Large model training, dashboards, transformer-only APIs, auto-labelled features presented as concepts, and a global confidence scalar (without a superseding ADR).

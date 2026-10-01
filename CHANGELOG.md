@@ -9,7 +9,7 @@ All notable changes to this project are documented here. The format follows
 
 ## [0.1.0] - 2026-10-01
 
-**The first public release.** Pre-1.0 research software; the public API is frozen ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)). Not yet published on PyPI at the time of tagging.
+**The first public release.** Pre-1.0 research software; the public API is frozen ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)). Published on PyPI as [`beyondnn`](https://pypi.org/project/beyondnn/) (Trusted Publishing from tag `v0.1.0`).
 
 ### Added
 - **Provenance-aware tracing** (`bnn.trace`, `bnn.recording`, `bnn.instrument`): structured, content-addressed, versioned records bound to the model checkpoint, the sample identity and the software environment; persistence with full re-validation on load.

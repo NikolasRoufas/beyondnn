@@ -2,13 +2,14 @@
 
 **Auditable interpretability evidence for PyTorch.**
 
+[![PyPI](https://img.shields.io/pypi/v/beyondnn)](https://pypi.org/project/beyondnn/)
 [![CI](https://github.com/NikolasRoufas/beyondnn/actions/workflows/ci.yml/badge.svg)](https://github.com/NikolasRoufas/beyondnn/actions/workflows/ci.yml)
 ![Python 3.10 | 3.12 | 3.14](https://img.shields.io/badge/python-3.10%20%7C%203.12%20%7C%203.14-blue)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 
 BeyondNN turns claims about neural-network computation into structured, provenance-aware, testable objects, and audits them against the evidence you actually recorded.
 
-> **Status:** BeyondNN 0.1.0 is the first public pre-1.0 release (research software; the public API is frozen, see [`docs/API_FREEZE.md`](docs/API_FREEZE.md)). PyPI publication is pending. Install from GitHub as shown below.
+> **Status:** BeyondNN 0.1.0 is the first public pre-1.0 release (research software; the public API is frozen, see [`docs/API_FREEZE.md`](docs/API_FREEZE.md)). BeyondNN v0.1.0 is available on [PyPI](https://pypi.org/project/beyondnn/): `pip install beyondnn`.
 
 ## Why BeyondNN exists
 
@@ -48,7 +49,18 @@ flowchart TD
 
 BeyondNN needs Python ≥ 3.10 and PyTorch ≥ 2.3. It is tested on Python 3.10, 3.12 and 3.14 (CPU).
 
-**From source, with [uv](https://docs.astral.sh/uv/):**
+### From PyPI
+
+```bash
+pip install beyondnn
+pip install "beyondnn[captum]"   # with the optional Captum adapter
+```
+
+Package page: <https://pypi.org/project/beyondnn/>.
+
+### From source
+
+For development, with [uv](https://docs.astral.sh/uv/):
 
 ```bash
 git clone https://github.com/NikolasRoufas/beyondnn.git
@@ -57,17 +69,10 @@ uv sync                      # creates .venv with the locked dev environment
 uv run python -c "import beyondnn; print(beyondnn.__version__)"
 ```
 
-**After the PyPI release** (pending):
-
-```bash
-pip install beyondnn
-```
-
-**With pip, from GitHub (works now):**
+With pip, from a GitHub tag:
 
 ```bash
 pip install "beyondnn @ git+https://github.com/NikolasRoufas/beyondnn.git@v0.1.0"
-pip install "beyondnn[captum] @ git+https://github.com/NikolasRoufas/beyondnn.git@v0.1.0"   # optional Captum adapter
 ```
 
 `import beyondnn` does not import torch. The tracing API loads torch lazily.
