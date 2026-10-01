@@ -7,9 +7,45 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-Pre-release (`0.0.0.dev0`, not yet on PyPI).
-- **Public API:** frozen ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)).
-- **Development history:** entries below the release-preparation section record the pre-registered development stages (see [`docs/README.md`](docs/README.md#development-history)), including negative results.
+## [0.1.0] - 2026-10-01
+
+**The first public release.** Pre-1.0 research software; the public API is frozen ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)). Not yet published on PyPI at the time of tagging.
+
+### Added
+- **Provenance-aware tracing** (`bnn.trace`, `bnn.recording`, `bnn.instrument`): structured, content-addressed, versioned records bound to the model checkpoint, the sample identity and the software environment; persistence with full re-validation on load.
+- **Explicit evidence statuses** on every record: OBSERVED, MEASURED, ATTRIBUTED, INTERVENTIONAL, ESTIMATED_CAUSAL (reserved), VALIDATED_CONCEPT, GENERATED.
+- **Attribution** (`bnn.attribute`): gradient, input × gradient and integrated gradients (native, and via an optional Captum adapter), recorded as ATTRIBUTED evidence with baselines and diagnostics.
+- **Controlled interventions** (`bnn.intervene`): INTERVENTIONAL effects with declared claims and threshold tests.
+- **Faithfulness protocols** (`beyondnn.faithfulness`): comprehensiveness and sufficiency with explicit replacements and matched random controls; curves, stability and diagnostics.
+- **Concepts** (`beyondnn.concepts`): features (neurons, directions, SAE latents), concept datasets, proposals, encoding and use tests, and validation under a declared policy (UNLABELED_FEATURE → PROPOSED_CONCEPT → VALIDATED_CONCEPT).
+- **Scientific audits** (`bnn.audit`, `beyondnn.audits`):
+  - deterministic, model-free classification of declared claims from re-derived, in-scope evidence: standings and typed findings;
+  - PRIMARY / ALTERNATIVE / STRESS_TEST configuration roles;
+  - sensitivity profiles; uncertainty intervals;
+  - declared unit eligibility (e.g. content tokens vs all tokens);
+  - control-attainability checks.
+- **Save / reload / re-audit / verify:** `audits.save_evidence`, `load_evidence`, `verify_report`; reports record the BeyondNN version and audit semantics that produced them.
+- **Structured WHY** (`bnn.compose`): recorded evidence arranged by kind, never merged into a narrative or a score, with what was not evaluated.
+- **Reproducibility and migrations:** tested migrations for every older record version; `uv.lock`.
+
+### Scientific safeguards
+- **Attribution is not causal evidence:** attribution-only causal claims are UNSUPPORTED.
+- **Decodability is not causal use:** decodable-but-unused concepts stay PROPOSED, and generated labels are never upgraded.
+- **Replacements are always explicit;** there is no implicit zero.
+- **Evidence from another checkpoint, sample or dataset scope is excluded and reported,** never silently counted.
+- **Alternative and stress-test configurations never rewrite the PRIMARY standing.**
+- **No global explanation, interpretability, trust or confidence score.**
+
+### Documentation and release
+- **Documentation:** a public README (concepts, quickstart, end-to-end example, validation with its scope, limitations); a topic-organised `docs/`; a reproducibility guide; the full research record (pre-registered plans, reports, negative results).
+- **Examples:** numbered, public-API examples (`examples/01_quickstart.py` … `07_save_reload.py`), all executed in CI.
+- **CI:** tests on Python 3.10 / 3.12 / 3.14 (Linux), a Captum job, lint, mypy --strict, build and a clean-wheel check.
+- **Release:** a manual-only PyPI Trusted Publishing workflow ([`docs/release/PYPI_RELEASE.md`](docs/release/PYPI_RELEASE.md)).
+- **Community files:** `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CITATION.cff`.
+
+## Development history before 0.1.0
+
+The entries below record the pre-registered development stages in detail, including negative results and deviations (see [`docs/README.md`](docs/README.md#development-history)).
 
 ### Public release preparation
 - **Documentation:**

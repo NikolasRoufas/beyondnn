@@ -5,7 +5,7 @@
   - **Changes within the frozen surface** need an ADR stating why, a record-version bump with a migration where records change, and a CHANGELOG entry.
   - **Additive changes** (a new optional keyword, a new function, a new finding code) are allowed with an ADR.
   - **Breaking changes** to frozen names or semantics are allowed only to fix a BLOCKING defect.
-- **The version string** stays `0.0.0.dev0` until Phase-8 release preparation. The freeze concerns names, signatures, record formats and semantics, not the version number.
+- **The version string** was `0.0.0.dev0` until the first public release, `0.1.0`. The freeze concerns names, signatures, record formats and semantics, not the version number.
 
 ## 1. Frozen surface
 

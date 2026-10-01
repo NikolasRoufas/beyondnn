@@ -28,6 +28,6 @@ body:
     attributes:
       label: Versions
       description: BeyondNN (`beyondnn.__version__` or commit), Python, PyTorch, OS; Captum if used.
-      placeholder: "beyondnn 0.0.0.dev0 (abc1234), Python 3.12, torch 2.14, macOS"
+      placeholder: "beyondnn 0.1.0 (abc1234), Python 3.12, torch 2.14, macOS"
     validations:
       required: true

@@ -11,7 +11,8 @@ abstract: >-
 authors:
   - family-names: Roufas
     given-names: Nikolaos
-version: 0.0.0.dev0
+version: 0.1.0
+date-released: "2026-10-01"
 license: Apache-2.0
 repository-code: "https://github.com/NikolasRoufas/beyondnn"
 url: "https://github.com/NikolasRoufas/beyondnn"

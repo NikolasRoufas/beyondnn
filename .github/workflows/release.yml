@@ -1,8 +1,8 @@
 name: Release build
 
-# Builds and checks the distributions and attaches them to the workflow run.
-# It never publishes: PyPI publication is a separate, deliberate step (trusted publishing
-# is to be configured before the first release).
+# Builds and checks the distributions and attaches them to the workflow run (a dry run).
+# It never publishes: PyPI publication is the separate, manual publish.yml workflow
+# (procedure: docs/release/PYPI_RELEASE.md).
 
 on:
   workflow_dispatch:

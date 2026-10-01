@@ -2,7 +2,10 @@
 
 ## Supported versions
 
-BeyondNN is pre-release software (`0.0.x`, not yet on PyPI). Security fixes are made on the `main` branch only.
+| version | supported |
+|---|---|
+| 0.1.x | yes (fixes land on `main` and in the next 0.1.x release) |
+| earlier development snapshots | no |
 
 ## Reporting a vulnerability
 

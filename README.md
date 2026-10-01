@@ -8,7 +8,7 @@
 
 BeyondNN turns claims about neural-network computation into structured, provenance-aware, testable objects, and audits them against the evidence you actually recorded.
 
-> **Status:** pre-alpha research software (`0.0.0.dev0`), not yet on PyPI. The public API is frozen for the first release ([`docs/API_FREEZE.md`](docs/API_FREEZE.md)).
+> **Status:** BeyondNN 0.1.0 is the first public pre-1.0 release (research software; the public API is frozen, see [`docs/API_FREEZE.md`](docs/API_FREEZE.md)). PyPI publication is pending. Install from GitHub as shown below.
 
 ## Why BeyondNN exists
 
@@ -57,11 +57,17 @@ uv sync                      # creates .venv with the locked dev environment
 uv run python -c "import beyondnn; print(beyondnn.__version__)"
 ```
 
-**With pip, from GitHub:**
+**After the PyPI release** (pending):
 
 ```bash
-pip install "beyondnn @ git+https://github.com/NikolasRoufas/beyondnn.git"
-pip install "beyondnn[captum] @ git+https://github.com/NikolasRoufas/beyondnn.git"   # optional Captum adapter
+pip install beyondnn
+```
+
+**With pip, from GitHub (works now):**
+
+```bash
+pip install "beyondnn @ git+https://github.com/NikolasRoufas/beyondnn.git@v0.1.0"
+pip install "beyondnn[captum] @ git+https://github.com/NikolasRoufas/beyondnn.git@v0.1.0"   # optional Captum adapter
 ```
 
 `import beyondnn` does not import torch. The tracing API loads torch lazily.

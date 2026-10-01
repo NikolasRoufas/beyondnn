@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from .explain import compose, instrument
     from .interventions import intervene
 
-__version__ = "0.0.0.dev0"
+__version__ = "0.1.0"
 
 __all__ = [
     "EstimandScope",
