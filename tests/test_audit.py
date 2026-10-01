@@ -12,6 +12,7 @@ from typing import Any
 
 import pytest
 import torch
+from torch import nn
 
 import beyondnn as bnn
 from beyondnn._testing.audit_scenarios import (
@@ -321,8 +322,20 @@ def test_concept_alternatives_for_encoding_are_refused() -> None:
 
 
 @cache
+def _dyadic_unit() -> tuple[nn.Module, torch.Tensor]:
+    """``_one_unit`` with dyadic weights (2**-6 instead of 0.01): every float32 partial sum is
+    exact, so control sets that remove the same total weight as the selection tie *exactly*
+    on every platform. With 0.01 those mathematical ties depended on the platform's summation
+    order (macOS: equal; Linux x86-64: a 3e-9 relative difference), which flipped the
+    k-sensitivity this fixture is built to show."""
+    model = WeightedSum([5.0] + [2.0**-6] * 31).eval()
+    x = torch.ones(1, 32)
+    x[0, 0] = 2.0
+    return model, x
+
+
 def _selection_evidence() -> tuple[Any, list[Any], Any]:
-    model, x = _one_unit()
+    model, x = _dyadic_unit()
     ig = A.integrated_gradients(baseline=A.zero_baseline(), n_steps=8)
     attr = A.attribute(model, x, target=TARGET, method=ig, at=A.layer("hidden"))
     out = []
@@ -340,7 +353,7 @@ def _selection_evidence() -> tuple[Any, list[Any], Any]:
 
 
 def _selection_plan(k: int | None, invariance: bool) -> AuditPlan:
-    model, x = _one_unit()
+    model, x = _dyadic_unit()
     claim = AU.claim(
         "ig_necessary",
         statement="the IG top-k units are necessary",
@@ -353,6 +366,19 @@ def _selection_plan(k: int | None, invariance: bool) -> AuditPlan:
     )
     plan: AuditPlan = _plan(model, [sample_id(x)], [claim], [_comp_req(True)])
     return plan
+
+
+def test_selection_fixture_arithmetic_is_exact() -> None:
+    """Regression guard: the k-sensitivity fixture relies on control sets that tie with the
+    selection. Those ties must be exact float32 arithmetic (dyadic weights), never an
+    accident of one platform's summation order; otherwise Linux and macOS disagree."""
+    _, results, _ = _selection_evidence()
+    for result, expected in zip(results, (10.0, 10.0 + 2**-6, 10.0 + 3 * 2**-6), strict=True):
+        stats = result.statistics.to_plain()
+        assert stats["drop"] == expected  # exact, not approximate
+        ties = [d for d in stats["control_drops"] if d == stats["drop"]]
+        assert len(ties) == round(stats["fraction_tied"] * len(stats["control_drops"]))
+        assert all(d == expected or d < 1.0 for d in stats["control_drops"])
 
 
 def test_selection_claim_k_sensitivity_and_favourable_k() -> None:

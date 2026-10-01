@@ -230,6 +230,11 @@ Trace 3B stays out of scope.
 
 ## Open investigation items
 
+- **Tolerance-aware ties in control comparisons** (found by the first GitHub CI run, 2026-10-01).
+  - **Current behaviour:** control fractions compare recomputed effects by exact float equality, so a mathematically equal control set can tie on one platform and not on another.
+  - **Impact today:** none on recorded evidence. Re-derivation uses recorded values, and the test fixture was made exact.
+  - **Proposed change:** a tolerance would change the protocol's statistic. That needs an ADR and a protocol version bump, and is not a release-engineering change.
+
 - **Implementation revision in provenance** (from the M1.2 review). The FULL fingerprint does not hash Python code (ADR-020). Investigate an optional, caller-supplied `implementation_revision` / code revision / repository commit / model revision for reproducibility. Automatic source hashing is out of scope. There is no schema change until implementation evidence shows it is needed.
   - **Evidence from M1.3:** `TinyTransformer(n_heads=2)` and `n_heads=4` with the same seed have identical FULL fingerprints but compute different functions, because `n_heads` is a plain Python attribute and parameter shapes are unchanged. Plain constructor hyperparameters are therefore also outside v1 identity. Candidate remedies: a caller-declared model config or revision in provenance, or an opt-in declared-hyperparameter hook. This needs a decision before evidence from differently configured models is compared.
 

@@ -108,9 +108,11 @@ def test_units_are_row_major_over_the_declared_axes() -> None:
     t = torch.arange(18.0).reshape(shape)
     assert unit_values(t, PIXELS, "sum").tolist() == [9.0 + 2 * u for u in range(9)]
     assert unit_values(-t, PIXELS, "abs_sum").tolist() == [9.0 + 2 * u for u in range(9)]
-    assert unit_values(t, PIXELS, "l2").tolist() == [
-        math.sqrt(u**2 + (9 + u) ** 2) for u in range(9)
-    ]
+    # an independent reference (math.sqrt): equal up to float64 rounding, not bit-for-bit
+    # (torch's vectorised norm differs by 1 ulp on Linux x86-64)
+    assert unit_values(t, PIXELS, "l2").tolist() == pytest.approx(
+        [math.sqrt(u**2 + (9 + u) ** 2) for u in range(9)], rel=1e-12, abs=0.0
+    )
     assert unit_values(t, CHANNELS, "sum").tolist() == [36.0, 117.0]
 
 

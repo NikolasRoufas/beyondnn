@@ -38,6 +38,13 @@ for f in examples/*.py; do uv run python "$f" > /dev/null && echo "ok $f"; done
 - **Reports** record the plan's identity and the BeyondNN version and audit rules that produced them.
 - **`bnn.audits.verify_report`** re-derives a saved report from saved evidence.
 
+## Cross-platform numerics
+
+- **Re-auditing recorded evidence is platform-independent.** `audit` and `verify_report` re-derive every result from the *recorded* values.
+- **Re-running a model is not bit-identical across platforms.** Effects are recomputed in float32/float64, and different math libraries (e.g. macOS vs Linux x86-64) can order sums differently.
+- **Consequence:** control comparisons count a control as "below" the selection only if its effect is strictly smaller, and as tied only if it is exactly equal. A control set that is *mathematically* equal to the selection can therefore tie on one platform and differ by about 1e-9 on another. Re-running an experiment on different hardware can flip such near-exact ties.
+- **The test suite** uses exactly representable (dyadic) values wherever a test depends on such a tie, so its results are the same on every platform (CI runs on Linux x86-64; development on macOS arm64).
+
 ## Research experiments
 
 Scripts, frozen parameters and committed results are in [`experiments/`](../experiments/README.md). Results are committed, so none of this needs re-running to read the evidence.
