@@ -135,7 +135,54 @@ The CI steps were run locally in a fresh clone (§17): all green. Every job of t
 
 ## 15. GitHub Actions result
 
-⟨GHA⟩
+### First run (push of `84829f2`, run 36793583950)
+
+| job | result |
+|---|---|
+| lint and types | passed |
+| package (build, clean wheel, examples) | passed |
+| tests on 3.10 / 3.12 / 3.14 | **failed** |
+| Captum (3.12) | **failed** |
+
+The visible failure: `tests/test_audit.py::test_selection_claim_k_sensitivity_and_favourable_k` expected `(("assumption_sensitive", 1),)` and got `(("supported", 1),)` on Linux.
+
+**Diagnosis.** The CI logs were not readable without GitHub CLI authentication. The failure was reproduced instead in a `linux/amd64` container (Docker under Rosetta) with the same locked environment (`uv sync --locked`; torch `2.14.1+cpu`).
+
+1. **Not hash-seed or ordering.** The test passes locally under PYTHONHASHSEED 0 / 1 / 42 / 12345. The random control draws (`torch.randperm` with a seeded generator) are identical on macOS and Linux.
+2. **Floating-point summation order.**
+   - **The fixture:** a weighted sum with one weight of 5 and thirty-one weights of 0.01. For k = 4, three control sets contain the critical unit plus three 0.01 units, so they are *mathematically equal* to the selection.
+   - **macOS arm64:** their drop equals the selection's exactly (tie; `fraction_below` 0.85 < 0.9; CONTRADICTS).
+   - **Linux x86-64:** the summation order differs and the controls come out 3 × 10⁻⁹ (relative) smaller. They count as "below", `fraction_below` becomes 1.0, the k = 4 result SUPPORTS, and the claim becomes SUPPORTED.
+3. **A second Linux-only failure,** not shown in the summary: `tests/test_unit_axes.py::test_units_are_row_major_over_the_declared_axes` compared torch's L2 norm with `math.sqrt` bit-for-bit, and they differ by 1 ulp on Linux x86-64.
+
+**Classification:** A (test-fixture nondeterminism), plus a test that needed a numerical tolerance (D, in the test only).
+- **The audit is deterministic:** the same recorded evidence gives the same standing everywhere, because re-derivation uses recorded values.
+- **What differed** was the *recomputation* of mathematically equal effects on different hardware.
+
+**Fix (tests only; no framework change):**
+- **k-sensitivity test:** a dedicated `_dyadic_unit` fixture with weights 2⁻⁶, so every float32 partial sum is exact and the ties are exact on every platform. The assertion and the expected ASSUMPTION_SENSITIVE are unchanged, and the shared scenario fixture is untouched.
+- **L2 test:** compared to its `math.sqrt` reference with `pytest.approx(rel=1e-12)`.
+- **Regression test:** `test_selection_fixture_arithmetic_is_exact` pins the exact drops and ties. It fails with the old 0.01 weights.
+
+**Documented, not changed:** control comparisons use exact float equality for ties, so re-running an experiment on different hardware can flip near-exact ties.
+- Recorded in `docs/REPRODUCIBILITY.md` ("Cross-platform numerics") and as a roadmap open item.
+- A tolerance would change a protocol statistic, so it needs an ADR and a protocol version; it is not a release change.
+
+**Validation after the fix:**
+
+| environment | result |
+|---|---|
+| Linux x86-64 (Docker) | 1079 + 1 on 3.10 / 3.12 / 3.14; 1100 with Captum |
+| macOS | 1080 + 1 and 1101 on 3.10 / 3.12 / 3.14 (with the new regression test); ruff, format and mypy clean; build and clean wheel (4 README blocks, 7 examples, both researcher workflows) |
+| mutations | 4/4, 19/19, 24/24 |
+
+- Scientific invariants changed: **NO**
+- Scientific evidence invalidated: **NO**
+- Experiment reruns required: **NO**
+
+### Run after the fix
+
+⟨GHA2⟩
 
 ## 16. Community files
 
@@ -170,9 +217,11 @@ A fresh `git clone` into the system temp directory, with a **fresh, empty uv cac
 
 | environment | without Captum | with Captum |
 |---|---|---|
-| Python 3.10 | 1079 passed + 1 skipped | covered by the pre-release matrix (1091) |
-| Python 3.12 | 1079 + 1 | **1100 passed** |
-| Python 3.14 | 1079 + 1 | covered by the pre-release matrix (1091) |
+| Python 3.10 | 1080 passed + 1 skipped | 1101 passed |
+| Python 3.12 | 1080 + 1 | 1101 |
+| Python 3.14 | 1080 + 1 | 1101 |
+
+These are the final macOS counts after the CI fix (§15). Linux x86-64 (Docker): 1079 + 1 / 1100 before the regression test was added, on all three versions.
 
 The count grew from the pre-release 1070 + 1 / 1091 by the README test (+1) and the example tests (+8).
 
