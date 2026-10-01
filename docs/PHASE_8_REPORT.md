@@ -9,7 +9,7 @@
 
 ## 2. Ending HEAD
 
-⟨END⟩
+The release commit **`885e3ec`** carries tag **`v0.1.0`** (annotated tag object `e075f0a`). It is followed only by the commit that adds this report's final status (§29).
 
 ## 3. Repository cleanup
 
@@ -182,7 +182,10 @@ The visible failure: `tests/test_audit.py::test_selection_claim_k_sensitivity_an
 
 ### Run after the fix
 
-⟨GHA2⟩
+| commit | run | result |
+|---|---|---|
+| `c38c5a5` (the fix) | 36797974133 | **all six jobs green**: lint and types, tests 3.10 / 3.12 / 3.14, Captum 3.12, build and clean wheel |
+| `885e3ec` (v0.1.0 release commit) | 36845973394 | **all six jobs green** |
 
 ## 16. Community files
 
@@ -208,7 +211,7 @@ A fresh `git clone` into the system temp directory, with a **fresh, empty uv cac
 
 ## 18. Build and wheel
 
-- `uv build` produces `beyondnn-0.0.0.dev0-py3-none-any.whl` and `beyondnn-0.0.0.dev0.tar.gz`.
+- `uv build` produces `beyondnn-0.0.0.dev0-py3-none-any.whl` and `beyondnn-0.0.0.dev0.tar.gz` (before the version bump). After the bump: `beyondnn-0.1.0-py3-none-any.whl` and `beyondnn-0.1.0.tar.gz`.
 - `twine check`: both PASSED.
 - **Wheel:** 80 files, only `beyondnn/` and its dist-info (no tests, experiments, docs or data).
 - **Sdist:** the package, tests, examples and top-level metadata files.
@@ -238,15 +241,41 @@ The count grew from the pre-release 1070 + 1 / 1091 by the README test (+1) and 
 
 ## 21. GitHub remote
 
-⟨REMOTE⟩
+- **Remote:** `origin` = `https://github.com/NikolasRoufas/beyondnn.git`; default branch `main`.
+- **Repository:** public; description "Auditable interpretability evidence for PyTorch."; topics pytorch, interpretability, mechanistic-interpretability, explainable-ai, machine-learning, deep-learning, causal-inference, research. These were set by the owner.
 
 ## 22. Push result
 
-⟨PUSH⟩
+Normal fast-forward pushes only; no force push.
+
+| push | range |
+|---|---|
+| initial | `main` (new branch) at `84829f2` |
+| CI fix | `84829f2..c38c5a5` |
+| release | `c38c5a5..885e3ec` |
+| tag | `v0.1.0` → `885e3ec` |
+
+The repository existed, private and empty, before the first push.
 
 ## 23. Post-push verification
 
-⟨VERIFY⟩
+Verified through the public GitHub API:
+- **Repository:** public; licence detected (Apache-2.0); community profile health 100% (README, licence, code of conduct, contributing, PR template; the issue templates are YAML forms).
+- **Release files on `main`:** `.github/workflows/publish.yml` and `docs/release/PYPI_RELEASE.md`.
+- **Workflows:** CI, Release build, and **Publish to PyPI**, which is active and has **0 runs**. It was never triggered, including after the tag push, which confirms it is manual-only.
+- **Environment `pypi`:** exists, with no secrets and no protection rules.
+- **Private vulnerability reporting: disabled.** `SECURITY.md` and the code-of-conduct contact rely on it, so the owner must enable it (§28).
+- **GitHub release v0.1.0: not created.** It needs an authenticated GitHub CLI or the web UI (§28).
+- **Branch protection:** not configured (it needs authentication). Recommended: protect `main` against force pushes and deletion.
+
+**PyPI release preparation:**
+- **Version:** 0.1.0 (single source, `beyondnn/__init__.py`); CHANGELOG `[0.1.0] - 2026-10-01`.
+- **Text:** README "PyPI publication is pending"; `CITATION.cff` version 0.1.0.
+- **Workflow:** `.github/workflows/publish.yml`, manual (`workflow_dispatch`) with a required `tag` input. It checks out exactly that tag, verifies tag == `v` + version, then runs `uv build`, `twine check --strict` and a wheel-contents check, and publishes with `pypa/gh-action-pypi-publish@release/v1` (OIDC) in environment `pypi`. `id-token: write` is on the publish job only, and there are no credentials.
+- **Static checks:** YAML valid; actionlint clean on all workflows.
+- **Distributions:** `beyondnn-0.1.0-py3-none-any.whl` and `beyondnn-0.1.0.tar.gz`, both passing `twine check --strict`.
+- **Fresh install of the 0.1.0 wheel:** the version is 0.1.0; README blocks, examples, golden workflow and migration matrix pass.
+- **Procedure:** `docs/release/PYPI_RELEASE.md`.
 
 ## 24. Scientific invariants changed?
 
@@ -270,8 +299,29 @@ The count grew from the pre-release 1070 + 1 / 1091 by the README test (+1) and 
 
 ## 28. Gate
 
-⟨GATE⟩
+**PHASE 8 COMPLETE — v0.1.0 READY FOR PYPI PUBLICATION.**
+
+| item | status |
+|---|---|
+| GitHub | PUBLIC |
+| GitHub CI | GREEN |
+| release | v0.1.0 |
+| tag | created (`v0.1.0` → `885e3ec`) |
+| GitHub release | not created (owner action; §28) |
+| PyPI workflow | prepared (manual only) |
+| Trusted Publisher | requires owner configuration on PyPI |
+| PyPI publication | NOT PERFORMED |
+| Scientific invariants changed | NO |
+| Scientific evidence invalidated | NO |
+| Experiment reruns | NONE |
 
 ## 29. Git status
 
-⟨STATUS⟩
+Clean; `main` equals `origin/main`. No PyPI credentials or GitHub secrets exist.
+
+**Remaining owner actions:**
+1. Enable private vulnerability reporting (*Settings → Code security*).
+2. Optionally add yourself as a required reviewer on the `pypi` environment.
+3. Protect `main` against force pushes and deletion (*Settings → Rules*).
+4. Create the GitHub release `v0.1.0` from the tag, attaching the wheel and sdist.
+5. Configure the PyPI Trusted Publisher and run *Publish to PyPI* with `v0.1.0` (`docs/release/PYPI_RELEASE.md`).
