@@ -19,6 +19,7 @@ Usage: python decompose.py OUT.json CONFIGS.csv [CONFIGS.csv ...]
 from __future__ import annotations
 
 import csv
+import gzip
 import json
 import sys
 from collections import Counter, defaultdict
@@ -31,7 +32,7 @@ AXES = ("replacement", "k", "null", "threshold")
 def load(paths: list[Path]) -> dict[tuple[str, ...], list[dict[str, Any]]]:
     groups: dict[tuple[str, ...], list[dict[str, Any]]] = defaultdict(list)
     for p in paths:
-        with p.open() as f:
+        with gzip.open(p, "rt") if p.suffix == ".gz" else p.open() as f:
             for r in csv.DictReader(f):
                 r["ax"] = json.loads(r["axes_json"])
                 key = (r["model"], r["site"], r["seed"], r["sample_index"], r["claim"])

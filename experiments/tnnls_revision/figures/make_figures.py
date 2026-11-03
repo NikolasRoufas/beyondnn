@@ -1,3 +1,4 @@
+# ruff: noqa: B007
 """TNNLS revision: every empirical figure of paper_tnnls/, generated only from committed result
 JSON (no number is typed in by hand).
 
@@ -18,7 +19,7 @@ from pathlib import Path
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
 
 ROOT = Path(__file__).resolve().parents[3]
 R = ROOT / "experiments/tnnls_revision"

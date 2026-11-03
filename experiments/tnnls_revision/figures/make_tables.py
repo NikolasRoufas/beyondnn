@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """TNNLS revision: LaTeX tables of paper_tnnls/ generated from committed result JSON.
 
 Outputs paper_tnnls/tables/{tab_decomp,tab_cmp,tab_seeds,tab_cost}.tex.
@@ -49,6 +50,30 @@ def tab_decomp(agg: dict) -> None:
         lines.append(f"{lab} & " + " & ".join(str(v) for v in vals) + r" \\")
     lines.append(r"\midrule")
     lines.append("Total & " + " & ".join(str(v) for v in tot) + r" \\")
+    lines.append(r"\midrule")
+    lines.append(r"\multicolumn{10}{l}{\emph{fresh, never-inspected samples (protocol P3)}} \\")
+    for tag, site, lab in (
+        ("S4_FRESH_B", "pixels", "CNN pixels"),
+        ("S4_FRESH_B", "relu2", "CNN relu2"),
+        ("S4_FRESH_C", "tokens", "BERT-tiny"),
+    ):
+        e = agg["runs"].get(tag)
+        if not e:
+            continue
+        d = e["decomposition"][site]
+        sa = d["alternative_single_axis_reversal"]
+        vals = [
+            e["sites"][site]["n"],
+            d["units"],
+            d["alternative_any_reversal"],
+            d["alternative_fixed_subject_reversal"],
+            sa["replacement"],
+            sa["null"],
+            sa["threshold"],
+            sa["k"],
+            d["alternative_reversed_only_by_subject_change"],
+        ]
+        lines.append(f"{lab} & " + " & ".join(str(v) for v in vals) + r" \\")
     body = "\n".join(lines)
     (OUT / "tab_decomp.tex").write_text(
         r"""\begin{table}[t]
@@ -239,6 +264,22 @@ def numbers(agg: dict, cmp: dict, ib: dict) -> None:
     for k, v in tot.items():
         m[f"Tot{k}"] = v
     m["ReproDiffs"] = diffs
+    fb, fc = agg["runs"]["S4_FRESH_B"], agg["runs"]["S4_FRESH_C"]
+    db, dc = fb["decomposition"]["pixels"], fc["decomposition"]["tokens"]
+    m["FrBSup"], m["FrBRev"], m["FrBFixed"] = (
+        db["units"],
+        db["alternative_any_reversal"],
+        db["alternative_fixed_subject_reversal"],
+    )
+    m["FrCSup"], m["FrCRev"], m["FrCKOnly"] = (
+        dc["units"],
+        dc["alternative_any_reversal"],
+        dc["alternative_reversed_only_by_subject_change"],
+    )
+    m["FrBR"], m["FrCR"] = (
+        fb["sites"]["pixels"]["r_supported"],
+        fc["sites"]["tokens"]["r_supported"],
+    )
     c = cmp["cost"]
     m["CostBnnMs"] = f"{1000 * c['median_beyondnn_s']:.1f}"
     m["CostPlainMs"] = f"{1000 * c['median_plain_s']:.2f}"

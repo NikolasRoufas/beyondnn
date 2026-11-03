@@ -49,7 +49,7 @@ def merged(runs: Path, prefix: str) -> tuple[dict[str, Any], list[Path], list[di
     timings = [
         json.loads((d / "timing.json").read_text()) for d in dirs if (d / "timing.json").exists()
     ]
-    cfgs = [d / "configs.csv" for d in dirs if (d / "configs.csv").exists()]
+    cfgs = [d / n for d in dirs for n in ("configs.csv", "configs.csv.gz") if (d / n).exists()]
     return out, cfgs, timings
 
 
@@ -99,8 +99,10 @@ def main() -> None:
         "runs": {},
     }
     for model in "ABCD":
-        for tag in [f"S2_{model}_frozen"] + (
-            [f"S4_{model}_seed{s}" for s in range(5)] if model in "AB" else []
+        for tag in (
+            [f"S2_{model}_frozen"]
+            + ([f"S4_{model}_seed{s}" for s in range(5)] if model in "AB" else [])
+            + ([f"S4_FRESH_{model}"] if model in "BC" else [])
         ):
             doc, cfgs, timings = merged(runs, tag)
             if not doc:
