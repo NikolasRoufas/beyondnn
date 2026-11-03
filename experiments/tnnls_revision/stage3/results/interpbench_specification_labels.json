@@ -1,0 +1,131 @@
+{
+ "kind": "artifact-only re-analysis; no intervention on the trained model defines a label",
+ "cases": 18,
+ "node_instances": 9800,
+ "spec_input_labels": {
+  "not_necessary": 8858,
+  "necessary": 942
+ },
+ "frozen_label_x_membership": {
+  "not_necessary|in_circuit=True": 1578,
+  "not_necessary|in_circuit=False": 7262,
+  "necessary|in_circuit=True": 942,
+  "ambiguous|in_circuit=False": 18
+ },
+ "primary_vs_spec_input": {
+  "necessary": {
+   "n": 942,
+   "standings": {
+    "supported": 942
+   }
+  },
+  "not_necessary": {
+   "n": 8858,
+   "standings": {
+    "contradicted": 8831,
+    "supported": 18,
+    "inconclusive": 9
+   }
+  },
+  "tp_rate": [
+   942,
+   942,
+   [
+    0.99594,
+    1.0
+   ]
+  ],
+  "fp_rate": [
+   18,
+   8858,
+   [
+    0.00129,
+    0.00321
+   ]
+  ]
+ },
+ "primary_false_positives_vs_spec": {
+  "n": 18,
+  "all_non_circuit": true,
+  "all_frozen_ambiguous_i.e._LL_resample_flips": true,
+  "cases": {
+   "21": 17,
+   "58": 1
+  },
+  "other_configs_mean_zero": {
+   "contradicts|supports": 1,
+   "contradicts|contradicts": 12,
+   "supports|supports": 4,
+   "supports|contradicts": 1
+  }
+ },
+ "per_configuration_vs_spec_input": {
+  "tensor/resample|none|recorded": {
+   "necessary": [
+    942,
+    942,
+    [
+     0.99594,
+     1.0
+    ]
+   ],
+   "not_necessary": [
+    18,
+    8858,
+    [
+     0.00129,
+     0.00321
+    ]
+   ]
+  },
+  "tensor/mean|none|recorded": {
+   "necessary": [
+    645,
+    942,
+    [
+     0.65434,
+     0.71358
+    ]
+   ],
+   "not_necessary": [
+    121,
+    8858,
+    [
+     0.01144,
+     0.0163
+    ]
+   ]
+  },
+  "zero|none|recorded": {
+   "necessary": [
+    659,
+    942,
+    [
+     0.66954,
+     0.72799
+    ]
+   ],
+   "not_necessary": [
+    1155,
+    8858,
+    [
+     0.12354,
+     0.13756
+    ]
+   ]
+  }
+ },
+ "primary_vs_spec_struct": {
+  "in_circuit=True": {
+   "n": 2520,
+   "primary_supported": 942,
+   "nodes": 63
+  },
+  "in_circuit=False": {
+   "n": 7280,
+   "primary_supported": 18,
+   "nodes": 182
+  }
+ },
+ "clustering_note": "instances are nested in nodes and in 18 cases (40 inputs each); Wilson intervals are unclustered and descriptive"
+}
