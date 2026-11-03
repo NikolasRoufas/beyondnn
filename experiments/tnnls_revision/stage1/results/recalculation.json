@@ -370,6 +370,154 @@
   "reliable_cases": 18
  },
  "kind": "RECALCULATED FROM FROZEN ARTIFACTS (no model rerun)",
+ "manuscript_checks": {
+  "M01_sample_423": {
+   "all": {
+    "margin": 3.9706358909606934,
+    "n_units": 19,
+    "outcomes": [
+     [
+      "alternative",
+      "contradicts",
+      8
+     ],
+     [
+      "alternative",
+      "inconclusive",
+      4
+     ],
+     [
+      "alternative",
+      "supports",
+      5
+     ],
+     [
+      "primary",
+      "supports",
+      1
+     ],
+     [
+      "stress_test",
+      "contradicts",
+      13
+     ],
+     [
+      "stress_test",
+      "inconclusive",
+      2
+     ],
+     [
+      "stress_test",
+      "supports",
+      12
+     ]
+    ],
+    "primary": {
+     "drop": 2.6633931398391724,
+     "k": 2,
+     "outcome": "supports",
+     "units": [
+      7,
+      18
+     ]
+    },
+    "standing": "supported",
+    "tested": 45,
+    "text": "i am sorry that i was unable to get the full brunt of the comedy . "
+   },
+   "content_tokens": {
+    "margin": 3.9706358909606934,
+    "n_units": 19,
+    "outcomes": [
+     [
+      "alternative",
+      "contradicts",
+      9
+     ],
+     [
+      "alternative",
+      "inconclusive",
+      8
+     ],
+     [
+      "primary",
+      "contradicts",
+      1
+     ],
+     [
+      "stress_test",
+      "contradicts",
+      18
+     ],
+     [
+      "stress_test",
+      "inconclusive",
+      7
+     ],
+     [
+      "stress_test",
+      "supports",
+      2
+     ]
+    ],
+    "primary": {
+     "drop": -0.5365301370620728,
+     "k": 2,
+     "outcome": "contradicts",
+     "units": [
+      7,
+      9
+     ]
+    },
+    "standing": "contradicted",
+    "tested": 45,
+    "text": "i am sorry that i was unable to get the full brunt of the comedy . "
+   }
+  },
+  "M03_held_out_samples": 302,
+  "M05_median_share_contradicting": 0.3529,
+  "M05_more_contradict_than_support": 26,
+  "M05_no_contradicting_alternative": 5,
+  "M06_B_pixels_gradient_supported": "37/60",
+  "M07_D1_supports_in_D2": {
+   "contradicted": 5,
+   "inconclusive": 3,
+   "supported": 3
+  },
+  "M07_D2_newly_supported": 3,
+  "M08_ig_selected_used_supported": "146/183",
+  "M09_components_by_truth": {
+   "empty": 3,
+   "known_false": 10,
+   "known_true": 19
+  },
+  "M10_td_configuration_rates": {
+   "tensor/mean|none|recorded|known_false": "0/400",
+   "tensor/mean|none|recorded|known_true": "586/760",
+   "tensor/resample|none|recorded|known_false": "0/400",
+   "tensor/resample|none|recorded|known_true": "591/760",
+   "zero|none|recorded|known_false": "400/400",
+   "zero|none|recorded|known_true": "760/760"
+  },
+  "M14_grid_cells": 30,
+  "M14_nonused_cells_validated_any_rule": 0,
+  "M14_rel_validated_weights": [
+   0.5,
+   1.0,
+   4.0
+  ],
+  "M15_audited_results_8_central_reports": 26904,
+  "M17_nli_strata": {
+   "empty_premise_same_prediction": {
+    "contradicted": 12,
+    "supported": 5
+   },
+   "needs_premise": {
+    "contradicted": 21,
+    "supported": 2
+   }
+  }
+ },
  "mutations": {
   "experiments/phase7/results/mutations.json": {
    "evidence_mutations": "tests/test_audit.py: forged outcome, relabelled INCONCLUSIVE, dropped contradiction, changed target/subject, dataset scope, removed counterexamples, favourable k, checkpoint (J), sample (K), removed c",
@@ -471,9 +619,11 @@
   "experiments/phase7_75/results/central775_C_heldout_content_tokens.json": "671d79cb623fda90b3100588b1103432a9591187a2cc8e72cc943696983fb3d1",
   "experiments/phase7_75/results/central775_D_heldout_all.json": "fc0cde55039ba082ee0a1086a0f417f29f6d77dbe2f4a92e76b5b6c49830f558",
   "experiments/phase7_75/results/central775_D_heldout_content_tokens.json": "e8f960844ad3829ead4262f618b73cb8f2a42e649a803ba7df8d3527f7a60d04",
+  "experiments/phase7_75/results/concept_calibration.json": "51d405704f0c436dc3627c19d7e8d181fb3510039c80f06a5241a37a5d6fabce",
   "experiments/phase7_75/results/interpbench_heldout.json": "dfc180786f840094d89917126ef0c93975c1a8c49adf9b9c4f438047559e854d",
   "experiments/phase7_75/results/mutations775.json": "0ea2178453fd9a38e92aabe941320550bbae4b19d317f9613ab8793ab122a82a",
   "experiments/phase7_75/results/mutations_pre8.json": "550613d2f7746f78338e96a614a7f91ff7506c0bafb4c56f10fc061f2ed2e4d6",
+  "experiments/phase7_75/results/nli_strata.json": "f0550f83b4ddb391f86cfceea5e26591a7ece40a865560208fea3fef4d486043",
   "experiments/phase7_75/results/td_concepts_heldout.json": "39d46bf516247d24be925385093fc4946cc5405cfedb3a964d7b81466b593ab3",
   "experiments/phase7_75/results/td_heldout.json": "bcea32f69c1d36c7e86024012d6d38060831d6d517641b160b3acba1f8c58714"
  },

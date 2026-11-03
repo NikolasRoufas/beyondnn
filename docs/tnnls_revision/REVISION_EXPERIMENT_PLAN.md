@@ -40,7 +40,7 @@
 ### P0. Hygiene (ESSENTIAL, cheap)
 
 - Add a hash-pin test for `experiments/phase7_75/results/*`, like `tests/test_phase75_immutable.py`.
-- Obtain the manuscript source and version it. Then the Stage 1 manuscript-consistency check (§3.E of the research plan) can be completed. **Stage 1 is incomplete without it.**
+- Obtain the manuscript LaTeX source and the supplementary appendices, and confirm which file is the original version to preserve. The PDF consistency check is done (`MANUSCRIPT_CONSISTENCY.md`).
 - Publish a small evidence bundle so `verify_report` can be repeated by reviewers (W11).
 
 ### E2.1. Artifact-only decomposition of 47/52 (ESSENTIAL, T0)

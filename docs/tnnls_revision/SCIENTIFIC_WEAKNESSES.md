@@ -2,7 +2,7 @@
 
 - **Stance:** a skeptical TNNLS reviewer reading the evidence, not the prose.
 - **Inputs:** the repository at `c9e43ad`, `MANUSCRIPT_RESULT_VERIFICATION.csv` (R-numbers) and `recalculation.json`.
-- **Manuscript:** not available. Weaknesses that concern the manuscript text are marked *(manuscript unchecked)*.
+- **Manuscript:** the 16-page TNNLS PDF (supplied later on 2026-11-03) was checked; see `MANUSCRIPT_CONSISTENCY.md`. It already states most of the scoping qualifiers, so the weaknesses below are mainly evidence gaps.
 - **Severity:**
   - **CRITICAL:** likely to sink a TNNLS submission on its own.
   - **MAJOR:** a reviewer will require it to be fixed.
@@ -70,7 +70,7 @@ The plan asks that these never be conflated.
 
 ### W4. Novelty is narrow, and recent work is closer than the repository's literature review records
 
-The repository's literature notes (September 2026) do not cite three directly relevant works:
+The repository's literature notes (September 2026) do not cite the three works below. The manuscript cites Lan et al. [35] and Méloux et al. [39], but **not** Certified Circuits or Lin & Liu.
 
 - **Lan et al., "Make Mechanistic Interpretability Auditable"** ([arXiv:2606.00033](https://arxiv.org/abs/2606.00033), ACL 2026). Proposes "source-based auditing systems that track arguments which claims depend on", plus guidelines. A position paper, not an implementation.
 - **Anani et al., "Certified Circuits"** ([arXiv:2602.22968](https://arxiv.org/abs/2602.22968)). Stability certificates for circuit-inclusion decisions under dataset perturbation.
@@ -200,10 +200,15 @@ Already cited and overlapping:
   - It is acceptable as a qualified case study only.
 - **W16. The design error behind ADR-054 was found post hoc.** The count-matched null criterion was unattainable, and this was discovered only after it rejected 98.6% of necessary heads. Reviewers may ask what other criteria have not been checked for attainability. A systematic attainability check of every control criterion would answer this (cheap; artifact-only).
 - **W17. All scenarios, ground-truth programs and alternatives were written by the authors.** This is unavoidable but must be stated. An external known-mechanism benchmark helps (W3).
-- **W18. AI-assistance disclosure** *(manuscript unchecked)*.
+- **W18. AI-assistance disclosure.** The manuscript has no acknowledgments section and no AI disclosure.
   - Substantial AI assistance was used in developing the software and documents. The first three commits carry an AI co-author trailer, and this revision is AI-assisted.
   - IEEE policy requires disclosure of AI-generated content in the acknowledgments. Verify the exact current text before Stage 5.
-- **W19. Manuscript consistency unchecked** *(manuscript unavailable)*. The plan reports that the PDF states files were unavailable or unverifiable, and that it contains draft/revision-process language. Every script and result file behind R01–R32 is present in the public repository, so such statements are probably wrong. This needs confirming against the actual text.
+- **W19. Manuscript-to-repository contradictions (now checked).** Ten statements are contradicted by the repository (`MANUSCRIPT_CONSISTENCY.md` §2):
+  - eight claim that records, scripts, the package or tests are absent or unverifiable;
+  - the 0/160 "exact-copy" description;
+  - the list of intervention operations.
+
+  Draft and revision-process language appears in ten places (§3). There is no repository URL or code-availability statement. These are wording fixes for Stage 5; none changes a number.
 
 ## Most important, in one line each
 

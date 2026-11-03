@@ -174,6 +174,104 @@ def alternative_multiplicity() -> dict[str, Any]:
     }
 
 
+def manuscript_checks() -> dict[str, Any]:
+    """Numbers stated in the TNNLS manuscript (rows M01-M17 of the verification table)."""
+    out: dict[str, Any] = {}
+    docs = {
+        e: load(src(P775 / f"central775_D_heldout_{e}.json"))["settings"]["tokens"]
+        for e in ("all", "content_tokens")
+    }
+    ex = {}
+    for e, s in docs.items():
+        m = next(x for x in s["samples"] if x["index"] == 423)
+        a = next(x for x in s["audit"]["ig_necessary"]["per_sample"] if x["index"] == 423)
+        ex[e] = {
+            "text": m["text"],
+            "n_units": m["n_units"],
+            "margin": m["margin"],
+            "primary": m["primary_single_configuration"],
+            "standing": a["standing"],
+            "outcomes": a["outcomes"],
+            "tested": a["tested"],
+        }
+    out["M01_sample_423"] = ex
+    st = {
+        e: {x["index"]: x["standing"] for x in s["audit"]["ig_necessary"]["per_sample"]}
+        for e, s in docs.items()
+    }
+    sup1 = [i for i, v in st["all"].items() if v == "supported"]
+    out["M07_D1_supports_in_D2"] = dict(Counter(st["content_tokens"][i] for i in sup1))
+    out["M07_D2_newly_supported"] = sum(
+        v == "supported" and st["all"][i] != "supported" for i, v in st["content_tokens"].items()
+    )
+    shares: list[float] = []
+    more = none = n_samples = 0
+    for model, site in SITES:
+        s = load(src(P775 / f"central775_{model}_heldout_all.json"))["settings"][site]
+        n_samples += len(s["audit"]["ig_necessary"]["per_sample"])
+        for x in s["audit"]["ig_necessary"]["per_sample"]:
+            if x["standing"] != "supported":
+                continue
+            o = {(r, v): k for r, v, k in x["outcomes"]}
+            tot = sum(k for (r, _), k in o.items() if r == "alternative")
+            c = o.get(("alternative", "contradicts"), 0)
+            shares.append(c / tot)
+            more += c > o.get(("alternative", "supports"), 0)
+            none += c == 0
+        if (model, site) == ("B", "pixels"):
+            g = s["audit"]["g_necessary"]["per_sample"]
+            out["M06_B_pixels_gradient_supported"] = (
+                f"{sum(x['standing'] == 'supported' for x in g)}/{len(g)}"
+            )
+    out["M03_held_out_samples"] = n_samples
+    out["M05_median_share_contradicting"] = round(statistics.median(shares), 4)
+    out["M05_more_contradict_than_support"] = more
+    out["M05_no_contradicting_alternative"] = none
+    n_results = 0
+    for model, site in SITES:
+        for e in ("all", "content_tokens"):
+            p = P775 / f"central775_{model}_heldout_{e}.json"
+            if p.exists():
+                n_results += load(src(p))["settings"][site]["n_results"]
+    out["M15_audited_results_8_central_reports"] = n_results
+    td_rows = [
+        x for r in load(src(P775 / "td_heldout.json"))["programs"].values() for x in r["rows"]
+    ]
+    sel = [x for x in td_rows if x["kind"] == "selection" and x["truth"] == "known_true"]
+    out["M08_ig_selected_used_supported"] = (
+        f"{sum(x['standing'] == 'supported' for x in sel)}/{len(sel)}"
+    )
+    comps = {
+        (x["program"], x["component"], x["truth"]) for x in td_rows if x["kind"] != "selection"
+    }
+    out["M09_components_by_truth"] = dict(Counter(t for _, _, t in comps))
+    cfg_rates = {}
+    for cfg in ("tensor/mean|none|recorded", "zero|none|recorded", PRIMARY_TD):
+        for t in ("known_true", "known_false"):
+            xs = [
+                x
+                for x in td_rows
+                if x["kind"] != "selection" and x["truth"] == t and cfg in x["configs"]
+            ]
+            cfg_rates[f"{cfg}|{t}"] = (
+                f"{sum(x['configs'][cfg] == 'supports' for x in xs)}/{len(xs)}"
+            )
+    out["M10_td_configuration_rates"] = cfg_rates
+    grid = load(src(P775 / "concept_calibration.json"))["grid"]
+    out["M14_rel_validated_weights"] = sorted(
+        {x["w"] for x in grid if x["used"]["rel"]["validation"] == "validated_concept"}
+    )
+    out["M14_nonused_cells_validated_any_rule"] = sum(
+        x[k][r]["validation"] == "validated_concept"
+        for x in grid
+        for k in ("decodable_unused", "negative")
+        for r in ("abs", "rel")
+    )
+    out["M14_grid_cells"] = len(grid)
+    out["M17_nli_strata"] = load(src(P775 / "nli_strata.json"))["necessity_by_stratum"]["ig"]
+    return out
+
+
 def special_tokens_D() -> dict[str, Any]:
     out: dict[str, Any] = {}
     for elig in ("all", "content_tokens"):
@@ -496,6 +594,7 @@ def main() -> None:
         "kind": "RECALCULATED FROM FROZEN ARTIFACTS (no model rerun)",
         "central_775": central_775(),
         "alternative_multiplicity": alternative_multiplicity(),
+        "manuscript_checks": manuscript_checks(),
         "special_tokens_D": special_tokens_D(),
         "central_75_heldout_for_comparison": central_75(),
         "td": td(),

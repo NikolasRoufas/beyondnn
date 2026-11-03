@@ -76,7 +76,7 @@ Each audit result file stores per-sample (or per-instance) **audit outputs**: st
 
 | missing item | impact |
 |---|---|
-| **The manuscript** (19-page PDF and LaTeX) | Not in the repository (there is no `paper/`), not on this Mac, not on the server, and not found in the connected mailbox. `~/Downloads/TNNLS.pdf` is Prof. Kanavos's plan, not the paper. **The manuscript-to-repository consistency check (plan §3.E) cannot be done.** CSV rows use the ledger's allowed wording as a stand-in for manuscript claims. |
+| **The manuscript LaTeX source and Supplementary Appendices A–D** | The compiled PDF (16 pages, TNNLS format, SHA-256 `0471417f…a1fa60`) was supplied later on 2026-11-03 and has been checked (`MANUSCRIPT_CONSISTENCY.md`). It is not committed, because the repository is public. The LaTeX source and the supplementary appendices are still missing. There is no `paper/` directory. |
 | Saved traces and audit reports for research runs | Deterministic re-audit of the research experiments cannot be repeated from the repository. |
 | Trained checkpoints A/B | Retraining is deterministic on CPU (`common.train`, seed 0, digest-verified), but this was not executed in Stage 1. |
 | Seed or checkpoint replicates | None exist: one checkpoint per model. |

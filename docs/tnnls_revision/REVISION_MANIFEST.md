@@ -20,8 +20,8 @@
 | model / checkpoint | S1-RECALC: none. S1-REPRO-A: model A, retrained deterministically (seed 0, CPU) in the copy |
 | seed | as recorded in the frozen scripts (training seed 0; selection and control seeds in the plans) |
 | compute cost | recalculation under 5 s; test suite about 2 min; S1-REPRO-A: 10 min 42 s wall clock on a local Mac CPU; exact reproduction (0 per-sample differences; identical checkpoint digest) |
-| results | `MANUSCRIPT_RESULT_VERIFICATION.csv`: 36 claims in 37 rows (R08 split into a and b): 24 VERIFIED_FROM_ARTIFACTS, 10 SUPPORTED_BY_SUMMARY_ONLY, 2 UNVERIFIED, 1 CONTRADICTED_BY_ARTIFACTS, 0 REQUIRES_MODEL_RERUN |
-| limitations | the manuscript was not available, so the manuscript-to-repository consistency check is blocked; saved traces are not available, so research-scale re-audit was not repeated |
+| results | `MANUSCRIPT_RESULT_VERIFICATION.csv`: 66 rows (R01–R36 evidence claims; M01–M29 manuscript-specific): 42 VERIFIED_FROM_ARTIFACTS, 12 SUPPORTED_BY_SUMMARY_ONLY, 2 UNVERIFIED, 10 CONTRADICTED_BY_ARTIFACTS, 0 REQUIRES_MODEL_RERUN. Manuscript PDF SHA-256 `0471417fcfae81692d523e00873b9c118bfaaef95b5614946e0011e072a1fa60` (16 pp.; not committed). |
+| limitations | the manuscript was checked from the compiled PDF only (no LaTeX, no supplementary appendices); saved traces are not available, so research-scale re-audit was not repeated |
 | manuscript use | none yet; the paper has not been rewritten |
 
 ### Deliverables
@@ -32,6 +32,7 @@
 - `docs/tnnls_revision/SCIENTIFIC_WEAKNESSES.md`
 - `docs/tnnls_revision/REVISION_EXPERIMENT_PLAN.md`
 - `docs/tnnls_revision/SERVER_READINESS.md`
+- `docs/tnnls_revision/MANUSCRIPT_CONSISTENCY.md`
 
 ### Gate
 

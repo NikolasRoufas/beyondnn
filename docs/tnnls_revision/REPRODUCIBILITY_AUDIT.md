@@ -10,7 +10,7 @@ Five levels of reproducibility are kept separate below. Passing one level says n
 | level | question | Stage 1 status |
 |---|---|---|
 | L1 software correctness | Does the library behave as specified on constructed cases? | **Re-executed.** All checks pass (§1). |
-| L2 artifact recalculation | Do the reported aggregates follow from the committed per-sample / per-instance records? | **Done for 24 claims, 1 contradiction, 10 summary-only** (§2). |
+| L2 artifact recalculation | Do the reported aggregates follow from the committed per-sample / per-instance records? | **Done:** 42 rows verified, 12 summary-only, 10 contradicted. Of the contradictions, 8 are manuscript statements that files are absent, plus 2 descriptions (§2; `MANUSCRIPT_CONSISTENCY.md`). |
 | L3 deterministic re-audit | Re-derive standings from saved evidence (`verify_report`). | **Not repeatable from the repository.** Traces and reports are not committed; only the outcome "passed" is (§3). |
 | L4 model-experiment reproduction | Re-run evidence generation and obtain the same per-sample standings. | **Model A (MLP, both sites) reproduced exactly from scratch on CPU** (§6). Models B, C, D, E, InterpBench and TD were not re-run. |
 | L5 scientific validity | Do the results support the claims (independence, dependence, estimands)? | See `SCIENTIFIC_WEAKNESSES.md`. |
@@ -123,7 +123,7 @@ Every other model reproduction needs either downloads (BERT-tiny/base, e-SNLI, I
 ## 5. Reproducibility documentation gaps
 
 1. Phase 7.75 results are not hash-pinned.
-2. The manuscript is not versioned in the repository. There is no `paper/`, so the plan's `paper/` versus `paper_tnnls/` separation cannot be set up yet.
+2. The manuscript is not versioned in the repository. Only a compiled PDF was supplied; it is checked in `MANUSCRIPT_CONSISTENCY.md`. Without the LaTeX source, the plan's `paper/` versus `paper_tnnls/` separation cannot be set up. The manuscript also gives no code-availability statement or repository URL.
 3. No archived evidence bundle (§3).
 4. `docs/REPRODUCIBILITY.md` gives approximate costs from single runs on one Apple machine; the server environment is not documented.
 5. The checkpoints for trained models A and B are re-created by deterministic training. Their digests are recorded, but the checkpoints are not distributed.
