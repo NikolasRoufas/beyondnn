@@ -1,0 +1,28 @@
+\section{Limitations}
+\label{sec:limits}
+
+\paragraph*{What a standing means}
+\textsc{supported} means that the \textsc{primary} evidence met the declared rule for the stated claim, scope, samples and checkpoint; it is neither a universal truth value nor a population claim, and \textsc{unsupported} and \textsc{inconclusive} are refusals, not refutations. The properties of Section~\ref{sec:properties} establish consistency with the implemented semantics. They do not establish that a plan, replacement, threshold or control is scientifically adequate, and evidence produced by a flawed protocol is re-derived faithfully by the same code. A plan cannot reveal alternatives that were never declared, and the at-least-one reversal count grows with the declared family (Proposition~\ref{prop:mono}).
+
+\paragraph*{Reference truth}
+Program-defined labels exist only for small compiled programs (one or two layers, at most three heads, one-hot or numeric variables), and they mark structural use, not per-input necessity. The specification labels of the SIIT-trained InterpBench models use no intervention on the trained network, but SIIT training itself uses interchange interventions, so the labels are independent of the audited evaluation and not of the intervention family that shaped the networks. No central model (MLP, CNN, BERT) has independent mechanism truth, and the InterpBench re-analysis was performed after the Phase-7.5 results were known.
+
+\paragraph*{Protocol dependence and blinding}
+Researchers choose the \textsc{primary} configuration, alternatives, thresholds and controls. Each held-out round had a frozen plan, but plans were revised after earlier results (ADR-053/054); the reported 47/52 is a re-audit of samples whose earlier audit (49/52) had been seen. The 169 contradicted tests of structurally used Tracr components are single-counterfactual non-changes, not false negatives against per-input labels; multiple counterfactual draws would address this at higher evidence cost.
+
+\paragraph*{Statistics and replication}
+Wilson and bootstrap intervals are descriptive and unclustered: instances share programs, inputs share checkpoints. The MLP and CNN results were replicated over five independently trained checkpoints; BERT-tiny and BERT-base each have one checkpoint. Nothing here supports generalisation to new architectures or scales; the largest model is BERT-base (110M parameters) on CPU.
+
+\paragraph*{Comparison and cost}
+The comparative study uses faults designed by the authors and a conventional checker written knowing them; it measures which checks exist by default, not how often researchers err. On a 30-feature MLP the evidence layer made one test about 23 times slower than plain PyTorch; its share of total cost shrinks with model size (Table~\ref{tab:cost}), but for very small models it dominates. Hooks observe only instrumented module boundaries, and model fingerprints cover parameters and persistent buffers, not Python source or undeclared constructor settings.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Between an interpretability measurement and the conclusion drawn from it lies a claim with a relation, a scope, a set of units, a replacement, a control and a threshold. BeyondNN makes that claim the object of analysis: evidence carries its epistemic status and provenance, claims are declared objects, configurations have declared roles, and audits re-derive every standing from recorded evidence without a global score. On trained MLP, CNN and BERT models, most \textsc{primary}-supported IG necessity claims carried a qualifying reversal; with the selected units held fixed, the replacement and the control rule alone reversed many of them, while on the token models most reversals came only from changes of the selection size, that is, of the claim's subject. Against program-defined and specification labels, the \textsc{primary} test supported no decoy and almost no specification-excluded node, and the exceptions were nodes the trained network demonstrably uses. On identical measurements, the audit surfaced every injected workflow fault without fault-specific code, which a careful conventional checker matched only with checks written for each fault. BeyondNN does not determine what a model computes and cannot supply evidence that was never recorded; it makes interpretability claims explicit, testable, provenance-aware and reproducible, and makes claims that the evidence does not support easier to reject.
+
+\section*{Code and Data Availability}
+BeyondNN~0.1.0, all experiment scripts, frozen plans and committed per-sample results are available at \url{https://github.com/NikolasRoufas/beyondnn}; the revision experiments of this paper are in \path{experiments/tnnls_revision/}, with protocols in \path{docs/tnnls_revision/protocols/} and a claim-to-source table in \path{docs/tnnls_revision/RESULT_SOURCE_TRACEABILITY.csv}.
+
+\section*{Acknowledgment}
+\emph{[AI-assistance disclosure for author review, following the IEEE Author Guidelines for AI-generated text.]} An AI coding assistant (Claude Code, Anthropic) was used in the revision of this article: to write analysis and experiment scripts (Section~\ref{sec:results}; repository directory \path{experiments/tnnls_revision/}), to recompute reported values from committed artifacts, and to draft and edit the text of all sections and the figure and table generation code. All experiments, numbers and references were checked against the repository's artifacts; the authors reviewed and take responsibility for the content.

@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{Injected workflow faults on identical measurements (MLP, 20 held-out samples). Detected/affected, false alerts in parentheses. B0: single-configuration report. B1: conventional log with 54 lines of fault-specific checks. BeyondNN: the frozen plan, no fault-specific code. $^\ast$Study-level refusal: the edited trace fails its content hash and the evidence set is not loaded.}
+\label{tab:cmp}
+\setlength{\tabcolsep}{2.4pt}
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+fault & aff. & wrong sup. & B0 & B1 & BeyondNN \\
+\midrule
+F1 attribution as necessity & 20 & 20 & 0 & 20/20 (0) & 20/20 (0) \\
+F2 wrong checkpoint & 5 & 1 & 0 & 5/5 (0) & 5/5 (0) \\
+F3 wrong input & 5 & 0 & 0 & 5/5 (0) & 5/5 (0) \\
+F4 wrong selection size & 5 & 1 & 0 & 5/5 (0) & 5/5 (0) \\
+F5 omitted controls & 20 & 6 & 0 & 20/20 (0) & 20/20 (0) \\
+F6 configuration dependence & 4 & 4 & 0 & 4/4 (1) & 4/4 (0) \\
+F7 tampered outcome & 5 & 5 & 0 & 5/5 (0) & 5/5$^\ast$ (--) \\
+\bottomrule
+\end{tabular}}
+\end{table}

@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\caption{Decomposition of ALTERNATIVE reversals of PRIMARY-supported IG necessity claims (re-run of the frozen central design, held-out samples). \emph{Any}: $\ge 1$ ALTERNATIVE configuration contradicts. \emph{Fixed}: a contradicting ALTERNATIVE keeps $k$, hence the selected units. Single-axis columns: contradiction by a configuration that differs from PRIMARY only on that axis. \emph{$k$ only}: reversed only by configurations that change $k$. Counts per sample; samples are nested in four checkpoints.}
+\label{tab:decomp}
+\setlength{\tabcolsep}{2.6pt}
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+ & & & \multicolumn{2}{c}{reversed} & \multicolumn{4}{c}{single-axis reversal} & \\
+\cmidrule(lr){4-5}\cmidrule(lr){6-9}
+site & $n$ & sup. & any & fixed & repl. & null & thr. & $k$ & $k$ only \\
+\midrule
+MLP input & 51 & 8 & 7 & 3 & 3 & 1 & 0 & 5 & 4 \\
+MLP hidden & 51 & 4 & 2 & 2 & 2 & 0 & 0 & 2 & 0 \\
+CNN pixels & 60 & 14 & 13 & 10 & 9 & 7 & 0 & 7 & 3 \\
+CNN relu2 & 60 & 1 & 1 & 1 & 1 & 0 & 0 & 1 & 0 \\
+BERT-tiny & 40 & 14 & 13 & 3 & 0 & 3 & 0 & 11 & 10 \\
+\midrule
+Total & 262 & 41 & 36 & 19 & 15 & 11 & 0 & 26 & 17 \\
+\bottomrule
+\end{tabular}}
+\end{table}

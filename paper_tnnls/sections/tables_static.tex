@@ -1,0 +1,45 @@
+\begin{table*}[t]
+\centering
+\caption{Built-in, documented capabilities (current releases checked 2026-11-03). ``User'': possible with user code on top of the library. The table positions BeyondNN; it does not rank tools that address different problems.}
+\label{tab:capability}
+\setlength{\tabcolsep}{3pt}
+\footnotesize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+capability & Captum & Quantus & causal scrubbing & NNsight / pyvene / TL & CIF & Certified Circuits & BeyondNN \\
+\midrule
+measurement generation & \checkmark & external & \checkmark & \checkmark & consumes & wraps & partial \\
+explicit claim object (relation, subject, scope) & -- & -- & partial (hypothesis) & -- & partial (estimand) & -- & \checkmark \\
+evidence-type admissibility & -- & -- & n/a & -- & n/a & -- & \checkmark \\
+checkpoint / input provenance per record & user & user & user & user / partial & user & user & \checkmark \\
+refusal of mismatched provenance or scope & user & user & user & user & user & user & \checkmark \\
+eligibility and estimand matching & -- & -- & partial & -- & \checkmark & -- & \checkmark \\
+matched controls as precondition of support & -- & baselines & -- & -- & -- & -- & \checkmark \\
+declared alternative configurations with roles & -- & -- & -- & -- & -- & partial & \checkmark \\
+per-sample counterevidence retained & -- & scores & aggregate & -- & -- & abstention & \checkmark \\
+deterministic re-audit of saved evidence & -- & -- & -- & -- & -- & -- & \checkmark \\
+statistical inference / certification & -- & -- & -- & -- & \checkmark & \checkmark & -- \\
+\bottomrule
+\end{tabular}}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\caption{Evaluation setup. All central studies use correctly classified held-out inputs, one torch thread and CPU execution.}
+\label{tab:setup}
+\setlength{\tabcolsep}{2.5pt}
+\footnotesize
+\begin{tabular}{p{0.24\columnwidth}p{0.70\columnwidth}}
+\toprule
+models & MLP (breast cancer~\cite{wolberg1993breast}; sites input, hidden), CNN (digits~\cite{alpaydin1998digits}; pixels, relu2), BERT-tiny~\cite{turc2019wellread,frantar2021mfac} and BERT-base~\cite{devlin2019bert,morris2020textattack} on SST-2~\cite{socher2013sst,wang2018glue} (token embeddings) \\
+held-out samples & 51 / 51 / 60 / 60 / 40 / 40 (302) \\
+evidence & G / IG / random top-$k$, $k\in\{5,10,20\}\%$; comprehensiveness and sufficiency; 50 count-matched controls; 3 replacements \\
+\textsc{primary} & training mean ([MASK] for BERT), $k$ at 10\%, count null at $q=0.95$, $\tau=0.5\times$ clean margin \\
+\textsc{alternative} & resample ([PAD]), $k$ at 5\% and 20\%, magnitude-matched null, $0.5\tau$ \\
+\textsc{stress\_test} & zero (MLP input: training minimum), no null, $1.5\tau$ \\
+reference models & 8 held-out compiled Tracr programs~\cite{lindner2023tracr} (40 inputs each); 18 SIIT-trained InterpBench transformers~\cite{gupta2024interpbench} (40 inputs each) \\
+checkpoints & frozen seed-0 MLP and CNN; seeds 0--4 retrained (Linux); pinned Hugging Face revisions for BERT \\
+\bottomrule
+\end{tabular}
+\end{table}

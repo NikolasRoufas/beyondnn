@@ -136,7 +136,7 @@ def config_rows(
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("model", choices=["A", "B", "C", "D"])
-    ap.add_argument("split", choices=["dev", "heldout"])
+    ap.add_argument("split", choices=["dev", "heldout", "fresh"])
     ap.add_argument("--out", required=True)
     ap.add_argument("--seed", type=int, default=None, help="retrain A/B with this seed")
     ap.add_argument("--shard", default=None)
@@ -152,8 +152,14 @@ def main() -> None:
         common.train = functools.partial(  # type: ignore[assignment]
             train_seeded, seed=a.seed, ckpt_dir=out.parent.parent / "checkpoints"
         )
+    split = a.split
+    if a.split == "fresh":  # protocol P3: positions 2n..3n-1 of the frozen seeded order
+        if a.model not in ("B", "C"):
+            raise SystemExit("fresh samples exist for B and C only (protocol P3)")
+        C75._slice = lambda s, _split, n: s[2 * n : 3 * n]
+        split = "heldout"
     t0 = time.perf_counter()
-    model, samples, settings, info, path = C75.build(a.model, a.split)
+    model, samples, settings, info, path = C75.build(a.model, split)
     build_s = time.perf_counter() - t0
     if a.shard:
         i, n = (int(v) for v in a.shard.split("/"))

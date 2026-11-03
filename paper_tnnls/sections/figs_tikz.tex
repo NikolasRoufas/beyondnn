@@ -1,0 +1,41 @@
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\footnotesize, node distance=4mm and 5mm,
+  box/.style={draw, rounded corners=1.5pt, align=center, minimum height=9mm, inner sep=2.5pt, text width=24mm},
+  meas/.style={box, fill=gray!8},
+  clm/.style={box, fill=blue!6},
+  arr/.style={-{Latex[length=1.6mm]}, semithick}]
+\node[meas] (m) {PyTorch model\\and input};
+\node[meas, right=of m] (me) {measurements:\\trace, attribution,\\intervention, probe};
+\node[meas, right=of me] (ev) {typed evidence\\$\sigma\in\Sigma$, provenance $\pi$\\(digest $\delta$, input $s$, $\rho$, $E$)};
+\node[clm, below=7mm of m] (h) {researcher's\\hypothesis};
+\node[clm, right=of h] (c) {declared claim\\$(r,u,t,\varsigma,E)$};
+\node[clm, right=of c] (p) {audit plan (first):\\requirements, controls,\\roles P / A / S};
+\node[box, right=10mm of ev, yshift=-8mm, fill=green!6] (a) {model-free audit:\\admissibility, provenance\\match, re-derivation,\\Eq.~(1), precedence};
+\node[box, right=of a, fill=green!6] (o) {standing + typed\\findings, counter-\\examples, WHY;\\no global score};
+\draw[arr] (m) -- (me); \draw[arr] (me) -- (ev); \draw[arr] (h) -- (c); \draw[arr] (c) -- (p);
+\draw[arr] (ev.east) -- ++(3mm,0) |- (a.west); \draw[arr] (p.east) -- ++(3mm,0) |- (a.west);
+\draw[arr] (a) -- (o);
+\node[anchor=south west, font=\scriptsize\itshape, text=gray] at (m.north west) {measurement lane (existing tools)};
+\node[anchor=north west, font=\scriptsize\itshape, text=gray] at (h.south west) {claim lane (made explicit and audited)};
+\end{tikzpicture}
+\caption{BeyondNN separates measurements from claims. Measurements become typed, provenance-bound evidence; claims are declared objects; a plan written before the audit states the required evidence, the controls and the role of each configuration. Only \textsc{primary} configurations decide a standing (Proposition~\ref{prop:roles}); the audit re-derives every result from the records and never runs the model.}
+\label{fig:pipeline}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[font=\footnotesize, node distance=3mm,
+  st/.style={draw, rounded corners=1.5pt, align=left, text width=31mm, minimum height=20mm, inner sep=3pt, anchor=north west},
+  arr/.style={-{Latex[length=1.5mm]}, semithick}]
+\node[st, fill=gray!8] (s1) at (0,0) {\textbf{1 Attributed}\\ ``i am sorry that i was \textit{unable} to get the full brunt of the comedy .''\\ IG top-2: $\{$\textit{unable}, \texttt{[SEP]}$\}$.\\ Ranking only; no intervention.};
+\node[st, fill=green!6, right=of s1.north east, anchor=north west] (s2) {\textbf{2 PRIMARY test}\\ Replace both with \texttt{[MASK]}. Clean margin 3.97; $d=2.66>\tau=1.99$; exceeds 95\% of 50 controls. Passes; prediction unchanged.};
+\node[st, fill=orange!8, right=of s2.north east, anchor=north west] (s3) {\textbf{3 Alternatives (17)}\\ 5 support, 8 contradict, 4 inconclusive. Stress tests (27): 12 / 13 / 2. Some alternatives change $k$ and hence the selected set.};
+\node[st, fill=blue!6, right=of s3.north east, anchor=north west] (s4) {\textbf{4 Eligibility}\\ A different claim: top-2 \emph{content} tokens. Selection $\{$\textit{unable}, \textit{get}$\}$; $d=-0.54$. CONTRADICTED.};
+\node[st, fill=gray!14, right=of s4.north east, anchor=north west] (s5) {\textbf{5 Audit}\\ All tokens: SUPPORTED, with \texttt{alternative\_reverses}.\\ Content tokens: CONTRADICTED.\\ Attribution alone: UNSUPPORTED.};
+\foreach \a/\b in {s1/s2,s2/s3,s3/s4,s4/s5} \draw[arr] (\a.east) -- (\b.west);
+\end{tikzpicture}
+\caption{Running example (BERT-base SST-2, held-out sample 423). Values are read from the per-sample records of the frozen central experiment (\texttt{central775\_D\_heldout\_\{all,content\_tokens\}.json}). \textsc{supported} is scoped to the \textsc{primary} rule and qualified by the alternative finding; the content-token claim concerns a different subject.}
+\label{fig:example}
+\end{figure*}

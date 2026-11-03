@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{Cost per held-out sample of the full central design (one CPU thread, Linux x86-64). Evidence: model execution and BeyondNN record construction for all results of the sample. Audit and verify: model-free. Share: audit + verify as \% of the total. Report: size of the site's report (MB). RSS: peak resident memory of one process (MB).}
+\label{tab:cost}
+\setlength{\tabcolsep}{2.2pt}
+\footnotesize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+site & $n$ & res. & evid. (s) & audit (s) & verify (s) & share & report & RSS \\
+\midrule
+MLP input & 51 & 72 & 3.7 & 0.967 & 1.154 & 36.7 & 20.3 & 5906 \\
+MLP hidden & 51 & 72 & 4.4 & 1.033 & 1.206 & 33.7 & 20.0 & 6866 \\
+CNN pixels & 60 & 72 & 3.7 & 1.132 & 1.181 & 38.8 & 23.9 & 3364 \\
+CNN relu2 & 60 & 72 & 4.3 & 1.099 & 1.025 & 33.2 & 23.6 & 3836 \\
+BERT-tiny & 40 & 69 & 70.4 & 1.211 & 1.105 & 3.2 & 15.4 & 1427 \\
+\bottomrule
+\end{tabular}}
+\end{table}

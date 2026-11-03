@@ -1,0 +1,44 @@
+% BeyondNN -- TNNLS revision (reconstructed manuscript).
+% This LaTeX source was RECONSTRUCTED for the TNNLS revision on 2026-11-03 from (i) the text of
+% the 16-page TNNLS PDF supplied by the authors (SHA-256 0471417f...a1fa60; no LaTeX source of
+% that version was available) and (ii) verified repository evidence. It is not the original
+% source. See docs/tnnls_revision/MANUSCRIPT_CHANGELOG.md.
+\documentclass[journal]{IEEEtran}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+\usepackage{cite}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,calc}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+
+\input{tables/numbers}
+\begin{document}
+
+\title{BeyondNN: Auditing Interpretability Claims about Neural Networks with Provenance, Controls, and Counterevidence}
+
+\author{Nikolaos~Roufas and Andreas~Kanavos
+\thanks{N. Roufas and A. Kanavos are with the Department of Informatics, Ionian University, Corfu, Greece (e-mail: inf2024146@ionio.gr; akanavos@ionio.gr).}}
+
+\markboth{IEEE Transactions on Neural Networks and Learning Systems}{Roufas and Kanavos: BeyondNN}
+
+\maketitle
+
+\input{sections/abstract}
+\input{sections/figs_tikz}
+\input{sections/intro}
+\input{sections/tables_static}
+\input{sections/related}
+\input{sections/framework}
+\input{sections/system}
+\input{sections/evaluation}
+\input{sections/discussion}
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
