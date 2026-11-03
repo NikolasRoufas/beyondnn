@@ -2,7 +2,8 @@
 versus conventional workflows on the same measurements, with injected workflow faults; plus the
 cost of one PRIMARY IG necessity test with and without the BeyondNN layer.
 
-Usage (Phase-5.5 env, from experiments/phase5_5): python ../tnnls_revision/stage3/compare_workflows.py OUT_DIR CKPT_DIR
+Usage (Phase-5.5 env, from experiments/phase5_5):
+    python ../tnnls_revision/stage3/compare_workflows.py OUT_DIR CKPT_DIR
 """
 
 from __future__ import annotations
@@ -506,13 +507,16 @@ def main() -> None:
 
             def fwd(inp: torch.Tensor) -> torch.Tensor:
                 o = model(inp)
-                return o[:, pred] - o[:, runner]
+                return o[:, pred] - o[:, runner]  # noqa: B023 (used in this iteration)
 
             ig = IntegratedGradients(fwd)
             att = ig.attribute(
                 x, baselines=torch.zeros_like(x), n_steps=32, method="riemann_middle"
             )
-            top = torch.topk(att[0], k).indices.tolist()
+            # same ranking rule as F.top_k: descending |score|, ties broken by lower index
+            # (v1 of this script ranked by the signed score: a baseline bug, kept in S3_CMP)
+            order = sorted(range(N_UNITS), key=lambda u: (-abs(float(att[0, u])), u))
+            top = order[:k]
             with torch.no_grad():
                 base = float(fwd(x))
                 xs = x.clone()
