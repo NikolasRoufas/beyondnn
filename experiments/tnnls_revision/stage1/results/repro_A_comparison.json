@@ -1,0 +1,315 @@
+{
+ "frozen": "experiments/phase7_75/results/central775_A_heldout_all.json",
+ "frozen_environment": {
+  "beyondnn_commit": "9f0885994a1cb5a496ddc3f9ea2869e7ed5664d9",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "frozen_model": {
+  "accuracy": {
+   "test": 0.9736841917037964,
+   "train": 0.9970674514770508,
+   "val": 0.9561403393745422
+  },
+  "checkpoint_state_digest": "sha256:4c19a8dafa3c0b38219220528303b3f195487a131b3e12a64c703203946b1c24"
+ },
+ "rerun_environment": {
+  "beyondnn_commit": "",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Darwin arm64",
+  "processor": "arm",
+  "python": "3.12.13",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "rerun_model": {
+  "accuracy": {
+   "test": 0.9736841917037964,
+   "train": 0.9970674514770508,
+   "val": 0.9561403393745422
+  },
+  "checkpoint_state_digest": "sha256:4c19a8dafa3c0b38219220528303b3f195487a131b3e12a64c703203946b1c24"
+ },
+ "sites": {
+  "input": {
+   "claims": {
+    "g_necessary": {
+     "distribution": [
+      {
+       "contradicted": 50,
+       "supported": 1
+      },
+      {
+       "contradicted": 50,
+       "supported": 1
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "g_sufficient": {
+     "distribution": [
+      {
+       "contradicted": 49,
+       "supported": 2
+      },
+      {
+       "contradicted": 49,
+       "supported": 2
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "ig_necessary": {
+     "distribution": [
+      {
+       "contradicted": 43,
+       "supported": 8
+      },
+      {
+       "contradicted": 43,
+       "supported": 8
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "ig_sufficient": {
+     "distribution": [
+      {
+       "contradicted": 39,
+       "supported": 12
+      },
+      {
+       "contradicted": 39,
+       "supported": 12
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "r_necessary": {
+     "distribution": [
+      {
+       "contradicted": 50,
+       "supported": 1
+      },
+      {
+       "contradicted": 50,
+       "supported": 1
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "r_sufficient": {
+     "distribution": [
+      {
+       "contradicted": 50,
+       "supported": 1
+      },
+      {
+       "contradicted": 50,
+       "supported": 1
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    }
+   },
+   "n_results": [
+    3672,
+    3672
+   ],
+   "verify_report": [
+    "passed",
+    "passed"
+   ]
+  },
+  "net.1": {
+   "claims": {
+    "g_necessary": {
+     "distribution": [
+      {
+       "contradicted": 51
+      },
+      {
+       "contradicted": 51
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "g_sufficient": {
+     "distribution": [
+      {
+       "contradicted": 48,
+       "supported": 3
+      },
+      {
+       "contradicted": 48,
+       "supported": 3
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "ig_necessary": {
+     "distribution": [
+      {
+       "contradicted": 47,
+       "supported": 4
+      },
+      {
+       "contradicted": 47,
+       "supported": 4
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "ig_sufficient": {
+     "distribution": [
+      {
+       "contradicted": 38,
+       "supported": 13
+      },
+      {
+       "contradicted": 38,
+       "supported": 13
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "r_necessary": {
+     "distribution": [
+      {
+       "contradicted": 51
+      },
+      {
+       "contradicted": 51
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    },
+    "r_sufficient": {
+     "distribution": [
+      {
+       "contradicted": 51
+      },
+      {
+       "contradicted": 51
+      }
+     ],
+     "per_sample_field_differences": {
+      "codes": 0,
+      "outcomes": 0,
+      "reversal_axes": 0,
+      "standing": 0,
+      "tested": 0
+     },
+     "same_sample_set": true,
+     "samples": 51
+    }
+   },
+   "n_results": [
+    3672,
+    3672
+   ],
+   "verify_report": [
+    "passed",
+    "passed"
+   ]
+  }
+ }
+}

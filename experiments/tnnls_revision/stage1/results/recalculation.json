@@ -1,0 +1,637 @@
+{
+ "alternative_multiplicity": {
+  "alternative_configurations_per_supported_sample": {
+   "11": 1,
+   "17": 51
+  },
+  "contradicting_alternatives_median": 6,
+  "contradicting_alternatives_min_max": [
+   1,
+   14
+  ],
+  "reversed_by_exactly_one_alternative": 1,
+  "reversed_samples": 47
+ },
+ "central_75_heldout_for_comparison": {
+  "A/input": "8/8 (n=51)",
+  "A/net.1": "2/4 (n=51)",
+  "B/pixels": "13/14 (n=60)",
+  "B/relu2": "1/1 (n=60)",
+  "C/tokens": "14/14 (n=40)",
+  "D/tokens": "11/11 (n=40)",
+  "pooled": "49/52"
+ },
+ "central_775": {
+  "per_site": {
+   "A/input/all": {
+    "ig_necessary_primary_supported": {
+     "k": 8,
+     "n": 51,
+     "wilson95": [
+      0.0817,
+      0.2801
+     ]
+    },
+    "n_samples": 51,
+    "of_which_alternative_reverses": "7/8",
+    "r_necessary_primary_supported": 1,
+    "results_excluded": 0,
+    "standing_distribution": {
+     "contradicted": 43,
+     "supported": 8
+    },
+    "verify_report": "passed"
+   },
+   "A/net.1/all": {
+    "ig_necessary_primary_supported": {
+     "k": 4,
+     "n": 51,
+     "wilson95": [
+      0.0309,
+      0.185
+     ]
+    },
+    "n_samples": 51,
+    "of_which_alternative_reverses": "2/4",
+    "r_necessary_primary_supported": 0,
+    "results_excluded": 0,
+    "standing_distribution": {
+     "contradicted": 47,
+     "supported": 4
+    },
+    "verify_report": "passed"
+   },
+   "B/pixels/all": {
+    "ig_necessary_primary_supported": {
+     "k": 14,
+     "n": 60,
+     "wilson95": [
+      0.1444,
+      0.3544
+     ]
+    },
+    "n_samples": 60,
+    "of_which_alternative_reverses": "13/14",
+    "r_necessary_primary_supported": 1,
+    "results_excluded": 0,
+    "standing_distribution": {
+     "contradicted": 46,
+     "supported": 14
+    },
+    "verify_report": "passed"
+   },
+   "B/relu2/all": {
+    "ig_necessary_primary_supported": {
+     "k": 1,
+     "n": 60,
+     "wilson95": [
+      0.0029,
+      0.0886
+     ]
+    },
+    "n_samples": 60,
+    "of_which_alternative_reverses": "1/1",
+    "r_necessary_primary_supported": 0,
+    "results_excluded": 0,
+    "standing_distribution": {
+     "contradicted": 57,
+     "inconclusive": 2,
+     "supported": 1
+    },
+    "verify_report": "passed"
+   },
+   "C/tokens/all": {
+    "ig_necessary_primary_supported": {
+     "k": 14,
+     "n": 40,
+     "wilson95": [
+      0.2213,
+      0.5049
+     ]
+    },
+    "n_samples": 40,
+    "of_which_alternative_reverses": "13/14",
+    "r_necessary_primary_supported": 0,
+    "results_excluded": 0,
+    "standing_distribution": {
+     "contradicted": 21,
+     "inconclusive": 5,
+     "supported": 14
+    },
+    "verify_report": "passed"
+   },
+   "C/tokens/content_tokens": {
+    "ig_necessary_primary_supported": {
+     "k": 11,
+     "n": 40,
+     "wilson95": [
+      0.1611,
+      0.4283
+     ]
+    },
+    "n_samples": 40,
+    "of_which_alternative_reverses": "10/11",
+    "r_necessary_primary_supported": 2,
+    "results_excluded": 0,
+    "standing_distribution": {
+     "contradicted": 23,
+     "inconclusive": 6,
+     "supported": 11
+    },
+    "verify_report": "passed"
+   },
+   "D/tokens/all": {
+    "ig_necessary_primary_supported": {
+     "k": 11,
+     "n": 40,
+     "wilson95": [
+      0.1611,
+      0.4283
+     ]
+    },
+    "n_samples": 40,
+    "of_which_alternative_reverses": "11/11",
+    "r_necessary_primary_supported": 1,
+    "results_excluded": 0,
+    "standing_distribution": {
+     "contradicted": 23,
+     "inconclusive": 6,
+     "supported": 11
+    },
+    "verify_report": "passed"
+   },
+   "D/tokens/content_tokens": {
+    "ig_necessary_primary_supported": {
+     "k": 6,
+     "n": 40,
+     "wilson95": [
+      0.0706,
+      0.2907
+     ]
+    },
+    "n_samples": 40,
+    "of_which_alternative_reverses": "6/6",
+    "r_necessary_primary_supported": 2,
+    "results_excluded": 0,
+    "standing_distribution": {
+     "contradicted": 24,
+     "inconclusive": 10,
+     "supported": 6
+    },
+    "verify_report": "passed"
+   }
+  },
+  "pooled": {
+   "headline_all_tokens": {
+    "alternative_reverses": 47,
+    "primary_supported": 52,
+    "text": "47/52"
+   },
+   "note": "Axis labels are recorded explanations of reversal findings, merged over ALTERNATIVE and STRESS_TEST roles; they are descriptive and are not experimentally isolated effects (Stage 2).",
+   "reversal_axis_label_sets_per_reversed_sample": {
+    "combined:k+null": 1,
+    "combined:k+null | combined:k+null+threshold": 2,
+    "combined:k+null | k": 8,
+    "combined:k+null | k,null": 2,
+    "combined:k+null | k,replacement": 1,
+    "combined:k+null | threshold": 1,
+    "combined:k+replacement | k": 1,
+    "combined:k+replacement | k,null": 1,
+    "combined:k+replacement | k,replacement": 1,
+    "combined:k+replacement | null,replacement": 1,
+    "combined:k+replacement | replacement,threshold": 1,
+    "combined:k+threshold | k,null,replacement": 1,
+    "combined:k+threshold | replacement": 1,
+    "combined:null+threshold | null,replacement": 1,
+    "k | replacement": 1,
+    "k | replacement,threshold": 2,
+    "k | threshold": 7,
+    "k,null,replacement | replacement": 2,
+    "k,null,replacement | threshold": 2,
+    "k,replacement | replacement": 2,
+    "k,replacement | replacement,threshold": 2,
+    "k,replacement | threshold": 3,
+    "null | threshold": 1,
+    "null,replacement | threshold": 1,
+    "replacement | replacement,threshold": 1
+   },
+   "reversal_axis_labels_on_reversed_samples": {
+    "combined:k+null": 15,
+    "combined:k+null+threshold": 2,
+    "combined:k+replacement": 5,
+    "combined:k+threshold": 2,
+    "combined:null+threshold": 1,
+    "k": 19,
+    "k,null": 3,
+    "k,null,replacement": 5,
+    "k,replacement": 9,
+    "null": 1,
+    "null,replacement": 3,
+    "replacement": 7,
+    "replacement,threshold": 6,
+    "threshold": 15
+   },
+   "reversed_samples_no_axis_recorded": 0,
+   "reversed_samples_only_k_explanations": 12,
+   "reversed_samples_with_some_explanation_without_k": 35
+  }
+ },
+ "esnli": {
+  "ig_minus_random_f1_mean": 0.1486,
+  "ig_token_f1_mean": 0.3425,
+  "inter_annotator_iou_mean_first_entry": 0.5587,
+  "model": {
+   "calibration_accuracy": 0.906,
+   "checkpoint_state_digest": "sha256:3bb11726e89399d5da9e939eed5e29efdb5cc1fc8226c7351877b710a799f27d",
+   "esnli_commit": "7b585a3f077fdea899780eb0473940522ae44a2e",
+   "gold_to_model_label": {
+    "contradiction": 0,
+    "entailment": 1,
+    "neutral": 2
+   },
+   "parameters": 109484547,
+   "repo": "textattack/bert-base-uncased-snli",
+   "revision": "d4ef8a69a50bc95cc074514f4b798c67f572163a"
+  },
+  "n": 40,
+  "necessary_distribution": {
+   "human": {
+    "contradicted": 30,
+    "supported": 10
+   },
+   "ig": {
+    "contradicted": 33,
+    "supported": 7
+   },
+   "random": {
+    "contradicted": 37,
+    "supported": 3
+   }
+  },
+  "own_bootstrap_95_percentile": [
+   0.0552,
+   0.2462
+  ],
+  "own_bootstrap_98_75_percentile": [
+   0.0307,
+   0.2698
+  ],
+  "own_bootstrap_note": "own RNG stream; matches the recorded interval only approximately (different resampling code)",
+  "recorded_plausibility": {
+   "ig_minus_random_f1": "token F1: IG minus random: 0.1486 (n = 40; 95% paired percentile bootstrap of the difference of means [0.05521, 0.2463] over samples, 10000 draws, seed 7501)",
+   "ig_token_f1": "IG top-k_h token F1 vs annotator 1: 0.3425 (n = 40; 95% percentile bootstrap of the mean [0.2643, 0.4222] over samples, 10000 draws, seed 7501)"
+  }
+ },
+ "esnli_recorded_intervals": {
+  "N1_paired": "PRIMARY SUPPORTED: IG minus human (necessary): -0.075 (n = 40; 95% paired percentile bootstrap of the difference of means [-0.225, 0.075] over samples, 10000 draws, seed 7501)",
+  "N2_bonferroni": "token F1 vs annotator 1: IG minus random: 0.1486 (n = 40; 98.75% paired percentile bootstrap of the difference of means [0.0308, 0.2701] over samples, 10000 draws, seed 7501)"
+ },
+ "interpbench": {
+  "attribution_only_ig": {
+   "unsupported": 1960
+  },
+  "ig_selected_unnecessary_contradicted": {
+   "k": 1571,
+   "n": 1571,
+   "wilson95": [
+    0.9976,
+    1.0
+   ]
+  },
+  "ig_selection_rows": 1960,
+  "ig_selection_rows_by_gt": {
+   "ambiguous": 3,
+   "necessary": 386,
+   "not_necessary": 1571
+  },
+  "n_cases": 18,
+  "per_configuration_as_if_primary": {
+   "tensor/mean|none|min_dropx0.5": {
+    "necessary": "841/942",
+    "not_necessary": "216/8840"
+   },
+   "tensor/mean|none|min_dropx1.5": {
+    "necessary": "408/942",
+    "not_necessary": "72/8840"
+   },
+   "tensor/mean|none|recorded": {
+    "necessary": "645/942",
+    "not_necessary": "116/8840"
+   },
+   "tensor/resample|count|min_dropx0.5": {
+    "necessary": "6/431",
+    "not_necessary": "2/7390"
+   },
+   "tensor/resample|count|min_dropx1.5": {
+    "necessary": "4/431",
+    "not_necessary": "0/7390"
+   },
+   "tensor/resample|count|recorded": {
+    "necessary": "6/431",
+    "not_necessary": "0/7399"
+   },
+   "tensor/resample|none|min_dropx0.5": {
+    "necessary": "942/942",
+    "not_necessary": "266/8831"
+   },
+   "tensor/resample|none|min_dropx1.5": {
+    "necessary": "898/942",
+    "not_necessary": "0/8831"
+   },
+   "tensor/resample|none|recorded": {
+    "necessary": "942/942",
+    "not_necessary": "0/8840"
+   },
+   "zero|none|min_dropx0.5": {
+    "necessary": "922/942",
+    "not_necessary": "1799/8840"
+   },
+   "zero|none|min_dropx1.5": {
+    "necessary": "340/942",
+    "not_necessary": "847/8840"
+   },
+   "zero|none|recorded": {
+    "necessary": "659/942",
+    "not_necessary": "1150/8840"
+   }
+  },
+  "phase7_5_primary_confusion_nodes": {
+   "ambiguous": 18,
+   "neg_other": 9,
+   "tn": 8831,
+   "tp": 942
+  },
+  "phase7_75_rerun_primary_confusion_nodes": {
+   "ambiguous": 18,
+   "neg_other": 9,
+   "tn": 8831,
+   "tp": 942
+  },
+  "reliable_cases": 18
+ },
+ "kind": "RECALCULATED FROM FROZEN ARTIFACTS (no model rerun)",
+ "mutations": {
+  "experiments/phase7/results/mutations.json": {
+   "evidence_mutations": "tests/test_audit.py: forged outcome, relabelled INCONCLUSIVE, dropped contradiction, changed target/subject, dataset scope, removed counterexamples, favourable k, checkpoint (J), sample (K), removed c",
+   "final_all_killed": "True",
+   "first_run": {
+    "n": 25,
+    "status": {
+     "None": 25
+    }
+   },
+   "plan_section": "docs/PHASE_7_PLAN.md \u00a731 (code mutations of beyondnn/audits; each must fail tests/test_audit.py)",
+   "rerun_after_new_tests": {
+    "n": 6,
+    "status": {
+     "None": 6
+    }
+   },
+   "survivors_first_run": {
+    "n": 6,
+    "status": {}
+   },
+   "tests_added": {
+    "n": 5,
+    "status": {}
+   }
+  },
+  "experiments/phase7_5/results/mutations75.json": {
+   "killed": 24,
+   "total": 24
+  },
+  "experiments/phase7_75/results/mutations775.json": {
+   "killed": 19,
+   "total": 19
+  },
+  "experiments/phase7_75/results/mutations_pre8.json": {
+   "phase7_5": {
+    "killed": 24,
+    "total": 24
+   },
+   "phase7_75": {
+    "killed": 19,
+    "total": 19
+   },
+   "pre8": {
+    "killed": 4,
+    "total": 4
+   },
+   "run_at": "HEAD after the hardening changes (pre-Phase-8 pass)"
+  }
+ },
+ "phase7_central": {
+  "audited_supported_total": "1/280",
+  "naive_total": "84/280",
+  "per_site": {
+   "A/input": {
+    "audited_supported": 0,
+    "n": 60,
+    "naive": 5
+   },
+   "A/net.1": {
+    "audited_supported": 0,
+    "n": 60,
+    "naive": 19
+   },
+   "B/pixels": {
+    "audited_supported": 0,
+    "n": 60,
+    "naive": 35
+   },
+   "B/relu2": {
+    "audited_supported": 0,
+    "n": 60,
+    "naive": 16
+   },
+   "C/tokens": {
+    "audited_supported": 1,
+    "n": 40,
+    "naive": 9
+   }
+  }
+ },
+ "source_sha256": {
+  "experiments/phase7/results/central_A.json": "66dbb08da9661e0861e52ace07d5b77e2fc1221bdb719ce8825e6fa3710e1423",
+  "experiments/phase7/results/central_B.json": "c871a953aeabcfeafa5dd4b7525c76f5e46c68e074996f1b64879df5c62a84bf",
+  "experiments/phase7/results/central_C.json": "aecb9ee2bd77bdb3c80018e2f37c546bafa2e58fd5699f917c877b262b438e4e",
+  "experiments/phase7/results/mutations.json": "f9d01430b1c3ac41ead3d519ef10c4048a8500f203a2c59ab0e2b1c392dbe1d8",
+  "experiments/phase7_5/results/central75_A_heldout.json": "793fbf726dd740ba11ae38d1daee1b61abb6eac09127158bb9dff9fbaca23f18",
+  "experiments/phase7_5/results/central75_B_heldout.json": "b55c3f9ff4c86d9f58d5a25a8175d4a614a0d8fd317a3aa8b2395ea1a6846bdf",
+  "experiments/phase7_5/results/central75_C_heldout.json": "81b2a338caa0d45ecb08767a56264f16f90b9aba11c7290a3ca2c6c2aaa0ecc6",
+  "experiments/phase7_5/results/central75_D_heldout.json": "754ed1e70d641974fe8d684adb7fff32618616cdfb4029178b521771f3999f14",
+  "experiments/phase7_5/results/esnli.json": "d8c1e1f60c65be9801609821929fb45a3e06274e5abd258cb1c2eebaeccebebb",
+  "experiments/phase7_5/results/external_interpbench_heldout.json": "e33b48d492a4da106fe7fa3005c12df836ac13ebdbaa0f0e89ed023fe46e83b5",
+  "experiments/phase7_5/results/external_interpbench_heldout_case124_dv1.json": "c99b6aa760c9390103aed747eb81a1d5f18c2f117b6f99f037556cffe8b3fec1",
+  "experiments/phase7_5/results/hypotheses75.json": "b882024dc8923bfc50f9d6604d7aaadcade2314755fce6215b90e3461225d331",
+  "experiments/phase7_5/results/mutations75.json": "a2ca9c82b7dd740fec74c875eaf3ebce716216a1b96ace3dfbab36761f97b52c",
+  "experiments/phase7_75/results/central775_A_heldout_all.json": "7eb7faa21d5bc1f801490b550833582568bd05301644dee65ff3eaee67ee6698",
+  "experiments/phase7_75/results/central775_B_heldout_all.json": "bf239b74575cbb385c6270692b99fdda237315409cb4f51945e6e024a87d54ee",
+  "experiments/phase7_75/results/central775_C_heldout_all.json": "839ef6164769e240558bc8d83eef2f9c99411ff181278ee4b7cc505dbd6c4e8f",
+  "experiments/phase7_75/results/central775_C_heldout_content_tokens.json": "671d79cb623fda90b3100588b1103432a9591187a2cc8e72cc943696983fb3d1",
+  "experiments/phase7_75/results/central775_D_heldout_all.json": "fc0cde55039ba082ee0a1086a0f417f29f6d77dbe2f4a92e76b5b6c49830f558",
+  "experiments/phase7_75/results/central775_D_heldout_content_tokens.json": "e8f960844ad3829ead4262f618b73cb8f2a42e649a803ba7df8d3527f7a60d04",
+  "experiments/phase7_75/results/interpbench_heldout.json": "dfc180786f840094d89917126ef0c93975c1a8c49adf9b9c4f438047559e854d",
+  "experiments/phase7_75/results/mutations775.json": "0ea2178453fd9a38e92aabe941320550bbae4b19d317f9613ab8793ab122a82a",
+  "experiments/phase7_75/results/mutations_pre8.json": "550613d2f7746f78338e96a614a7f91ff7506c0bafb4c56f10fc061f2ed2e4d6",
+  "experiments/phase7_75/results/td_concepts_heldout.json": "39d46bf516247d24be925385093fc4946cc5405cfedb3a964d7b81466b593ab3",
+  "experiments/phase7_75/results/td_heldout.json": "bcea32f69c1d36c7e86024012d6d38060831d6d517641b160b3acba1f8c58714"
+ },
+ "special_tokens_D": {
+  "all": {
+   "ig_supported": 11,
+   "ig_supported_with_CLS_or_SEP": 10,
+   "n": 40,
+   "primary_selections_with_CLS_or_SEP": 30,
+   "supported_indices": [
+    306,
+    309,
+    330,
+    346,
+    363,
+    373,
+    423,
+    534,
+    541,
+    674,
+    684
+   ]
+  },
+  "all_token_supports_also_supported_content_tokens": "3/11",
+  "content_tokens": {
+   "ig_supported": 6,
+   "ig_supported_with_CLS_or_SEP": 0,
+   "n": 40,
+   "primary_selections_with_CLS_or_SEP": 0,
+   "supported_indices": [
+    330,
+    363,
+    373,
+    382,
+    659,
+    681
+   ]
+  }
+ },
+ "td": {
+  "attribution_only_ig_selection_claims": {
+   "unsupported": 240
+  },
+  "compiled_matches_interpreter": {
+   "ho_both_1_2": 1.0,
+   "ho_copy_1_3": 1.0,
+   "ho_copy_2_1": 1.0,
+   "ho_corr_1": 1.0,
+   "ho_corr_2": 1.0,
+   "ho_deep": 1.0,
+   "ho_map_decoy_2": 1.0,
+   "ho_swap_1_3": 1.0
+  },
+  "correlated_program_decoy_components": {
+   "ho_corr_1/l0_mlp": 40,
+   "ho_corr_1/l1_h0": 40,
+   "ho_corr_2/l0_mlp": 40,
+   "ho_corr_2/l1_h0": 40
+  },
+  "correlated_program_decoys_primary_supported": {
+   "k": 0,
+   "n": 160,
+   "wilson95": [
+    0.0,
+    0.0234
+   ]
+  },
+  "correlated_program_descriptions": {
+   "ho_corr_1": "decoy = identical copy of x, ignored",
+   "ho_corr_2": "decoy = identical copy of x, ignored"
+  },
+  "decoy_standing_distribution": {
+   "contradicted": 400
+  },
+  "decoys_primary_supported": {
+   "k": 0,
+   "n": 400,
+   "wilson95": [
+    0.0,
+    0.0095
+   ]
+  },
+  "empty_primary_supported": {
+   "k": 0,
+   "n": 120,
+   "wilson95": [
+    0.0,
+    0.031
+   ]
+  },
+  "environment": {
+   "beyondnn_commit": "b355129c057344ac0ccef2f0df792b44df20c469",
+   "python": "3.11.15",
+   "torch": "2.3.1",
+   "transformer_lens": "1.19.0"
+  },
+  "ig_selected_decoys_primary_supported": {
+   "k": 0,
+   "n": 57,
+   "wilson95": [
+    0.0,
+    0.0631
+   ]
+  },
+  "ig_selection_rows_by_truth": {
+   "known_false": 57,
+   "known_true": 183
+  },
+  "n_programs": 8,
+  "node_rows": 1280,
+  "primary_vs_transformerlens_interchange": {
+   "contradicts|tl_flip=False": 569,
+   "inconclusive|tl_flip=False": 120,
+   "supports|tl_flip=True": 591
+  },
+  "program_errors": [],
+  "programs": {
+   "ho_both_1_2": "out = (x(t-1), z(t-2)); both used",
+   "ho_copy_1_3": "out = x(t-1); decoy y(t-3)",
+   "ho_copy_2_1": "out = x(t-2); decoy y(t-1)",
+   "ho_corr_1": "decoy = identical copy of x, ignored",
+   "ho_corr_2": "decoy = identical copy of x, ignored",
+   "ho_deep": "two-layer used chain; decoys at both layers",
+   "ho_map_decoy_2": "out = x(t-2); decoy MLP m",
+   "ho_swap_1_3": "out = x(t-1) (2nd arg); decoy y(t-3)"
+  },
+  "selection_rows": 240,
+  "used_max_supported_per_component": 38,
+  "used_min_supported_per_component": 28,
+  "used_primary_supported": {
+   "k": 591,
+   "n": 760,
+   "wilson95": [
+    0.7467,
+    0.8058
+   ]
+  },
+  "used_standing_distribution": {
+   "contradicted": 169,
+   "supported": 591
+  },
+  "zero_ablation_supports_decoys": {
+   "k": 400,
+   "n": 400,
+   "wilson95": [
+    0.9905,
+    1.0
+   ]
+  }
+ },
+ "td_concepts": {
+  "by_known_and_validation": {
+   "decodable_unused|proposed_concept": 4,
+   "negative|proposed_concept": 4,
+   "positive|validated_concept": 4
+  },
+  "known_negative_validated_under_any_rule": "0/8",
+  "known_positive_validated_rel_rule": "4/4",
+  "n_programs": 4
+ }
+}
