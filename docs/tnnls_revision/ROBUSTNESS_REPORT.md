@@ -50,13 +50,22 @@ Test accuracy per checkpoint:
 4. **CNN relu2:** every IG necessity test at this site carries `control_criterion_unattainable` on every checkpoint (60/60 samples). With few units per selection, too many control draws coincide with the selection, so the site's count-null tests are largely uninformative. Its 1–4 supports come from the tests that remain decisive. This is a property of the design at that site and must be stated alongside its numbers.
 5. **Gradient versus IG at CNN pixels:** gradient top-k is supported on 37–41 of 60 samples on every checkpoint, against 12–22 for IG. This replicates the manuscript's single-checkpoint observation (37 vs 14).
 
-## 5. Dependence and statistics
+## 5. Fresh, never-inspected samples (protocol P3)
+
+- **Run:** CNN (frozen checkpoint) and BERT-tiny re-run on samples that no earlier phase used.
+- **Supports:**
+  - CNN pixels: 19/60 IG supports, all 19 reversed (16 with the units fixed); random 1.
+  - CNN relu2: 2/60; random 1.
+  - BERT-tiny: 9/40 IG supports, 6 reversed (5 only through changes of k); random 0.
+- **Predictions:** all five pre-stated predictions hold (CONFIGURATION_SENSITIVITY_ANALYSIS §5).
+
+## 6. Dependence and statistics
 
 - Samples are nested in checkpoints, and checkpoints are not pooled.
 - The between-checkpoint spread above is the relevant uncertainty for model-class statements. Five checkpoints per model give a range, not an interval estimate.
 - No significance test was run.
 
-## 6. What remains unsupported
+## 7. What remains unsupported
 
 - No checkpoint replication for the BERT models.
 - No architecture or scale generalisation beyond these four models.

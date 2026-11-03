@@ -59,3 +59,14 @@
 4. Run a CUDA smoke test in a pinned BeyondNN environment.
 5. Commit the protocol and budget.
 6. Run jobs in tmux with logs and resumable shards. The tunnel can drop mid-command.
+
+## Update after Stages 2–4 (2026-11-03, about 15:30–16:40 UTC)
+
+- **State at the start:**
+  - The vLLM job on GPU 1 had ended (MPS server only, 47 MiB); GPU 0 was idle.
+  - `/` was still 100% full; `/data` had 996 GB free.
+- **What ran:**
+  - All work ran on CPU, in tmux sessions with `TMUX_TMPDIR`, caches and `TMPDIR` under `/data`, at most 41 concurrent single-thread processes (load average ≤ 37).
+  - **No GPU was used.**
+- **Totals:** 22.7 timed CPU-hours; 6.5 GB written under `/data/roufas/research/beyondnn_tnnls_revision/`.
+- **State at the end:** all sessions ended, `/` unchanged at 100%, no other user's process touched.

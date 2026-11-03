@@ -116,10 +116,52 @@
 - **Problem:** at the time of round 1 the BERT-base re-run was incomplete, so totals covered 41 of 52 supports.
 - **Status:** see §2.
 
-## 2. Round 2
+## 2. Round 2 (after corrections and the final runs)
 
-Filled in after the BERT-base re-run and the fresh-sample run complete; see below.
+### Resolved or reduced since round 1
+
+| issue | action | status |
+|---|---|---|
+| R1-M1: re-audit of seen samples | Protocol P3, run on never-inspected samples (CNN 60, BERT-tiny 40). All five pre-stated predictions held: CNN pixels 16 of 19 reversals with the units fixed; BERT-tiny 5 of 6 only through k; τ × 0.5 reverses none. Reported in §VI-A and Table III (bottom block). | **reduced to MINOR**: BERT-base and MLP have no fresh-sample confirmation (cost; exhausted pool) |
+| R1-m4: BERT-base decomposition incomplete | Completed. BERT-base reproduces exactly (0 per-sample differences); 4 of 11 reversals with the units fixed, 7 only through k. Totals: 23 fixed, 24 k-only, 47 reversed of 52. | **resolved** |
+| new R2-1: "every sample tested under 45 configurations" | One sample had 11 alternatives, because two k values coincide. Text now says "up to 45 … fewer when two values of k coincide". | **resolved** |
+| new R2-2: "no reversal required a combination of axes" overstated the scope | Now restricted to fixed-selection reversals, which is what the data support (0 multi-axis-only fixed reversals). | **resolved** |
+| new R2-3: wording audit | Searched for "first", "novel", "prove", "guarantee", "significant", "outperform", "superior". Every remaining "never" or "always" is a rule-level statement that holds by construction. No unsupported superlatives. | **resolved** |
+| new R2-4: abstract length | Reduced to about 228 words (IEEE: 150–250). | **resolved** |
+| new R2-5: fonts | XeTeX lacked IEEE Times; the build now uses T1 and newtx (TeX Gyre Termes), all fonts embedded. | **resolved** |
+
+### Still open after round 2
+
+| severity | issue | why it remains | what would close it |
+|---|---|---|---|
+| **CRITICAL** | R1-C1: TNNLS scope; a methodology/tooling paper with by-construction properties | Not an evidence gap; a venue judgement | Author decision; TAI is the lower-risk venue |
+| **MAJOR** | R1-C2: added value over a careful conventional workflow | The comparison is honest but partly negative: equal detection, more lines of code; differences only in defaults, attainability and tamper refusal | Re-audit of published claims with released artifacts, or a user study |
+| **MAJOR** | R1-M2: no independent mechanism truth for the trained central models | SIIT specification labels are post hoc and interchange-trained; Tracr is tiny and compiled | A non-trivial trained model with a construction-fixed mechanism |
+| **MAJOR** | R1-M3: author-designed faults and checker | Inherent to this design | A third-party blind fault set |
+| MINOR | R1-M4: unclustered statistics | Descriptive design; ranges reported | Cluster bootstrap |
+| MINOR | R1-M5: overhead | Disclosed: 23× per test on a tiny MLP, 0.1% of total on BERT-base | Leaner record retention |
+| MINOR | R1-m1: AI-disclosure placeholder; R1-m2: two references | Author action | Author review |
+| MINOR | Reconstructed source | The original LaTeX was unavailable | Authors merge the revision into their source |
+
+### Reviewer's summary judgement
+
+- **Rigour:** the revised paper is scientifically careful and internally consistent. Every number traces to an artifact, the main headline is now decomposed and confirmed on fresh samples, negative results are kept, and the claims are scoped.
+- **The remaining weaknesses are not editorial:**
+  - the incremental value over a careful practitioner is not demonstrated;
+  - independent truth on trained central models is absent;
+  - the contribution type is a poor match for TNNLS's emphasis on learning methods and theory.
 
 ## 3. Final recommendation
 
-Given after round 2.
+**REQUIRES SUBSTANTIAL ADDITIONAL RESEARCH** (for TNNLS).
+
+**Required before a TNNLS submission:**
+1. Evidence that the audit changes conclusions in real practice: a re-audit of published interpretability claims from their released artifacts, or a user study.
+2. Independent mechanism validation on at least one non-compiled trained network whose reference is not interchange-defined, or an explicit decision to scope the paper without it.
+3. A venue decision.
+
+**If the authors retarget to IEEE Transactions on Artificial Intelligence**, whose scope explicitly includes explainable AI, the same manuscript would need only targeted revision:
+- the author items (AI disclosure, two references, merging into the original source);
+- the published evidence bundle.
+
+No acceptance probability is given.

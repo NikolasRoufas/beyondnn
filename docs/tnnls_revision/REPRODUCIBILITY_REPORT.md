@@ -13,7 +13,7 @@
 | MLP (both sites, 51 + 51) | frozen digest `4c19a8da…`, rebuilt on macOS | Linux x86-64 | **0** |
 | CNN (both sites, 60 + 60) | frozen digest `d799d1e8…`, rebuilt on macOS | Linux x86-64 | **0** |
 | BERT-tiny (40) | HF `M-FAC/bert-tiny-finetuned-sst2` @ `41ad670` | Linux x86-64 | **0** |
-| BERT-base (40) | HF `textattack/bert-base-uncased-SST-2` @ `95f0f6f` | Linux x86-64 | see §5 (added when the 20 shards completed) |
+| BERT-base (40) | HF `textattack/bert-base-uncased-SST-2` @ `95f0f6f` | Linux x86-64 (20 shards) | **0** |
 | MLP, earlier Stage 1 run | frozen, macOS | macOS arm64 | 0 (S1-REPRO-A) |
 
 **Training is not bit-reproducible across platforms.**
@@ -51,7 +51,9 @@ Every load fully re-validates every record (content hashes, references, schema v
 
 ## 5. BERT-base re-execution
 
-Filled in after completion; see the final report and `aggregate.json`.
+- **Run:** all 40 held-out samples re-run in 20 shards, about 26 min of evidence generation per sample (63,573 CPU-seconds in total).
+- **Result:** 0 per-sample differences against the frozen results for all six claims.
+- **Checkpoint:** the recomputed checkpoint digest equals the frozen one.
 
 ## 6. Remaining gaps
 

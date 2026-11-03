@@ -1,0 +1,83 @@
+{
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.14.0+cpu",
+    "platform": "Linux x86_64"
+  },
+  "warmup": 1,
+  "iterations": 10,
+  "results": [
+    {
+      "body": "comprehensiveness x3 replacements, 1 sample(s)",
+      "records": 539,
+      "results": 3,
+      "audit_ms": [
+        9.707942139357328,
+        9.766033850610256
+      ],
+      "to_json_ms": [
+        0.2802107483148575,
+        0.30017923563718796
+      ],
+      "verify_report_ms": [
+        10.225307662039995,
+        10.27259323745966
+      ],
+      "report_bytes": 10351
+    },
+    {
+      "body": "comprehensiveness x3 replacements, 4 sample(s)",
+      "records": 1706,
+      "results": 12,
+      "audit_ms": [
+        45.80667847767472,
+        46.106462366878986
+      ],
+      "to_json_ms": [
+        0.7550986483693123,
+        0.78531913459301
+      ],
+      "verify_report_ms": [
+        46.46386904641986,
+        46.71475477516651
+      ],
+      "report_bytes": 29845
+    },
+    {
+      "body": "comprehensiveness x3 replacements, 16 sample(s)",
+      "records": 6374,
+      "results": 48,
+      "audit_ms": [
+        188.69619816541672,
+        190.18657505512238
+      ],
+      "to_json_ms": [
+        2.898569218814373,
+        2.9150936752557755
+      ],
+      "verify_report_ms": [
+        192.98246502876282,
+        193.96164920181036
+      ],
+      "report_bytes": 116809
+    },
+    {
+      "body": "concept encoding x2 nulls (scenario L)",
+      "records": 3019,
+      "results": 2,
+      "audit_ms": [
+        233.74674655497074,
+        234.36427395790815
+      ],
+      "to_json_ms": [
+        0.3891335800290108,
+        0.4070112481713295
+      ],
+      "verify_report_ms": [
+        233.9720749296248,
+        234.90680754184723
+      ],
+      "report_bytes": 16194
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 # Revision experiment plan (TNNLS revision, proposed after Stage 1)
 
+- **Outcome (added 2026-11-03, after Stages 2–6):** P0 partly done (manuscript checked; LaTeX not available; no evidence bundle; no 7.75 hash pin). E2.1, E2.2, E2.3, E3.1, E3.2, E4.1, E4.2, E4.3 (benchmark only), E4.4 and an extra fresh-sample confirmation are done. E3.3 was replaced by the InterpBench specification-label re-analysis; the planted-surgery design was a justified NO-GO. E3.4 and E4.5 were not run. See `REVISION_MANIFEST.md`.
 - **Status: PROPOSAL FOR REVIEW.** Nothing here is authorised or frozen. Every experiment needs a committed protocol (plan §9 fields) before it runs.
 - **Labels:**
   - **ESSENTIAL:** closes a central validity gap.
