@@ -1,0 +1,529 @@
+{
+ "burden_loc": {
+  "b1_checks": 54,
+  "beyondnn_plan_and_roles_reused": 98
+ },
+ "cost": {
+  "max_abs_drop_difference": 2.86102294921875e-06,
+  "median_beyondnn_s": 0.05531531572341919,
+  "median_plain_s": 0.0023831799626350403,
+  "outcome_agreement": 20,
+  "per_sample": [
+   {
+    "beyondnn_s": 0.05575153511017561,
+    "drop_beyondnn": 12.268477439880371,
+    "drop_plain": 12.268478393554688,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.002409445121884346,
+    "sample": 236,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05453632120043039,
+    "drop_beyondnn": 4.279980659484863,
+    "drop_plain": 4.279979705810547,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.002393340691924095,
+    "sample": 336,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05702470429241657,
+    "drop_beyondnn": 10.877557396888733,
+    "drop_plain": 10.877557754516602,
+    "outcome_beyondnn": "supports",
+    "outcome_plain": "supports",
+    "plain_s": 0.002456194721162319,
+    "sample": 47,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05487164482474327,
+    "drop_beyondnn": 6.7076873779296875,
+    "drop_plain": 6.707686424255371,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0024818042293190956,
+    "sample": 392,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.057219427078962326,
+    "drop_beyondnn": 3.2588915824890137,
+    "drop_plain": 3.258892059326172,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0023083537817001343,
+    "sample": 143,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05539555102586746,
+    "drop_beyondnn": 4.138376712799072,
+    "drop_plain": 4.1383771896362305,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.002358449622988701,
+    "sample": 450,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05710493680089712,
+    "drop_beyondnn": 2.163679778575897,
+    "drop_plain": 2.163679778575897,
+    "outcome_beyondnn": "supports",
+    "outcome_plain": "supports",
+    "plain_s": 0.0024291453883051872,
+    "sample": 385,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05598330311477184,
+    "drop_beyondnn": 4.641097784042358,
+    "drop_plain": 4.6410980224609375,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.002379300072789192,
+    "sample": 132,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05605831556022167,
+    "drop_beyondnn": 3.4719278812408447,
+    "drop_plain": 3.4719276428222656,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0023795608431100845,
+    "sample": 102,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05454417411237955,
+    "drop_beyondnn": 4.997642993927002,
+    "drop_plain": 4.997644424438477,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0023809317499399185,
+    "sample": 390,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.055970373563468456,
+    "drop_beyondnn": 6.909511566162109,
+    "drop_plain": 6.909510612487793,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.002291168086230755,
+    "sample": 198,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05522427428513765,
+    "drop_beyondnn": 6.5506203174591064,
+    "drop_plain": 6.550620079040527,
+    "outcome_beyondnn": "supports",
+    "outcome_plain": "supports",
+    "plain_s": 0.0024626050144433975,
+    "sample": 435,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.056999487802386284,
+    "drop_beyondnn": 3.6113979816436768,
+    "drop_plain": 3.611398220062256,
+    "outcome_beyondnn": "supports",
+    "outcome_plain": "supports",
+    "plain_s": 0.002385428175330162,
+    "sample": 90,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05491410940885544,
+    "drop_beyondnn": 11.914628028869629,
+    "drop_plain": 11.914628028869629,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0023096567019820213,
+    "sample": 68,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05510183051228523,
+    "drop_beyondnn": 8.7665696144104,
+    "drop_plain": 8.766569137573242,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0023905374109745026,
+    "sample": 28,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.06262387707829475,
+    "drop_beyondnn": 0.8270168304443359,
+    "drop_plain": 0.8270168304443359,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0023736609145998955,
+    "sample": 338,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05468547623604536,
+    "drop_beyondnn": -0.11687040328979492,
+    "drop_plain": -0.11686992645263672,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0023129796609282494,
+    "sample": 566,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05441465973854065,
+    "drop_beyondnn": 4.292798280715942,
+    "drop_plain": 4.292798042297363,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0024013128131628036,
+    "sample": 387,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05451788380742073,
+    "drop_beyondnn": 11.496720314025879,
+    "drop_plain": 11.496723175048828,
+    "outcome_beyondnn": "contradicts",
+    "outcome_plain": "contradicts",
+    "plain_s": 0.0023737717419862747,
+    "sample": 202,
+    "selection_equal": true
+   },
+   {
+    "beyondnn_s": 0.05523508042097092,
+    "drop_beyondnn": 4.890860676765442,
+    "drop_plain": 4.890860676765442,
+    "outcome_beyondnn": "supports",
+    "outcome_plain": "supports",
+    "plain_s": 0.002420371398329735,
+    "sample": 513,
+    "selection_equal": true
+   }
+  ],
+  "selection_equal": 20
+ },
+ "environment": {
+  "beyondnn_commit": "84e91dff0cc26cb407a59a8544f6810801592f0c",
+  "captum": "0.9.0",
+  "numpy": "2.5.3",
+  "platform": "Linux x86_64",
+  "processor": "x86_64",
+  "python": "3.12.3",
+  "sklearn": "1.9.1",
+  "torch": "2.14.0+cpu",
+  "torch_threads": 1,
+  "transformers": "5.17.0"
+ },
+ "model": {
+  "frozen_digest": "sha256:4c19a8dafa3c0b38219220528303b3f195487a131b3e12a64c703203946b1c24",
+  "seed1_digest": "sha256:e1b7f748086d10717075cda36c445349f64ef59c6adb830aa8ec136175e9141f"
+ },
+ "n_study_samples": 20,
+ "protocol": "docs/tnnls_revision/protocols/P2_COMPARATIVE_EVALUATION_PROTOCOL.md",
+ "scenarios": {
+  "F0_clean": {
+   "affected": 0,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 0,
+    "note": "B0 has no checks: it reports its conclusion"
+   },
+   "b1": {
+    "detected": 0,
+    "false_alerts": 5,
+    "missed": 0
+   },
+   "b1_flag_codes": {},
+   "beyondnn": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn_error": null,
+   "beyondnn_report": {
+    "report_findings": [],
+    "results": 1440,
+    "results_excluded": 0
+   },
+   "bnn_codes_affected": {},
+   "bnn_standings_affected": {}
+  },
+  "F1_attribution_as_necessity": {
+   "affected": 20,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 20,
+    "note": "B0 has no checks: it reports its conclusion"
+   },
+   "b1": {
+    "detected": 20,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "b1_flag_codes": {
+    "c3_no_intervention_evidence": 20
+   },
+   "beyondnn": {
+    "detected": 20,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn_error": null,
+   "beyondnn_report": {
+    "report_findings": [],
+    "results": 0,
+    "results_excluded": 0
+   },
+   "bnn_codes_affected": {
+    "attribution_is_not_intervention": 20
+   },
+   "bnn_standings_affected": {
+    "unsupported": 20
+   }
+  },
+  "F2_wrong_checkpoint": {
+   "affected": 5,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 5,
+    "note": "B0 has no checks: it reports its conclusion"
+   },
+   "b1": {
+    "detected": 5,
+    "false_alerts": 4,
+    "missed": 0
+   },
+   "b1_flag_codes": {
+    "c1_checkpoint_mismatch": 5,
+    "c7_alternative_contradicts": 1
+   },
+   "beyondnn": {
+    "detected": 5,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn_error": null,
+   "beyondnn_report": {
+    "report_findings": [
+     "other_checkpoint"
+    ],
+    "results": 1440,
+    "results_excluded": 360
+   },
+   "bnn_codes_affected": {
+    "other_checkpoint": 5
+   },
+   "bnn_standings_affected": {
+    "not_evaluated": 5
+   }
+  },
+  "F3_wrong_input": {
+   "affected": 5,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 5,
+    "note": "B0 has no checks: it reports its conclusion"
+   },
+   "b1": {
+    "detected": 5,
+    "false_alerts": 4,
+    "missed": 0
+   },
+   "b1_flag_codes": {
+    "c2_input_mismatch": 5
+   },
+   "beyondnn": {
+    "detected": 5,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn_error": null,
+   "beyondnn_report": {
+    "report_findings": [
+     "sample_out_of_scope"
+    ],
+    "results": 1440,
+    "results_excluded": 360
+   },
+   "bnn_codes_affected": {
+    "no_evidence": 5
+   },
+   "bnn_standings_affected": {
+    "not_evaluated": 5
+   }
+  },
+  "F4_wrong_selection_size": {
+   "affected": 5,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 5,
+    "note": "B0 has no checks: it reports its conclusion"
+   },
+   "b1": {
+    "detected": 5,
+    "false_alerts": 4,
+    "missed": 0
+   },
+   "b1_flag_codes": {
+    "c5_wrong_k": 5,
+    "c7_alternative_contradicts": 1
+   },
+   "beyondnn": {
+    "detected": 5,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn_error": null,
+   "beyondnn_report": {
+    "report_findings": [],
+    "results": 1320,
+    "results_excluded": 0
+   },
+   "bnn_codes_affected": {
+    "configuration_level_disagreement": 5,
+    "control_criterion_unattainable": 1,
+    "inconclusive_results": 1,
+    "no_evidence": 5,
+    "primary_untested": 5,
+    "required_protocol_missing": 5
+   },
+   "bnn_standings_affected": {
+    "not_evaluated": 5
+   }
+  },
+  "F5_omitted_controls": {
+   "affected": 6,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 6,
+    "note": "B0 has no checks: it reports its conclusion"
+   },
+   "b1": {
+    "detected": 6,
+    "false_alerts": 14,
+    "missed": 0
+   },
+   "b1_flag_codes": {
+    "c4_primary_without_controls": 6,
+    "c7_alternative_contradicts": 5
+   },
+   "beyondnn": {
+    "detected": 6,
+    "false_alerts": 14,
+    "missed": 0
+   },
+   "beyondnn_error": null,
+   "beyondnn_report": {
+    "report_findings": [],
+    "results": 180,
+    "results_excluded": 0
+   },
+   "bnn_codes_affected": {
+    "invariance_untested": 6,
+    "primary_untested": 6,
+    "required_protocol_missing": 6
+   },
+   "bnn_standings_affected": {
+    "unsupported": 6
+   }
+  },
+  "F6_configuration_dependence": {
+   "affected": 4,
+   "affected_definitions": {
+    "beyondnn_roles": [
+     385,
+     435,
+     90,
+     513
+    ],
+    "flat_log_rule": [
+     385,
+     90,
+     513
+    ]
+   },
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 4,
+    "note": "B0 has no checks: it reports its conclusion"
+   },
+   "b1": {
+    "detected": 4,
+    "false_alerts": 1,
+    "missed": 0
+   },
+   "b1_flag_codes": {
+    "c7_alternative_contradicts": 4
+   },
+   "beyondnn": {
+    "detected": 4,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn_error": null,
+   "beyondnn_report": {
+    "report_findings": [],
+    "results": 1440,
+    "results_excluded": 0
+   },
+   "bnn_codes_affected": {
+    "alternative_reverses": 4,
+    "configuration_level_disagreement": 4,
+    "control_criterion_unattainable": 2,
+    "inconclusive_results": 2,
+    "stress_test_reverses": 4
+   },
+   "bnn_standings_affected": {
+    "supported": 4
+   }
+  },
+  "F7_tampered_outcome": {
+   "affected": 5,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 5,
+    "note": "B0 has no checks: it reports its conclusion"
+   },
+   "b1": {
+    "detected": 5,
+    "false_alerts": 5,
+    "missed": 0
+   },
+   "b1_flag_codes": {
+    "c6_outcome_not_reproducible": 5,
+    "c7_alternative_contradicts": 5
+   },
+   "beyondnn": {
+    "detected": 5,
+    "false_alerts": 15,
+    "missed": 0
+   },
+   "beyondnn_error": "TracePersistenceError: /data/roufas/research/beyondnn_tnnls_revision/runs/S3_CMP_v2/f7_evidence/trace0018: invalid record 'claim_test_result:0ab8fbc00c8ab764052ec25b12c0121d': stored id 'claim_test_result:0ab8fbc00c8ab764052ec25b12c0121d' does not match content (expected 'claim_test_result:96693101e2cf7bd8c937ab94aea77366",
+   "beyondnn_report": {
+    "edited_trace_files": 5
+   },
+   "bnn_codes_affected": {},
+   "bnn_standings_affected": {
+    "none": 5
+   }
+  }
+ }
+}

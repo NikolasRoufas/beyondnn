@@ -1,0 +1,242 @@
+{
+ "burden_loc": {
+  "b1_checks": 54,
+  "beyondnn_plan_and_roles_reused": 98
+ },
+ "cost": {
+  "max_abs_drop_difference": 2.86102294921875e-06,
+  "median_beyondnn_s": 0.05531531572341919,
+  "median_plain_s": 0.0023831799626350403,
+  "outcome_agreement": 20,
+  "selection_equal": 20
+ },
+ "protocol": "docs/tnnls_revision/protocols/P2_COMPARATIVE_EVALUATION_PROTOCOL.md",
+ "source": "experiments/tnnls_revision/results/S3_CMP_v2",
+ "table": {
+  "F0_clean": {
+   "b1_configuration_dependence_flags": 5,
+   "b1_fault_flags": {},
+   "beyondnn_alternative_reverses": 4,
+   "beyondnn_standings": {
+    "contradicted": 15,
+    "supported": 5
+   }
+  },
+  "F1_attribution_as_necessity": {
+   "affected": 20,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 20
+   },
+   "b1": {
+    "check": "c3_no_intervention_evidence",
+    "detected": 20,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn": {
+    "codes_affected": {
+     "attribution_is_not_intervention": 20
+    },
+    "detected": 20,
+    "erroneous_supports_prevented": 20,
+    "false_alerts": 0,
+    "missed": 0,
+    "standings_affected": {
+     "unsupported": 20
+    },
+    "study_level_refusal": null
+   },
+   "erroneous_b0_support_conclusions": 20
+  },
+  "F2_wrong_checkpoint": {
+   "affected": 5,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 5
+   },
+   "b1": {
+    "check": "c1_checkpoint_mismatch",
+    "detected": 5,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn": {
+    "codes_affected": {
+     "other_checkpoint": 5
+    },
+    "detected": 5,
+    "erroneous_supports_prevented": 1,
+    "false_alerts": 0,
+    "missed": 0,
+    "standings_affected": {
+     "not_evaluated": 5
+    },
+    "study_level_refusal": null
+   },
+   "erroneous_b0_support_conclusions": 1
+  },
+  "F3_wrong_input": {
+   "affected": 5,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 5
+   },
+   "b1": {
+    "check": "c2_input_mismatch",
+    "detected": 5,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn": {
+    "codes_affected": {
+     "no_evidence": 5
+    },
+    "detected": 5,
+    "erroneous_supports_prevented": 0,
+    "false_alerts": 0,
+    "missed": 0,
+    "standings_affected": {
+     "not_evaluated": 5
+    },
+    "study_level_refusal": null
+   },
+   "erroneous_b0_support_conclusions": 0
+  },
+  "F4_wrong_selection_size": {
+   "affected": 5,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 5
+   },
+   "b1": {
+    "check": "c5_wrong_k",
+    "detected": 5,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn": {
+    "codes_affected": {
+     "configuration_level_disagreement": 5,
+     "control_criterion_unattainable": 1,
+     "inconclusive_results": 1,
+     "no_evidence": 5,
+     "primary_untested": 5,
+     "required_protocol_missing": 5
+    },
+    "detected": 5,
+    "erroneous_supports_prevented": 1,
+    "false_alerts": 0,
+    "missed": 0,
+    "standings_affected": {
+     "not_evaluated": 5
+    },
+    "study_level_refusal": null
+   },
+   "erroneous_b0_support_conclusions": 1
+  },
+  "F5_omitted_controls": {
+   "affected": 20,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 20
+   },
+   "b1": {
+    "check": "c4_primary_without_controls",
+    "detected": 20,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn": {
+    "codes_affected": {
+     "invariance_untested": 20,
+     "primary_untested": 20,
+     "required_protocol_missing": 20
+    },
+    "detected": 20,
+    "erroneous_supports_prevented": 6,
+    "false_alerts": 0,
+    "missed": 0,
+    "standings_affected": {
+     "unsupported": 20
+    },
+    "study_level_refusal": null
+   },
+   "erroneous_b0_support_conclusions": 6
+  },
+  "F6_configuration_dependence": {
+   "affected": 4,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 4
+   },
+   "b1": {
+    "check": "c7_alternative_contradicts",
+    "detected": 4,
+    "false_alerts": 1,
+    "missed": 0
+   },
+   "b1_only": [
+    47
+   ],
+   "b1_only_beyondnn_codes": {
+    "47": [
+     "configuration_level_disagreement",
+     "control_criterion_unattainable",
+     "inconclusive_results",
+     "stress_test_reverses"
+    ]
+   },
+   "beyondnn": {
+    "codes_affected": {
+     "alternative_reverses": 4,
+     "configuration_level_disagreement": 4,
+     "control_criterion_unattainable": 2,
+     "inconclusive_results": 2,
+     "stress_test_reverses": 4
+    },
+    "detected": 4,
+    "erroneous_supports_prevented": 0,
+    "false_alerts": 0,
+    "missed": 0,
+    "standings_affected": {
+     "supported": 4
+    },
+    "study_level_refusal": null
+   },
+   "erroneous_b0_support_conclusions": 4
+  },
+  "F7_tampered_outcome": {
+   "affected": 5,
+   "b0": {
+    "detected": 0,
+    "false_alerts": 0,
+    "missed": 5
+   },
+   "b1": {
+    "check": "c6_outcome_not_reproducible",
+    "detected": 5,
+    "false_alerts": 0,
+    "missed": 0
+   },
+   "beyondnn": {
+    "codes_affected": {},
+    "detected": 5,
+    "erroneous_supports_prevented": 5,
+    "false_alerts": 0,
+    "missed": 0,
+    "standings_affected": {
+     "refused": 5
+    },
+    "study_level_refusal": "TracePersistenceError: /data/roufas/research/beyondnn_tnnls_revision/runs/S3_CMP_v2/f7_evidence/trace0018: invalid record 'claim_test_result:0ab8fbc00c8ab764052ec25b12c0121d': stored id 'claim_test_result:0ab8fbc00c8ab764052ec25b12c0121d' does not match content (expected 'claim_test_result:96693101e2cf7bd8c937ab94aea77366"
+   },
+   "erroneous_b0_support_conclusions": 5
+  }
+ }
+}

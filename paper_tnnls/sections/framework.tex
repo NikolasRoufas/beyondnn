@@ -1,0 +1,109 @@
+\section{Formal Framework}
+\label{sec:framework}
+
+This section defines the objects that BeyondNN represents and the rule by which an audit derives a standing from them. The definitions describe the semantics implemented in BeyondNN~0.1.0; each property in Section~\ref{sec:properties} is stated together with the part of the implementation that enforces it and the test or experiment that checks it. We use one running example: the necessity claim for the Integrated Gradients (IG) selection on held-out sample~423 of a BERT-base sentiment classifier (Fig.~\ref{fig:example}).
+
+\subsection{Evidence and Provenance}
+
+\begin{definition}[Evidence record]
+An \emph{evidence record} is a tuple $e=(\mathrm{id},\sigma,v,\pi)$, where $v$ is the recorded value, $\sigma\in\Sigma$ is its epistemic status, $\pi$ is its provenance, and $\mathrm{id}=H(\sigma,v,\pi,\text{references})$ is a content hash. The status set is
+$\Sigma=\{$\textsc{observed}, \textsc{measured}, \textsc{attributed}, \textsc{interventional}, \textsc{estimated\_causal}, \textsc{validated\_concept}, \textsc{generated}$\}$.
+The status is fixed by the kind of record that produced $e$ and is never supplied by the caller. Statuses are unordered.
+\end{definition}
+
+\begin{definition}[Provenance]
+The provenance $\pi(e)$ contains the model fingerprint $\delta$ (a digest over the names, dtypes, shapes and bytes of all parameters and persistent buffers), the identity $s=H(x)$ of every input, the target metric $t$, the site, the replacement $\rho$ (name and digest of its value), the declared unit eligibility $E$, the protocol and its version, and the software versions. Two records have the same \emph{conditions} if these fields agree; time and process are recorded but are not part of the conditions.
+\end{definition}
+
+In the running example, the IG relevance of the 19 token positions is an \textsc{attributed} record, and the margin change $d=2.66$ obtained by replacing the two selected embeddings with the \texttt{[MASK]} embedding is an \textsc{interventional} record. Both carry the same $\delta$ and the same $s$.
+
+\subsection{Claims, Scope and Eligibility}
+
+\begin{definition}[Claim]
+A \emph{claim} is $c=(r,u,t,\varsigma,E)$ with relation $r\in\{$\texttt{necessary\_for}, \texttt{sufficient\_for}, \texttt{increases}, \texttt{decreases}, \texttt{attributed\_to}, \texttt{encodes}$\}$, subject $u$, target $t$, estimand scope $\varsigma\in\{\text{instance},\text{finite\_sample},\text{population}\}$ and eligibility $E$. The subject is either a declared unit set or a \emph{selection rule} $\mathrm{sel}_{M,k}(E)$: the $k$ units of the eligible set $E$ ranked highest by method $M$.
+\end{definition}
+
+Eligibility is part of the subject. The claims ``the IG top-2 tokens'' and ``the IG top-2 \emph{content} tokens'' differ even on the same input: in the running example the first selects $\{$\textit{unable}, \texttt{[SEP]}$\}$ and the second $\{$\textit{unable}, \textit{get}$\}$. Changing $k$ also changes the subject whenever the $k$-th and $(k\!+\!1)$-th ranked units differ.
+
+\subsection{Tests, Controls and Outcomes}
+
+\begin{definition}[Necessity test]
+Let $m$ be the target metric, $S$ the selected units, $\rho$ the replacement, $\tau$ the effect threshold, $q$ the control criterion and $S_1,\dots,S_J$ random control sets matched to $S$ (by count, or by perturbation magnitude) and drawn from $E$. With $d=m(x)-m(x_{S\leftarrow\rho})$ and $d_j$ the same drop for $S_j$, the test outcome is
+\begin{equation}
+o=\begin{cases}
+\text{inconclusive} & \text{if } x_{S\leftarrow\rho}=x \ \text{(no-op)},\\
+\text{supports} & \text{if } d\ge\tau \ \text{and}\ \frac{1}{J}\sum_{j}\mathbb{1}[d_j<d]\ge q,\\
+\text{contradicts} & \text{otherwise.}
+\end{cases}
+\label{eq:test}
+\end{equation}
+\end{definition}
+
+Control draws identical to $S$ always tie with it and never count as ``below''. When the largest attainable fraction $\bar f=1-|\{j:S_j=S\}|/J$ is smaller than $q$, no model could pass the criterion. The audit then treats a recorded \emph{contradicts} as uninformative and counts it as inconclusive, with the finding \texttt{control\_criterion\_unattainable} (ADR-054); the record itself is not changed. The rank criterion $q$ is a threshold on an empirical fraction over $J$ sampled sets; it is not a calibrated $p$-value. Sufficiency is defined symmetrically by keeping only $S$.
+
+\subsection{Configurations and Roles}
+
+\begin{definition}[Configuration and role]
+The \emph{configuration} $\kappa(e)$ of a test result is its value on every assumption axis: replacement, $k$, null (control type and criterion), threshold, method and dataset. A threshold axis value is either the recorded $\tau$ or a declared re-evaluation $\alpha\tau$ applied to the recorded $d$ and $d_j$. An audit plan maps axis values to roles $\{\textsc{primary}<\textsc{alternative}<\textsc{stress\_test}\}$. The role of $\kappa$ is the largest role among its axis values; a configuration with an undeclared value is \textsc{undeclared} and takes no part in the standing.
+\end{definition}
+
+In the central experiments every sample is tested under 45 configurations: one \textsc{primary}, 17 \textsc{alternative} and 27 \textsc{stress\_test} (Table~\ref{tab:setup}).
+
+\subsection{Admissibility and Standing}
+
+\begin{definition}[Admissible evidence]
+A record $e$ is \emph{admissible} for claim $c$ in plan $P$ if (i) its status is in the set accepted by the relation, $\sigma(e)\in\mathrm{Adm}(r)$, where causal relations accept only \textsc{interventional} and \textsc{estimated\_causal} evidence and \texttt{attributed\_to} accepts \textsc{attributed}; (ii) its estimand scope matches $\varsigma$; (iii) its subject and eligibility match $u$ and $E$; and (iv) its provenance matches $P$: $\delta(e)$ equals the declared checkpoint, and every input identity is a declared sample. Records failing (iv) or an integrity check are excluded and the exclusion is reported.
+\end{definition}
+
+\begin{definition}[Standing]
+For a claim $c$ and a group $g$ (one sample for instance-scope claims), let $A$ be the admissible results and $A_P\subseteq A$ those in \textsc{primary} configurations. The \emph{standing} is assigned in this order:
+(1) \textsc{assumption\_sensitive} if $A_P$ contains both \emph{supports} and \emph{contradicts} and every disagreeing pair differs on a recorded axis, \textsc{mixed} if some pair does not;
+(2) \textsc{contradicted} if the verdict derived from $A_P$ under the claim's requirement policy is a contradiction;
+(3) \textsc{unsupported} if a finding marks the evidence as the wrong kind, the required controls as missing, or a declared invariance as untested;
+(4) \textsc{supported} or \textsc{inconclusive} according to the verdict;
+(5) \textsc{not\_evaluated} if $A$ is empty.
+\textsc{alternative} and \textsc{stress\_test} configurations whose decisive outcome differs from the \textsc{primary} outcome produce the findings \texttt{alternative\_reverses} (qualifying) and \texttt{stress\_test\_reverses} (informational).
+\end{definition}
+
+A standing is a category, not a confidence level, and the audit computes no global score. For per-sample claims there is no claim-level truth value: the report gives the distribution of standings over the declared samples and the identities of counterexamples.
+
+\subsection{Properties}
+\label{sec:properties}
+
+The following properties hold by construction of the audit rules. They establish \emph{consistency with the declared semantics}; none of them establishes that a plan, a replacement or a threshold is scientifically appropriate.
+
+\begin{proposition}[Admissibility]
+\label{prop:adm}
+If no admissible record of $c$ has a status in $\mathrm{Adm}(r)$, the standing of $c$ is neither \textsc{supported} nor \textsc{contradicted}.
+\end{proposition}
+\emph{Basis.} Condition (i) of admissibility filters records before the verdict is derived. \emph{Checked by:} pre-registered scenarios and code-mutation tests; empirically, every attribution-only audit in this paper (2,480 selection claims) was \textsc{unsupported} (Section~\ref{sec:res-adm}).
+
+\begin{proposition}[Role invariance]
+\label{prop:roles}
+For a plan with declared roles, the standing of $(c,g)$ is a function of $A_P$ only. Adding, removing or changing \textsc{alternative} or \textsc{stress\_test} results can change the findings but never the standing.
+\end{proposition}
+\emph{Basis.} The verdict and the disagreement analysis are computed on \textsc{primary} entries only; other roles enter only the finding generator. \emph{Checked by:} all 47 held-out samples with \texttt{alternative\_reverses} retain the standing \textsc{supported} (Section~\ref{sec:res-config}).
+
+\begin{proposition}[Monotone reversal count]
+\label{prop:mono}
+The number of groups carrying \texttt{alternative\_reverses} is non-decreasing in the set of declared \textsc{alternative} configurations.
+\end{proposition}
+\emph{Basis.} The finding is an existential statement over the declared alternatives. Consequently, an at-least-one reversal count measures dependence on a declared test family; it is not an instability rate.
+
+\begin{proposition}[Threshold asymmetry]
+\label{prop:thr}
+With $d$, $d_j$ and $q$ fixed, re-evaluating~\eqref{eq:test} at $\alpha\tau$ with $\alpha<1$ cannot turn \emph{supports} into \emph{contradicts}, and $\alpha>1$ cannot turn \emph{contradicts} into \emph{supports}.
+\end{proposition}
+\emph{Basis.} The outcome is monotone in $\tau$. \emph{Checked by:} in every re-run reported here, the $\tau\times0.5$ alternative reversed no supported claim (Table~\ref{tab:decomp}).
+
+\begin{proposition}[Provenance refusal]
+\label{prop:prov}
+A result whose model fingerprint or input identity is not declared in the plan never contributes to a standing. A declared group without admissible evidence is \textsc{not\_evaluated}.
+\end{proposition}
+\emph{Basis.} Condition (iv) of admissibility. \emph{Checked by:} the injected wrong-checkpoint and wrong-input faults of Section~\ref{sec:res-cmp} (5/5 \textsc{not\_evaluated} each).
+
+\begin{proposition}[Re-derivability]
+\label{prop:det}
+The audit is a deterministic function of the evidence records, the plan and the audit-semantics version. A stored report can be re-derived from saved evidence without the model, and any edit to a stored record changes its content hash and is rejected on load.
+\end{proposition}
+\emph{Basis.} Content-addressed records and a model-free audit. \emph{Checked by:} re-audits from disk identical to in-memory reports, and rejection of every tampered trace (Sections~\ref{sec:res-cmp} and~\ref{sec:res-repro}).
